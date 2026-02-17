@@ -2,15 +2,13 @@
 (function(){
   const root = document.documentElement;
 
-  // initial theme
+  // init theme
   const stored = localStorage.getItem("theme");
   if(stored){ root.setAttribute("data-theme", stored); }
 
-  // theme link handlers
   function setTheme(t){
     root.setAttribute("data-theme", t);
     localStorage.setItem("theme", t);
-    // update nav state if present
     document.querySelectorAll('[data-set-theme]').forEach(a => {
       a.setAttribute('aria-current', a.getAttribute('data-set-theme') === t ? 'true' : 'false');
     });
@@ -23,13 +21,12 @@
     setTheme(a.getAttribute("data-set-theme"));
   });
 
-  // set current markers on load
   const current = root.getAttribute("data-theme") || "light";
   document.querySelectorAll('[data-set-theme]').forEach(a => {
     a.setAttribute('aria-current', a.getAttribute('data-set-theme') === current ? 'true' : 'false');
   });
 
-  // reading progress
+  // progress bar
   const bar = document.getElementById("progress");
   function onScroll(){
     if(!bar) return;

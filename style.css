@@ -111,12 +111,12 @@ nav{
 
 .hero{
   display:grid;
-  grid-template-columns: 140px 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 190px 1fr;
+  gap: 1.6rem;
   align-items:start;
 }
 .avatar{
-  width:140px; height:140px;
+  width:190px; height:190px;
   border-radius: 50%;
   overflow:hidden;
   border: 1px solid var(--border);
@@ -130,21 +130,20 @@ h1{
   letter-spacing: -0.03em;
 }
 .subtitle{
-  margin:0 0 1rem 0;
+  margin:0 0 .9rem 0;
   color:var(--muted);
 }
 .lede{
-  margin: 0 0 .75rem 0;
-  line-height: 1.75;
-  font-size: 1.03rem;
+  margin: 0 0 .65rem 0;
+  line-height: 1.7;
+  font-size: 1.02rem;
 }
 .linksline{
-  margin-top: .8rem;
+  margin-top: .65rem;
   color: var(--muted);
 }
-.linksline a{color:var(--link)}
 
-section{margin-top: 2.6rem}
+section{margin-top: 2.4rem}
 h2{
   margin:0 0 .75rem 0;
   font-size: 1.45rem;
@@ -155,7 +154,7 @@ h3{
   font-size: 1.05rem;
 }
 p, li{
-  line-height: 1.75;
+  line-height: 1.7;
   font-size: 1rem;
 }
 ul{padding-left: 1.2rem; margin: .5rem 0 0}
@@ -167,7 +166,7 @@ li{margin:.35rem 0}
 }
 @media (max-width: 760px){
   .hero{grid-template-columns: 1fr;}
-  .avatar{width:120px; height:120px}
+  .avatar{width:170px; height:170px}
   .grid{grid-template-columns: 1fr}
   nav{align-items:flex-start}
 }
@@ -180,18 +179,35 @@ li{margin:.35rem 0}
   box-shadow: var(--shadow);
   backdrop-filter: blur(8px);
 }
-.card p{margin:.55rem 0 0}
 .meta{color: var(--muted); font-size:.95rem}
 .small{color:var(--muted); font-size:.95rem}
 
-footer{
-  margin-top: 4rem;
-  color: var(--muted);
-  font-size: .95rem;
+.footerline{
   display:flex;
   justify-content:space-between;
   gap: 1rem;
   flex-wrap:wrap;
   border-top:1px solid var(--border);
   padding-top: 1.2rem;
+  margin-top: 4rem;
+  color: var(--muted);
+  font-size: .95rem;
 }
+
+/* Transition page */
+.center{
+  min-height: calc(100vh - 120px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.spinner{
+  width:38px; height:38px;
+  border-radius:50%;
+  border:3px solid var(--border);
+  border-top-color: var(--link);
+  margin: 0 auto 14px;
+  animation: spin 0.85s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }

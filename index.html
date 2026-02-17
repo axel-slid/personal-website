@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alex Dils</title>
-  <meta name="description" content="Alex Dils — Computer Science at UC Berkeley. Research in computer vision, medical AI, and generative models." />
+  <meta name="description" content="Alex Dils, Computer Science at UC Berkeley. Research in medical imaging, computer vision, and robust ML systems." />
   <link rel="icon" href="headshot.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -37,18 +37,11 @@
       </div>
       <div>
         <h1>Alex Dils</h1>
-        <p class="subtitle">Computer Science @ UC Berkeley · Berkeley, CA</p>
+        <p class="subtitle">Computer Science @ UC Berkeley</p>
 
         <p class="lede">
-          Hi — I’m Alex. I work on computer vision and machine learning systems that need to hold up outside clean benchmarks:
-          noisy data, messy real-world constraints, and (sometimes) high stakes.
-        </p>
-        <p class="lede">
-          I’ve spent the last several years doing applied research with Stanford Medicine, building and refining deep learning models for
-          medical imaging and visual reasoning. Alongside research, I like shipping full-stack ML—right now I’m CTO &amp; co-founder at Appraise AI.
-        </p>
-        <p class="lede">
-          Broadly, I’m interested in robustness, bias/confounders, and evaluation that matches the real world—not just the leaderboard.
+          I work on computer vision and ML systems with an emphasis on robustness, bias, and practical evaluation.
+          I do research with Stanford Medicine and build applied ML as CTO and co-founder at Appraise AI.
         </p>
 
         <p class="linksline">
@@ -61,58 +54,38 @@
       </div>
     </section>
 
-    <section id="news">
-      <h2>News</h2>
-      <ul>
-        <li><strong>Nov 2025</strong> — CTO &amp; Co-Founder at Appraise AI.</li>
-        <li><strong>Jun 2022 – Present</strong> — Research Intern, Stanford Center for Biomedical Informatics Research.</li>
-        <li><strong>Oct 2024</strong> — Microplastics segmentation work released on arXiv.</li>
-        <li><strong>Apr 2025</strong> — “Eye For An Eye” published on stereoscopic image synthesis.</li>
-      </ul>
-    </section>
-
     <section id="research">
       <h2>Research</h2>
-      <p>
-        My north star is making learning systems that behave well when the world doesn’t cooperate.
-        I like work that connects modeling choices to practical evaluation: distribution shift, spurious correlations,
-        and how to use mechanistic structure when it helps.
-      </p>
-
       <div class="grid" role="list">
         <div class="card" role="listitem">
-          <h3>Medical imaging &amp; augmentation</h3>
-          <div class="meta">Stanford Biomedical Informatics · skin lesions · lung motion simulation</div>
+          <h3>Medical imaging</h3>
+          <div class="meta">Stanford Biomedical Informatics</div>
           <p>
-            I work on bias/confounder mitigation for image diagnosis and on physiologically plausible data augmentation.
-            Recent work includes simulating lung motion (FEA) to generate breathing-cycle variations that improve tumor segmentation.
+            Bias and confounder mitigation for image diagnosis, plus physiologically plausible augmentation from lung motion simulation.
           </p>
         </div>
 
         <div class="card" role="listitem">
-          <h3>Generative + analytical vision</h3>
+          <h3>Generative and analytical vision</h3>
           <div class="meta">stereoscopic view synthesis</div>
           <p>
-            I’ve explored stereoscopic image spatialization via conditional GANs, depth-based analytical methods,
-            and hybrid composites that combine both to improve perceptual quality.
+            Conditional GANs and geometry based depth methods for view synthesis, plus hybrids that combine both.
           </p>
         </div>
 
         <div class="card" role="listitem">
           <h3>Environmental ML</h3>
-          <div class="meta">microplastics · segmentation · generalization</div>
+          <div class="meta">microplastics segmentation</div>
           <p>
-            For microplastics identification, we use GAN-generated ecological context to increase training diversity and improve
-            segmentation performance across varied water samples.
+            GAN generated ecological context to improve segmentation across varied water samples.
           </p>
         </div>
 
         <div class="card" role="listitem">
-          <h3>ML systems that ship</h3>
-          <div class="meta">data pipelines · retrieval · deployment</div>
+          <h3>Systems</h3>
+          <div class="meta">data pipelines and deployment</div>
           <p>
-            I like building end-to-end systems: ingestion pipelines, model training, APIs, and monitoring.
-            It’s the fastest way I know to learn what matters in practice.
+            End to end ML systems, from ingestion to evaluation to API delivery.
           </p>
         </div>
       </div>
@@ -123,7 +96,7 @@
 
       <div class="card">
         <h3>Microplastic Identification Using AI-Driven Image Segmentation and GAN-Generated Ecological Context</h3>
-        <div class="meta">arXiv · Oct 27, 2024</div>
+        <div class="meta">arXiv, Oct 27, 2024</div>
         <p class="small">
           <a href="https://arxiv.org/abs/2410.19604">Paper</a> /
           <a href="https://github.com/axel-slid/Microplastic-Segmentation-GAN">Code</a>
@@ -132,7 +105,7 @@
 
       <div class="card" style="margin-top:1rem;">
         <h3>Eye For An Eye: A Deep-Learning and Analytical Method to Spatializing Stereoscopic Images</h3>
-        <div class="meta">National High School Journal of Science · Apr 17, 2025</div>
+        <div class="meta">National High School Journal of Science, Apr 17, 2025</div>
         <p class="small">
           <a href="https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/#google_vignette">Paper</a>
         </p>
@@ -140,82 +113,98 @@
 
       <div class="card" style="margin-top:1rem;">
         <h3>Integrating Mechanistic Knowledge into Deep Learning for Improved Cancer Detection</h3>
-        <div class="meta">FEniCS Conference 2024 Proceedings · Jun 16, 2024</div>
+        <div class="meta">FEniCS Conference 2024 Proceedings, Jun 16, 2024</div>
         <p class="small">
           <a href="https://scientificcomputing.github.io/fenics2024/integrating-mechanistic">Proceedings</a>
         </p>
       </div>
 
       <div class="card" style="margin-top:1rem;">
-        <h3>Enhancing Medical AI with Physiologically-Informed Data Augmentation</h3>
-        <div class="meta">ICML 2026 submission (pending) · Expected Jan 2026</div>
-        <p class="small">
-          <a href="https://openreview.net/forum?id=XXXXXX">OpenReview</a>
-        </p>
+        <h3>Addressing Bias and Confounders in AI-based Image Diagnosis, A Study of 117,610 Skin Lesions</h3>
+        <div class="meta">Cell, in revision, Jan 2, 2025</div>
       </div>
     </section>
 
     <section id="projects">
       <h2>Projects</h2>
-      <p class="small">A small selection of code that’s closest to my current research and work.</p>
-
       <div class="grid">
         <div class="card">
-          <h3>icml_lung_validation</h3>
-          <div class="meta">Replication code for lung validation (ICML submission context)</div>
-          <p class="small"><a href="https://github.com/axel-slid/icml_lung_validation">GitHub</a></p>
-        </div>
-
-        <div class="card">
           <h3>lung_validation</h3>
-          <div class="meta">Public replication code for lung validation experiments</div>
+          <div class="meta">lung motion validation code</div>
           <p class="small"><a href="https://github.com/axel-slid/lung_validation">GitHub</a></p>
         </div>
 
         <div class="card">
-          <h3>appraiseai-api</h3>
-          <div class="meta">API layer for Appraise AI (Python)</div>
-          <p class="small"><a href="https://github.com/axel-slid/appraiseai-api">GitHub</a></p>
-        </div>
-
-        <div class="card">
           <h3>appraiseai</h3>
-          <div class="meta">Core Appraise AI code (Python)</div>
+          <div class="meta">core Appraise AI code</div>
           <p class="small"><a href="https://github.com/axel-slid/appraiseai">GitHub</a></p>
         </div>
 
         <div class="card">
           <h3>Microplastic-Segmentation-GAN</h3>
-          <div class="meta">Segmentation + GAN-generated context for microplastics</div>
+          <div class="meta">segmentation and GAN context</div>
           <p class="small"><a href="https://github.com/axel-slid/Microplastic-Segmentation-GAN">GitHub</a></p>
         </div>
 
         <div class="card">
           <h3>speed_reader</h3>
-          <div class="meta">A small JS tool for faster reading practice</div>
+          <div class="meta">reading practice tool</div>
           <p class="small"><a href="https://github.com/axel-slid/speed_reader">GitHub</a></p>
+        </div>
+
+        <div class="card">
+          <h3>fa25-nmep-hw4</h3>
+          <div class="meta">transformers homework fork</div>
+          <p class="small"><a href="https://github.com/axel-slid/fa25-nmep-hw4">GitHub</a></p>
+        </div>
+
+        <div class="card">
+          <h3>astroai_task</h3>
+          <div class="meta">astro AI task code</div>
+          <p class="small"><a href="https://github.com/axel-slid/astroai_task">GitHub</a></p>
+        </div>
+
+        <div class="card">
+          <h3>leetcode_daily</h3>
+          <div class="meta">daily LeetCode practice</div>
+          <p class="small"><a href="https://github.com/axel-slid/leetcode_daily">GitHub</a></p>
+        </div>
+
+        <div class="card">
+          <h3>website</h3>
+          <div class="meta">older HTML site</div>
+          <p class="small"><a href="https://github.com/axel-slid/website">GitHub</a></p>
+        </div>
+
+        <div class="card">
+          <h3>Reaction-time-game-for-my-IA</h3>
+          <div class="meta">reaction time game</div>
+          <p class="small"><a href="https://github.com/axel-slid/Reaction-time-game-for-my-IA">GitHub</a></p>
+        </div>
+
+        <div class="card">
+          <h3>Train-an-AI-with-data-in-a-csv</h3>
+          <div class="meta">starter notebook project</div>
+          <p class="small"><a href="https://github.com/axel-slid/Train-an-AI-with-data-in-a-csv">GitHub</a></p>
         </div>
       </div>
     </section>
 
     <section id="contact">
       <h2>Contact</h2>
-      <p>
-        Email is best. If it’s about research, include what you’re working on and what kind of collaboration you have in mind.
-      </p>
       <p class="linksline">
         <a href="mailto:dils@berkeley.edu">dils@berkeley.edu</a>
       </p>
     </section>
 
-    <footer>
+    <div class="footerline">
       <div>© 2026 Alex Dils</div>
+      <div class="small">Last updated: 2026-02-17</div>
       <div class="small">
         Theme: <a href="#" data-set-theme="light">Light</a> / <a href="#" data-set-theme="dark">Dark</a> / <a href="#" data-set-theme="disco">Disco</a>
       </div>
-    </footer>
+    </div>
   </main>
-
   <script src="script.js"></script>
 </body>
 </html>

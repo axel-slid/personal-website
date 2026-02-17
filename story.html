@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My story · Alex Dils</title>
-  <meta name="description" content="A short narrative about how Alex Dils got into computer vision, medical AI, and building ML systems." />
+  <meta name="description" content="How Alex Dils got into medical AI, computer vision, and ML systems." />
   <link rel="icon" href="headshot.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -15,7 +15,7 @@
   <div class="nav-left">
     <div class="brand">Alex Dils</div>
     <div class="nav-links">
-      <a href="index.html" >Home</a>
+      <a href="transition.html" >Home</a>
       <a href="story.html" aria-current="page">My story</a>
       <a href="index.html#research">Research</a>
       <a href="index.html#publications">Publications</a>
@@ -33,69 +33,40 @@
   <main>
     <section>
       <h1 style="margin-bottom:.25rem;">My story</h1>
-      <p class="subtitle">The longer version — why I care about robustness, physiology, and systems that actually work.</p>
+      <p class="subtitle">Short version.</p>
 
       <div class="card">
         <p>
-          I got into machine learning the same way I get into most things: I tried to build something, it worked just enough to be exciting,
-          and then it failed in a way I couldn’t ignore.
-        </p>
-        <p>
-          The failure wasn’t subtle. A model could look great on a tidy dataset and then fall apart the moment the real world got involved:
-          different lighting, different sensors, different demographics, different hospitals. I didn’t want “cool demos.” I wanted to understand what it takes
-          for a system to be reliable when you don’t control the conditions.
+          I started with computer vision because it is a direct test of whether a system understands anything beyond pixels.
+          The first models I trained looked good on clean data and then failed on small shifts. That pushed me toward robustness.
         </p>
       </div>
 
-      <h2 style="margin-top:2.25rem;">Finding the right constraints</h2>
+      <h2 style="margin-top:2.25rem;">Stanford Medicine</h2>
       <p>
-        In 2022 I started research with Stanford’s Center for Biomedical Informatics Research. Medical ML is a good place to learn humility:
-        you can’t hand-wave data quality, and you can’t pretend distribution shift is an edge case. The stakes force you to be concrete.
+        In 2022 I joined Stanford Biomedical Informatics. The constraints were clear: distribution shift is normal, labels are imperfect,
+        and evaluation has to match the setting.
       </p>
       <p>
-        My work has touched a few threads that all point in the same direction: reduce spurious correlations, build better augmentations,
-        and evaluate in ways that match deployment. When a model fails, the interesting question is almost always “what assumption did we bake in without noticing?”
-      </p>
-
-      <h2>Mechanistic structure: when physics helps</h2>
-      <p>
-        One of my favorite directions has been using physiology and simulation to create more realistic training variation. For lung imaging, we simulated
-        respiratory motion with finite element analysis to model breathing-cycle differences—then used those simulations as augmentations that improved segmentation performance.
-      </p>
-      <p>
-        I like this line of work because it’s not just “more data.” It’s <em>structured</em> variation: the model sees shifts that actually occur in the world,
-        which is a different kind of generalization than random perturbations.
+        I worked on bias and confounder mitigation in skin lesion tasks, and on physiologically plausible augmentation from lung motion simulation.
       </p>
 
-      <h2>Building products keeps me honest</h2>
+      <h2>Building</h2>
       <p>
-        Research gives you taste. Shipping gives you discipline. As CTO &amp; co-founder at Appraise AI, I spend time on the unglamorous parts:
-        data ingestion, retrieval over messy marketplaces, latency, monitoring, and how to communicate uncertainty.
-      </p>
-      <p>
-        I like that real users force clarity. If something breaks, you don’t get to argue with a metric—you fix the system.
-        That feedback loop is part of why I enjoy living at the intersection of research and deployment.
-      </p>
-
-      <h2>What I’m aiming for</h2>
-      <p>
-        Going forward, I want to keep working on methods that improve robustness and generalization—especially for vision—and keep grounding those methods
-        in realistic evaluation and usable systems.
-      </p>
-      <p>
-        If you’re working on adjacent problems, feel free to reach out.
-        The best collaborations I’ve had usually started with a simple message and a shared curiosity.
+        I also like shipping systems. At Appraise AI, the loop is tight: data ingestion, retrieval, modeling, and then a number someone will rely on.
+        That forces clarity about uncertainty and failure modes.
       </p>
 
       <p class="small" style="margin-top:1.2rem;">
-        Back to <a href="index.html">home</a>. · <a href="resume.pdf">CV</a> · <a href="https://github.com/axel-slid">GitHub</a>
+        Back to <a href="transition.html">home</a>. CV: <a href="resume.pdf">resume.pdf</a>. GitHub: <a href="https://github.com/axel-slid">axel-slid</a>.
       </p>
     </section>
 
-    <footer>
+    <div class="footerline">
       <div>© 2026 Alex Dils</div>
+      <div class="small">Last updated: 2026-02-17</div>
       <div class="small">Theme: <a href="#" data-set-theme="light">Light</a> / <a href="#" data-set-theme="dark">Dark</a> / <a href="#" data-set-theme="disco">Disco</a></div>
-    </footer>
+    </div>
   </main>
   <script src="script.js"></script>
 </body>
