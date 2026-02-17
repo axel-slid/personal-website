@@ -18,8 +18,7 @@
     </div>
 
     <div class="p">
-      Outside research and engineering, I teach: I’ve designed and taught Python curricula for underserved elementary schools, and I’ve led
-      after‑school chess workshops across multiple school districts.
+      
     </div>
 
     <div class="links" id="contact">
