@@ -6,6 +6,8 @@
   <div>
     <h1>Alex Dils</h1>
 
+email = dils + [at] + berkeley + [dot] + edu
+
     <div class="p">
       Hey there! I’m a computer science student at UC Berkeley (B.A. expected May 2029). I build ML systems and do research in
       computer vision and medical AI—especially robustness, bias, augmentation, and segmentation.
