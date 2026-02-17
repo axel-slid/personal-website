@@ -194,17 +194,48 @@
 
     <div class="li-desc" data-lines="3">
       A vision-language project exploring multimodal representations and evaluation workflows.
-      <!-- Replace with your exact one-liner when ready -->
     </div>
 
     <div class="li-links">
-      <!-- Add link(s) if public -->
-      <!-- <a href="..." target="_blank" rel="noreferrer">Code</a> -->
+      <a href="https://github.com/alekseyvalouev/VLunAr" target="_blank" rel="noreferrer">Code</a>
     </div>
 
     <div class="li-media" data-max="2">
       <a class="li-thumb" href="assets/image.png" target="_blank" rel="noreferrer">
         <img src="assets/image.png" alt="VLUNAR media" />
+      </a>
+    </div>
+  </article>
+
+  <!-- SPEED READER (USES: ScreenRecording2026-02-16at9.17.09PM-ezgif.com-video-to-gif-converter.gif) -->
+  <article class="li-card">
+    <div class="li-head">
+      <div>
+        <div class="li-role">Speed Reader — Rapid serial visual presentation reader</div>
+        <div class="li-dates">Project</div>
+      </div>
+    </div>
+
+    <div class="li-desc" data-lines="3">
+      A lightweight speed-reading tool using rapid serial visual presentation (RSVP) to improve reading efficiency
+      while maintaining comprehension.
+    </div>
+
+    <div class="li-links">
+      <a href="https://github.com/axel-slid/speed_reader" target="_blank" rel="noreferrer">Code</a>
+    </div>
+
+    <div class="li-media" data-max="2">
+      <a
+        class="li-thumb"
+        href="assets/ScreenRecording2026-02-16at9.17.09PM-ezgif.com-video-to-gif-converter.gif"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <img
+          src="assets/ScreenRecording2026-02-16at9.17.09PM-ezgif.com-video-to-gif-converter.gif"
+          alt="Speed Reader demo GIF"
+        />
       </a>
     </div>
   </article>
