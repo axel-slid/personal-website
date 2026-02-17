@@ -4,17 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alex Dils | Computer Vision and Medical AI</title>
-  <meta name="description" content="Alex Dils is a UC Berkeley computer science student working on computer vision and medical AI. Focus: robustness, bias, augmentation, segmentation." />
+  <meta name="description" content="Alex Dils is a UC Berkeley computer science student focused on computer vision and medical AI." />
   <link rel="canonical" href="https://alex-dils.com/" />
+
   <meta property="og:title" content="Alex Dils | Computer Vision and Medical AI" />
-  <meta property="og:description" content="UC Berkeley computer science. Computer vision and medical AI with a focus on robustness, bias, augmentation, segmentation." />
+  <meta property="og:description" content="UC Berkeley computer science. Computer vision and medical AI." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://alex-dils.com/" />
   <meta property="og:image" content="https://alex-dils.com/headshot.png" />
+
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Alex Dils | Computer Vision and Medical AI" />
-  <meta name="twitter:description" content="Computer vision and medical AI. Robustness, bias, augmentation, segmentation." />
+  <meta name="twitter:description" content="Computer vision and medical AI." />
   <meta name="twitter:image" content="https://alex-dils.com/headshot.png" />
+
   <link rel="icon" href="headshot.png" />
   <link rel="apple-touch-icon" href="headshot.png" />
   <link rel="manifest" href="site.webmanifest" />
@@ -41,15 +44,14 @@
     <div class="siteicon" aria-hidden="true"><img src="headshot.png" alt="" /></div>
     <div class="brand">Alex Dils</div>
   </div>
+
   <div class="nav-links">
     <a href="index.html" aria-current="page">Home</a>
     <a href="story.html" >My story</a>
-    <a href="index.html#research">Research</a>
-    <a href="index.html#media">Media</a>
-    <a href="index.html#publications">Publications</a>
-    <a href="index.html#projects">Projects</a>
-    <a href="index.html#contact">Contact</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
   </div>
+
   <div class="nav-right" aria-label="Theme">
     <a href="#" data-set-theme="light" data-no-transition>Light</a>
     <a href="#" data-set-theme="dark" data-no-transition>Dark</a>
@@ -58,86 +60,114 @@
 </nav>
 
   <main>
-    <section class="hero" id="top">
-      <div class="avatar"><img src="headshot.png" alt="Alex Dils headshot" /></div>
+    <section class="header" id="top">
+      <div class="avatar">
+        <img src="headshot.png" alt="Alex Dils headshot" />
+      </div>
       <div>
         <h1>Alex Dils</h1>
-        <p class="subtitle">UC Berkeley Computer Science. Computer vision and medical AI.</p>
-        <p class="lede">Research with Stanford Medicine. I build and evaluate vision models with an emphasis on robustness, bias, augmentation, and segmentation.</p>
-        <p class="linksline">
+        <div class="quote">"And still 24 hours, maybe 60 good years, it is really not that long a stay."</div>
+
+        <div class="p">
+          I am a UC Berkeley computer science student. I work on computer vision and medical AI, with an emphasis on robustness,
+          bias, augmentation, and segmentation.
+        </div>
+
+        <div class="p">
+          I have been a research intern with Stanford Medicine since 2022. I also build deployed ML systems through Appraise AI.
+        </div>
+
+        <div class="links">
           <a href="#contact">Email</a> /
-          <a href="https://www.linkedin.com/in/alex-dils/">LinkedIn</a> /
           <a href="https://scholar.google.com/citations?user=0Sz8VPoAAAAJ&hl=en&oi=ao">Google Scholar</a> /
           <a href="https://github.com/axel-slid">GitHub</a> /
-          <a href="resume.pdf">CV</a>
-        </p>
-      </div>
-    </section>
-
-    <section id="research">
-      <h2>Research</h2>
-      <div class="grid" role="list">
-        <div class="card" role="listitem"><h3>Medical imaging</h3><div class="meta">Stanford Biomedical Informatics</div><p>Bias and confounder mitigation for image diagnosis, plus physiologically plausible augmentation from lung motion simulation.</p></div>
-        <div class="card" role="listitem"><h3>Generative and analytical vision</h3><div class="meta">stereoscopic view synthesis</div><p>Conditional GANs and geometry based depth methods for view synthesis, plus hybrids that combine both.</p></div>
-        <div class="card" role="listitem"><h3>Environmental ML</h3><div class="meta">microplastics segmentation</div><p>GAN generated ecological context to improve segmentation across varied water samples.</p></div>
-        <div class="card" role="listitem"><h3>Systems</h3><div class="meta">pipelines and deployment</div><p>End to end ML systems from ingestion to evaluation to delivery.</p></div>
-      </div>
-    </section>
-
-    <section id="media">
-      <h2>Media</h2>
-      <div class="grid">
-        <div class="card">
-          <h3>Appraise AI prototype</h3><div class="meta">price engine UI</div>
-          <figure class="figure"><img src="assets/appraise-ui.png" alt="Appraise AI price engine UI screenshot." loading="lazy" /><figcaption>Photo driven pricing UI with confidence and comparables.</figcaption></figure>
-        </div>
-        <div class="card">
-          <h3>Appraise AI demo</h3><div class="meta">screen recording</div>
-          <figure class="figure"><video src="assets/appraise-demo.mov" controls playsinline preload="metadata"></video><figcaption>Demo clip. If your browser does not play MOV, download it and view locally.</figcaption></figure>
-        </div>
-        <div class="card">
-          <h3>Breathing lungs visualization</h3><div class="meta">motion intuition</div>
-          <figure class="figure"><img src="assets/breathing-lungs.svg" alt="Breathing lungs visualization." loading="lazy" /><figcaption>Breathing motion visualization.</figcaption></figure>
-        </div>
-        <div class="card">
-          <h3>Research poster</h3><div class="meta">presentation photo</div>
-          <figure class="figure"><img src="assets/poster-photo.png" alt="Photo of Alex presenting a research poster." loading="lazy" /><figcaption>Poster session photo.</figcaption></figure>
-        </div>
-        <div class="card">
-          <h3>Segmentation overlay</h3><div class="meta">CT example</div>
-          <figure class="figure"><img src="assets/ct-overlay.png" alt="CT image with colored segmentation overlay." loading="lazy" /><figcaption>Overlay example from segmentation workflows.</figcaption></figure>
-        </div>
-        <div class="card">
-          <h3>Validation figures</h3><div class="meta">metrics and animations</div>
-          <figure class="figure"><img src="assets/lung-metrics.gif" alt="Validation plots and 3D views." loading="lazy" /><figcaption>Matched validation plots and 3D views.</figcaption></figure>
-          <figure class="figure"><img src="assets/mammogram-figure.gif" alt="Masks and projection overlay animation." loading="lazy" /><figcaption>Masks and projection overlay animation.</figcaption></figure>
+          <a href="resume.pdf">CV</a> /
+          <a href="https://www.linkedin.com/in/alex-dils/">LinkedIn</a> /
+          <a href="story.html">Who am I</a>
         </div>
       </div>
     </section>
 
-    <section id="publications">
-      <h2>Publications</h2>
-      <div class="card"><h3>Microplastic Identification Using AI-Driven Image Segmentation and GAN-Generated Ecological Context</h3><div class="meta">arXiv, Oct 27, 2024</div><p class="small"><a href="https://arxiv.org/abs/2410.19604">Paper</a> / <a href="https://github.com/axel-slid/Microplastic-Segmentation-GAN">Code</a></p></div>
-      <div class="card" style="margin-top:1rem;"><h3>Eye For An Eye: A Deep-Learning and Analytical Method to Spatializing Stereoscopic Images</h3><div class="meta">National High School Journal of Science, Apr 17, 2025</div><p class="small"><a href="https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/#google_vignette">Paper</a></p></div>
-      <div class="card" style="margin-top:1rem;"><h3>Integrating Mechanistic Knowledge into Deep Learning for Improved Cancer Detection</h3><div class="meta">FEniCS Conference 2024 Proceedings, Jun 16, 2024</div><p class="small"><a href="https://scientificcomputing.github.io/fenics2024/integrating-mechanistic">Proceedings</a></p></div>
-      <div class="card" style="margin-top:1rem;"><h3>Addressing Bias and Confounders in AI-based Image Diagnosis, A Study of 117,610 Skin Lesions</h3><div class="meta">Cell, in revision, Jan 2, 2025</div></div>
+    <hr />
+
+    <section id="projects">
+      <h2>Projects</h2>
+      <div class="proj">
+  <div class="proj-top">
+    <div>
+      <div class="proj-title"><a href="https://github.com/axel-slid/Microplastic-Segmentation-GAN">Microplastic-Segmentation-GAN</a></div>
+      <div class="proj-meta">Python · Public</div>
+      <div class="proj-desc">Microplastic segmentation with GAN generated ecological context.</div>
+    </div>
+  </div>
+  
+</div>
+<div class="proj">
+  <div class="proj-top">
+    <div>
+      <div class="proj-title"><a href="https://github.com/axel-slid/astroai_task">astroai_task</a></div>
+      <div class="proj-meta">Python · Public</div>
+      <div class="proj-desc">Astro AI task repo and experiments.</div>
+    </div>
+  </div>
+  
+</div>
+<div class="proj">
+  <div class="proj-top">
+    <div>
+      <div class="proj-title"><a href="https://github.com/axel-slid/personal-website">personal-website</a></div>
+      <div class="proj-meta">HTML · Public</div>
+      <div class="proj-desc">This website. Simple, fast, and easy to update.</div>
+    </div>
+  </div>
+  <div class="media-strip"><a class="thumb" href="assets/poster-photo.png" aria-label="Open media: Poster session photo">
+  <img src="assets/poster-photo.png" alt="Poster session photo" loading="lazy" />
+  
+</a></div>
+</div>
+<div class="proj">
+  <div class="proj-top">
+    <div>
+      <div class="proj-title"><a href="https://github.com/axel-slid/speed_reader">speed_reader</a></div>
+      <div class="proj-meta">JavaScript · Public</div>
+      <div class="proj-desc">Speed reading practice tool.</div>
+    </div>
+  </div>
+  
+</div>
+<div class="proj">
+  <div class="proj-top">
+    <div>
+      <div class="proj-title"><a href="https://github.com/alekseyalouev/VLunAr">VLunAr</a></div>
+      <div class="proj-meta">Python · Public</div>
+      <div class="proj-desc">Lung simulation and validation tooling, with visualizations for breathing motion and segmentation.</div>
+    </div>
+  </div>
+  <div class="media-strip"><a class="thumb" href="assets/breathing-lungs.svg" aria-label="Open media: Breathing lungs visualization">
+  <img src="assets/breathing-lungs.svg" alt="Breathing lungs visualization" loading="lazy" />
+  
+</a><a class="thumb" href="assets/ct-overlay.png" aria-label="Open media: CT overlay">
+  <img src="assets/ct-overlay.png" alt="CT overlay" loading="lazy" />
+  
+</a><a class="thumb" href="assets/lung-metrics.gif" aria-label="Open media: Validation metrics">
+  <img src="assets/lung-metrics.gif" alt="Validation metrics" loading="lazy" />
+  <span class="more">+1</span>
+</a></div>
+</div>
     </section>
 
-    <section id="projects"><h2>Projects</h2><div class="grid"><div class="card"><h3>lung_validation</h3><div class="meta">Lung validation experiments</div><p class="small"><a href="https://github.com/axel-slid/lung_validation">GitHub</a></p></div>
-<div class="card"><h3>appraiseai</h3><div class="meta">Core Appraise AI code</div><p class="small"><a href="https://github.com/axel-slid/appraiseai">GitHub</a></p></div>
-<div class="card"><h3>Microplastic-Segmentation-GAN</h3><div class="meta">Microplastics segmentation with GAN context</div><p class="small"><a href="https://github.com/axel-slid/Microplastic-Segmentation-GAN">GitHub</a></p></div>
-<div class="card"><h3>speed_reader</h3><div class="meta">Reading practice tool</div><p class="small"><a href="https://github.com/axel-slid/speed_reader">GitHub</a></p></div>
-<div class="card"><h3>astroai_task</h3><div class="meta">Astro AI task</div><p class="small"><a href="https://github.com/axel-slid/astroai_task">GitHub</a></p></div>
-<div class="card"><h3>fa25-nmep-hw4</h3><div class="meta">Transformers homework fork</div><p class="small"><a href="https://github.com/axel-slid/fa25-nmep-hw4">GitHub</a></p></div>
-<div class="card"><h3>leetcode_daily</h3><div class="meta">Daily LeetCode practice</div><p class="small"><a href="https://github.com/axel-slid/leetcode_daily">GitHub</a></p></div>
-<div class="card"><h3>website</h3><div class="meta">Older HTML site</div><p class="small"><a href="https://github.com/axel-slid/website">GitHub</a></p></div>
-<div class="card"><h3>Reaction-time-game-for-my-IA</h3><div class="meta">Reaction time game</div><p class="small"><a href="https://github.com/axel-slid/Reaction-time-game-for-my-IA">GitHub</a></p></div>
-<div class="card"><h3>Train-an-AI-with-data-in-a-csv</h3><div class="meta">Starter notebook project</div><p class="small"><a href="https://github.com/axel-slid/Train-an-AI-with-data-in-a-csv">GitHub</a></p></div>
-<div class="card"><h3>personal-website</h3><div class="meta">This site</div><p class="small"><a href="https://github.com/axel-slid/personal-website">GitHub</a></p></div></div></section>
+    <hr />
 
-    <section id="contact"><h2>Contact</h2><p class="lede">dils@berkeley.edu</p></section>
+    <section id="contact">
+      <h2>Contact</h2>
+      <div class="p">dils@berkeley.edu</div>
+    </section>
 
-    <div class="footerline"><div>© 2026 Alex Dils</div><div class="small">Last updated: 2026-02-17</div><div class="small">Theme: <a href="#" data-set-theme="light" data-no-transition>Light</a> / <a href="#" data-set-theme="dark" data-no-transition>Dark</a> / <a href="#" data-set-theme="disco" data-no-transition>Disco</a></div></div>
+    <div class="footer">
+      <div>© 2026 Alex Dils</div>
+      <div>Last updated: 2026-02-17</div>
+      <div>Theme: <a href="#" data-set-theme="light" data-no-transition>Light</a> / <a href="#" data-set-theme="dark" data-no-transition>Dark</a> / <a href="#" data-set-theme="disco" data-no-transition>Disco</a></div>
+    </div>
   </main>
   <script src="script.js"></script>
 </body>

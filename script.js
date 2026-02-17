@@ -1,6 +1,7 @@
 
 (function(){
   const root = document.documentElement;
+
   const stored = localStorage.getItem("theme");
   if(stored){ root.setAttribute("data-theme", stored); }
 
@@ -29,11 +30,13 @@
     if(href.startsWith("transition.html")) return;
     if(href.startsWith("index.html") || href.startsWith("story.html")) return;
 
+    if(href.startsWith("assets/")) return;
     if(href.endsWith(".pdf") || href.endsWith(".png") || href.endsWith(".jpg") || href.endsWith(".jpeg") || href.endsWith(".gif") || href.endsWith(".svg") || href.endsWith(".mov") || href.endsWith(".mp4")) return;
 
     try{
       const url = new URL(href, window.location.href);
-      if(url.origin !== window.location.origin){
+      const isExternal = url.origin !== window.location.origin;
+      if(isExternal){
         e.preventDefault();
         window.location.href = "transition.html?to=" + encodeURIComponent(url.href);
       }
@@ -51,7 +54,8 @@
     const h = document.documentElement;
     const scrolled = h.scrollTop || document.body.scrollTop;
     const height = (h.scrollHeight - h.clientHeight) || 1;
-    bar.style.width = (scrolled/height)*100 + "%";
+    const pct = Math.min(100, Math.max(0, (scrolled/height)*100));
+    bar.style.width = pct + "%";
   }
   window.addEventListener("scroll", onScroll, {passive:true});
   onScroll();
