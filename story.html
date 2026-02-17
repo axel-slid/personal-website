@@ -23,80 +23,78 @@
       <a href="index.html#contact">Contact</a>
     </div>
   </div>
-  <div class="controls">
-    <button id="themeToggle" type="button" aria-label="Toggle theme">Dark mode</button>
+  <div class="nav-right" aria-label="Theme">
+    <a href="#" data-set-theme="light">Light</a>
+    <a href="#" data-set-theme="dark">Dark</a>
+    <a href="#" data-set-theme="disco">Disco</a>
   </div>
 </nav>
 
   <main>
     <section>
       <h1 style="margin-bottom:.25rem;">My story</h1>
-      <p class="subtitle">The slightly longer version — how I ended up caring about vision, medicine, and systems that ship.</p>
+      <p class="subtitle">The longer version — why I care about robustness, physiology, and systems that actually work.</p>
 
       <div class="card">
         <p>
-          I got into machine learning the way a lot of people do: I built something that <em>sort of</em> worked,
-          and then couldn’t stop thinking about why it failed.
+          I got into machine learning the same way I get into most things: I tried to build something, it worked just enough to be exciting,
+          and then it failed in a way I couldn’t ignore.
         </p>
         <p>
-          Early on, it wasn’t the “magic” of neural nets that hooked me — it was the gap between demos and reality.
-          A model would look great on a curated test set, and then crumble when the lighting changed, the camera moved,
-          or the input looked even a little different than expected. That mismatch felt less like an annoyance and more like
-          a puzzle: what does it take to make learning systems behave reliably?
+          The failure wasn’t subtle. A model could look great on a tidy dataset and then fall apart the moment the real world got involved:
+          different lighting, different sensors, different demographics, different hospitals. I didn’t want “cool demos.” I wanted to understand what it takes
+          for a system to be reliable when you don’t control the conditions.
         </p>
       </div>
 
-      <h2 style="margin-top:2.25rem;">Stanford Medicine</h2>
+      <h2 style="margin-top:2.25rem;">Finding the right constraints</h2>
       <p>
-        In 2022, I started research with Stanford University School of Medicine in biomedical informatics. The setting was different from the
-        typical “build it and ship it” energy: the problems were real, the constraints were real, and the cost of mistakes mattered.
+        In 2022 I started research with Stanford’s Center for Biomedical Informatics Research. Medical ML is a good place to learn humility:
+        you can’t hand-wave data quality, and you can’t pretend distribution shift is an edge case. The stakes force you to be concrete.
       </p>
       <p>
-        Working on cancerous skin lesion detection taught me a lot about the parts of ML people skip in blog posts:
-        dataset quirks, distribution shifts, label noise, and the importance of evaluation that matches the world you care about.
-        I learned to treat failure cases as first-class data — not as embarrassment, but as guidance.
+        My work has touched a few threads that all point in the same direction: reduce spurious correlations, build better augmentations,
+        and evaluate in ways that match deployment. When a model fails, the interesting question is almost always “what assumption did we bake in without noticing?”
       </p>
 
-      <h2>Where generative models fit in</h2>
+      <h2>Mechanistic structure: when physics helps</h2>
       <p>
-        Around the same time, I was drawn to generative models because they force you to think about structure. In my stereoscopic image work,
-        I explored three approaches: a Pix2Pix-style conditional GAN, a depth-map-based analytical method, and a composite approach that blended both.
+        One of my favorite directions has been using physiology and simulation to create more realistic training variation. For lung imaging, we simulated
+        respiratory motion with finite element analysis to model breathing-cycle differences—then used those simulations as augmentations that improved segmentation performance.
       </p>
       <p>
-        The fun part wasn’t just getting a score to go up — it was understanding <em>why</em> each method failed, and how their failure modes differed.
-        The hybrid approach worked better because it didn’t bet everything on one idea. That pattern shows up everywhere: strong systems are often ensembles
-        of complementary assumptions.
+        I like this line of work because it’s not just “more data.” It’s <em>structured</em> variation: the model sees shifts that actually occur in the world,
+        which is a different kind of generalization than random perturbations.
       </p>
 
       <h2>Building products keeps me honest</h2>
       <p>
-        Research sharpened my taste for careful evaluation, but building products taught me something else: a model isn’t “done” when it hits a number.
-        It’s done when the surrounding system—data pipeline, latency, monitoring, user feedback—makes the output dependable.
+        Research gives you taste. Shipping gives you discipline. As CTO &amp; co-founder at Appraise AI, I spend time on the unglamorous parts:
+        data ingestion, retrieval over messy marketplaces, latency, monitoring, and how to communicate uncertainty.
       </p>
       <p>
-        That’s a big reason I enjoy working as CTO at Appraise AI. The project is applied, but not trivial: you have image understanding, retrieval over messy
-        real listings, and the task of turning all that into a single number someone can trust. I like that the system has to be clear about uncertainty,
-        and I like that reality pushes back immediately when you cut corners.
+        I like that real users force clarity. If something breaks, you don’t get to argue with a metric—you fix the system.
+        That feedback loop is part of why I enjoy living at the intersection of research and deployment.
       </p>
 
       <h2>What I’m aiming for</h2>
       <p>
-        Going forward, I want to keep living at the intersection of research and deployment: methods that improve robustness and generalization,
-        plus the engineering discipline to make them useful.
+        Going forward, I want to keep working on methods that improve robustness and generalization—especially for vision—and keep grounding those methods
+        in realistic evaluation and usable systems.
       </p>
       <p>
-        If you’re working on something adjacent—medical AI, vision, generative modeling, evaluation, or ML systems—feel free to reach out.
-        I’m always happy to compare notes.
+        If you’re working on adjacent problems, feel free to reach out.
+        The best collaborations I’ve had usually started with a simple message and a shared curiosity.
       </p>
 
       <p class="small" style="margin-top:1.2rem;">
-        Back to <a href="index.html">home</a>.
+        Back to <a href="index.html">home</a>. · <a href="resume.pdf">CV</a> · <a href="https://github.com/axel-slid">GitHub</a>
       </p>
     </section>
 
     <footer>
       <div>© 2026 Alex Dils</div>
-      <div class="small">Short narrative page. No tracking, no fluff.</div>
+      <div class="small">Theme: <a href="#" data-set-theme="light">Light</a> / <a href="#" data-set-theme="dark">Dark</a> / <a href="#" data-set-theme="disco">Disco</a></div>
     </footer>
   </main>
   <script src="script.js"></script>
