@@ -24,6 +24,8 @@
       <a href="https://github.com/axel-slid" target="_blank" rel="noreferrer">GitHub</a> /
       <a href="resume.pdf" target="_blank" rel="noreferrer">CV</a> /
       <a href="https://www.linkedin.com/in/alex-dils/" target="_blank" rel="noreferrer">LinkedIn</a>
+/
+      <a href="https://x.com/DilsA36287vv" target="_blank" rel="noreferrer">X</a>
     </div>
   </div>
 </section>
