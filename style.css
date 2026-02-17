@@ -451,3 +451,41 @@ body[data-editing="true"] .editor-console{ display:flex; }
 }
 
 .reorderable{ outline: 2px dashed rgba(255,255,255,.35); outline-offset: 6px; }
+
+
+/* Editor reorder affordances */
+.reorderable{
+  position: relative;
+  outline: 2px dashed var(--muted-border, rgba(127,127,127,0.35));
+  outline-offset: 6px;
+}
+.reorder-bar{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 10px;
+  margin-bottom:10px;
+  border:1px solid rgba(127,127,127,0.25);
+  border-radius:12px;
+  background: rgba(127,127,127,0.08);
+}
+.reorder-handle{
+  cursor: grab;
+  user-select:none;
+  font-weight:900;
+  letter-spacing:-2px;
+  padding:2px 6px;
+  border-radius:10px;
+  background: rgba(127,127,127,0.12);
+}
+.reorder-title{
+  flex:1;
+  font-weight:800;
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.reorder-actions{
+  display:flex;
+  gap:6px;
+}

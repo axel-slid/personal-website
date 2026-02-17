@@ -63,15 +63,24 @@ async function ghRequest(path, { method = "GET", token, body } = {}) {
   return { ok: resp.ok, status: resp.status, data };
 }
 
+
+function encodePath(p) {
+  // Encode each path segment but keep slashes (GitHub contents API expects slashes).
+  return String(p || "")
+    .split("/")
+    .map(seg => encodeURIComponent(seg))
+    .join("/");
+}
+
 async function getFileSha({ token, owner, repo, path, branch }) {
-  const res = await ghRequest(`/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`, { token });
+  const res = await ghRequest(`/repos/${owner}/${repo}/contents/${encodePath(path)}?ref=${encodeURIComponent(branch)}`, { token });
   if (!res.ok) return { ok: false, status: res.status, data: res.data };
   return { ok: true, sha: res.data.sha };
 }
 
 async function putFile({ token, owner, repo, path, branch, contentBase64, message, sha }) {
   const body = { message, content: contentBase64, branch, ...(sha ? { sha } : {}) };
-  return await ghRequest(`/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`, { method: "PUT", token, body });
+  return await ghRequest(`/repos/${owner}/${repo}/contents/${encodePath(path)}`, { method: "PUT", token, body });
 }
 
 module.exports = { json, verifyToken, githubConfig, getFileSha, putFile };

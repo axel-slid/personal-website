@@ -1,5 +1,10 @@
 const { json, verifyToken, githubConfig } = require("./_common");
 
+function encodePath(p){
+  return String(p||"").split("/").map(seg=>encodeURIComponent(seg)).join("/");
+}
+
+
 async function ghRequest(path, { method = "GET", token, body } = {}) {
   const url = `https://api.github.com${path}`;
   const headers = {
@@ -35,7 +40,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const r = await ghRequest(
-      `/repos/${gh.owner}/${gh.repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(targetBranch)}`,
+      `/repos/${gh.owner}/${gh.repo}/contents/${encodePath(path)}?ref=${encodeURIComponent(targetBranch)}`,
       { token: gh.token }
     );
     if (!r.ok) return json(res, r.status, { error: "GitHub fetch failed", details: r.data });

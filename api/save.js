@@ -34,11 +34,14 @@ module.exports = async function handler(req, res) {
       contentBase64, message: msg, sha
     });
 
-    if (!putRes.ok) return json(res, putRes.status, { error: "GitHub update failed", details: putRes.data });
+    if (!putRes.ok) {
+      const msg = (putRes.data && (putRes.data.message || putRes.data.error)) || "GitHub update failed";
+      return json(res, putRes.status, { error: `GitHub update failed: ${msg}`, details: putRes.data });
+    }
     // GitHub API returns commit info in response.data (as 'commit' or similar)
     const commitSha = putRes.data && putRes.data.commit && putRes.data.commit.sha;
     return json(res, 200, { ok: true, branch: targetBranch, commitSha: commitSha || null });
   } catch (e) {
-    return json(res, 500, { error: "Save failed" });
+    return json(res, 500, { error: "Save failed", details: String(e && e.message || e) });
   }
 };

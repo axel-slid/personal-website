@@ -247,7 +247,11 @@
       body: JSON.stringify(payload)
     });
     const data = await resp.json().catch(()=> ({}));
-    if(!resp.ok) throw new Error(data.error || "Request failed");
+    if(!resp.ok){
+      const err = (data && data.error) ? data.error : "Request failed";
+      const extra = (data && data.details) ? `\nDetails: ${JSON.stringify(data.details, null, 2)}` : "";
+      throw new Error(`${err} (HTTP ${resp.status})${extra}`);
+    }
     return data;
   }
 
@@ -403,37 +407,113 @@
     const root = currentMdEl();
     if(!root) return;
     editorState.reorderOn = !editorState.reorderOn;
+
     const btn = document.getElementById('ecReorder');
     btn.textContent = editorState.reorderOn ? 'Reorder: ON' : 'Reorder';
+
     const sections = Array.from(root.querySelectorAll('section'));
     if(!sections.length){
       toast('No <section> blocks found to reorder', false);
+      editorState.reorderOn = false;
+      btn.textContent = 'Reorder';
       return;
     }
-    sections.forEach(s=>{
-      if(editorState.reorderOn){
-        s.setAttribute('draggable','true');
-        s.classList.add('reorderable');
+
+    function sectionLabel(sec){
+      const h = sec.querySelector('h2,h3,h1');
+      if(h && h.textContent.trim()) return h.textContent.trim();
+      const id = sec.getAttribute('id');
+      return id ? `#${id}` : 'Section';
+    }
+
+    function syncSource(){
+      const src = document.getElementById('ecSource');
+      if(src){
+        src.value = root.innerHTML;
+        src.dispatchEvent(new Event('input'));
+      }
+    }
+
+    function move(sec, dir){
+      const sib = dir < 0 ? sec.previousElementSibling : sec.nextElementSibling;
+      if(!sib || sib.tagName.toLowerCase() !== 'section') return;
+      if(dir < 0){
+        sec.parentNode.insertBefore(sec, sib);
       }else{
-        s.removeAttribute('draggable');
-        s.classList.remove('reorderable');
+        sec.parentNode.insertBefore(sib, sec);
+      }
+      syncSource();
+      toast('Reordered');
+      log(`Moved section: ${sectionLabel(sec)}`);
+    }
+
+    // Enable/disable UI affordances.
+    sections.forEach(sec=>{
+      if(editorState.reorderOn){
+        sec.setAttribute('draggable','true');
+        sec.classList.add('reorderable');
+
+        if(!sec.querySelector(':scope > .reorder-bar')){
+          const bar = document.createElement('div');
+          bar.className = 'reorder-bar';
+          bar.innerHTML = `
+            <div class="reorder-handle" title="Drag to move">⋮⋮</div>
+            <div class="reorder-title">${escapeHtml(sectionLabel(sec))}</div>
+            <div class="reorder-actions">
+              <button class="editor-btn" data-move="up" type="button" title="Move up">↑</button>
+              <button class="editor-btn" data-move="down" type="button" title="Move down">↓</button>
+            </div>
+          `;
+          sec.insertBefore(bar, sec.firstChild);
+        }
+      }else{
+        sec.removeAttribute('draggable');
+        sec.classList.remove('reorderable');
+        const bar = sec.querySelector(':scope > .reorder-bar');
+        if(bar) bar.remove();
       }
     });
+
     if(editorState.reorderOn){
+      toast('Reorder mode: drag the handle or use ↑/↓', true);
+    }
+
+    // Drag + click handlers (delegated; installed once)
+    if(!root.__reorderInstalled){
+      root.__reorderInstalled = true;
+
       let dragEl = null;
+
+      root.addEventListener('click', (e)=>{
+        const btn = e.target.closest && e.target.closest('button[data-move]');
+        if(!btn) return;
+        if(!editorState.reorderOn) return;
+        const sec = e.target.closest('section');
+        if(!sec) return;
+        e.preventDefault();
+        move(sec, btn.getAttribute('data-move') === 'up' ? -1 : 1);
+      });
+
       root.addEventListener('dragstart', (e)=>{
+        if(!editorState.reorderOn) return;
         const sec = e.target.closest && e.target.closest('section');
         if(!sec) return;
+        // Prefer dragging from the handle, but allow anywhere inside section.
         dragEl = sec;
         e.dataTransfer.effectAllowed = 'move';
-      }, { once: true });
+        try{ e.dataTransfer.setData('text/plain','reorder'); }catch{}
+      });
+
       root.addEventListener('dragover', (e)=>{
+        if(!editorState.reorderOn) return;
         if(!dragEl) return;
         const over = e.target.closest && e.target.closest('section');
         if(!over || over===dragEl) return;
         e.preventDefault();
       });
+
       root.addEventListener('drop', (e)=>{
+        if(!editorState.reorderOn) return;
         if(!dragEl) return;
         const over = e.target.closest && e.target.closest('section');
         if(!over || over===dragEl) return;
@@ -441,16 +521,15 @@
         const rect = over.getBoundingClientRect();
         const before = (e.clientY - rect.top) < rect.height/2;
         over.parentNode.insertBefore(dragEl, before ? over : over.nextSibling);
+        log(`Dropped section: ${sectionLabel(dragEl)}`);
         dragEl = null;
-        // sync source
-        const src = document.getElementById('ecSource');
-        if(src){
-          src.value = root.innerHTML;
-          src.dispatchEvent(new Event('input'));
-        }
-        log('Reordered sections');
+        syncSource();
+        toast('Reordered');
       });
-      toast('Drag sections to reorder');
+
+      root.addEventListener('dragend', ()=>{
+        dragEl = null;
+      });
     }
   }
 

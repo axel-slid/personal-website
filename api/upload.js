@@ -32,10 +32,13 @@ module.exports = async function handler(req, res) {
       contentBase64: base64, message: msg, sha
     });
 
-    if (!putRes.ok) return json(res, putRes.status, { error: "GitHub upload failed", details: putRes.data });
+    if (!putRes.ok) {
+      const msg = (putRes.data && (putRes.data.message || putRes.data.error)) || "GitHub upload failed";
+      return json(res, putRes.status, { error: `GitHub upload failed: ${msg}`, details: putRes.data });
+    }
     const commitSha = putRes.data && putRes.data.commit && putRes.data.commit.sha;
     return json(res, 200, { ok: true, branch: targetBranch, commitSha: commitSha || null });
   } catch (e) {
-    return json(res, 500, { error: "Upload failed" });
+    return json(res, 500, { error: "Upload failed", details: String(e && e.message || e) });
   }
 };
