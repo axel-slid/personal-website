@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My story · Alex Dils</title>
+  <meta name="description" content="A short narrative about how Alex Dils got into computer vision, medical AI, and building ML systems." />
+  <link rel="icon" href="headshot.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  
+<div id="progress" class="progress"></div>
+<nav>
+  <div class="nav-left">
+    <div class="brand">Alex Dils</div>
+    <div class="nav-links">
+      <a href="index.html" >Home</a>
+      <a href="story.html" aria-current="page">My story</a>
+      <a href="index.html#research">Research</a>
+      <a href="index.html#publications">Publications</a>
+      <a href="index.html#projects">Projects</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+  </div>
+  <div class="controls">
+    <button id="themeToggle" type="button" aria-label="Toggle theme">Dark mode</button>
+  </div>
+</nav>
+
+  <main>
+    <section>
+      <h1 style="margin-bottom:.25rem;">My story</h1>
+      <p class="subtitle">The slightly longer version — how I ended up caring about vision, medicine, and systems that ship.</p>
+
+      <div class="card">
+        <p>
+          I got into machine learning the way a lot of people do: I built something that <em>sort of</em> worked,
+          and then couldn’t stop thinking about why it failed.
+        </p>
+        <p>
+          Early on, it wasn’t the “magic” of neural nets that hooked me — it was the gap between demos and reality.
+          A model would look great on a curated test set, and then crumble when the lighting changed, the camera moved,
+          or the input looked even a little different than expected. That mismatch felt less like an annoyance and more like
+          a puzzle: what does it take to make learning systems behave reliably?
+        </p>
+      </div>
+
+      <h2 style="margin-top:2.25rem;">Stanford Medicine</h2>
+      <p>
+        In 2022, I started research with Stanford University School of Medicine in biomedical informatics. The setting was different from the
+        typical “build it and ship it” energy: the problems were real, the constraints were real, and the cost of mistakes mattered.
+      </p>
+      <p>
+        Working on cancerous skin lesion detection taught me a lot about the parts of ML people skip in blog posts:
+        dataset quirks, distribution shifts, label noise, and the importance of evaluation that matches the world you care about.
+        I learned to treat failure cases as first-class data — not as embarrassment, but as guidance.
+      </p>
+
+      <h2>Where generative models fit in</h2>
+      <p>
+        Around the same time, I was drawn to generative models because they force you to think about structure. In my stereoscopic image work,
+        I explored three approaches: a Pix2Pix-style conditional GAN, a depth-map-based analytical method, and a composite approach that blended both.
+      </p>
+      <p>
+        The fun part wasn’t just getting a score to go up — it was understanding <em>why</em> each method failed, and how their failure modes differed.
+        The hybrid approach worked better because it didn’t bet everything on one idea. That pattern shows up everywhere: strong systems are often ensembles
+        of complementary assumptions.
+      </p>
+
+      <h2>Building products keeps me honest</h2>
+      <p>
+        Research sharpened my taste for careful evaluation, but building products taught me something else: a model isn’t “done” when it hits a number.
+        It’s done when the surrounding system—data pipeline, latency, monitoring, user feedback—makes the output dependable.
+      </p>
+      <p>
+        That’s a big reason I enjoy working as CTO at Appraise AI. The project is applied, but not trivial: you have image understanding, retrieval over messy
+        real listings, and the task of turning all that into a single number someone can trust. I like that the system has to be clear about uncertainty,
+        and I like that reality pushes back immediately when you cut corners.
+      </p>
+
+      <h2>What I’m aiming for</h2>
+      <p>
+        Going forward, I want to keep living at the intersection of research and deployment: methods that improve robustness and generalization,
+        plus the engineering discipline to make them useful.
+      </p>
+      <p>
+        If you’re working on something adjacent—medical AI, vision, generative modeling, evaluation, or ML systems—feel free to reach out.
+        I’m always happy to compare notes.
+      </p>
+
+      <p class="small" style="margin-top:1.2rem;">
+        Back to <a href="index.html">home</a>.
+      </p>
+    </section>
+
+    <footer>
+      <div>© 2026 Alex Dils</div>
+      <div class="small">Short narrative page. No tracking, no fluff.</div>
+    </footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

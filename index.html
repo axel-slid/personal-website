@@ -4,113 +4,220 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Alex Dils</title>
+  <meta name="description" content="Alex Dils — Computer Science at UC Berkeley. Research in computer vision, medical AI, and generative models." />
+  <link rel="icon" href="headshot.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  
+<div id="progress" class="progress"></div>
+<nav>
+  <div class="nav-left">
+    <div class="brand">Alex Dils</div>
+    <div class="nav-links">
+      <a href="index.html" aria-current="page">Home</a>
+      <a href="story.html" >My story</a>
+      <a href="index.html#research">Research</a>
+      <a href="index.html#publications">Publications</a>
+      <a href="index.html#projects">Projects</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+  </div>
+  <div class="controls">
+    <button id="themeToggle" type="button" aria-label="Toggle theme">Dark mode</button>
+  </div>
+</nav>
+
   <main>
-    <section class="intro">
-      <h1>Alex Dils</h1>
-      <p class="subtitle">Computer Science @ UC Berkeley</p>
-      <p>
-        Hi — I’m Alex. I’m a computer science student and researcher interested in
-        computer vision, medical AI, and generative models.
-      </p>
-      <p>
-        I’ve spent the last several years doing applied research at Stanford
-        University School of Medicine, where I worked on deep learning systems
-        for medical imaging and visual reasoning. Alongside research, I enjoy
-        building full-scale machine learning systems and currently serve as CTO
-        of an AI startup focused on real-world deployment.
-      </p>
-      <p>
-        Broadly, I’m interested in how learning systems generalize beyond clean
-        benchmarks—especially in settings with noisy data, limited supervision,
-        and high-stakes applications.
-      </p>
-      <p class="links">
-        <a href="mailto:dils@berkeley.edu">Email</a> /
-        <a href="#">Google Scholar</a> /
-        <a href="#">GitHub</a> /
-        <a href="#">CV</a> /
-        <a href="https://www.linkedin.com/in/alex-dils/">LinkedIn</a>
-      </p>
+    <section class="hero" id="top">
+      <div class="avatar">
+        <img src="headshot.png" alt="Headshot of Alex Dils" />
+      </div>
+      <div>
+        <h1>Alex Dils</h1>
+        <p class="subtitle">Computer Science @ UC Berkeley · San Carlos / Berkeley, CA</p>
+
+        <p class="lede">
+          Hi — I’m Alex. I work on computer vision and machine learning systems that need to hold up outside clean benchmarks:
+          noisy data, messy real-world constraints, and (sometimes) high stakes.
+        </p>
+        <p class="lede">
+          I’ve spent the last several years doing applied research with Stanford Medicine, building and refining deep learning models for
+          medical imaging and visual reasoning. Alongside research, I like shipping full-stack ML—right now I’m CTO at Appraise AI,
+          where we’re turning real market data into consistent, photo-driven valuations.
+        </p>
+        <p class="lede">
+          If you’re here for the short version: I’m interested in how we make models <em>reliable</em>, not just accurate—robustness,
+          calibration, and the small engineering decisions that decide whether something works in practice.
+        </p>
+
+        <div class="quicklinks" aria-label="Quick links">
+          <a class="pill" href="mailto:dils@berkeley.edu"><span class="dot"></span>Email</a>
+          <a class="pill" href="https://www.linkedin.com/in/alex-dils/"><span class="dot"></span>LinkedIn</a>
+          <a class="pill" href="#" title="Add your Google Scholar URL"><span class="dot"></span>Google Scholar</a>
+          <a class="pill" href="#" title="Add your GitHub URL"><span class="dot"></span>GitHub</a>
+          <a class="pill" href="#" title="Upload cv.pdf and change this link"><span class="dot"></span>CV</a>
+          <a class="pill" href="story.html"><span class="dot"></span>My story</a>
+        </div>
+        <p class="small" style="margin-top:.9rem;">Tip: press <span class="kbd">g</span> then <span class="kbd">t</span> to jump to top, <span class="kbd">g</span> then <span class="kbd">b</span> for bottom.</p>
+      </div>
     </section>
 
-    <section>
+    <section id="news">
       <h2>News</h2>
       <ul>
-        <li><strong>Jan 2026</strong> — Started as CTO of Appraise AI, building production ML systems for real-time valuation.</li>
-        <li><strong>Oct 2024</strong> — Our paper on GAN-augmented microplastic segmentation was posted to arXiv.</li>
-        <li><strong>Apr 2025</strong> — “Eye For An Eye” published in the National High School Journal of Science.</li>
-        <li><strong>Jun 2022</strong> — Began research at Stanford University School of Medicine.</li>
+        <li><strong>Nov 2025</strong> — Joined a stealth AI startup as CTO (part-time), focused on deploying ML systems end-to-end.</li>
+        <li><strong>Sep 2025</strong> — Started as a Machine Learning Engineer at Machine Learning at Berkeley.</li>
+        <li><strong>Apr 2025</strong> — Published “Eye For An Eye” on stereoscopic image spatialization.</li>
+        <li><strong>Oct 2024</strong> — Posted our microplastics segmentation work to arXiv.</li>
+        <li><strong>Jun 2022</strong> — Began research at Stanford University School of Medicine (Biomedical Informatics).</li>
       </ul>
     </section>
 
-    <section>
+    <section id="research">
       <h2>Research</h2>
       <p>
-        I’m broadly interested in computer vision and machine learning systems
-        that operate under real-world constraints. My work spans medical
-        imaging, environmental ML, and generative models.
+        My north star is making learning systems that behave well when the world doesn’t cooperate.
+        I like problems where you have to combine modeling choices with careful evaluation and practical engineering.
       </p>
 
-      <h3>Medical Computer Vision</h3>
-      <p>
-        At Stanford Medicine, I develop deep learning models for cancerous skin
-        lesion detection, with a focus on robustness, data quality, and
-        clinician-in-the-loop feedback.
-      </p>
+      <div class="grid" role="list">
+        <div class="card" role="listitem">
+          <h3>Medical computer vision</h3>
+          <div class="meta">Stanford Medicine · dermatology / imaging</div>
+          <p>
+            I work on deep learning models for cancerous skin lesion detection, iterating on data pipelines, model training,
+            and feedback-driven refinements. I care a lot about robustness and how models fail—because that’s where the learning is.
+          </p>
+        </div>
 
-      <h3>Generative Vision Models</h3>
-      <p>
-        I study generative approaches to visual transformation and
-        representation learning, including hybrid analytical–deep learning
-        methods for stereoscopic image synthesis.
-      </p>
+        <div class="card" role="listitem">
+          <h3>Generative vision models</h3>
+          <div class="meta">stereo synthesis · hybrid analytical + deep learning</div>
+          <p>
+            I’ve explored stereoscopic view synthesis from a single image using a mix of GAN-based approaches and depth-map geometry,
+            then combined them into a composite method to improve perceptual quality.
+          </p>
+        </div>
 
-      <h3>Environmental & Scientific ML</h3>
-      <p>
-        I’ve worked on segmentation models for microplastic detection in water
-        samples, using GAN-generated ecological context to improve
-        generalization on limited real-world data.
-      </p>
+        <div class="card" role="listitem">
+          <h3>Environmental & scientific ML</h3>
+          <div class="meta">segmentation · microscopy · generalization</div>
+          <p>
+            For microplastics analysis, I helped build segmentation models that use GAN-generated ecological context to expand training diversity.
+            The goal: better performance when the “real world” looks different from the training set.
+          </p>
+        </div>
+
+        <div class="card" role="listitem">
+          <h3>Systems that ship</h3>
+          <div class="meta">deployment · retrieval · evaluation</div>
+          <p>
+            Outside the lab, I enjoy building systems end-to-end: data → models → APIs → monitoring.
+            It keeps me honest about what matters when people actually use the output.
+          </p>
+        </div>
+      </div>
     </section>
 
-    <section>
+    <section id="publications">
       <h2>Publications</h2>
 
-      <p>
-        <strong>AI-Driven Segmentation for Microplastic Analysis in Water Using GAN-Generated Ecological Context</strong><br />
-        Alex Dils, et al.<br />
-        <em>arXiv, 2024</em>
-      </p>
+      <div class="card">
+        <h3>AI-Driven Segmentation for Microplastic Analysis in Water Using GAN-Generated Ecological Context</h3>
+        <div class="meta">Alex Dils, et al. · arXiv (Oct 2024)</div>
+        <p>
+          We augment limited labeled microplastics imagery with GAN-generated ecological context and train a segmentation model that improves
+          F1 performance versus training on real-only data.
+        </p>
+        <p class="small">
+          <a href="#" title="Add arXiv link">Paper</a> / <a href="#" title="Add code link">Code</a>
+        </p>
+      </div>
 
-      <p>
-        <strong>Eye For An Eye: A Deep-Learning and Analytical Method to Spatializing Stereoscopic Images</strong><br />
-        Alex Dils<br />
-        <em>National High School Journal of Science, 2025</em>
+      <div class="card" style="margin-top:1rem;">
+        <h3>Eye For An Eye: A Deep-Learning and Analytical Method to Spatializing Stereoscopic Images</h3>
+        <div class="meta">Alex Dils · National High School Journal of Science (Apr 2025)</div>
+        <p>
+          A study of three approaches to stereoscopic view synthesis—Pix2Pix, analytical depth methods, and a composite hybrid—showing the best
+          results come from combining the strengths of both.
+        </p>
+        <p class="small">
+          <a href="#" title="Add publication link">Paper</a> / <a href="#" title="Add repo link">Code</a>
+        </p>
+      </div>
+
+      <p class="small" style="margin-top:1rem;">
+        Want the narrative version? <a href="story.html">I wrote it up as a short “how I got here” story.</a>
       </p>
     </section>
 
-    <section>
-      <h2>Selected Projects</h2>
+    <section id="projects">
+      <h2>Selected projects</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Appraise AI</h3>
+          <div class="meta">CTO · production ML pipeline</div>
+          <p>
+            Built a photo-driven valuation system for resale marketplaces: CV attribute extraction, retrieval over comparable listings,
+            and a regression layer that produces standardized price estimates with confidence signals.
+          </p>
+          <p class="small">
+            <a href="#" title="Add product site link">Website</a> / <a href="#" title="Add demo link">Demo</a>
+          </p>
+        </div>
 
+        <div class="card">
+          <h3>ML@Berkeley</h3>
+          <div class="meta">Applied ML engineer · end-to-end builds</div>
+          <p>
+            Working with a team to take ML projects from idea → dataset → model → deployment, with real stakeholders and real constraints.
+          </p>
+          <p class="small">
+            <a href="#" title="Add ML@B link">Org</a> / <a href="#" title="Add project writeup link">Writeup</a>
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Teaching & community</h3>
+          <div class="meta">Kodely · StreetCode Academy</div>
+          <p>
+            I’ve taught coding workshops and volunteered as an instructor—something I keep doing because explaining ideas clearly is a superpower.
+          </p>
+          <p class="small">
+            <a href="#" title="Add a link to a teaching page or post">Notes</a>
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Open notes (in progress)</h3>
+          <div class="meta">learning in public</div>
+          <p>
+            I’m gradually publishing notes and short writeups on topics I’m learning—probability, deep learning, and practical ML evaluation.
+          </p>
+          <p class="small">
+            <a href="#" title="Add notes repo link">Repository</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
       <p>
-        <strong>Appraise AI</strong><br />
-        CTO. Designed and deployed a production ML pipeline combining computer
-        vision, retrieval, and regression models for real-time pricing.
+        The fastest way to reach me is email. If it’s about research, include a sentence on what you’re working on and what you’re looking for.
       </p>
-
       <p>
-        <strong>Machine Learning at Berkeley</strong><br />
-        Applied machine learning engineer working on end-to-end ML systems with
-        real stakeholders.
+        <a class="pill" href="mailto:dils@berkeley.edu"><span class="dot"></span>dils@berkeley.edu</a>
       </p>
     </section>
 
     <footer>
-      <p>© 2026 Alex Dils</p>
+      <div>© 2026 Alex Dils</div>
+      <div class="small">Built as a tiny static site. Theme toggle + scroll progress included.</div>
     </footer>
   </main>
+
+  <script src="script.js"></script>
 </body>
 </html>

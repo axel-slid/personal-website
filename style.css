@@ -1,56 +1,179 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
-  background: #ffffff;
-  color: #111;
+
+:root{
+  --bg:#ffffff;
+  --fg:#111111;
+  --muted:#555;
+  --subtle:#777;
+  --link:#0b63ce;
+  --card:#f6f6f6;
+  --border:#e5e5e5;
+  --shadow: 0 10px 30px rgba(0,0,0,0.06);
 }
 
-main {
-  max-width: 720px;
-  padding: 3rem 1.5rem;
+[data-theme="dark"]{
+  --bg:#0b0c10;
+  --fg:#f2f3f5;
+  --muted:#b6b8bf;
+  --subtle:#9aa0aa;
+  --link:#7ab8ff;
+  --card:#121420;
+  --border:#26283a;
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Inter","Helvetica Neue",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+}
+a{color:var(--link); text-decoration:none}
+a:hover{text-decoration:underline}
+main{
+  max-width: 860px;
+  padding: 2.75rem 1.5rem 4rem;
   margin: auto;
 }
-
-h1 {
-  font-size: 2.2rem;
-  margin-bottom: 0.25rem;
+nav{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  margin-bottom: 2.5rem;
+}
+.nav-left{
+  display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+}
+.brand{
+  font-weight:700;
+  letter-spacing:-0.02em;
+}
+.nav-links{
+  display:flex; gap:.9rem; flex-wrap:wrap;
+  color:var(--muted);
+}
+.nav-links a{color:var(--muted)}
+.nav-links a:hover{color:var(--fg); text-decoration:none}
+.controls{
+  display:flex; gap:.6rem; align-items:center;
+}
+button{
+  border:1px solid var(--border);
+  background:transparent;
+  color:var(--fg);
+  padding:.5rem .65rem;
+  border-radius:999px;
+  cursor:pointer;
+}
+button:hover{border-color:var(--subtle)}
+.progress{
+  position:fixed; top:0; left:0; height:3px; width:0;
+  background:var(--link);
+  z-index: 50;
 }
 
-.subtitle {
-  color: #555;
-  margin-top: 0;
+.hero{
+  display:grid;
+  grid-template-columns: 140px 1fr;
+  gap: 1.5rem;
+  align-items:start;
+}
+.avatar{
+  width:140px; height:140px;
+  border-radius: 18px;
+  overflow:hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.avatar img{width:100%; height:100%; object-fit:cover}
+h1{
+  font-size: 2.25rem;
+  margin: 0 0 .25rem 0;
+  letter-spacing: -0.03em;
+}
+.subtitle{
+  margin:0 0 1rem 0;
+  color:var(--muted);
+}
+.lede{
+  margin: 0 0 .75rem 0;
+  line-height: 1.7;
+  font-size: 1.02rem;
+}
+.quicklinks{
+  display:flex; flex-wrap:wrap; gap:.6rem;
+  margin-top: 1rem;
+}
+.pill{
+  display:inline-flex; align-items:center; gap:.45rem;
+  border:1px solid var(--border);
+  background:var(--card);
+  padding:.45rem .7rem;
+  border-radius: 999px;
+  box-shadow: none;
+  color: var(--fg);
+}
+.pill:hover{border-color:var(--subtle); text-decoration:none}
+.pill .dot{
+  width:7px; height:7px; border-radius: 50%;
+  background: var(--link);
 }
 
-h2 {
-  margin-top: 3rem;
-  font-size: 1.5rem;
+section{margin-top: 2.75rem}
+h2{
+  margin:0 0 .75rem 0;
+  font-size: 1.45rem;
+  letter-spacing: -0.02em;
 }
-
-h3 {
-  margin-top: 1.5rem;
-  font-size: 1.1rem;
+h3{
+  margin: 1.2rem 0 .35rem 0;
+  font-size: 1.05rem;
 }
-
-p, li {
-  line-height: 1.6;
+p, li{
+  line-height: 1.7;
   font-size: 1rem;
 }
-
-ul {
-  padding-left: 1.2rem;
+ul{padding-left: 1.2rem; margin: .5rem 0 0}
+li{margin:.35rem 0}
+.grid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 1rem;
 }
-
-.links a {
-  text-decoration: none;
-  color: #0066cc;
+@media (max-width: 760px){
+  .hero{grid-template-columns: 1fr; }
+  .avatar{width:120px; height:120px}
+  .grid{grid-template-columns: 1fr}
+  nav{align-items:flex-start}
 }
-
-.links a:hover {
-  text-decoration: underline;
+.card{
+  border:1px solid var(--border);
+  background: var(--card);
+  border-radius: 18px;
+  padding: 1rem 1rem .95rem;
+  box-shadow: var(--shadow);
 }
-
-footer {
+.card p{margin:.55rem 0 0}
+.meta{color: var(--muted); font-size:.95rem}
+.small{color:var(--muted); font-size:.95rem}
+.kbd{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size:.85rem;
+  border:1px solid var(--border);
+  padding:.1rem .4rem;
+  border-radius: 6px;
+  color: var(--muted);
+}
+footer{
   margin-top: 4rem;
-  font-size: 0.9rem;
-  color: #666;
+  color: var(--muted);
+  font-size: .95rem;
+  display:flex;
+  justify-content:space-between;
+  gap: 1rem;
+  flex-wrap:wrap;
+  border-top:1px solid var(--border);
+  padding-top: 1.2rem;
 }
