@@ -179,6 +179,14 @@ h2{
   max-width: 70ch;
 }
 
+.proj-more{
+  margin-top: .45rem;
+  line-height: 1.65;
+  color: var(--muted);
+  font-size: .98rem;
+  max-width: 78ch;
+}
+
 .media-strip{
   display:flex;
   gap:.55rem;
