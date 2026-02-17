@@ -49,7 +49,8 @@
     <a href="index.html" aria-current="page">Home</a>
     <a href="story.html" >My story</a>
     <a href="research.html">Research</a>
-    <a href="#projects">Projects</a>
+    <a href="news.html">News</a>
+    <a href="#misc-projects">Projects</a>
     <a href="#contact">Contact</a>
   </div>
 
@@ -84,7 +85,8 @@
           <a href="https://github.com/axel-slid">GitHub</a> /
           <a href="resume.pdf">CV</a> /
           <a href="https://www.linkedin.com/in/alex-dils/">LinkedIn</a> /
-          <a href="research.html">Research</a> /
+          <a href="research.html">Research</a>
+    <a href="news.html">News</a> /
           <a href="story.html">Who am I</a>
         </div>
       </div>
@@ -92,8 +94,34 @@
 
     <hr />
 
-    <section id="projects">
-      <h2>Projects</h2>
+
+    <section id="research-preview">
+      <h2>Research</h2>
+      <div class="p">
+        I work on computer vision and medical AI—especially robustness, bias mitigation, simulation-driven augmentation, and segmentation.
+        See the full list on the <a href="research.html">Research page</a>.
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <div class="card-title">Physiologically-informed augmentation</div>
+          <div class="card-desc">Finite-element lung motion simulation to generate breathing-cycle variation and improve tumor segmentation performance.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Bias & confounder mitigation</div>
+          <div class="card-desc">Methods to reduce spurious correlations in skin-lesion segmentation and image diagnosis, with large-scale evaluation.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Digital Twin direction</div>
+          <div class="card-desc">Modeling and learning pipelines that connect mechanistic structure with deep learning for clinically relevant imaging tasks.</div>
+        </div>
+      </div>
+    </section>
+
+    <hr />
+
+    <section id="misc-projects">
+      <h2>Misc projects</h2>
       <div class="proj">
   <div class="proj-top">
     <div>
@@ -165,6 +193,7 @@
       <div>© 2026 Alex Dils</div>
       <div>Last updated: 2026-02-17</div>
       <div>Theme: <a href="#" data-set-theme="light" data-no-transition>Light</a> / <a href="#" data-set-theme="dark" data-no-transition>Dark</a> / <a href="#" data-set-theme="disco" data-no-transition>Disco</a></div>
+      <button id="editBtn" class="edit-btn" type="button">Edit</button>
     </div>
   </main>
   <script src="script.js"></script>

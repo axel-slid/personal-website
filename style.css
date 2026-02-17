@@ -254,3 +254,121 @@ h2{
   .header{grid-template-columns: 1fr;}
   .avatar{width:220px; height:220px}
 }
+
+
+/* --- Research preview cards --- */
+.cards{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+.card{
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  background: var(--panel);
+}
+.card-title{
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.card-desc{
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+/* --- Editor UI --- */
+.edit-btn{
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.edit-btn:hover{ filter: brightness(1.02); }
+
+.editor-bar{
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 9999;
+  display: none;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  padding: 10px 12px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.18);
+}
+.editor-bar .left, .editor-bar .right{ display:flex; gap:10px; align-items:center; }
+.editor-pill{
+  font-size: 12px;
+  color: var(--muted);
+}
+.editor-btn{
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
+  padding: 7px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.editor-btn.primary{
+  background: var(--accent);
+  color: white;
+  border-color: transparent;
+}
+.editor-btn:disabled{ opacity: .5; cursor: not-allowed; }
+
+.editor-modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 16px;
+}
+.editor-modal .panel{
+  width: min(520px, 96vw);
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 16px;
+  padding: 16px;
+}
+.editor-modal .row{ display:flex; gap:10px; margin-top: 10px; }
+.editor-modal input{
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+[data-editing="true"] .editable{
+  outline: 2px dashed rgba(0,0,0,.25);
+  outline-offset: 3px;
+}
+:root[data-theme="dark"] [data-editing="true"] .editable{
+  outline-color: rgba(255,255,255,.25);
+}
+
+
+.news-item{
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 12px;
+}
+.news-title{ font-weight: 800; margin-bottom: 4px; }
+.news-meta{ font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+.news-body{ line-height: 1.4; }
