@@ -5,7 +5,7 @@
 
   <div>
     <h1>Alex Dils</h1>
-    <div class="quote">“And still 24 hours, maybe 60 good years, it's really not that long a stay...” — JB</div>
+    <div class="quote"></div>
 
     <div class="p">
       Hey there! I’m a computer science student at UC Berkeley (B.A. expected May 2029). I build ML systems and do research in
