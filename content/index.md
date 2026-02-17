@@ -223,7 +223,7 @@ dils + [at] + berkeley + [dot] + edu
   </article>
 
   <div class="p" style="opacity:0.8;margin-top:18px;">
-    Created by Alex Dils. Last updated <span id="lastUpdated"></span>
+    Created by Alex Dils. Last updated 2/17 <span id="lastUpdated"></span>
   </div>
 </section>
 
