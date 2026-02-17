@@ -20,7 +20,7 @@
     </div>
 
     <div class="p">
-      Outside research and startups, I teach, write, and build side projects—often around education and tools that make workflows faster.
+    
     </div>
 
     <div class="links" id="contact">
