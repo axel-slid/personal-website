@@ -7,31 +7,28 @@
   <meta name="robots" content="noindex" />
   <link rel="icon" href="headshot.png" />
   <link rel="stylesheet" href="style.css" />
-  <script>
-    setTimeout(function(){
-      window.location.href = "index.html";
-    }, 900);
-  </script>
 </head>
 <body>
   
 <div id="progress" class="progress"></div>
 <nav>
-  <div class="nav-left">
+  <div class="brandwrap">
+    <div class="siteicon" aria-hidden="true"><img src="headshot.png" alt="" /></div>
     <div class="brand">Alex Dils</div>
-    <div class="nav-links">
-      <a href="index.html" aria-current="page">Home</a>
-      <a href="story.html" >My story</a>
-      <a href="index.html#research">Research</a>
-      <a href="index.html#publications">Publications</a>
-      <a href="index.html#projects">Projects</a>
-      <a href="index.html#contact">Contact</a>
-    </div>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" aria-current="page">Home</a>
+    <a href="story.html" >My story</a>
+    <a href="index.html#research">Research</a>
+    <a href="index.html#media">Media</a>
+    <a href="index.html#publications">Publications</a>
+    <a href="index.html#projects">Projects</a>
+    <a href="index.html#contact">Contact</a>
   </div>
   <div class="nav-right" aria-label="Theme">
-    <a href="#" data-set-theme="light">Light</a>
-    <a href="#" data-set-theme="dark">Dark</a>
-    <a href="#" data-set-theme="disco">Disco</a>
+    <a href="#" data-set-theme="light" data-no-transition>Light</a>
+    <a href="#" data-set-theme="dark" data-no-transition>Dark</a>
+    <a href="#" data-set-theme="disco" data-no-transition>Disco</a>
   </div>
 </nav>
 
@@ -40,15 +37,22 @@
       <div>
         <div class="spinner" aria-hidden="true"></div>
         <h2 style="margin:0 0 .4rem 0;">Backpropagating</h2>
-        <p class="small" style="margin:0;">Returning to home.</p>
+        <p class="small" style="margin:0;" id="msg">Routing</p>
       </div>
     </div>
-    <div class="footerline">
-      <div>© 2026 Alex Dils</div>
-      <div class="small">Last updated: 2026-02-17</div>
-      <div class="small">Theme: <a href="#" data-set-theme="light">Light</a> / <a href="#" data-set-theme="dark">Dark</a> / <a href="#" data-set-theme="disco">Disco</a></div>
-    </div>
+    <div class="footerline"><div>© 2026 Alex Dils</div><div class="small">Last updated: 2026-02-17</div><div class="small">Theme: <a href="#" data-set-theme="light" data-no-transition>Light</a> / <a href="#" data-set-theme="dark" data-no-transition>Dark</a> / <a href="#" data-set-theme="disco" data-no-transition>Disco</a></div></div>
   </main>
+  <script>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const to = params.get("to");
+      const msg = document.getElementById("msg");
+      msg.textContent = to ? "Leaving site" : "Returning to home";
+      setTimeout(function() {
+        window.location.href = to ? to : "index.html";
+      }, 850);
+    })();
+  </script>
   <script src="script.js"></script>
 </body>
 </html>

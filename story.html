@@ -3,8 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My story · Alex Dils</title>
-  <meta name="description" content="How Alex Dils got into medical AI, computer vision, and ML systems." />
+  <title>My story | Alex Dils</title>
+  <meta name="description" content="My story: how I got into computer vision, medical AI, and simulation driven augmentation." />
+  <link rel="canonical" href="https://alex-dils.com/story" />
+  <meta property="og:title" content="My story | Alex Dils" />
+  <meta property="og:description" content="How I got into computer vision, medical AI, and simulation driven augmentation." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://alex-dils.com/story" />
+  <meta property="og:image" content="https://alex-dils.com/headshot.png" />
   <link rel="icon" href="headshot.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -12,61 +18,42 @@
   
 <div id="progress" class="progress"></div>
 <nav>
-  <div class="nav-left">
+  <div class="brandwrap">
+    <div class="siteicon" aria-hidden="true"><img src="headshot.png" alt="" /></div>
     <div class="brand">Alex Dils</div>
-    <div class="nav-links">
-      <a href="transition.html" >Home</a>
-      <a href="story.html" aria-current="page">My story</a>
-      <a href="index.html#research">Research</a>
-      <a href="index.html#publications">Publications</a>
-      <a href="index.html#projects">Projects</a>
-      <a href="index.html#contact">Contact</a>
-    </div>
+  </div>
+  <div class="nav-links">
+    <a href="transition.html" >Home</a>
+    <a href="story.html" aria-current="page">My story</a>
+    <a href="index.html#research">Research</a>
+    <a href="index.html#media">Media</a>
+    <a href="index.html#publications">Publications</a>
+    <a href="index.html#projects">Projects</a>
+    <a href="index.html#contact">Contact</a>
   </div>
   <div class="nav-right" aria-label="Theme">
-    <a href="#" data-set-theme="light">Light</a>
-    <a href="#" data-set-theme="dark">Dark</a>
-    <a href="#" data-set-theme="disco">Disco</a>
+    <a href="#" data-set-theme="light" data-no-transition>Light</a>
+    <a href="#" data-set-theme="dark" data-no-transition>Dark</a>
+    <a href="#" data-set-theme="disco" data-no-transition>Disco</a>
   </div>
 </nav>
 
   <main>
     <section>
       <h1 style="margin-bottom:.25rem;">My story</h1>
-      <p class="subtitle">Short version.</p>
-
-      <div class="card">
-        <p>
-          I started with computer vision because it is a direct test of whether a system understands anything beyond pixels.
-          The first models I trained looked good on clean data and then failed on small shifts. That pushed me toward robustness.
-        </p>
-      </div>
-
-      <h2 style="margin-top:2.25rem;">Stanford Medicine</h2>
-      <p>
-        In 2022 I joined Stanford Biomedical Informatics. The constraints were clear: distribution shift is normal, labels are imperfect,
-        and evaluation has to match the setting.
-      </p>
-      <p>
-        I worked on bias and confounder mitigation in skin lesion tasks, and on physiologically plausible augmentation from lung motion simulation.
-      </p>
-
+      <p class="subtitle">Short and concrete.</p>
+      <div class="card"><p>I started with vision because it exposes failure quickly. A model can look good on clean data and still break on small shifts. That pushed me toward robustness and deployment style evaluation.</p></div>
+      <h2 style="margin-top:2rem;">Stanford Medicine</h2>
+      <p>In 2022 I joined Stanford Biomedical Informatics. I worked on confounders in skin lesion tasks and on physiologically plausible augmentation. The work is driven by one question: what shifts are real, and how do we train for them.</p>
+      <h2>Simulation driven augmentation</h2>
+      <p>For lung imaging, we simulate respiratory motion to generate breathing cycle variation. The intent is simple: train on shifts that actually occur.</p>
+      <figure class="figure"><img src="assets/breathing-lungs.svg" alt="Breathing lungs visualization." loading="lazy" /><figcaption>Breathing visualization used for intuition and communication.</figcaption></figure>
       <h2>Building</h2>
-      <p>
-        I also like shipping systems. At Appraise AI, the loop is tight: data ingestion, retrieval, modeling, and then a number someone will rely on.
-        That forces clarity about uncertainty and failure modes.
-      </p>
-
-      <p class="small" style="margin-top:1.2rem;">
-        Back to <a href="transition.html">home</a>. CV: <a href="resume.pdf">resume.pdf</a>. GitHub: <a href="https://github.com/axel-slid">axel-slid</a>.
-      </p>
+      <p>I also like shipping systems. At Appraise AI, the loop is tight: data ingestion, retrieval, modeling, and a number someone will rely on. That forces clarity about uncertainty.</p>
+      <figure class="figure"><img src="assets/appraise-ui.png" alt="Appraise AI UI screenshot." loading="lazy" /><figcaption>Appraise AI prototype UI.</figcaption></figure>
+      <p class="small" style="margin-top:1.1rem;">Back to <a href="transition.html">home</a>. CV: <a href="resume.pdf">resume.pdf</a>. GitHub: <a href="https://github.com/axel-slid">axel-slid</a>.</p>
     </section>
-
-    <div class="footerline">
-      <div>© 2026 Alex Dils</div>
-      <div class="small">Last updated: 2026-02-17</div>
-      <div class="small">Theme: <a href="#" data-set-theme="light">Light</a> / <a href="#" data-set-theme="dark">Dark</a> / <a href="#" data-set-theme="disco">Disco</a></div>
-    </div>
+    <div class="footerline"><div>© 2026 Alex Dils</div><div class="small">Last updated: 2026-02-17</div><div class="small">Theme: <a href="#" data-set-theme="light" data-no-transition>Light</a> / <a href="#" data-set-theme="dark" data-no-transition>Dark</a> / <a href="#" data-set-theme="disco" data-no-transition>Disco</a></div></div>
   </main>
   <script src="script.js"></script>
 </body>

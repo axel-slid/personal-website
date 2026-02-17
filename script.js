@@ -1,8 +1,6 @@
 
 (function(){
   const root = document.documentElement;
-
-  // init theme
   const stored = localStorage.getItem("theme");
   if(stored){ root.setAttribute("data-theme", stored); }
 
@@ -15,10 +13,31 @@
   }
 
   document.addEventListener("click", (e) => {
-    const a = e.target.closest && e.target.closest("[data-set-theme]");
+    const themeLink = e.target.closest && e.target.closest("[data-set-theme]");
+    if(themeLink){
+      e.preventDefault();
+      setTheme(themeLink.getAttribute("data-set-theme"));
+      return;
+    }
+
+    const a = e.target.closest && e.target.closest("a[href]");
     if(!a) return;
-    e.preventDefault();
-    setTheme(a.getAttribute("data-set-theme"));
+    if(a.hasAttribute("data-no-transition")) return;
+
+    const href = a.getAttribute("href") || "";
+    if(href.startsWith("#")) return;
+    if(href.startsWith("transition.html")) return;
+    if(href.startsWith("index.html") || href.startsWith("story.html")) return;
+
+    if(href.endsWith(".pdf") || href.endsWith(".png") || href.endsWith(".jpg") || href.endsWith(".jpeg") || href.endsWith(".gif") || href.endsWith(".svg") || href.endsWith(".mov") || href.endsWith(".mp4")) return;
+
+    try{
+      const url = new URL(href, window.location.href);
+      if(url.origin !== window.location.origin){
+        e.preventDefault();
+        window.location.href = "transition.html?to=" + encodeURIComponent(url.href);
+      }
+    }catch(err){}
   });
 
   const current = root.getAttribute("data-theme") || "light";
@@ -26,15 +45,13 @@
     a.setAttribute('aria-current', a.getAttribute('data-set-theme') === current ? 'true' : 'false');
   });
 
-  // progress bar
   const bar = document.getElementById("progress");
   function onScroll(){
     if(!bar) return;
     const h = document.documentElement;
     const scrolled = h.scrollTop || document.body.scrollTop;
     const height = (h.scrollHeight - h.clientHeight) || 1;
-    const pct = Math.min(100, Math.max(0, (scrolled/height)*100));
-    bar.style.width = pct + "%";
+    bar.style.width = (scrolled/height)*100 + "%";
   }
   window.addEventListener("scroll", onScroll, {passive:true});
   onScroll();
