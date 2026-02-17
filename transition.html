@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Backpropagating</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="headshot.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  
+<div id="progress" class="progress"></div>
+<nav>
+  <div class="brandwrap">
+    <div class="siteicon" aria-hidden="true"><img src="headshot.png" alt="" /></div>
+    <div class="brand">Alex Dils</div>
+  </div>
+
+  <div class="nav-links">
+    <a href="index.html" aria-current="page">Home</a>
+    <a href="story.html" >My story</a>
+    <a href="research.html">Research</a>
+    <a href="index.html#projects">Projects</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+
+  <div class="nav-right" aria-label="Theme">
+    <a href="#" data-set-theme="light" data-no-transition>Light</a>
+    <a href="#" data-set-theme="dark" data-no-transition>Dark</a>
+    <a href="#" data-set-theme="disco" data-no-transition>Disco</a>
+  </div>
+</nav>
+
+  <main>
+    <div class="center">
+      <div>
+        <div class="spinner" aria-hidden="true"></div>
+        <h2 style="margin:0 0 .4rem 0;">Backpropagating</h2>
+        <div style="color:var(--muted);" id="msg">Routing</div>
+      </div>
+    </div>
+    <div class="footer">
+      <div>© 2026 Alex Dils</div>
+      <div>Last updated: 2026-02-17</div>
+      <div>Theme: <a href="#" data-set-theme="light" data-no-transition>Light</a> / <a href="#" data-set-theme="dark" data-no-transition>Dark</a> / <a href="#" data-set-theme="disco" data-no-transition>Disco</a></div>
+    </div>
+  </main>
+
+  <script>
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const to = params.get("to");
+      const msg = document.getElementById("msg");
+      msg.textContent = to ? "Leaving site" : "Returning to home";
+      setTimeout(function(){
+        window.location.href = to ? to : "index.html";
+      }, 850);
+    })();
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
