@@ -2,7 +2,7 @@
 <div>
 <h1>News</h1>
 <div class="p">
-        Short updates, notes, and announcements. (Editable in-site via the Edit button.)
+nothing for now...
       </div>
 </div>
 </section>
