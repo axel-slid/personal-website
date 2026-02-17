@@ -35,6 +35,33 @@ body{
   color:var(--fg);
 }
 
+/* --- Minimal, publication-style layout (inspired by maximiliandu.com) --- */
+main{
+  max-width: 860px;
+}
+
+.quote{
+  margin:.25rem 0 1.1rem 0;
+  color:var(--muted);
+  font-style: italic;
+}
+
+.top-links{
+  margin: .85rem 0 1.2rem 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.hero-photo{
+  width: min(520px, 100%);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  margin: 1.0rem 0 0.4rem 0;
+}
+.hero-photo img{ width:100%; height:auto; display:block; }
+
 body::before{
   content:"";
   position:fixed;
@@ -149,6 +176,97 @@ hr{
   border:0;
   border-top:1px solid var(--border);
   margin: 2rem 0;
+}
+
+/* --- LinkedIn-like media cards --- */
+.feed{
+  display:flex;
+  flex-direction:column;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.feed-card{
+  display:grid;
+  grid-template-columns: 56px 1fr;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  background: rgba(0,0,0,0.01);
+}
+
+.feed-avatar{
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow:hidden;
+  border: 1px solid var(--border);
+  flex: 0 0 auto;
+}
+.feed-avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+.feed-header{
+  display:flex;
+  align-items:baseline;
+  gap: 10px;
+  flex-wrap:wrap;
+}
+
+.feed-title{
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.feed-meta{
+  color: var(--muted);
+  font-size: .95rem;
+}
+
+.feed-body{
+  margin-top: 6px;
+  line-height: 1.65;
+  max-width: 78ch;
+}
+
+.feed-actions{
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: .95rem;
+}
+
+.feed-media{
+  margin-top: 10px;
+  border-radius: 12px;
+  overflow:hidden;
+  border: 1px solid var(--border);
+}
+.feed-media img, .feed-media video{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+.pill-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.pill{
+  display:inline-block;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: .92rem;
+  color: var(--muted);
+  background: rgba(0,0,0,0.01);
+}
+
+@media (max-width: 700px){
+  .feed-card{ grid-template-columns: 44px 1fr; }
+  .feed-avatar{ width:44px; height:44px; }
 }
 
 h2{
