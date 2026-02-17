@@ -19,7 +19,7 @@
     </div>
 
     <div class="links" id="contact">
-      <a href="#" id="emailLink">Email</a> /
+      email = "dils" + [at] + "berkeley" + [dot] + "edu" /
       <a href="https://scholar.google.com/citations?user=0Sz8VPoAAAAJ" target="_blank" rel="noreferrer">Google Scholar</a> /
       <a href="https://github.com/axel-slid" target="_blank" rel="noreferrer">GitHub</a> /
       <a href="resume.pdf" target="_blank" rel="noreferrer">CV</a> /
