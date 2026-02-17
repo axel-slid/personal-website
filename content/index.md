@@ -36,7 +36,7 @@
   <div class="list">
     <div class="item"><b>Jan 2026:</b> ICML 2026 submission in progress.</div>
     <div class="item"><b>Nov 2025:</b> Co-founded Appraise AI; raised $15K pre-seed.</div>
-    <div class="item"><b>Apr 2025:</b> Published “Eye For An Eye”.</div>
+    <div class="item"><b>Sep 2025:</b> Was acknowledged for Digital Twin paper which was featured on Stanford Medicine's front page  <a href="https://www.sciencedirect.com/science/article/pii/S2589750025000287"_blank" rel="noreferrer">Paper</a></div>
     <div class="item"><b>Oct 2024:</b> Posted arXiv preprint on microplastic segmentation.</div>
   </div>
 </section>
