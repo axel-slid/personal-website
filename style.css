@@ -6,6 +6,11 @@
   --link:#0b63ce;
   --border:#e6e6e6;
   --shadow: 0 10px 30px rgba(0,0,0,0.06);
+  /* Compatibility variables used by the in-browser editor styles */
+  --line: var(--border);
+  --panel: var(--bg);
+  --text: var(--fg);
+  --accent: var(--link);
 }
 
 [data-theme="dark"]{
@@ -34,33 +39,6 @@ body{
   background:var(--bg);
   color:var(--fg);
 }
-
-/* --- Minimal, publication-style layout (inspired by maximiliandu.com) --- */
-main{
-  max-width: 860px;
-}
-
-.quote{
-  margin:.25rem 0 1.1rem 0;
-  color:var(--muted);
-  font-style: italic;
-}
-
-.top-links{
-  margin: .85rem 0 1.2rem 0;
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-.hero-photo{
-  width: min(520px, 100%);
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  overflow:hidden;
-  margin: 1.0rem 0 0.4rem 0;
-}
-.hero-photo img{ width:100%; height:auto; display:block; }
 
 body::before{
   content:"";
@@ -167,6 +145,13 @@ h1{
   line-height: 1.7;
   font-size: 1.03rem;
 }
+
+.list{ margin-top: 10px; }
+.item{
+  margin: 8px 0;
+  line-height: 1.6;
+  font-size: 1.02rem;
+}
 .links{
   margin-top: .9rem;
   color: var(--muted);
@@ -176,97 +161,6 @@ hr{
   border:0;
   border-top:1px solid var(--border);
   margin: 2rem 0;
-}
-
-/* --- LinkedIn-like media cards --- */
-.feed{
-  display:flex;
-  flex-direction:column;
-  gap: 14px;
-  margin-top: 12px;
-}
-
-.feed-card{
-  display:grid;
-  grid-template-columns: 56px 1fr;
-  gap: 12px;
-  padding: 14px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: var(--shadow);
-  background: rgba(0,0,0,0.01);
-}
-
-.feed-avatar{
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  overflow:hidden;
-  border: 1px solid var(--border);
-  flex: 0 0 auto;
-}
-.feed-avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
-
-.feed-header{
-  display:flex;
-  align-items:baseline;
-  gap: 10px;
-  flex-wrap:wrap;
-}
-
-.feed-title{
-  font-weight: 800;
-  letter-spacing: -0.01em;
-}
-
-.feed-meta{
-  color: var(--muted);
-  font-size: .95rem;
-}
-
-.feed-body{
-  margin-top: 6px;
-  line-height: 1.65;
-  max-width: 78ch;
-}
-
-.feed-actions{
-  margin-top: 10px;
-  color: var(--muted);
-  font-size: .95rem;
-}
-
-.feed-media{
-  margin-top: 10px;
-  border-radius: 12px;
-  overflow:hidden;
-  border: 1px solid var(--border);
-}
-.feed-media img, .feed-media video{
-  display:block;
-  width:100%;
-  height:auto;
-}
-
-.pill-row{
-  display:flex;
-  flex-wrap:wrap;
-  gap: 8px;
-  margin-top: 10px;
-}
-.pill{
-  display:inline-block;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: .92rem;
-  color: var(--muted);
-  background: rgba(0,0,0,0.01);
-}
-
-@media (max-width: 700px){
-  .feed-card{ grid-template-columns: 44px 1fr; }
-  .feed-avatar{ width:44px; height:44px; }
 }
 
 h2{
@@ -338,6 +232,124 @@ h2{
   font-weight:700;
   font-size: 1rem;
 }
+
+/* --- LinkedIn-style cards (Projects / Experience) --- */
+.li-section-title{ margin-top: 2rem; }
+
+.li-card{
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  background: var(--bg);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  margin: 14px 0;
+}
+
+.li-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 14px;
+}
+
+.li-role{
+  font-size: 1.32rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.li-dates{
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 1.02rem;
+}
+
+.li-desc{
+  margin-top: 12px;
+  line-height: 1.7;
+  font-size: 1.03rem;
+  color: var(--fg);
+}
+
+.li-desc.is-collapsed{
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  -webkit-line-clamp: var(--li-lines, 3);
+}
+
+.li-see-more{
+  display:none;
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 600;
+}
+.li-see-more:hover{ text-decoration: underline; }
+
+.li-skill{
+  margin-top: 12px;
+  color: var(--fg);
+  font-weight: 600;
+  display:flex;
+  gap: 10px;
+  align-items:center;
+}
+.li-skill-icon{
+  width: 18px;
+  height: 18px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.li-media{
+  margin-top: 12px;
+  display:flex;
+  gap: 10px;
+  flex-wrap:wrap;
+}
+
+.li-thumb{
+  position: relative;
+  width: 200px;
+  height: 112px;
+  border-radius: 12px;
+  overflow:hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  background: rgba(0,0,0,0.02);
+}
+.li-thumb img,
+.li-thumb video{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+
+.li-plus-overlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: rgba(0,0,0,0.55);
+  color:#fff;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+
+.li-links{ margin-top: 8px; color: var(--muted); }
+.li-links a{ color: var(--link); }
 
 .footer{
   display:flex;

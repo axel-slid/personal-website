@@ -138,12 +138,143 @@
               div.textContent = 'Last updated: ' + d;
             }
           });
+
+          const lu = document.getElementById('lastUpdated');
+          if(lu) lu.textContent = d;
         }
       }
     }catch(e){}
+
+    // After content is in the DOM, wire up LinkedIn-style cards.
+    try{ initLinkedInCards(); }catch(e){}
   }
 
   loadMdRoots();
+
+  // --- LinkedIn-style cards: "see more" + media "+N" overlay ---
+  let liModal;
+  function ensureLiModal(){
+    if(liModal) return liModal;
+    liModal = document.createElement('div');
+    liModal.id = 'liModal';
+    liModal.style.cssText = `
+      position:fixed; inset:0; background:rgba(0,0,0,.62);
+      display:none; align-items:center; justify-content:center;
+      z-index: 20000; padding: 18px;`;
+    liModal.innerHTML = `
+      <div id="liModalPanel" style="width:min(980px, 96vw); max-height:92vh; overflow:auto; background:var(--bg); border:1px solid var(--border); border-radius:16px; box-shadow: var(--shadow); padding: 14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+          <div style="font-weight:800; letter-spacing:-0.02em;">Media</div>
+          <button id="liModalClose" class="editor-btn" type="button">Close</button>
+        </div>
+        <div id="liModalGrid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 12px;"></div>
+      </div>
+    `;
+    document.body.appendChild(liModal);
+    liModal.addEventListener('click', (e)=>{ if(e.target === liModal) hideLiModal(); });
+    liModal.querySelector('#liModalClose').addEventListener('click', hideLiModal);
+    return liModal;
+  }
+
+  function hideLiModal(){
+    if(!liModal) return;
+    liModal.style.display = 'none';
+    const grid = liModal.querySelector('#liModalGrid');
+    if(grid) grid.innerHTML = '';
+  }
+
+  function showLiModal(items){
+    const m = ensureLiModal();
+    const grid = m.querySelector('#liModalGrid');
+    grid.innerHTML = '';
+    for(const it of items){
+      const wrap = document.createElement('a');
+      wrap.href = it.href;
+      wrap.target = '_blank';
+      wrap.rel = 'noreferrer';
+      wrap.style.cssText = 'border:1px solid var(--border); border-radius:14px; overflow:hidden; background:rgba(0,0,0,0.02); display:block;';
+      if(it.kind === 'video'){
+        const v = document.createElement('video');
+        v.src = it.src;
+        v.controls = true;
+        v.preload = 'metadata';
+        v.style.width = '100%';
+        v.style.height = 'auto';
+        wrap.appendChild(v);
+      }else{
+        const img = document.createElement('img');
+        img.src = it.src;
+        img.alt = it.alt || '';
+        img.loading = 'lazy';
+        img.style.width = '100%';
+        img.style.height = 'auto';
+        img.style.display = 'block';
+        wrap.appendChild(img);
+      }
+      grid.appendChild(wrap);
+    }
+    m.style.display = 'flex';
+  }
+
+  function initLinkedInCards(){
+    // Collapsible descriptions
+    document.querySelectorAll('.li-desc').forEach(desc => {
+      const lines = parseInt(desc.getAttribute('data-lines') || '3', 10);
+      desc.style.setProperty('--li-lines', String(lines));
+      desc.classList.add('is-collapsed');
+
+      // Show button only if truncation is likely.
+      // We measure by temporarily removing clamp.
+      const btn = desc.parentElement && desc.parentElement.querySelector('.li-see-more');
+      if(!btn) return;
+      const was = desc.classList.contains('is-collapsed');
+      desc.classList.remove('is-collapsed');
+      const fullH = desc.scrollHeight;
+      desc.classList.toggle('is-collapsed', was);
+      const collapsedH = desc.getBoundingClientRect().height;
+      const shouldShow = fullH > collapsedH + 4;
+      btn.style.display = shouldShow ? 'inline' : 'none';
+      btn.setAttribute('aria-expanded', 'false');
+
+      btn.addEventListener('click', ()=>{
+        const collapsed = desc.classList.toggle('is-collapsed');
+        btn.setAttribute('aria-expanded', (!collapsed).toString());
+        btn.textContent = collapsed ? '…see more' : 'see less';
+      });
+    });
+
+    // Media +N overlay
+    document.querySelectorAll('.li-media').forEach(g => {
+      const max = parseInt(g.getAttribute('data-max') || '2', 10);
+      const thumbs = Array.from(g.querySelectorAll('.li-thumb'));
+      if(thumbs.length <= max) return;
+
+      const hidden = thumbs.slice(max);
+      hidden.forEach(t => { t.style.display = 'none'; });
+      const extra = thumbs.length - max;
+
+      const lastVisible = thumbs[max-1];
+      const overlay = document.createElement('div');
+      overlay.className = 'li-plus-overlay';
+      overlay.textContent = `+${extra}`;
+      lastVisible.appendChild(overlay);
+
+      // Clicking the last visible thumb opens a modal with all media.
+      lastVisible.addEventListener('click', (e)=>{
+        // Only intercept when there is an overlay (+N).
+        if(!overlay.isConnected) return;
+        e.preventDefault();
+        const all = thumbs.map(t => {
+          const href = t.getAttribute('href') || (t.tagName === 'A' ? t.href : '#');
+          const img = t.querySelector('img');
+          const vid = t.querySelector('video');
+          if(vid) return { kind:'video', href: href, src: vid.getAttribute('src') || '' };
+          return { kind:'image', href: href, src: (img && img.getAttribute('src')) || '', alt: (img && img.getAttribute('alt')) || '' };
+        });
+        showLiModal(all);
+      });
+    });
+  }
 
   // --- Site editor (password-protected, role-based, draft/publish, diff, reorder) ---
   const editBtn = document.getElementById("editBtn");

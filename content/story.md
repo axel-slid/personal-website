@@ -1,50 +1,20 @@
 <section>
-  <h1>My story</h1>
-  <div class="quote">A short personal note about how I got here.</div>
-
-  <div class="p">
-    I like building things: research prototypes, product systems, and the occasional small tool that makes a workflow less painful.
-    I’m especially interested in how we can make ML systems dependable under shift—where the average metric looks fine but the
-    real-world failure modes are sharp.
-  </div>
-
-  <div class="p">
-    This site is deliberately simple (static HTML/CSS + a small content loader) so it stays easy to update.
-  </div>
-
-  <div class="feed">
-    <div class="feed-card">
-      <div class="feed-avatar"><img src="headshot.png" alt=""/></div>
-      <div>
-        <div class="feed-header">
-          <div class="feed-title">Why medical imaging?</div>
-          <div class="feed-meta">robustness first</div>
-        </div>
-        <div class="feed-body">
-          Medical imaging is a domain where distribution shift is the norm: different scanners, sites, protocols, and populations.
-          That makes it a good forcing function for building methods that hold up outside the training sandbox.
-        </div>
-        <div class="feed-media">
-          <img src="assets/ct-overlay.png" alt="CT overlay" />
-        </div>
+<h1>My story</h1>
+<div class="p">
+        I got into vision because it exposes failure quickly. A model can look good on clean data and still break on small shifts.
+        I started caring less about benchmark scores and more about what changes in the world cause a miss.
       </div>
-    </div>
-
-    <div class="feed-card">
-      <div class="feed-avatar"><img src="headshot.png" alt=""/></div>
-      <div>
-        <div class="feed-header">
-          <div class="feed-title">Why startups?</div>
-          <div class="feed-meta">tight feedback loops</div>
-        </div>
-        <div class="feed-body">
-          Building product systems forces clarity: what matters, what breaks, and what can be measured. I like the speed of iteration
-          and the discipline of shipping.
-        </div>
-        <div class="feed-media">
-          <img src="assets/appraise-ui.png" alt="Appraise UI" />
-        </div>
+<div class="p">
+        In 2022 I joined Stanford Biomedical Informatics as a research intern. I worked on confounders in skin lesion diagnosis and
+        on physiologically plausible augmentation for tumor segmentation. The core idea was to add structure to training, not noise.
       </div>
-    </div>
-  </div>
+<div class="p">
+        On the systems side, I helped build Appraise AI. Shipping a model forces discipline. It makes you name failure modes, track drift,
+        and communicate uncertainty without hiding behind averages.
+      </div>
+<div class="p">
+        Back to <a href="index.html">home</a>.
+      </div>
 </section>
+
+<button class="edit-btn" id="editBtn" type="button">Edit</button>

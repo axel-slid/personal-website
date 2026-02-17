@@ -1,92 +1,81 @@
 <section>
-  <h1>Research</h1>
-  <div class="p">
-    I work on computer vision for medical imaging, with an emphasis on robustness and reliability.
-    My recent work focuses on (1) reducing shortcut learning and confounding, and (2) creating physiologically grounded
-    data augmentation for segmentation.
-  </div>
-
-  <div class="feed">
-    <div class="feed-card">
-      <div class="feed-avatar"><img src="headshot.png" alt=""/></div>
-      <div>
-        <div class="feed-header">
-          <div class="feed-title">Physiologically‑Informed Augmentation</div>
-          <div class="feed-meta">breathing cycles · deformation</div>
-        </div>
-        <div class="feed-body">
-          Simulation-driven perturbations that preserve anatomy/physics while expanding training support in clinically realistic ways.
-        </div>
-        <div class="feed-media">
-          <img src="assets/lung-metrics.gif" alt="Lung metrics gif" />
-        </div>
+<h1>Research</h1>
+<div class="p">
+        I work on computer vision for medical imaging, with an emphasis on robustness and reliability.
+        My recent work focuses on (1) reducing shortcut learning and confounding, and (2) creating physiologically grounded
+        data augmentation for segmentation.
       </div>
-    </div>
-
-    <div class="feed-card">
-      <div class="feed-avatar"><img src="headshot.png" alt=""/></div>
-      <div>
-        <div class="feed-header">
-          <div class="feed-title">Bias and Confounders in Diagnosis</div>
-          <div class="feed-meta">evaluation · mitigation</div>
-        </div>
-        <div class="feed-body">
-          Methods to reduce spurious correlations in image-based diagnosis and segmentation, and evaluation setups that surface
-          failure modes beyond average performance.
-        </div>
-        <div class="feed-media">
-          <img src="assets/mammogram-figure.gif" alt="Figure gif" />
-        </div>
+<div class="p">
+        I have been a research intern with the Stanford Center for Biomedical Informatics Research since 2022.
       </div>
-    </div>
-  </div>
 </section>
-
 <hr/>
-
 <section>
-  <h2>Publications &amp; manuscripts</h2>
-
-  <div class="feed">
-    <div class="feed-card">
-      <div class="feed-avatar"><img src="headshot.png" alt=""/></div>
-      <div>
-        <div class="feed-header">
-          <div class="feed-title">Enhancing Medical AI with Physiologically‑Informed Data Augmentation</div>
-          <div class="feed-meta">ICML 2026 submission (pending) · Expected Jan 2026</div>
-        </div>
-        <div class="feed-body">Christoph Sadée, Alex Dils, Cally Lin, Audrey Chun, Francisco Carrillo-Perez, Preya Shah, et al.</div>
-        <div class="feed-actions"><a href="#" data-placeholder="true">Paper</a> / <a href="#" data-placeholder="true">Code</a></div>
-        <div class="feed-media"><img src="assets/ct-overlay.png" alt="Overlay"/></div>
+<h2>Research themes</h2>
+<div class="p">
+<strong>Bias and confounders in diagnosis:</strong> methods to reduce spurious correlations in image-based diagnosis and segmentation,
+        and evaluation setups that surface failure modes beyond average performance.
       </div>
-    </div>
-
-    <div class="feed-card">
-      <div class="feed-avatar"><img src="headshot.png" alt=""/></div>
-      <div>
-        <div class="feed-header">
-          <div class="feed-title">Addressing Bias and Confounders in AI-based Image Diagnosis</div>
-          <div class="feed-meta">Cell (in revision) · Jan 2, 2025</div>
-        </div>
-        <div class="feed-body">Christoph Sadée, Serena Zhang, Alex Dils, et al.</div>
-        <div class="feed-actions"><a href="#" data-placeholder="true">Paper</a></div>
+<div class="p">
+<strong>Physiologically informed augmentation:</strong> simulation-driven perturbations that preserve anatomy/physics while expanding
+        training support in clinically realistic ways.
       </div>
-    </div>
-
-    <div class="feed-card">
-      <div class="feed-avatar"><img src="headshot.png" alt=""/></div>
-      <div>
-        <div class="feed-header">
-          <div class="feed-title">Microplastic Identification Using AI-Driven Image Segmentation</div>
-          <div class="feed-meta">arXiv preprint · Oct 27, 2024</div>
-        </div>
-        <div class="feed-body">Alex Dils, David Raymond, Christoph Sadée, et al.</div>
-        <div class="feed-actions"><a href="#" data-placeholder="true">Paper</a></div>
+<div class="p">
+<strong>Segmentation and uncertainty:</strong> practical approaches to improve segmentation robustness under shift, including
+        augmentation design and careful metric/visual validation.
       </div>
-    </div>
-  </div>
-
-  <div class="p" style="margin-top: 1rem;">
-    Full list and citations on <a href="https://scholar.google.com/citations?user=0Sz8VPoAAAAJ&amp;hl=en&amp;oi=ao" target="_blank" rel="noreferrer">Google Scholar</a>.
-  </div>
 </section>
+<hr/>
+<section>
+<h2>Publications &amp; manuscripts</h2>
+<div class="proj">
+<div class="proj-top">
+<div>
+<div class="proj-title">Enhancing Medical AI with Physiologically-Informed Data Augmentation</div>
+<div class="proj-meta">ICML 2026 submission (pending) · Expected Jan 2026</div>
+<div class="proj-desc">Christoph Sadée, Alex Dils, Cally Lin, Audrey Chun, Francisco Carrillo-Perez, Preya Shah, et al.</div>
+</div>
+</div>
+</div>
+<div class="proj">
+<div class="proj-top">
+<div>
+<div class="proj-title">Addressing Bias and Confounders in AI-based Image Diagnosis - A Study of 117,610 Skin Lesions</div>
+<div class="proj-meta">Cell (in revision) · Jan 2, 2025</div>
+<div class="proj-desc">Christoph Sadée, Serena Zhang, Alex Dils, et al.</div>
+</div>
+</div>
+</div>
+<div class="proj">
+<div class="proj-top">
+<div>
+<div class="proj-title">Microplastic Identification Using AI-Driven Image Segmentation and GAN-Generated Ecological Context</div>
+<div class="proj-meta">arXiv preprint · Oct 27, 2024</div>
+<div class="proj-desc">Alex Dils, David Raymond, Christoph Sadée, et al.</div>
+</div>
+</div>
+</div>
+<div class="proj">
+<div class="proj-top">
+<div>
+<div class="proj-title">Integrating Mechanistic Knowledge into Deep Learning for Improved Cancer Detection</div>
+<div class="proj-meta">FEniCS Conference 2024 Proceedings · Jun 16, 2024</div>
+<div class="proj-desc">Christoph Sadée, Katherine Hartmann, Alex Dils, et al.</div>
+</div>
+</div>
+</div>
+<div class="proj">
+<div class="proj-top">
+<div>
+<div class="proj-title">Eye For An Eye: A Deep-Learning and Analytical Method to Spatializing Stereoscopic Images</div>
+<div class="proj-meta">National High School Journal of Science · Apr 17, 2025</div>
+<div class="proj-desc">Alex Dils*, Jake Yoshinaka, Leo McDonnell (*equal contribution)</div>
+</div>
+</div>
+</div>
+<div class="p" style="margin-top: 1rem;">
+        Full list and citations on <a href="https://scholar.google.com/citations?user=0Sz8VPoAAAAJ&amp;hl=en&amp;oi=ao">Google Scholar</a>.
+      </div>
+</section>
+
+<button class="edit-btn" id="editBtn" type="button">Edit</button>
