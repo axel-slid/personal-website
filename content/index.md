@@ -23,7 +23,8 @@
       <a href="https://scholar.google.com/citations?user=0Sz8VPoAAAAJ" target="_blank" rel="noreferrer">Google Scholar</a> /
       <a href="https://github.com/axel-slid" target="_blank" rel="noreferrer">GitHub</a> /
       <a href="resume.pdf" target="_blank" rel="noreferrer">CV</a> /
-      <a href="https://www.linkedin.com/in/alex-dils/" target="_blank" rel="noreferrer">LinkedIn</a> /
+      <a href="https://www.linkedin.com/in/alex-dils/" target="_blank" rel="noreferrer">LinkedIn</a>
+/
       <a href="https://x.com/DilsA36287vv" target="_blank" rel="noreferrer">X</a>
     </div>
   </div>
@@ -37,9 +38,7 @@
   <div class="list">
     <div class="item"><b>Jan 2026:</b> ICML 2026 submission in progress.</div>
     <div class="item"><b>Nov 2025:</b> Co-founded Appraise AI; raised $15K pre-seed.</div>
-    <div class="item"><b>Sep 2025:</b> Was acknowledged for Digital Twin paper which was featured on Stanford Medicine's front page
-      <a href="https://www.sciencedirect.com/science/article/pii/S2589750025000287" target="_blank" rel="noreferrer">Paper</a>
-    </div>
+    <div class="item"><b>Sep 2025:</b> Was acknowledged for Digital Twin paper which was featured on Stanford Medicine's front page  <a href="https://www.sciencedirect.com/science/article/pii/S2589750025000287"_blank" rel="noreferrer">Paper</a></div>
     <div class="item"><b>Oct 2024:</b> Posted arXiv preprint on microplastic segmentation.</div>
   </div>
 </section>
@@ -227,17 +226,17 @@
   </div>
 </section>
 
-<!-- EMAIL POPUP SCRIPT (ONLY CHANGE) -->
+<!-- EMAIL POPUP SCRIPT -->
 <script>
   (function () {
     const emailLink = document.getElementById("emailLink");
     if (!emailLink) return;
 
-    const email = "dils@berkeley.edu";
-
     emailLink.addEventListener("click", function (e) {
       e.preventDefault();
-      alert("Email: " + email);
+      alert(
+        "my email is dils + [at] + berkeley + [dot] + edu. email is the best way to reach me :)."
+      );
     });
   })();
 </script>
