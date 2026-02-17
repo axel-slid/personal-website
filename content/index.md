@@ -5,7 +5,6 @@
 
   <div>
     <h1>Alex Dils</h1>
-    <div class="quote"></div>
 
     <div class="p">
       Hey there! I’m a computer science student at UC Berkeley (B.A. expected May 2029). I build ML systems and do research in
@@ -15,31 +14,29 @@
     <div class="p">
       I’m currently the CTO &amp; Co-Founder of <a href="https://appraiseai.co" target="_blank" rel="noreferrer">Appraise AI</a>,
       where we’re building a multimodal pricing engine and large-scale ingestion pipeline for resale marketplaces.
-      I’ve also been a research intern with the Stanford Center for Biomedical Informatics Research since 2022, working on bias mitigation
-      and physiologically-informed data augmentation for medical imaging.
+      I’ve also been a research intern with the Stanford Center for Biomedical Informatics Research since 2022.
     </div>
 
     <div class="links" id="contact">
       <a href="mailto:dils@berkeley.edu">Email</a> /
-      <a href="https://scholar.google.com/citations?user=0Sz8VPoAAAAJ&amp;hl=en&amp;oi=ao" target="_blank" rel="noreferrer">Google Scholar</a> /
-      <a href="https://github.com/axel-slid" target="_blank" rel="noreferrer">GitHub</a> /
-      <a href="resume.pdf" target="_blank" rel="noreferrer">CV</a> /
-      <a href="https://www.linkedin.com/in/alex-dils/" target="_blank" rel="noreferrer">LinkedIn</a>
+      <a href="https://scholar.google.com/citations?user=0Sz8VPoAAAAJ" target="_blank">Google Scholar</a> /
+      <a href="https://github.com/axel-slid" target="_blank">GitHub</a> /
+      <a href="resume.pdf" target="_blank">CV</a> /
+      <a href="https://www.linkedin.com/in/alex-dils/" target="_blank">LinkedIn</a>
     </div>
   </div>
 </section>
 
 <hr/>
 
-<!-- NEWS FIRST -->
+<!-- NEWS -->
 <section id="news">
   <h2>News</h2>
-  <div class="p"></div>
   <div class="list">
-    <div class="item"><b>Jan 2026:</b> ICML 2026 submission in progress (“Enhancing Medical AI with Physiologically-Informed Data Augmentation”).</div>
-    <div class="item"><b>Nov 2025:</b> Co-founded Appraise AI; raised $15K pre-seed and started early enterprise discussions with marketplaces.</div>
-    <div class="item"><b>Apr 2025:</b> Published “Eye For An Eye” in the National High School Journal of Science.</div>
-    <div class="item"><b>Oct 2024:</b> Posted arXiv preprint on microplastic identification with segmentation + GAN context generation.</div>
+    <div class="item"><b>Jan 2026:</b> ICML 2026 submission in progress.</div>
+    <div class="item"><b>Nov 2025:</b> Co-founded Appraise AI; raised $15K pre-seed.</div>
+    <div class="item"><b>Apr 2025:</b> Published “Eye For An Eye”.</div>
+    <div class="item"><b>Oct 2024:</b> Posted arXiv preprint on microplastic segmentation.</div>
   </div>
 </section>
 
@@ -48,8 +45,8 @@
 <!-- RESEARCH -->
 <section id="research">
   <h2>Research</h2>
-  <div class="p">Selected publications and ongoing work.</div>
 
+  <!-- Physio augmentation -->
   <article class="li-card">
     <div class="li-head">
       <div>
@@ -59,20 +56,25 @@
     </div>
 
     <div class="li-desc" data-lines="3">
-      Physiology-guided augmentation pipelines that model breathing motion and anatomical deformation to improve robustness
-      of medical image segmentation under realistic distribution shift.
+      Physiology-guided augmentation pipelines that explicitly model breathing motion and anatomical deformation
+      to improve robustness of medical segmentation.
     </div>
 
     <div class="li-links">
-      <!-- Add paper/code links when public -->
+      <!-- Paper / Code when public -->
     </div>
 
     <div class="li-media" data-max="2">
-      <img src="assets/breathing-lungs.svg" alt="Breathing deformation model"/>
-      <img src="assets/lung-metrics.gif" alt="Robustness metrics"/>
+      <a class="li-thumb" href="assets/breathing-lungs.svg" target="_blank">
+        <img src="assets/breathing-lungs.svg" alt="Breathing deformation model"/>
+      </a>
+      <a class="li-thumb" href="assets/lung-metrics.gif" target="_blank">
+        <img src="assets/lung-metrics.gif" alt="Robustness metrics"/>
+      </a>
     </div>
   </article>
 
+  <!-- Eye for an Eye -->
   <article class="li-card">
     <div class="li-head">
       <div>
@@ -82,31 +84,34 @@
     </div>
 
     <div class="li-desc" data-lines="3">
-      Hybrid analytical and deep-learning approach for generating stereoscopic image pairs from a single view using
-      depth estimation and learned synthesis.
+      Hybrid analytical + deep-learning approach for generating stereoscopic pairs from a single image.
     </div>
 
     <div class="li-links">
-      <!-- Add paper/code links -->
+      <!-- Paper / Code -->
     </div>
 
     <div class="li-media" data-max="2">
-      <img src="assets/stereo-before.png" alt="Single-view input"/>
-      <img src="assets/stereo-after.png" alt="Generated stereo output"/>
+      <a class="li-thumb" href="assets/stereo-before.png" target="_blank">
+        <img src="assets/stereo-before.png" alt="Single view input"/>
+      </a>
+      <a class="li-thumb" href="assets/stereo-after.png" target="_blank">
+        <img src="assets/stereo-after.png" alt="Stereo output"/>
+      </a>
     </div>
   </article>
 
+  <!-- Microplastics -->
   <article class="li-card">
     <div class="li-head">
       <div>
-        <div class="li-role">Microplastic Identification Using AI-Driven Image Segmentation and GAN-Generated Ecological Context</div>
+        <div class="li-role">Microplastic Identification Using AI-Driven Image Segmentation and GAN-Generated Context</div>
         <div class="li-dates">arXiv — 2024</div>
       </div>
     </div>
 
     <div class="li-desc" data-lines="3">
-      Segmentation pipeline for microplastic detection using GAN-generated background context to reduce spurious correlations
-      and improve cross-environment generalization.
+      Segmentation model augmented with GAN-generated ecological context to improve cross-background generalization.
     </div>
 
     <div class="li-links">
@@ -114,8 +119,12 @@
     </div>
 
     <div class="li-media" data-max="2">
-      <img src="assets/microplastics-mask.png" alt="Segmentation mask"/>
-      <img src="assets/microplastics-gan-context.png" alt="GAN context"/>
+      <a class="li-thumb" href="assets/microplastics-mask.png" target="_blank">
+        <img src="assets/microplastics-mask.png" alt="Segmentation mask"/>
+      </a>
+      <a class="li-thumb" href="assets/microplastics-gan-context.png" target="_blank">
+        <img src="assets/microplastics-gan-context.png" alt="GAN context"/>
+      </a>
     </div>
   </article>
 </section>
@@ -126,21 +135,6 @@
 <section id="projects">
   <h2 class="li-section-title">Projects</h2>
 
-  <div class="pinned-grid">
-    <a class="pin" href="https://github.com/axel-slid/speed_reader" target="_blank">
-      <div class="pin-title">speed_reader</div>
-      <div class="pin-meta">JavaScript</div>
-    </a>
-    <a class="pin" href="https://github.com/axel-slid/Microplastic-Segmentation-GAN" target="_blank">
-      <div class="pin-title">Microplastic-Segmentation-GAN</div>
-      <div class="pin-meta">Python</div>
-    </a>
-    <a class="pin" href="https://github.com/axel-slid/personal-website" target="_blank">
-      <div class="pin-title">personal-website</div>
-      <div class="pin-meta">JavaScript</div>
-    </a>
-  </div>
-
   <article class="li-card">
     <div class="li-head">
       <div>
@@ -150,8 +144,7 @@
     </div>
 
     <div class="li-desc" data-lines="3">
-      Multimodal pricing engine and large-scale ingestion pipeline for resale marketplaces.
-      I lead modeling, infrastructure, and technical strategy.
+      Multimodal pricing engine and ingestion pipeline for resale marketplaces.
     </div>
 
     <div class="li-links">
@@ -159,8 +152,12 @@
     </div>
 
     <div class="li-media" data-max="2">
-      <img src="assets/appraise-ui.png" alt="Appraise UI"/>
-      <img src="assets/poster-photo.png" alt="Demo poster"/>
+      <a class="li-thumb" href="assets/appraise-ui.png" target="_blank">
+        <img src="assets/appraise-ui.png" alt="Appraise UI"/>
+      </a>
+      <a class="li-thumb" href="assets/appraise-demo.mov" target="_blank">
+        <video src="assets/appraise-demo.mov" preload="metadata" muted></video>
+      </a>
     </div>
   </article>
 </section>
@@ -180,8 +177,7 @@
     </div>
 
     <div class="li-desc" data-lines="3">
-      Lightweight RSVP-style speed reading app with adjustable pacing and keyboard controls,
-      designed for focused, high-throughput reading.
+      RSVP-style speed reading web app with adjustable pacing and keyboard controls.
     </div>
 
     <div class="li-links">
@@ -189,7 +185,9 @@
     </div>
 
     <div class="li-media" data-max="1">
-      <img src="assets/speed-reader-ui.png" alt="Speed reader UI"/>
+      <a class="li-thumb" href="assets/speed-reader-ui.png" target="_blank">
+        <img src="assets/speed-reader-ui.png" alt="Speed reader UI"/>
+      </a>
     </div>
   </article>
 
