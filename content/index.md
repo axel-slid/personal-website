@@ -15,7 +15,7 @@
       I’m currently the CTO &amp; Co-Founder of
       <a href="https://appraiseai.co" target="_blank" rel="noreferrer">Appraise AI</a>,
       where we’re building a multimodal pricing engine and large-scale ingestion pipeline for resale marketplaces.
-      I’ve also been a research intern with the Stanford Center for Biomedical Informatics Research since 2022.
+      I’ve also been a research intern with the <a href="https://med.stanford.edu/gevaertlab.html" target="_blank" rel="noreferrer">Stanford Center for Biomedical Informatics</a> since 2022.
     </div>
 
     <div class="links" id="contact">
