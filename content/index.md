@@ -1,6 +1,6 @@
 <section class="header" id="top">
   <div class="avatar">
-    <img alt="Alex Dils headshot" src="headshot.png"/>
+    <img alt="Alex Dils headshot" src="headshot.png" />
   </div>
 
   <div>
@@ -12,17 +12,18 @@
     </div>
 
     <div class="p">
-      I’m currently the CTO &amp; Co-Founder of <a href="https://appraiseai.co" target="_blank" rel="noreferrer">Appraise AI</a>,
+      I’m currently the CTO &amp; Co-Founder of
+      <a href="https://appraiseai.co" target="_blank" rel="noreferrer">Appraise AI</a>,
       where we’re building a multimodal pricing engine and large-scale ingestion pipeline for resale marketplaces.
       I’ve also been a research intern with the Stanford Center for Biomedical Informatics Research since 2022.
     </div>
 
     <div class="links" id="contact">
       <a href="mailto:dils@berkeley.edu">Email</a> /
-      <a href="https://scholar.google.com/citations?user=0Sz8VPoAAAAJ" target="_blank">Google Scholar</a> /
-      <a href="https://github.com/axel-slid" target="_blank">GitHub</a> /
-      <a href="resume.pdf" target="_blank">CV</a> /
-      <a href="https://www.linkedin.com/in/alex-dils/" target="_blank">LinkedIn</a>
+      <a href="https://scholar.google.com/citations?user=0Sz8VPoAAAAJ" target="_blank" rel="noreferrer">Google Scholar</a> /
+      <a href="https://github.com/axel-slid" target="_blank" rel="noreferrer">GitHub</a> /
+      <a href="resume.pdf" target="_blank" rel="noreferrer">CV</a> /
+      <a href="https://www.linkedin.com/in/alex-dils/" target="_blank" rel="noreferrer">LinkedIn</a>
     </div>
   </div>
 </section>
@@ -46,7 +47,7 @@
 <section id="research">
   <h2>Research</h2>
 
-  <!-- Physio augmentation -->
+  <!-- Physio augmentation (USES: breathing-lungs.svg, ct-overlay.png, Figure2.png, mammogram-figure.gif) -->
   <article class="li-card">
     <div class="li-head">
       <div>
@@ -61,20 +62,30 @@
     </div>
 
     <div class="li-links">
-      <!-- Paper / Code when public -->
+      <!-- Add Paper / Code links when public -->
     </div>
 
+    <!-- data-max=2 => LinkedIn-style: show 2 thumbs, then +N overlay for the rest -->
     <div class="li-media" data-max="2">
-      <a class="li-thumb" href="assets/breathing-lungs.svg" target="_blank">
-        <img src="assets/breathing-lungs.svg" alt="Breathing deformation model"/>
+      <a class="li-thumb" href="assets/breathing-lungs.svg" target="_blank" rel="noreferrer">
+        <img src="assets/breathing-lungs.svg" alt="Breathing deformation illustration" />
       </a>
-      <a class="li-thumb" href="assets/lung-metrics.gif" target="_blank">
-        <img src="assets/lung-metrics.gif" alt="Robustness metrics"/>
+
+      <a class="li-thumb" href="assets/ct-overlay.png" target="_blank" rel="noreferrer">
+        <img src="assets/ct-overlay.png" alt="CT overlay visualization" />
+      </a>
+
+      <a class="li-thumb" href="assets/Figure2.png" target="_blank" rel="noreferrer">
+        <img src="assets/Figure2.png" alt="Figure 2 result summary" />
+      </a>
+
+      <a class="li-thumb" href="assets/mammogram-figure.gif" target="_blank" rel="noreferrer">
+        <img src="assets/mammogram-figure.gif" alt="Mammogram augmentation/segmentation figure" />
       </a>
     </div>
   </article>
 
-  <!-- Eye for an Eye -->
+  <!-- Eye for an Eye (USES: image-2.png, image-5.png, poster-photo.png) -->
   <article class="li-card">
     <div class="li-head">
       <div>
@@ -88,20 +99,27 @@
     </div>
 
     <div class="li-links">
-      <!-- Paper / Code -->
+      <a href="https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/#google_vignette"
+         target="_blank" rel="noreferrer">Paper</a>
+      <!-- Add Code link if/when you publish -->
     </div>
 
     <div class="li-media" data-max="2">
-      <a class="li-thumb" href="assets/stereo-before.png" target="_blank">
-        <img src="assets/stereo-before.png" alt="Single view input"/>
+      <a class="li-thumb" href="assets/image-2.png" target="_blank" rel="noreferrer">
+        <img src="assets/image-2.png" alt="Eye For An Eye — result image 1" />
       </a>
-      <a class="li-thumb" href="assets/stereo-after.png" target="_blank">
-        <img src="assets/stereo-after.png" alt="Stereo output"/>
+
+      <a class="li-thumb" href="assets/image-5.png" target="_blank" rel="noreferrer">
+        <img src="assets/image-5.png" alt="Eye For An Eye — result image 2" />
+      </a>
+
+      <a class="li-thumb" href="assets/poster-photo.png" target="_blank" rel="noreferrer">
+        <img src="assets/poster-photo.png" alt="Poster photo" />
       </a>
     </div>
   </article>
 
-  <!-- Microplastics -->
+  <!-- Microplastics (USES: image (3).png) -->
   <article class="li-card">
     <div class="li-head">
       <div>
@@ -115,15 +133,13 @@
     </div>
 
     <div class="li-links">
-      <a href="https://github.com/axel-slid/Microplastic-Segmentation-GAN" target="_blank">Code</a>
+      <a href="https://arxiv.org/abs/2410.19604" target="_blank" rel="noreferrer">Paper</a> /
+      <a href="https://github.com/axel-slid/Microplastic-Segmentation-GAN" target="_blank" rel="noreferrer">Code</a>
     </div>
 
     <div class="li-media" data-max="2">
-      <a class="li-thumb" href="assets/microplastics-mask.png" target="_blank">
-        <img src="assets/microplastics-mask.png" alt="Segmentation mask"/>
-      </a>
-      <a class="li-thumb" href="assets/microplastics-gan-context.png" target="_blank">
-        <img src="assets/microplastics-gan-context.png" alt="GAN context"/>
+      <a class="li-thumb" href="assets/image (3).png" target="_blank" rel="noreferrer">
+        <img src="assets/image (3).png" alt="Microplastic segmentation results" />
       </a>
     </div>
   </article>
@@ -135,6 +151,7 @@
 <section id="projects">
   <h2 class="li-section-title">Projects</h2>
 
+  <!-- Appraise (USES: appraise-ui.png) -->
   <article class="li-card">
     <div class="li-head">
       <div>
@@ -144,20 +161,18 @@
     </div>
 
     <div class="li-desc" data-lines="3">
-      Multimodal pricing engine and ingestion pipeline for resale marketplaces.
+      Multimodal pricing engine (vision + NLP) and large-scale ingestion pipeline for resale marketplaces.
     </div>
 
     <div class="li-links">
-      <a href="https://appraiseai.co" target="_blank">Website</a>
+      <a href="https://appraiseai.co" target="_blank" rel="noreferrer">Website</a>
     </div>
 
     <div class="li-media" data-max="2">
-      <a class="li-thumb" href="assets/appraise-ui.png" target="_blank">
-        <img src="assets/appraise-ui.png" alt="Appraise UI"/>
+      <a class="li-thumb" href="assets/appraise-ui.png" target="_blank" rel="noreferrer">
+        <img src="assets/appraise-ui.png" alt="Appraise UI" />
       </a>
-      <a class="li-thumb" href="assets/appraise-demo.mov" target="_blank">
-        <video src="assets/appraise-demo.mov" preload="metadata" muted></video>
-      </a>
+      <!-- If you want a second upload here later, add another <a class="li-thumb">…</a> -->
     </div>
   </article>
 </section>
@@ -168,25 +183,28 @@
 <section id="misc-projects">
   <h2>Misc Projects</h2>
 
+  <!-- VLUNAR (USES: image.png) -->
   <article class="li-card">
     <div class="li-head">
       <div>
-        <div class="li-role">Speed Reader — Web-based rapid reading tool</div>
-        <div class="li-dates">Tooling</div>
+        <div class="li-role">VLUNAR — Vision-language experiment</div>
+        <div class="li-dates">Project</div>
       </div>
     </div>
 
     <div class="li-desc" data-lines="3">
-      RSVP-style speed reading web app with adjustable pacing and keyboard controls.
+      A vision-language project exploring multimodal representations and evaluation workflows.
+      <!-- Replace with your exact one-liner when ready -->
     </div>
 
     <div class="li-links">
-      <a href="https://github.com/axel-slid/speed_reader" target="_blank">Code</a>
+      <!-- Add link(s) if public -->
+      <!-- <a href="..." target="_blank" rel="noreferrer">Code</a> -->
     </div>
 
-    <div class="li-media" data-max="1">
-      <a class="li-thumb" href="assets/speed-reader-ui.png" target="_blank">
-        <img src="assets/speed-reader-ui.png" alt="Speed reader UI"/>
+    <div class="li-media" data-max="2">
+      <a class="li-thumb" href="assets/image.png" target="_blank" rel="noreferrer">
+        <img src="assets/image.png" alt="VLUNAR media" />
       </a>
     </div>
   </article>
