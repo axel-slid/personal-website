@@ -1,29 +1,22 @@
-# personal-website
+# CODING AGENTS: READ THIS FIRST
 
-Static site (HTML/CSS/JS) with a password-protected in-browser editor that commits changes to GitHub via Vercel serverless functions.
+This is a **handoff bundle** from Claude Design (claude.ai/design).
 
-## Vercel environment variables
+A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
 
-### Required
-- `EDIT_SECRET` – random long string used to sign editor tokens.
+## What you should do — IMPORTANT
 
-### Editor accounts (choose one approach)
-- **Simple (single admin):** `EDIT_PASSWORD`
-- **Role-based (recommended):** `EDITORS_JSON` as JSON mapping roles to passwords.
-  - Example: `{"admin":"<pw>","editor":"<pw>"}`
-  - `admin` can publish, `editor` can only save drafts.
+**Find the primary design file under `personal-website/project/` and read it top to bottom.** Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
 
-### Draft / publish
-- `DRAFT_BRANCH` – branch name for draft saves (default: `draft`).
-- `GITHUB_BRANCH` – production branch (default: `main`).
+**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
 
-### GitHub write access
-- `GITHUB_TOKEN` – GitHub token with `repo` scope.
-- `GITHUB_OWNER` – repo owner (user/org).
-- `GITHUB_REPO` – repo name.
+## About the design files
 
-## How it works
-- Pages render their main content from `content/*.md`.
-- Edit button opens the editor console (right side).
-- **Save draft** commits to `DRAFT_BRANCH`.
-- **Publish** (admin only) commits to `GITHUB_BRANCH`.
+The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
+
+**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
+
+## Bundle contents
+
+- `personal-website/README.md` — this file
+- `personal-website/project/` — the `Personal Website` project files (HTML prototypes, assets, components)

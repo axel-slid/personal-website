@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Read · Microplastic Identification — Alex Dils</title>
+<meta name="description" content="A read-paper walkthrough of: Microplastic Identification Using AI-Driven Image Segmentation and GAN-Generated Ecological Context (arXiv 2410.19604)." />
+<link rel="canonical" href="https://alex-dils.com/papers/microplastic" />
+<link rel="icon" href="../headshot.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../style.css" />
+<style>
+  /* paper-specific layout */
+  .paper-head{
+    display:grid;
+    grid-template-columns: 1fr;
+    padding: 24px 0 36px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 18px;
+  }
+  .paper-head .eyebrow{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin-bottom: 16px;
+  }
+  .paper-head h1{
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(40px, 5vw, 68px);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin: 0 0 22px;
+    max-width: 22ch;
+  }
+  .paper-head .authors{
+    font-size: 17px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    max-width: 70ch;
+    margin: 0 0 14px;
+  }
+  .paper-head .authors em { font-style: italic; color: var(--accent-ink); font-weight: 500; }
+  .paper-head .meta-row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-top: 12px;
+  }
+  .paper-head .meta-row b { color: var(--ink); font-weight: 600; }
+
+  .read-grid{
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 56px;
+    padding: 24px 0;
+  }
+  .read-grid .toc{
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .read-grid .toc ol { list-style: none; padding: 0; margin: 8px 0 0; counter-reset: toc; }
+  .read-grid .toc li::before {
+    counter-increment: toc;
+    content: counter(toc, decimal-leading-zero) "  ";
+    color: var(--muted);
+  }
+  .read-grid .toc a {
+    border-bottom: 0;
+    color: var(--ink-soft);
+    display: inline-block;
+    padding: 4px 0;
+  }
+  .read-grid .toc a:hover { color: var(--accent-ink); }
+  .read-grid .toc .label { display: block; margin-bottom: 4px; color: var(--muted); }
+
+  .read-body section{ scroll-margin-top: 28px; padding: 8px 0 24px; }
+  .read-body h2{
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(28px, 2.8vw, 38px);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0 0 14px;
+  }
+  .read-body h2 .num{
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    display: block;
+    margin-bottom: 6px;
+    font-style: normal;
+  }
+  .read-body p{
+    font-size: 17.5px;
+    line-height: 1.75;
+    margin: 0 0 1.1em;
+    max-width: 64ch;
+  }
+  .read-body p.lede{
+    font-family: var(--display);
+    font-style: italic;
+    font-size: clamp(22px, 2vw, 28px);
+    line-height: 1.4;
+    color: var(--ink-soft);
+    max-width: 32ch;
+    margin: 0 0 28px;
+  }
+
+  .pull{
+    border-left: 2px solid var(--accent);
+    padding: 8px 0 8px 22px;
+    margin: 26px 0 26px;
+    max-width: 56ch;
+  }
+  .pull .pq{
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 26px;
+    line-height: 1.3;
+    color: var(--ink);
+    margin: 0;
+  }
+  .pull .src{
+    margin-top: 8px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--muted);
+  }
+
+  .figure{
+    margin: 26px 0;
+    border-top: var(--rule);
+    border-bottom: var(--rule);
+    padding: 22px 0 18px;
+  }
+  .figure .frame{
+    aspect-ratio: 16/9;
+    background: var(--paper-2);
+    border: 1px solid var(--hairline);
+    overflow: hidden;
+    background-image: repeating-linear-gradient(135deg, var(--paper-2) 0 8px, var(--paper) 8px 16px);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .figure img{ width:100%; height:100%; object-fit: cover; display: block; }
+  .figure .cap{
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 18px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .figure .cap .k{
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+
+  .pipeline{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin: 22px 0 30px;
+    border-top: var(--rule);
+    border-bottom: var(--rule);
+  }
+  .pipeline .step{
+    padding: 22px 18px;
+    border-left: var(--rule);
+    position: relative;
+  }
+  .pipeline .step:first-child { border-left: 0; }
+  .pipeline .step .k{
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    margin-bottom: 8px;
+  }
+  .pipeline .step h4{
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.15;
+    margin: 0 0 8px;
+  }
+  .pipeline .step p{
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  @media (max-width: 920px){
+    .pipeline{ grid-template-columns: 1fr 1fr; }
+    .pipeline .step:nth-child(3){ border-left: 0; border-top: var(--rule); }
+    .pipeline .step:nth-child(4){ border-top: var(--rule); }
+  }
+
+  .stats{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin: 22px 0 30px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+  }
+  .stats .stat{
+    padding: 22px 18px;
+    border-left: var(--rule);
+  }
+  .stats .stat:first-child{ border-left: 0; }
+  .stats .stat .big{
+    font-family: var(--display);
+    font-style: italic;
+    font-size: clamp(40px, 4.5vw, 64px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .stats .stat .lbl{
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+  @media (max-width: 720px){
+    .stats{ grid-template-columns: 1fr; }
+    .stats .stat{ border-left: 0; border-top: var(--rule); }
+    .stats .stat:first-child{ border-top: 0; }
+  }
+
+  .takeaways{
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+    counter-reset: tk;
+  }
+  .takeaways li{
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 18px;
+    padding: 16px 0;
+    border-top: var(--rule);
+    align-items: baseline;
+  }
+  .takeaways li:last-child { border-bottom: var(--rule); }
+  .takeaways li::before{
+    counter-increment: tk;
+    content: counter(tk, decimal-leading-zero);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--accent-ink);
+  }
+  .takeaways li .t{
+    font-family: var(--display);
+    font-size: 22px;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+  .takeaways li .d{
+    font-size: 15.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  @media (max-width: 820px){
+    .read-grid{ grid-template-columns: 1fr; gap: 12px; }
+    .read-grid .toc{ position: static; }
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<div class="shell">
+
+  <header class="masthead">
+    <div class="lockup">
+      <span class="name">Alex Dils</span>
+      <span class="colophon">Read Paper · 03</span>
+    </div>
+    <div></div>
+    <div class="issue">
+      Vol. 03 / No. 02<br/>
+      <b>Berkeley · 2026</b>
+    </div>
+  </header>
+
+  <nav class="subnav">
+    <div class="links">
+      <a href="../index.html">Index</a>
+      <a href="../story.html">Story</a>
+      <a href="../research.html" aria-current="page">Research</a>
+      <a href="../news.html">News</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../index.html#contact">Contact</a>
+    </div>
+    <div class="theme" aria-label="Theme">
+      <button type="button" data-set-theme="light">Light</button>
+      <button type="button" data-set-theme="dark">Dark</button>
+    </div>
+  </nav>
+
+  <!-- Paper masthead -->
+  <section class="paper-head" id="top">
+    <div class="eyebrow">Read · Paper No. 03 — arXiv 2410.19604</div>
+    <h1>Microplastic Identification using AI-Driven Image Segmentation and GAN-Generated Ecological Context.</h1>
+    <p class="authors">
+      <em>Alex Dils</em>, David Raymond, Christoph Sadée, et al.
+    </p>
+    <div class="meta-row">
+      <span>Venue · <b>arXiv preprint</b></span>
+      <span>Posted · <b>Oct 27, 2024</b></span>
+      <span>Domain · <b>Computer Vision · Environmental ML</b></span>
+      <span><a href="https://arxiv.org/abs/2410.19604" target="_blank" rel="noreferrer"><b>arXiv ↗</b></a></span>
+      <span><a href="https://github.com/axel-slid/Microplastic-Segmentation-GAN" target="_blank" rel="noreferrer"><b>Code ↗</b></a></span>
+    </div>
+  </section>
+
+  <div class="read-grid">
+
+    <aside class="toc">
+      <div class="label">Contents</div>
+      <ol>
+        <li><a href="#tldr">TL;DR</a></li>
+        <li><a href="#problem">The problem</a></li>
+        <li><a href="#approach">Approach</a></li>
+        <li><a href="#pipeline">Pipeline</a></li>
+        <li><a href="#results">Results</a></li>
+        <li><a href="#takeaways">Takeaways</a></li>
+        <li><a href="#cite">Cite</a></li>
+      </ol>
+      <div class="label" style="margin-top:24px;">Time</div>
+      <div style="font-family:var(--display); font-style:italic; font-size:24px; color:var(--ink); letter-spacing:-0.01em;">~ 6 min read</div>
+    </aside>
+
+    <article class="read-body">
+
+      <section id="tldr">
+        <h2><span class="num">§ 01 — TL;DR</span>What we did.</h2>
+        <p class="lede">
+          A segmentation model that identifies microplastics in real-world imagery,
+          trained with synthetic ecological context generated by a GAN — so it
+          generalizes across backgrounds it has never seen.
+        </p>
+        <p>
+          Microplastic detection in the wild is hard because the foreground (a fragment of plastic)
+          looks deceptively similar to the background (sand, kelp, sediment, foam). Models trained on
+          tightly-curated lab images learn a shortcut: <em>they classify the background, not the object.</em>
+          We use a GAN to manufacture diverse, realistic backgrounds and re-paste real microplastic
+          masks onto them, expanding the training set in a way that stresses the model along the axis
+          that actually matters at deployment.
+        </p>
+      </section>
+
+      <section id="problem">
+        <h2><span class="num">§ 02 — The problem</span>Background bias.</h2>
+        <p>
+          Two things break microplastic detection:
+        </p>
+        <ol style="font-size:17.5px; line-height:1.75; max-width:64ch; padding-left:1.2em;">
+          <li><b>Scarce, narrow data.</b> Annotated microplastic datasets exist, but they tend to be captured under controlled
+            lighting, on uniform substrates. Field samples look nothing like that.</li>
+          <li><b>Foreground / background entanglement.</b> Plastic shards on sand have low contrast.
+            A CNN learns "this kind of speckled brown texture means plastic" because that's what the
+            training pairs taught it — and then misses the same shard on a wet rock.</li>
+        </ol>
+        <div class="pull">
+          <p class="pq">A model that's "great on the test set" can still be useless at the beach.</p>
+          <div class="src">— Motivation, §2</div>
+        </div>
+      </section>
+
+      <section id="approach">
+        <h2><span class="num">§ 03 — Approach</span>Augment with the world, not with noise.</h2>
+        <p>
+          Rather than augmenting with rotations and color jitter — which leave the spurious
+          foreground/background pairing intact — we augment with <strong>plausible ecological context</strong>.
+          A generative model produces unseen-but-realistic backgrounds (sand textures, kelp tangles, wet pebbles, foam).
+          We composite the real microplastic masks onto these new backgrounds and add the composites to training.
+        </p>
+        <p>
+          The intuition is simple: if the only thing that stays constant between two training images is the
+          object itself, the model has to actually learn the object.
+        </p>
+
+        <div class="figure">
+          <a class="frame" href="../assets/image (3).png" target="_blank" rel="noreferrer">
+            <img src="../assets/image (3).png" alt="Microplastic segmentation results — masks overlaid on field imagery." />
+          </a>
+          <div class="cap">
+            <span class="k">Fig. 01</span>
+            <span>Segmentation outputs on field samples. The model produces clean masks across substrate
+              types (sand, sediment, organic debris) it never saw in the original lab dataset.</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="pipeline">
+        <h2><span class="num">§ 04 — Pipeline</span>Four stages.</h2>
+        <div class="pipeline">
+          <div class="step">
+            <div class="k">Stage A</div>
+            <h4>Curate masks</h4>
+            <p>Collect a base set of pixel-level microplastic annotations from controlled imagery.</p>
+          </div>
+          <div class="step">
+            <div class="k">Stage B</div>
+            <h4>Generate context</h4>
+            <p>Train a GAN on real ecological backgrounds (no plastic) — beaches, water, vegetation.</p>
+          </div>
+          <div class="step">
+            <div class="k">Stage C</div>
+            <h4>Composite</h4>
+            <p>Paste real masks onto synthetic backgrounds with blending that respects shadow + edge cues.</p>
+          </div>
+          <div class="step">
+            <div class="k">Stage D</div>
+            <h4>Train segmenter</h4>
+            <p>Train a U-Net-style segmentation model on the union of real + composited samples.</p>
+          </div>
+        </div>
+        <p>
+          The composite step is where most of the leverage lives. Naive copy-paste creates an obvious
+          edge artifact the model can exploit; we use blending and lighting consistency so the only
+          reliable signal is the object's shape and material.
+        </p>
+      </section>
+
+      <section id="results">
+        <h2><span class="num">§ 05 — Results</span>Generalization, not accuracy theater.</h2>
+        <p>
+          The headline isn't a higher in-distribution score — it's that the same model holds up
+          on substrates and lighting conditions absent from the original training set. We test
+          on held-out field photography and report cross-substrate IoU.
+        </p>
+        <div class="stats">
+          <div class="stat">
+            <div class="big">+IoU</div>
+            <div class="lbl">cross-substrate</div>
+          </div>
+          <div class="stat">
+            <div class="big">↓ FP</div>
+            <div class="lbl">on novel backgrounds</div>
+          </div>
+          <div class="stat">
+            <div class="big">≈</div>
+            <div class="lbl">in-distribution score</div>
+          </div>
+        </div>
+        <p>
+          Notably, the in-distribution metric barely moves. That's the point. Augmentation that
+          chases benchmark score often improves it at the cost of robustness; the GAN-context
+          augmentation here trades nothing in-distribution and buys a real chunk of generalization.
+        </p>
+        <div class="pull">
+          <p class="pq">The cleanest signal that augmentation is working: the test-set number stays put while the field number moves.</p>
+          <div class="src">— Discussion, §5</div>
+        </div>
+      </section>
+
+      <section id="takeaways">
+        <h2><span class="num">§ 06 — Takeaways</span>What I'd want a reader to leave with.</h2>
+        <ul class="takeaways">
+          <li>
+            <div>
+              <div class="t">Augmentation is a model of the world.</div>
+              <div class="d">"Add noise" implies failures are random. They aren't — they're structured by what
+                the model expects to see. Augment along the structure.</div>
+            </div>
+          </li>
+          <li>
+            <div>
+              <div class="t">Generative models can be training infrastructure.</div>
+              <div class="d">A GAN here isn't the product; it's a controllable source of diversity for the supervised
+                model that <em>is</em> the product.</div>
+            </div>
+          </li>
+          <li>
+            <div>
+              <div class="t">Robustness needs its own metric.</div>
+              <div class="d">Cross-substrate IoU surfaces what an aggregate score hides. The gap between
+                "test score" and "deployment score" is the real number.</div>
+            </div>
+          </li>
+          <li>
+            <div>
+              <div class="t">Domain context beats domain randomization.</div>
+              <div class="d">Random textures don't help. Plausible textures do — because the model's failure
+                surface is shaped by plausibility, not by entropy.</div>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <section id="cite">
+        <h2><span class="num">§ 07 — Cite</span>For the bibliography.</h2>
+        <p>
+          If this work was useful to you:
+        </p>
+        <pre style="font-family:var(--mono); font-size:12.5px; line-height:1.6; background:var(--paper-2); border:1px solid var(--hairline); padding:18px; overflow:auto; margin:0 0 18px;">@article{dils2024microplastic,
+  title   = {Microplastic Identification Using AI-Driven Image Segmentation
+             and GAN-Generated Ecological Context},
+  author  = {Dils, Alex and Raymond, David and Sad{\'e}e, Christoph and others},
+  journal = {arXiv preprint arXiv:2410.19604},
+  year    = {2024}
+}</pre>
+        <p class="small">
+          ← Back to <a href="../research.html">Research</a> · <a href="../index.html">Index</a>
+        </p>
+      </section>
+
+    </article>
+  </div>
+
+  <footer class="footer">
+    <div>© 2026 Alex Dils</div>
+    <div class="center">Read · Paper No. 03</div>
+    <div class="right"><a href="#top">Back to top ↑</a></div>
+  </footer>
+
+</div>
+
+<script src="../site.js"></script>
+</body>
+</html>

@@ -1,46 +1,115 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>My story | Alex Dils</title>
-<meta content="My story: how I got into computer vision, medical AI, and simulation driven augmentation." name="description"/>
-<link href="https://alex-dils.com/story" rel="canonical"/>
-<meta content="My story | Alex Dils" property="og:title"/>
-<meta content="How I got into computer vision, medical AI, and simulation driven augmentation." property="og:description"/>
-<meta content="article" property="og:type"/>
-<meta content="https://alex-dils.com/story" property="og:url"/>
-<meta content="https://alex-dils.com/headshot.png" property="og:image"/>
-<link href="headshot.png" rel="icon"/>
-<link href="style.css" rel="stylesheet"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Story — Alex Dils</title>
+<meta name="description" content="My story: how I got into computer vision, medical AI, and simulation driven augmentation." />
+<link rel="canonical" href="https://alex-dils.com/story" />
+<meta property="og:title" content="My story | Alex Dils" />
+<meta property="og:description" content="How I got into computer vision, medical AI, and simulation driven augmentation." />
+<meta property="og:type" content="article" />
+<link rel="icon" href="headshot.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
 <div class="progress" id="progress"></div>
-<nav>
-<div class="brandwrap">
-<div aria-hidden="true" class="siteicon"><img alt="" src="headshot.png"/></div>
-<div class="brand">Alex Dils</div>
+
+<div class="shell">
+
+  <header class="masthead">
+    <div class="lockup">
+      <span class="name">Alex Dils</span>
+      <span class="colophon">Computer Vision · Medical AI</span>
+    </div>
+    <div></div>
+    <div class="issue">
+      Vol. 03 / No. 02<br/>
+      <b>Berkeley · 2026</b>
+    </div>
+  </header>
+
+  <nav class="subnav">
+    <div class="links">
+      <a href="index.html">Index</a>
+      <a href="story.html" aria-current="page">Story</a>
+      <a href="research.html">Research</a>
+      <a href="news.html">News</a>
+      <a href="index.html#projects">Projects</a>
+      <a href="index.html#contact">Contact</a>
+    </div>
+    <div class="theme" aria-label="Theme">
+      <button type="button" data-set-theme="light">Light</button>
+      <button type="button" data-set-theme="dark">Dark</button>
+    </div>
+  </nav>
+
+  <section class="hero" id="top">
+    <div>
+      <div class="lead-in">§ Story</div>
+      <h1>How I started caring less about <em>scores</em>, and more about <em>misses</em>.</h1>
+      <p class="lede">
+        A short note on how I got into computer vision, medical AI, and the
+        simulation-driven side of augmentation.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="ch1">
+    <div class="marker"><span class="num">01</span>The hook</div>
+    <div class="body prose">
+      <h2>Vision exposes failure quickly.</h2>
+      <p class="large">
+        A model can look good on clean data and still break on small shifts.
+      </p>
+      <p>
+        I got into vision because it exposes failure quickly. I started caring less
+        about benchmark scores and more about what changes in the world cause a miss.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="ch2">
+    <div class="marker"><span class="num">02</span>Stanford, 2022</div>
+    <div class="body prose">
+      <h2>Add structure to training, not noise.</h2>
+      <p>
+        In 2022 I joined <strong>Stanford Biomedical Informatics</strong> as a research intern.
+        I worked on confounders in skin lesion diagnosis and on physiologically plausible
+        augmentation for tumor segmentation.
+      </p>
+      <p class="large">
+        The core idea was to add structure to training, not noise.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="ch3">
+    <div class="marker"><span class="num">03</span>Shipping</div>
+    <div class="body prose">
+      <h2>Shipping forces discipline.</h2>
+      <p>
+        On the systems side, I helped build <strong>Appraise AI</strong>. Shipping a model forces discipline.
+        It makes you name failure modes, track drift, and communicate uncertainty
+        without hiding behind averages.
+      </p>
+      <p class="small" style="margin-top:32px;">
+        ← Back to <a href="index.html">index</a>.
+      </p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div>© 2026 Alex Dils</div>
+    <div class="center">Last updated · 2026-02-17</div>
+    <div class="right"><a href="#top">Back to top ↑</a></div>
+  </footer>
+
 </div>
-<div class="nav-links">
-<a href="index.html">Home</a>
-<a aria-current="page" href="story.html">My story</a>
-<a href="research.html">Research</a>
-<a href="news.html">News</a>
-<a href="index.html#projects">Projects</a>
-<a href="index.html#contact">Contact</a>
-</div>
-<div aria-label="Theme" class="nav-right">
-<a data-no-transition="" data-set-theme="light" href="#">Light</a>
-<a data-no-transition="" data-set-theme="dark" href="#">Dark</a>
-<a data-no-transition="" data-set-theme="disco" href="#">Disco</a>
-</div>
-</nav>
-<main><div class="md-root" data-md="content/story.md" id="content"></div><div class="footer">
-<div>© 2026 Alex Dils</div>
-<div>Last updated: 2026-02-17</div>
-<div>Theme: <a data-no-transition="" data-set-theme="light" href="#">Light</a> / <a data-no-transition="" data-set-theme="dark" href="#">Dark</a> / <a data-no-transition="" data-set-theme="disco" href="#">Disco</a></div>
-</div></main>
-<script src="script.js"></script>
+
+<script src="site.js"></script>
 </body>
 </html>
