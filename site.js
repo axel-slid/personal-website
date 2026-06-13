@@ -1,54 +1,42 @@
-/* Alex Dils — site script
-   Theme switcher (persisted) + reading-progress bar.
-*/
 (function () {
-  // ---------- theme ----------
-  const THEMES = ["light", "dark"];
-  const root = document.documentElement;
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest("[data-email]");
+    if (!link) return;
 
-  function applyTheme(t) {
-    if (!THEMES.includes(t)) t = "light";
-    root.setAttribute("data-theme", t);
-    try { localStorage.setItem("ad-theme", t); } catch (e) {}
-    document.querySelectorAll("[data-set-theme]").forEach((b) => {
-      b.setAttribute("aria-pressed", b.getAttribute("data-set-theme") === t ? "true" : "false");
-    });
-  }
+    event.preventDefault();
+    const user = link.getAttribute("data-email-user");
+    const domain = link.getAttribute("data-email-domain");
 
-  let saved = "light";
-  try { saved = localStorage.getItem("ad-theme") || "light"; } catch (e) {}
-  applyTheme(saved);
-
-  document.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-set-theme]");
-    if (!btn) return;
-    e.preventDefault();
-    applyTheme(btn.getAttribute("data-set-theme"));
+    if (user && domain) {
+      window.location.href = "mailto:" + user + "@" + domain;
+    }
   });
 
-  // ---------- reading progress ----------
-  const bar = document.getElementById("progress");
-  if (bar) {
-    function tick() {
-      const h = document.documentElement;
-      const max = h.scrollHeight - h.clientHeight;
-      const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
-      bar.style.width = pct + "%";
-    }
-    window.addEventListener("scroll", tick, { passive: true });
-    window.addEventListener("resize", tick);
-    tick();
+  const revealItems = document.querySelectorAll(".reveal");
+  document.body.classList.add("motion-ready");
+
+  if (!("IntersectionObserver" in window)) {
+    revealItems.forEach((item) => item.classList.add("is-visible"));
+    return;
   }
 
-  // ---------- email reveal ----------
-  document.addEventListener("click", (e) => {
-    const a = e.target.closest("[data-email]");
-    if (!a) return;
-    e.preventDefault();
-    const u = a.getAttribute("data-email-user");
-    const d = a.getAttribute("data-email-domain");
-    if (u && d) {
-      window.location.href = "mailto:" + u + "@" + d;
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    },
+    { rootMargin: "0px 0px -8% 0px", threshold: 0.12 }
+  );
+
+  revealItems.forEach((item) => {
+    const rect = item.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.92) {
+      item.classList.add("is-visible");
+    } else {
+      observer.observe(item);
     }
   });
 })();
