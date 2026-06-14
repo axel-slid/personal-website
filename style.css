@@ -174,10 +174,10 @@ h1 {
   justify-content: center;
   aspect-ratio: 1 / 1;
   min-height: 320px;
-  overflow: hidden;
-  border: 1px solid var(--ink);
-  background: var(--panel);
-  padding: 18px 18px 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  padding: 0;
   justify-self: end;
 }
 
