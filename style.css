@@ -95,8 +95,16 @@ a:hover {
 }
 
 .hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+  gap: 50px;
+  align-items: center;
   padding: 78px 0 44px;
   border-bottom: 1px solid var(--line);
+}
+
+.hero-copy {
+  min-width: 0;
 }
 
 .eyebrow,
@@ -133,7 +141,7 @@ h1 {
 }
 
 .intro {
-  max-width: 820px;
+  max-width: 760px;
   margin-bottom: 28px;
   color: var(--text);
   font-family: var(--display);
@@ -159,27 +167,28 @@ h1 {
   font-weight: 700;
 }
 
-.media-strip {
-  display: grid;
-  grid-template-columns: 1.05fr 1.5fr 1fr 1fr;
-  gap: 10px;
-  align-items: stretch;
-  padding: 18px 0 58px;
-  border-bottom: 1px solid var(--ink);
-}
-
-.media-tile {
+.hero-portrait {
   position: relative;
-  display: block;
-  min-height: 220px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  min-height: 320px;
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-bottom-color: var(--line);
+  border: 1px solid var(--ink);
   background: var(--panel);
-  isolation: isolate;
+  padding: 18px 18px 0;
+  justify-self: end;
 }
 
-.media-tile::after,
+.hero-portrait img {
+  display: block;
+  width: min(100%, 310px);
+  height: auto;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
 .work-media::after {
   content: "";
   position: absolute;
@@ -190,7 +199,6 @@ h1 {
   transition: opacity 180ms ease;
 }
 
-.media-tile img,
 .work-media img {
   display: block;
   width: 100%;
@@ -200,28 +208,9 @@ h1 {
   transition: transform 520ms cubic-bezier(.2, .8, .2, 1), filter 180ms ease;
 }
 
-.media-tile:hover img,
 .work-item:hover .work-media img {
   filter: saturate(1.08);
   transform: scale(1.045);
-}
-
-.media-tile span {
-  position: absolute;
-  left: 12px;
-  bottom: 10px;
-  z-index: 1;
-  color: white;
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.portrait-tile {
-  aspect-ratio: 4 / 5;
-}
-
-.wide {
-  aspect-ratio: 16 / 9;
 }
 
 .section {
@@ -264,6 +253,11 @@ h2 {
   border-bottom: 1px solid var(--line);
 }
 
+.timeline-item.has-media {
+  grid-template-columns: 172px minmax(0, 1fr) 214px;
+  align-items: center;
+}
+
 .timeline-item h3,
 .work-item h3 {
   margin-bottom: 6px;
@@ -284,6 +278,56 @@ h2 {
 .work-item a {
   display: inline-block;
   margin-right: 14px;
+}
+
+.timeline-item .experience-card {
+  position: relative;
+  display: block;
+  align-self: stretch;
+  height: 136px;
+  min-height: 136px;
+  margin-right: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.experience-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 42%, rgba(0, 0, 0, 0.5));
+  opacity: 0.85;
+}
+
+.experience-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 136px;
+  object-fit: cover;
+  transform: scale(1.01);
+  transition: transform 520ms cubic-bezier(.2, .8, .2, 1), filter 180ms ease;
+}
+
+.experience-card.tall-card img {
+  object-position: center top;
+}
+
+.experience-card span {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  z-index: 1;
+  color: white;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.timeline-item:hover .experience-card img {
+  filter: saturate(1.08);
+  transform: scale(1.045);
 }
 
 .work-list {
@@ -353,10 +397,11 @@ body.motion-ready .reveal.is-visible {
   transition: opacity 520ms ease, transform 520ms cubic-bezier(.2, .8, .2, 1);
 }
 
-body.motion-ready .hero .reveal:nth-child(1).is-visible { transition-delay: 40ms; }
-body.motion-ready .hero .reveal:nth-child(2).is-visible { transition-delay: 100ms; }
-body.motion-ready .hero .reveal:nth-child(3).is-visible { transition-delay: 160ms; }
-body.motion-ready .hero .reveal:nth-child(4).is-visible { transition-delay: 220ms; }
+body.motion-ready .hero-copy .reveal:nth-child(1).is-visible { transition-delay: 40ms; }
+body.motion-ready .hero-copy .reveal:nth-child(2).is-visible { transition-delay: 100ms; }
+body.motion-ready .hero-copy .reveal:nth-child(3).is-visible { transition-delay: 160ms; }
+body.motion-ready .hero-copy .reveal:nth-child(4).is-visible { transition-delay: 220ms; }
+body.motion-ready .hero-portrait.is-visible { transition-delay: 180ms; }
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -370,21 +415,9 @@ body.motion-ready .hero .reveal:nth-child(4).is-visible { transition-delay: 220m
     transition: none;
   }
 
-  .media-tile img,
+  .experience-card img,
   .work-media img {
     transition: none;
-  }
-}
-
-@media (min-width: 901px) {
-  .media-tile {
-    height: clamp(300px, 28vw, 400px);
-    min-height: 0;
-  }
-
-  .portrait-tile,
-  .wide {
-    aspect-ratio: auto;
   }
 }
 
@@ -404,7 +437,15 @@ body.motion-ready .hero .reveal:nth-child(4).is-visible { transition-delay: 220m
   }
 
   .hero {
+    grid-template-columns: 1fr;
+    gap: 28px;
     padding: 54px 0 36px;
+  }
+
+  .hero-portrait {
+    width: min(330px, 100%);
+    min-height: 300px;
+    justify-self: start;
   }
 
   h1 {
@@ -415,11 +456,6 @@ body.motion-ready .hero .reveal:nth-child(4).is-visible { transition-delay: 220m
     font-size: 27px;
   }
 
-  .media-strip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    padding-bottom: 44px;
-  }
-
   .section {
     grid-template-columns: 1fr;
     gap: 22px;
@@ -428,6 +464,17 @@ body.motion-ready .hero .reveal:nth-child(4).is-visible { transition-delay: 220m
 
   .section-heading {
     position: static;
+  }
+
+  .timeline-item.has-media {
+    grid-template-columns: 160px minmax(0, 1fr);
+  }
+
+  .timeline-item .experience-card {
+    grid-column: 2;
+    width: min(320px, 100%);
+    height: 160px;
+    justify-self: start;
   }
 }
 
@@ -448,13 +495,20 @@ body.motion-ready .hero .reveal:nth-child(4).is-visible { transition-delay: 220m
     font-size: 24px;
   }
 
-  .media-strip,
+  .timeline-item.has-media,
   .timeline-item,
   .work-item {
     grid-template-columns: 1fr;
   }
 
-  .media-tile,
+  .timeline-item .experience-card {
+    grid-column: auto;
+    width: 100%;
+    height: 190px;
+  }
+
+  .timeline-item .experience-card,
+  .experience-card img,
   .work-media {
     min-height: 190px;
   }
