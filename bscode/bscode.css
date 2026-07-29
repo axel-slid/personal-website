@@ -44,6 +44,13 @@
   color: var(--ink);
 }
 
+.product-topbar nav .nav-download {
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  color: var(--ink);
+  padding: 6px 11px;
+}
+
 .product-hero {
   display: grid;
   grid-template-columns: minmax(350px, 0.82fr) minmax(520px, 1.38fr);
@@ -119,6 +126,14 @@
   font-size: 14px;
   font-weight: 700;
   transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.product-button small {
+  display: block;
+  font-size: 9px;
+  font-weight: 500;
+  margin-left: 10px;
+  opacity: .65;
 }
 
 a.product-button:hover {
@@ -198,10 +213,18 @@ a.product-button:hover {
 }
 
 .hero-product-shot img,
-.pixel-shot img {
+.pixel-shot img,
+.hero-product-shot video,
+.pixel-shot video {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.hero-product-shot video,
+.pixel-shot video {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
 }
 
 .hero-product-shot figcaption,
@@ -219,6 +242,158 @@ a.product-button:hover {
   gap: 46px;
   padding: 62px 0;
   border-bottom: 1px solid var(--line);
+}
+
+.motion-showcase {
+  border-bottom: 1px solid var(--line);
+  padding: 78px 0;
+}
+
+.motion-showcase > header {
+  display: grid;
+  grid-template-columns: minmax(280px, .75fr) minmax(320px, 1.25fr);
+  margin-bottom: 36px;
+}
+
+.motion-showcase > header .eyebrow {
+  grid-column: 1 / -1;
+}
+
+.motion-showcase > header h2 {
+  font-size: clamp(42px, 5vw, 72px);
+  letter-spacing: -.035em;
+  line-height: .95;
+  margin: 0;
+}
+
+.motion-showcase > header > p:last-child {
+  align-self: end;
+  color: var(--muted);
+  font-family: var(--display);
+  font-size: 24px;
+  margin: 0 0 5px 44px;
+}
+
+.motion-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.motion-card {
+  min-width: 0;
+}
+
+.motion-frame {
+  background: #111511;
+  border: 1px solid #121512;
+  box-shadow: 10px 10px 0 var(--product-mint);
+  overflow: hidden;
+  position: relative;
+}
+
+.motion-card:nth-child(2) .motion-frame {
+  box-shadow: 10px 10px 0 #ebbd70;
+}
+
+.motion-frame video {
+  aspect-ratio: 16 / 9;
+  display: block;
+  object-fit: cover;
+  width: 100%;
+}
+
+.motion-callout {
+  align-items: center;
+  animation: calloutFloat 6s ease-in-out infinite;
+  backdrop-filter: blur(14px);
+  background: rgba(8, 14, 16, .82);
+  bottom: 18px;
+  color: white;
+  display: flex;
+  gap: 11px;
+  left: 18px;
+  max-width: calc(100% - 36px);
+  padding: 10px 13px;
+  position: absolute;
+}
+
+.motion-callout strong {
+  color: #88d8c1;
+  font-family: var(--body);
+}
+
+.motion-callout.amber strong {
+  color: #f2bd66;
+}
+
+.motion-callout span {
+  font-size: 11px;
+}
+
+@keyframes calloutFloat {
+  0%, 12% { opacity: 0; transform: translateY(9px); }
+  22%, 78% { opacity: 1; transform: translateY(0); }
+  90%, 100% { opacity: 0; transform: translateY(-5px); }
+}
+
+.motion-card h3 {
+  font-family: var(--display);
+  font-size: 26px;
+  margin: 24px 0 6px;
+}
+
+.motion-card > p {
+  color: var(--muted);
+  margin: 0;
+}
+
+.floating-download {
+  align-items: center;
+  backdrop-filter: blur(18px);
+  background: rgba(22, 25, 22, .93);
+  border: 1px solid rgba(255,255,255,.22);
+  bottom: 20px;
+  box-shadow: 0 18px 55px rgba(0,0,0,.28);
+  color: #fff;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 36px minmax(0, 1fr) 24px;
+  padding: 10px 12px;
+  position: fixed;
+  right: 20px;
+  width: 245px;
+  z-index: 30;
+}
+
+.floating-download:hover {
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.floating-download img {
+  border-radius: 9px;
+  height: 36px;
+  width: 36px;
+}
+
+.floating-download span {
+  display: grid;
+  gap: 2px;
+}
+
+.floating-download strong {
+  font-size: 12px;
+}
+
+.floating-download small {
+  color: #b9c1bb;
+  font-size: 9px;
+}
+
+.floating-download b {
+  color: #8ee0bd;
+  font-size: 20px;
 }
 
 .product-section .section-heading {
@@ -510,9 +685,34 @@ a.product-button:hover {
       "copy"
       "shot";
   }
+
+  .motion-showcase > header {
+    grid-template-columns: 1fr;
+  }
+
+  .motion-showcase > header > p:last-child {
+    margin: 18px 0 0;
+  }
 }
 
 @media (max-width: 680px) {
+  .product-topbar nav {
+    width: 100%;
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 3px;
+    scrollbar-width: none;
+  }
+
+  .product-topbar nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .product-topbar nav a {
+    flex: 0 0 auto;
+  }
+
   .product-hero {
     padding-top: 46px;
   }
@@ -537,8 +737,16 @@ a.product-button:hover {
   .proof-strip,
   .feature-grid,
   .visual-copy,
-  .download-panel {
+  .download-panel,
+  .motion-grid {
     grid-template-columns: 1fr;
+  }
+
+  .floating-download {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    width: auto;
   }
 
   .proof-strip li {
