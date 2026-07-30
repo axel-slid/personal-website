@@ -53,10 +53,7 @@ if ((html.match(/<main\b/g) || []).length !== 1) {
 }
 
 const expectedCopy = [
-  "Run the whole coding session from one place.",
-  "Start four agents without opening four terminals.",
-  "Local and SSH workspaces keep the same rhythm.",
-  "Change the view. Keep the work."
+  "Run the whole coding session from one place."
 ];
 for (const copy of expectedCopy) {
   if (!html.includes(copy)) {
@@ -67,7 +64,6 @@ for (const copy of expectedCopy) {
 for (const rule of [
   ".film-stage",
   "aspect-ratio: 16 / 9",
-  ".product-notes",
   "@media (max-width: 560px)",
   "prefers-reduced-motion"
 ]) {
@@ -87,7 +83,14 @@ for (const removedElement of [
   "Native command center for macOS",
   "BsCode puts Codex, Claude, shell sessions, local files, and SSH workspaces in one window.",
   "From a task to a finished file.",
-  "A faithful digital twin follows the real controls and states"
+  "A faithful digital twin follows the real controls and states",
+  "Start four agents without opening four terminals.",
+  "Know what is happening before a terminal stops.",
+  "Local and SSH workspaces keep the same rhythm.",
+  "Change the view. Keep the work.",
+  "Built for Apple silicon",
+  "Less window management.",
+  "More finished work."
 ]) {
   if (html.includes(removedElement)) {
     throw new Error(`Obsolete launch-page content is still present: ${removedElement}`);
