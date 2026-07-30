@@ -126,9 +126,20 @@ async function main() {
       screenHeight: viewport.height
     });
     await delay(500);
+    const topScreenshot = await send("Page.captureScreenshot", {
+      format: "png",
+      fromSurface: true,
+      captureBeyondViewport: false
+    });
+    await fs.writeFile(
+      path.join(outputDirectory, `${viewport.name}-top.png`),
+      Buffer.from(topScreenshot.data, "base64")
+    );
+    await evaluate(send, `document.querySelector(".film-stage")?.scrollIntoView({ block: "center" })`);
+    await delay(400);
     const metrics = await evaluate(send, `(() => {
-      const video = document.querySelector("#bscodeOverview");
-      const frame = document.querySelector(".demo-frame");
+      const video = document.querySelector("#bscodeDigitalTwin");
+      const frame = document.querySelector(".film-stage");
       const frameRect = frame?.getBoundingClientRect();
       const links = Array.from(document.querySelectorAll("a[href]"));
       return {
@@ -144,8 +155,8 @@ async function main() {
         videoSource: video?.querySelector("source")?.getAttribute("src") || "",
         videoPoster: video?.getAttribute("poster") || "",
         videoPausedForReducedMotion: Boolean(video?.paused),
-        hasOldLaunchCopy: document.body.innerText.includes("Every coding agent.")
-          || document.body.innerText.includes("The real workflow"),
+        hasProductHeadline: document.body.innerText.includes("Run the whole coding session from one place."),
+        hasSetupCommand: document.body.innerText.includes("xattr -dr com.apple.quarantine"),
         downloadLinks: links
           .map((link) => link.href)
           .filter((href) => href.includes("BsCode-macOS-arm64.zip")),
@@ -159,35 +170,50 @@ async function main() {
         } : null
       };
     })()`);
-    const screenshot = await send("Page.captureScreenshot", {
+    const filmScreenshot = await send("Page.captureScreenshot", {
       format: "png",
       fromSurface: true,
       captureBeyondViewport: false
     });
     await fs.writeFile(
-      path.join(outputDirectory, `${viewport.name}.png`),
-      Buffer.from(screenshot.data, "base64")
+      path.join(outputDirectory, `${viewport.name}-film.png`),
+      Buffer.from(filmScreenshot.data, "base64")
     );
     report.push({ ...viewport, ...metrics });
+    await evaluate(send, "scrollTo(0, 0)");
   }
+
+  await send("Emulation.setEmulatedMedia", {
+    features: [{ name: "prefers-reduced-motion", value: "no-preference" }]
+  });
+  const playbackStart = await evaluate(send, `(async () => {
+    const video = document.querySelector("#bscodeDigitalTwin");
+    video.currentTime = 0;
+    await video.play();
+    return video.currentTime;
+  })()`);
+  await delay(700);
+  const playbackEnd = await evaluate(send, `document.querySelector("#bscodeDigitalTwin")?.currentTime || 0`);
+  const playbackAdvanced = playbackEnd > playbackStart + 0.2;
+  await evaluate(send, `document.querySelector("#bscodeDigitalTwin")?.pause()`);
 
   const pageErrors = await evaluate(send, "window.__bscodeQaErrors || []");
   socket.close();
   await fs.writeFile(
     path.join(outputDirectory, "report.json"),
-    `${JSON.stringify({ viewports: report, pageErrors }, null, 2)}\n`
+    `${JSON.stringify({ viewports: report, playbackAdvanced, pageErrors }, null, 2)}\n`
   );
 
   const failures = report.filter((entry) => {
     const rect = entry.frameRect;
     return (
       entry.hasHorizontalOverflow
-      || entry.hasVerticalOverflow
       || entry.videoCount !== 1
-      || !entry.videoSource.includes("bscode-overview.mp4")
-      || !entry.videoPoster.includes("bscode-overview-poster.jpg")
+      || !entry.videoSource.includes("bscode-digital-twin.mp4")
+      || !entry.videoPoster.includes("bscode-digital-twin-poster.jpg")
       || !entry.videoPausedForReducedMotion
-      || entry.hasOldLaunchCopy
+      || !entry.hasProductHeadline
+      || !entry.hasSetupCommand
       || entry.downloadLinks.length < 1
       || !rect
       || rect.width < 1
@@ -199,8 +225,8 @@ async function main() {
     );
   });
 
-  process.stdout.write(`${JSON.stringify({ outputDirectory, report, pageErrors, failures }, null, 2)}\n`);
-  if (failures.length || pageErrors.length) process.exitCode = 1;
+  process.stdout.write(`${JSON.stringify({ outputDirectory, report, playbackAdvanced, pageErrors, failures }, null, 2)}\n`);
+  if (failures.length || !playbackAdvanced || pageErrors.length) process.exitCode = 1;
 }
 
 main().catch((error) => {

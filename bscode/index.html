@@ -3,104 +3,219 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BsCode — The workspace for coding agents</title>
-  <meta name="description" content="Run, direct, and review Codex, Claude, and shell agents together across local and SSH workspaces.">
+  <title>BsCode — Run the whole coding session from one place</title>
+  <meta name="description" content="BsCode brings Codex, Claude, shell sessions, local files, and SSH workspaces into one native macOS command center.">
   <link rel="canonical" href="https://alex-dils.com/bscode/">
-  <meta property="og:title" content="BsCode — The workspace for coding agents">
-  <meta property="og:description" content="Run, direct, and review coding agents together in one desktop workspace.">
+  <meta property="og:title" content="BsCode — Run the whole coding session from one place">
+  <meta property="og:description" content="Direct coding agents, watch live progress, and review their output without losing context.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://alex-dils.com/bscode/">
-  <meta property="og:image" content="https://alex-dils.com/assets/bscode/motion/bscode-overview-poster.jpg">
+  <meta property="og:image" content="https://alex-dils.com/assets/bscode/motion/bscode-digital-twin-poster.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../assets/bscode/app-icon.png">
   <link rel="apple-touch-icon" href="../assets/bscode/app-icon.png">
-  <link rel="preload" href="../assets/bscode/motion/bscode-overview-poster.jpg" as="image" fetchpriority="high">
+  <link rel="preload" href="../assets/bscode/motion/bscode-digital-twin-poster.jpg" as="image" fetchpriority="high">
   <link rel="stylesheet" href="bscode.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "BsCode",
-    "softwareVersion": "0.2.3",
+    "softwareVersion": "0.2.4",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "macOS",
-    "description": "A desktop workspace for running and organizing Codex, Claude, and shell agents.",
+    "description": "A native macOS command center for directing Codex, Claude, and shell agents across local and SSH workspaces.",
     "author": {"@type": "Person", "name": "Alex Dils", "url": "https://alex-dils.com/"},
-    "downloadUrl": "https://github.com/axel-slid/bscode/releases/latest/download/BsCode-macOS-arm64.zip",
+    "downloadUrl": "https://github.com/axel-slid/bscode/releases/download/v0.2.4/BsCode-macOS-arm64.zip",
     "codeRepository": "https://github.com/axel-slid/bscode"
   }
   </script>
 </head>
 <body>
-  <a class="skip-link" href="#product-demo">Skip to product demo</a>
+  <a class="skip-link" href="#product-film">Skip to product film</a>
 
   <header class="site-header">
     <a class="product-brand" href="./" aria-label="BsCode home">
-      <img src="../assets/bscode/app-icon.png" alt="" width="34" height="34">
+      <img src="../assets/bscode/app-icon.png" alt="" width="30" height="30">
       <span>BsCode</span>
     </a>
-    <div class="header-actions">
-      <details class="install-help">
-        <summary>First launch</summary>
-        <div class="install-popover">
-          <p>After moving BsCode to Applications, run:</p>
-          <div class="install-command">
-            <code id="quarantineCommand">xattr -dr com.apple.quarantine "/Applications/BsCode.app"</code>
-            <button id="copyQuarantineCommand" type="button">Copy</button>
-          </div>
-        </div>
-      </details>
-      <a class="header-download" href="https://github.com/axel-slid/bscode/releases/latest/download/BsCode-macOS-arm64.zip">
-        Download for Apple silicon <span aria-hidden="true">↓</span>
+    <nav class="header-nav" aria-label="Product">
+      <a class="quiet-link" href="https://github.com/axel-slid/bscode" target="_blank" rel="noreferrer">GitHub</a>
+      <a class="header-download" href="https://github.com/axel-slid/bscode/releases/download/v0.2.4/BsCode-macOS-arm64.zip">
+        Download <span class="download-detail">for Apple silicon</span>
+        <span aria-hidden="true">↓</span>
       </a>
-    </div>
+    </nav>
   </header>
 
-  <main id="product-demo" class="product-demo">
-    <h1 class="sr-only">BsCode</h1>
-    <figure class="demo-frame">
-      <video
-        id="bscodeOverview"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="auto"
-        disablepictureinpicture
-        poster="../assets/bscode/motion/bscode-overview-poster.jpg"
-        aria-describedby="demo-description"
-      >
-        <source src="../assets/bscode/motion/bscode-overview.mp4" type="video/mp4">
-        <a href="../assets/bscode/motion/bscode-overview.mp4">Watch the BsCode product demo</a>
-      </video>
-      <figcaption id="demo-description" class="sr-only">
-        An animated BsCode tour cycling through parallel agent terminals, Cinematic mode, and the Pixel tower.
-      </figcaption>
-    </figure>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <p class="eyebrow">Native command center for macOS</p>
+      <h1 id="hero-title">Run the whole coding session from one place.</h1>
+      <p class="hero-summary">
+        BsCode puts Codex, Claude, shell sessions, local files, and SSH workspaces in one window.
+        Delegate work, follow every terminal, and open the result without losing context.
+      </p>
+      <div class="hero-actions">
+        <a class="primary-download" href="https://github.com/axel-slid/bscode/releases/download/v0.2.4/BsCode-macOS-arm64.zip">
+          Download for Apple silicon
+          <span aria-hidden="true">↓</span>
+        </a>
+        <a class="release-link" href="https://github.com/axel-slid/bscode/releases/tag/v0.2.4" target="_blank" rel="noreferrer">
+          v0.2.4 release notes
+        </a>
+      </div>
+
+      <div class="first-launch" aria-labelledby="first-launch-title">
+        <div>
+          <p id="first-launch-title">First launch on macOS</p>
+          <span>Move BsCode to Applications, then run:</span>
+        </div>
+        <div class="install-command">
+          <code id="quarantineCommand">xattr -dr com.apple.quarantine "/Applications/BsCode.app"</code>
+          <button id="copyQuarantineCommand" type="button" aria-label="Copy first-launch command">Copy</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="product-film" class="film-section" aria-labelledby="film-title">
+      <div class="section-intro reveal">
+        <p class="section-index">Product film</p>
+        <h2 id="film-title">From a task to a finished file.</h2>
+        <p>
+          A faithful digital twin follows the real controls and states—from opening a workspace
+          and assigning agents to reviewing progress, outputs, Cinematic mode, and the Pixel tower.
+        </p>
+      </div>
+
+      <figure class="film-stage reveal">
+        <video
+          id="bscodeDigitalTwin"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="auto"
+          disablepictureinpicture
+          poster="../assets/bscode/motion/bscode-digital-twin-poster.jpg"
+          aria-describedby="film-description"
+        >
+          <source src="../assets/bscode/motion/bscode-digital-twin.mp4" type="video/mp4">
+          <a href="../assets/bscode/motion/bscode-digital-twin.mp4">Watch the BsCode product film</a>
+        </video>
+        <figcaption id="film-description" class="sr-only">
+          A close product tour showing a BsCode workspace, four live coding agents, progress views,
+          generated outputs, Cinematic mode, and the Pixel tower.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="product-notes" aria-label="BsCode capabilities">
+      <article class="product-note reveal">
+        <p class="section-index">01 · Direct</p>
+        <h2>Start four agents without opening four terminals.</h2>
+        <p>
+          Give each agent its own task, model, and session. Send a follow-up to one agent or
+          address the room from the shared command bar.
+        </p>
+      </article>
+
+      <article class="product-note reveal">
+        <p class="section-index">02 · Follow</p>
+        <h2>Know what is happening before a terminal stops.</h2>
+        <p>
+          Live output, checklists, status, and ETA stay attached to the agent doing the work.
+          Finished sessions settle to idle instead of disappearing.
+        </p>
+      </article>
+
+      <article class="product-note reveal">
+        <p class="section-index">03 · Move</p>
+        <h2>Local and SSH workspaces keep the same rhythm.</h2>
+        <p>
+          Open a project on your Mac or connect to a remote machine. Files, tabs, sessions,
+          connection state, and generated outputs remain in one predictable layout.
+        </p>
+      </article>
+
+      <article class="product-note reveal">
+        <p class="section-index">04 · See</p>
+        <h2>Change the view. Keep the work.</h2>
+        <p>
+          Switch from dense terminals to Cinematic mode or the Pixel tower without restarting
+          a session. Every view reflects the same agents and the same live state.
+        </p>
+      </article>
+    </section>
+
+    <section class="closing reveal" aria-labelledby="closing-title">
+      <p class="eyebrow">Built for Apple silicon</p>
+      <h2 id="closing-title">Less window management.<br>More finished work.</h2>
+      <a class="primary-download" href="https://github.com/axel-slid/bscode/releases/download/v0.2.4/BsCode-macOS-arm64.zip">
+        Download BsCode
+        <span aria-hidden="true">↓</span>
+      </a>
+    </section>
   </main>
+
+  <footer class="site-footer">
+    <span>BsCode v0.2.4</span>
+    <a href="https://github.com/axel-slid/bscode" target="_blank" rel="noreferrer">Source on GitHub ↗</a>
+  </footer>
 
   <script>
     (() => {
-      const demo = document.getElementById("bscodeOverview");
+      const film = document.getElementById("bscodeDigitalTwin");
       const copyButton = document.getElementById("copyQuarantineCommand");
       const quarantineCommand = document.getElementById("quarantineCommand");
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
       const syncPlayback = () => {
         if (reducedMotion.matches || document.hidden) {
-          demo.pause();
+          film.pause();
           return;
         }
-        demo.play().catch(() => {});
+        film.play().catch(() => {});
       };
-      reducedMotion.addEventListener?.("change", syncPlayback);
-      document.addEventListener("visibilitychange", syncPlayback);
-      copyButton.addEventListener("click", async () => {
-        await navigator.clipboard.writeText(quarantineCommand.textContent);
+
+      const copyCommand = async () => {
+        const command = quarantineCommand.textContent.trim();
+        try {
+          await navigator.clipboard.writeText(command);
+        } catch {
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(quarantineCommand);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          document.execCommand("copy");
+          selection.removeAllRanges();
+        }
         copyButton.textContent = "Copied";
         window.setTimeout(() => {
           copyButton.textContent = "Copy";
         }, 1400);
+      };
+
+      const revealObserver = "IntersectionObserver" in window
+        ? new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add("is-visible");
+              revealObserver.unobserve(entry.target);
+            });
+          }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 })
+        : null;
+
+      document.querySelectorAll(".reveal").forEach((element) => {
+        if (revealObserver) revealObserver.observe(element);
+        else element.classList.add("is-visible");
       });
+
+      reducedMotion.addEventListener?.("change", syncPlayback);
+      document.addEventListener("visibilitychange", syncPlayback);
+      copyButton.addEventListener("click", copyCommand);
       syncPlayback();
     })();
   </script>
