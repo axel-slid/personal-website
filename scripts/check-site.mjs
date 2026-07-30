@@ -53,7 +53,8 @@ if ((html.match(/<main\b/g) || []).length !== 1) {
 }
 
 const expectedCopy = [
-  "Run the whole coding session from one place."
+  "1) Download",
+  "2) Run this"
 ];
 for (const copy of expectedCopy) {
   if (!html.includes(copy)) {

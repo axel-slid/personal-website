@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BsCode — Run the whole coding session from one place</title>
+  <title>BsCode — A live coding command center</title>
   <meta name="description" content="BsCode brings Codex, Claude, shell sessions, local files, and SSH workspaces into one native macOS command center.">
   <link rel="canonical" href="https://alex-dils.com/bscode/">
-  <meta property="og:title" content="BsCode — Run the whole coding session from one place">
+  <meta property="og:title" content="BsCode — A live coding command center">
   <meta property="og:description" content="Direct coding agents, watch live progress, and review their output without losing context.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://alex-dils.com/bscode/">
@@ -40,7 +40,12 @@
       <span>BsCode</span>
     </a>
     <nav class="header-nav" aria-label="Product">
-      <a class="quiet-link" href="https://github.com/axel-slid/bscode" target="_blank" rel="noreferrer">GitHub</a>
+      <a class="quiet-link" href="https://github.com/axel-slid/bscode" target="_blank" rel="noreferrer">
+        <svg class="github-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.292 9.407 7.865 10.936.575.106.785-.25.785-.555 0-.274-.01-1.004-.015-1.97-3.203.696-3.88-1.544-3.88-1.544-.524-1.33-1.279-1.684-1.279-1.684-1.046-.715.08-.7.08-.7 1.156.08 1.765 1.188 1.765 1.188 1.028 1.76 2.698 1.251 3.357.957.104-.744.402-1.25.73-1.538-2.554-.29-5.238-1.277-5.238-5.68 0-1.256.45-2.283 1.187-3.086-.119-.29-.514-1.462.112-3.047 0 0 .966-.31 3.166 1.178a10.98 10.98 0 0 1 2.884-.386c.98.004 1.968.132 2.888.386 2.199-1.488 3.164-1.178 3.164-1.178.628 1.585.232 2.756.114 3.047.739.804 1.186 1.83 1.186 3.086 0 4.414-2.69 5.387-5.254 5.67.414.355.786 1.058.786 2.133 0 1.54-.014 2.783-.014 3.16 0 .307.208.667.793.554C20.71 21.403 24 17.088 24 12 24 5.65 18.85.5 12 .5Z"/>
+        </svg>
+        <span>GitHub</span>
+      </a>
       <a class="header-download" href="https://github.com/axel-slid/bscode/releases/download/v0.2.5/BsCode-macOS-arm64.zip">
         Download <span class="download-detail">for Apple silicon</span>
         <span aria-hidden="true">↓</span>
@@ -51,21 +56,21 @@
   <main>
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-glow" aria-hidden="true"></div>
-      <h1 id="hero-title">Run the whole coding session from one place.</h1>
+      <h1 id="hero-title">Coordinate every coding move from one polished, live workspace.</h1>
       <div class="hero-actions">
         <a class="primary-download" href="https://github.com/axel-slid/bscode/releases/download/v0.2.5/BsCode-macOS-arm64.zip">
-          Download for Apple silicon
+          1) Download for Apple silicon
           <span aria-hidden="true">↓</span>
         </a>
-        <a class="release-link" href="https://github.com/axel-slid/bscode/releases/tag/v0.2.5" target="_blank" rel="noreferrer">
-          v0.2.5 release notes
+        <a class="release-link" href="#first-launch" aria-label="Run this command to finish setup">
+          2) Run this
         </a>
       </div>
 
       <div class="first-launch" aria-labelledby="first-launch-title">
         <div>
-          <p id="first-launch-title">First launch on macOS</p>
-          <span>Move BsCode to Applications, then run:</span>
+          <p id="first-launch-title">2) Run this</p>
+          <span>Move BsCode to Applications, then run this command:</span>
         </div>
         <div class="install-command">
           <code id="quarantineCommand">xattr -dr com.apple.quarantine "/Applications/BsCode.app"</code>

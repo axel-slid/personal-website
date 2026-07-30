@@ -137,12 +137,21 @@ a {
 .quiet-link {
   color: var(--muted);
   font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   transition: color 160ms ease;
 }
 
 .quiet-link:hover,
 .quiet-link:focus-visible {
   color: var(--text);
+}
+
+.github-icon {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
 }
 
 .header-download {
@@ -315,18 +324,12 @@ main {
   position: relative;
   margin: 0;
   overflow: hidden;
-  border: 1px solid rgba(163, 197, 255, 0.2);
   border-radius: 18px;
   background: transparent;
-  box-shadow:
-    0 45px 120px rgba(0, 0, 0, 0.56),
-    0 0 0 1px rgba(0, 0, 0, 0.52),
-    0 0 100px rgba(66, 120, 214, 0.1);
-  transition: transform 500ms cubic-bezier(.2, .75, .2, 1), border-color 300ms ease;
+  transition: transform 500ms cubic-bezier(.2, .75, .2, 1);
 }
 
 .film-stage:hover {
-  border-color: rgba(163, 197, 255, 0.32);
   transform: translateY(-2px);
 }
 
