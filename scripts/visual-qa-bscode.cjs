@@ -113,19 +113,7 @@ async function main() {
       throw new Error(`Timed out loading ${targetUrl}`);
     })
   ]);
-  await evaluate(send, `
-    Promise.all([
-      document.fonts?.ready || Promise.resolve(),
-      ...Array.from(document.images).map((image) => new Promise((resolve) => {
-        if (image.complete) resolve();
-        else {
-          image.addEventListener("load", resolve, { once: true });
-          image.addEventListener("error", resolve, { once: true });
-          setTimeout(resolve, 5000);
-        }
-      }))
-    ])
-  `);
+  await evaluate(send, "document.fonts?.ready || Promise.resolve()");
 
   const report = [];
   for (const viewport of viewports) {
@@ -137,21 +125,11 @@ async function main() {
       screenWidth: viewport.width,
       screenHeight: viewport.height
     });
-    await delay(900);
-    await evaluate(send, `
-      Promise.all(Array.from(document.images).map(async (image) => {
-        image.loading = "eager";
-        if (!image.complete) {
-          await new Promise((resolve) => {
-            image.addEventListener("load", resolve, { once: true });
-            image.addEventListener("error", resolve, { once: true });
-            setTimeout(resolve, 5000);
-          });
-        }
-        if (image.decode) await image.decode().catch(() => {});
-      }))
-    `);
+    await delay(500);
     const metrics = await evaluate(send, `(() => {
+      const video = document.querySelector("#bscodeOverview");
+      const frame = document.querySelector(".demo-frame");
+      const frameRect = frame?.getBoundingClientRect();
       const links = Array.from(document.querySelectorAll("a[href]"));
       return {
         title: document.title,
@@ -161,32 +139,24 @@ async function main() {
           height: document.documentElement.scrollHeight
         },
         hasHorizontalOverflow: document.documentElement.scrollWidth > innerWidth + 1,
-        hasDigitalTwin: Boolean(document.querySelector(".digital-twin #twinCanvas")),
-        twinView: document.querySelector("#twinCanvas")?.dataset.view || null,
-        workflowIds: Array.from(document.querySelectorAll("[data-workflow]"))
-          .map((button) => button.dataset.workflow),
-        brokenImages: Array.from(document.images)
-          .filter((image) => !image.complete || image.naturalWidth === 0)
-          .map((image) => image.currentSrc || image.src),
+        hasVerticalOverflow: document.documentElement.scrollHeight > innerHeight + 1,
+        videoCount: document.querySelectorAll("video").length,
+        videoSource: video?.querySelector("source")?.getAttribute("src") || "",
+        videoPoster: video?.getAttribute("poster") || "",
+        videoPausedForReducedMotion: Boolean(video?.paused),
+        hasOldLaunchCopy: document.body.innerText.includes("Every coding agent.")
+          || document.body.innerText.includes("The real workflow"),
         downloadLinks: links
           .map((link) => link.href)
           .filter((href) => href.includes("BsCode-macOS-arm64.zip")),
-        keyRects: Object.fromEntries(
-          [
-            ["product-window", document.querySelector(".product-window")],
-            ["product-title", document.getElementById("product-title")],
-            ["download-button", document.querySelector(".download-button")],
-            ["digital-twin", document.querySelector(".digital-twin")]
-          ].map(([id, element]) => {
-            const rect = element?.getBoundingClientRect();
-            return [id, rect ? {
-              left: Math.round(rect.left),
-              top: Math.round(rect.top),
-              width: Math.round(rect.width),
-              height: Math.round(rect.height)
-            } : null];
-          })
-        )
+        frameRect: frameRect ? {
+          left: Math.round(frameRect.left),
+          top: Math.round(frameRect.top),
+          right: Math.round(frameRect.right),
+          bottom: Math.round(frameRect.bottom),
+          width: Math.round(frameRect.width),
+          height: Math.round(frameRect.height)
+        } : null
       };
     })()`);
     const screenshot = await send("Page.captureScreenshot", {
@@ -201,60 +171,36 @@ async function main() {
     report.push({ ...viewport, ...metrics });
   }
 
-  const workflowReport = [];
-  const workflowExpectations = {
-    workspace: { view: "workspace", className: "" },
-    delegate: { view: "workspace", className: "is-team" },
-    progress: { view: "workspace", className: "is-complete" },
-    output: { view: "workspace", className: "is-output-preview" },
-    cinematic: { view: "cinematic", className: "is-sent" },
-    pixel: { view: "pixel", className: "is-pet-open" }
-  };
-  for (const workflowId of ["workspace", "delegate", "progress", "output", "cinematic", "pixel"]) {
-    await evaluate(send, `document.querySelector('[data-workflow="${workflowId}"]')?.click()`);
-    await delay(700);
-    workflowReport.push(await evaluate(send, `(() => ({
-      workflow: "${workflowId}",
-      selected: document.querySelector('[data-workflow="${workflowId}"]')?.getAttribute("aria-selected"),
-      view: document.querySelector("#twinCanvas")?.dataset.view || null,
-      classes: Array.from(document.querySelector("#twinCanvas")?.classList || []),
-      status: document.querySelector("#twinStatus")?.textContent?.trim() || "",
-      step: document.querySelector("#twinStepCount")?.textContent?.trim() || "",
-      labelledBy: document.querySelector("#productTwin")?.getAttribute("aria-labelledby") || ""
-    }))()`));
-  }
-
-  const pageErrors = await evaluate(send, `window.__bscodeQaErrors || []`);
+  const pageErrors = await evaluate(send, "window.__bscodeQaErrors || []");
   socket.close();
   await fs.writeFile(
     path.join(outputDirectory, "report.json"),
-    `${JSON.stringify({ viewports: report, workflows: workflowReport, pageErrors }, null, 2)}\n`
+    `${JSON.stringify({ viewports: report, pageErrors }, null, 2)}\n`
   );
 
-  const failures = report.filter((entry) => (
-    entry.hasHorizontalOverflow
-    || entry.brokenImages.length > 0
-    || !entry.hasDigitalTwin
-    || entry.workflowIds.length !== 6
-    || entry.downloadLinks.length < 1
-    || Object.values(entry.keyRects).some((rect) => (
-      !rect || rect.left < 0 || rect.left + rect.width > entry.viewport.width
-    ))
-  ));
-  const workflowFailures = workflowReport.filter((entry) => {
-    const expectation = workflowExpectations[entry.workflow];
+  const failures = report.filter((entry) => {
+    const rect = entry.frameRect;
     return (
-      entry.selected !== "true"
-      || entry.view !== expectation.view
-      || (expectation.className && !entry.classes.includes(expectation.className))
-      || !entry.status
-      || !entry.step
-      || !entry.labelledBy
+      entry.hasHorizontalOverflow
+      || entry.hasVerticalOverflow
+      || entry.videoCount !== 1
+      || !entry.videoSource.includes("bscode-overview.mp4")
+      || !entry.videoPoster.includes("bscode-overview-poster.jpg")
+      || !entry.videoPausedForReducedMotion
+      || entry.hasOldLaunchCopy
+      || entry.downloadLinks.length < 1
+      || !rect
+      || rect.width < 1
+      || rect.height < 1
+      || rect.left < 0
+      || rect.top < 0
+      || rect.right > entry.viewport.width + 1
+      || rect.bottom > entry.viewport.height + 1
     );
   });
 
-  process.stdout.write(`${JSON.stringify({ outputDirectory, report, workflowReport, pageErrors, failures, workflowFailures }, null, 2)}\n`);
-  if (failures.length || workflowFailures.length || pageErrors.length) process.exitCode = 1;
+  process.stdout.write(`${JSON.stringify({ outputDirectory, report, pageErrors, failures }, null, 2)}\n`);
+  if (failures.length || pageErrors.length) process.exitCode = 1;
 }
 
 main().catch((error) => {

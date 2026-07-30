@@ -10,10 +10,11 @@
   <meta property="og:description" content="Run, direct, and review coding agents together in one desktop workspace.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://alex-dils.com/bscode/">
-  <meta property="og:image" content="https://alex-dils.com/assets/bscode/agent-grid.jpg">
+  <meta property="og:image" content="https://alex-dils.com/assets/bscode/motion/bscode-overview-poster.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="../assets/bscode/app-icon.png">
   <link rel="apple-touch-icon" href="../assets/bscode/app-icon.png">
+  <link rel="preload" href="../assets/bscode/motion/bscode-overview-poster.jpg" as="image" fetchpriority="high">
   <link rel="stylesheet" href="bscode.css">
   <script type="application/ld+json">
   {
@@ -31,376 +32,77 @@
   </script>
 </head>
 <body>
-  <a class="skip-link" href="#product">Skip to BsCode</a>
+  <a class="skip-link" href="#product-demo">Skip to product demo</a>
 
   <header class="site-header">
     <a class="product-brand" href="./" aria-label="BsCode home">
       <img src="../assets/bscode/app-icon.png" alt="" width="34" height="34">
       <span>BsCode</span>
     </a>
-    <nav class="product-nav" aria-label="Product">
-      <a href="#workflows">Workflows</a>
-      <a href="#cinematic">Cinematic</a>
-      <a href="#pixel">Pixel</a>
-    </nav>
-    <a class="header-download" href="https://github.com/axel-slid/agent-workbench/releases/latest/download/BsCode-macOS-arm64.zip">
-      Download <span aria-hidden="true">↓</span>
-    </a>
+    <div class="header-actions">
+      <details class="install-help">
+        <summary>First launch</summary>
+        <div class="install-popover">
+          <p>After moving BsCode to Applications, run:</p>
+          <div class="install-command">
+            <code id="quarantineCommand">xattr -dr com.apple.quarantine "/Applications/BsCode.app"</code>
+            <button id="copyQuarantineCommand" type="button">Copy</button>
+          </div>
+        </div>
+      </details>
+      <a class="header-download" href="https://github.com/axel-slid/agent-workbench/releases/latest/download/BsCode-macOS-arm64.zip">
+        Download for Apple silicon <span aria-hidden="true">↓</span>
+      </a>
+    </div>
   </header>
 
-  <main id="product" class="product-window">
-    <section class="hero" aria-labelledby="product-title">
-      <h1 id="product-title">Every coding agent.<br>One workspace.</h1>
-      <p>
-        Run Codex, Claude, and shell sessions side by side. Direct the work,
-        watch real progress, and review every output without losing context.
-      </p>
-      <div class="hero-actions">
-        <a class="download-button" href="https://github.com/axel-slid/agent-workbench/releases/latest/download/BsCode-macOS-arm64.zip">
-          Download for Apple silicon <span aria-hidden="true">↓</span>
-        </a>
-        <a class="release-link" href="https://github.com/axel-slid/agent-workbench/releases/latest" target="_blank" rel="noreferrer">
-          Release notes <span aria-hidden="true">↗</span>
-        </a>
-      </div>
-      <p class="compatibility">v0.2.2 · native arm64 · macOS</p>
-    </section>
-
-    <section id="workflows" class="workflow-section" aria-labelledby="workflow-title">
-      <div class="section-heading">
-        <div>
-          <span class="section-number">01</span>
-          <h2 id="workflow-title">The real workflow,<br>not a highlight reel.</h2>
-        </div>
-        <p>
-          This is a deterministic twin of BsCode. Pick any chapter to replay
-          the same controls, labels, and state changes used by the desktop app.
-        </p>
-      </div>
-
-      <div id="workflowTabs" class="workflow-tabs" role="tablist" aria-label="BsCode workflows">
-        <button id="workflowTabWorkspace" type="button" role="tab" aria-selected="true" aria-controls="productTwin" data-workflow="workspace">
-          <span>01</span><strong>Workspace</strong><small>Open a project</small>
-        </button>
-        <button id="workflowTabDelegate" type="button" role="tab" aria-selected="false" aria-controls="productTwin" data-workflow="delegate">
-          <span>02</span><strong>Delegate</strong><small>Start an agent</small>
-        </button>
-        <button id="workflowTabProgress" type="button" role="tab" aria-selected="false" aria-controls="productTwin" data-workflow="progress">
-          <span>03</span><strong>Progress</strong><small>Terminal to Zen</small>
-        </button>
-        <button id="workflowTabOutput" type="button" role="tab" aria-selected="false" aria-controls="productTwin" data-workflow="output">
-          <span>04</span><strong>Outputs</strong><small>Review a result</small>
-        </button>
-        <button id="workflowTabCinematic" type="button" role="tab" aria-selected="false" aria-controls="productTwin" data-workflow="cinematic">
-          <span>05</span><strong>Cinematic</strong><small>Route a command</small>
-        </button>
-        <button id="workflowTabPixel" type="button" role="tab" aria-selected="false" aria-controls="productTwin" data-workflow="pixel">
-          <span>06</span><strong>Pixel</strong><small>Enter the tower</small>
-        </button>
-      </div>
-
-      <div id="productTwin" class="digital-twin" role="tabpanel" tabindex="0" aria-labelledby="workflowTabWorkspace">
-        <div class="twin-meta">
-          <div>
-            <span class="preview-status"><i aria-hidden="true"></i>Interactive preview</span>
-            <strong id="twinWorkflowLabel">Open a workspace</strong>
-          </div>
-          <p id="twinStatus" role="status" aria-live="polite">Start from Home, where local and SSH projects stay ready.</p>
-          <div class="twin-playback">
-            <span id="twinStepCount">1 / 3</span>
-            <button id="twinPauseButton" type="button" aria-label="Pause workflow">Pause</button>
-            <button id="twinReplayButton" type="button" aria-label="Replay workflow">Replay</button>
-          </div>
-        </div>
-
-        <div id="twinViewport" class="twin-viewport">
-          <div id="twinCanvas" class="twin-canvas" data-view="home">
-            <div class="app-titlebar">
-              <div class="traffic-lights" aria-hidden="true"><i></i><i></i><i></i></div>
-              <div class="spotify-mini" aria-hidden="true"><b>♫</b><span>Groove District</span><small>playing</small></div>
-              <div class="workspace-address"><span id="twinAddress">No workspace selected</span><i>✦</i></div>
-              <div class="app-tools" aria-hidden="true">
-                <span>⌂</span><span>◫</span><span class="tool-cinematic">◒</span><span class="tool-pixel">▦</span><span>⚙</span><time>9:41</time>
-              </div>
-            </div>
-
-            <section class="twin-home-view" aria-label="BsCode Home">
-              <div class="home-primary">
-                <img src="../assets/bscode/app-icon.png" alt="" width="92" height="92">
-                <h3>Ready when you are.</h3>
-                <div class="home-actions">
-                  <span><strong>Open workspace</strong><kbd>⌘O</kbd></span>
-                  <span><strong>Show all commands</strong><kbd>⌘P</kbd></span>
-                  <span><strong>Return to workspace</strong><kbd>Esc</kbd></span>
-                </div>
-              </div>
-              <div class="home-recents">
-                <header><strong>Pick up where you left off</strong><span>Recent workspaces</span></header>
-                <div class="recent-grid">
-                  <button class="recent-workspace remote" type="button" tabindex="-1">
-                    <i aria-hidden="true">⌘</i>
-                    <span><strong>gondor</strong><small>gondor:/mnt/shared/dils/projects</small><em>Remote workspace</em></span>
-                  </button>
-                  <button id="twinRecentLocal" class="recent-workspace local" type="button">
-                    <i aria-hidden="true">▱</i>
-                    <span><strong>local</strong><small>~/Projects/bscode</small><em>Local workspace</em></span>
-                  </button>
-                </div>
-              </div>
-            </section>
-
-            <section class="twin-workspace-view" aria-label="BsCode workspace">
-              <aside class="twin-files">
-                <header>
-                  <div><strong>Files</strong><span>Workspaces</span></div>
-                  <b aria-hidden="true">≡ ＋</b>
-                </header>
-                <ul>
-                  <li class="folder">⌄ <strong>bscode</strong></li>
-                  <li class="folder child">⌄ <strong>src</strong></li>
-                  <li class="file child-2 active">◇ renderer.js</li>
-                  <li class="file child-2"># styles.css</li>
-                  <li class="file child-2">◇ main.js</li>
-                  <li class="folder child">› <strong>assets</strong></li>
-                  <li class="file child">◇ package.json</li>
-                  <li class="file child">◇ README.md</li>
-                  <li class="file child">□ .bscode-notes.md</li>
-                </ul>
-                <div class="twin-files-status"><span>Local</span><span>460 GB / 500 GB</span></div>
-              </aside>
-
-              <div class="twin-agent-stage">
-                <div class="workspace-tabs">
-                  <span>gondor <b>×</b></span>
-                  <span class="active">local <i class="tab-faces"><img src="../assets/bscode/avatars/mario.png" alt=""><img src="../assets/bscode/avatars/alayah.png" alt=""></i><b>×</b></span>
-                  <button id="twinNewTab" type="button" aria-label="Open a new workspace tab">+</button>
-                </div>
-                <div class="agent-stage-toolbar">
-                  <span><strong>local</strong> · ~/Projects/bscode</span>
-                  <span id="twinAgentCount">0/4 agents · idle</span>
-                </div>
-                <div class="twin-agent-grid">
-                  <article class="twin-agent agent-blue" data-agent="0">
-                    <div class="agent-empty">
-                      <span class="agent-number">1</span>
-                      <div class="task-field"><span class="typed-task"></span><i>Task for Agent 1…</i></div>
-                      <div class="runtime-row"><b>◎</b><b>✳</b><b>›_</b></div>
-                    </div>
-                    <div class="agent-live">
-                      <header><img class="agent-avatar" src="../assets/bscode/avatars/mario.png" alt=""><strong>Mario</strong><em class="agent-state">Planning</em><b>☷　⋯</b></header>
-                      <div class="terminal-view">
-                        <p><span>fish</span></p>
-                        <p>~/Projects/bscode</p>
-                        <p class="terminal-dim">Starting Codex in this workspace…</p>
-                        <p><b>›</b> Audit the API error handling</p>
-                        <p class="terminal-green">Reading src/api/client.js</p>
-                        <p class="terminal-cursor">▋</p>
-                      </div>
-                      <div class="zen-view">
-                        <p class="now-row"><b>NOW</b><span>Auditing API error handling</span></p>
-                        <h4>Checklist</h4>
-                        <ul>
-                          <li class="done">Trace request failures <span>done</span></li>
-                          <li class="working">Add retry coverage <span>1m</span></li>
-                          <li>Run focused tests <span>2m</span></li>
-                        </ul>
-                        <p class="eta-row"><b>ETA</b><span>3 minutes</span></p>
-                      </div>
-                    </div>
-                  </article>
-
-                  <article class="twin-agent agent-orange" data-agent="1">
-                    <div class="agent-empty">
-                      <span class="agent-number">2</span>
-                      <div class="task-field"><span class="typed-task"></span><i>Task for Agent 2…</i></div>
-                      <div class="runtime-row"><b>◎</b><b>✳</b><b>›_</b></div>
-                    </div>
-                    <div class="agent-live">
-                      <header><img class="agent-avatar" src="../assets/bscode/avatars/alayah.png" alt=""><strong>Alayah</strong><em class="agent-state">Working</em><b>☷　⋯</b></header>
-                      <div class="terminal-view">
-                        <p><span>fish</span></p><p>~/Projects/bscode</p>
-                        <p><b>›</b> Map the output preview flow</p>
-                        <p class="terminal-green">Inspecting previewWorkspaceFile()</p>
-                        <p class="terminal-dim">3 relevant files found</p>
-                      </div>
-                      <div class="zen-view">
-                        <p class="now-row"><b>NOW</b><span>Mapping output previews</span></p>
-                        <h4>Checklist</h4>
-                        <ul><li class="done">Trace artifact list <span>done</span></li><li class="working">Verify preview types <span>2m</span></li></ul>
-                        <p class="eta-row"><b>ETA</b><span>2 minutes</span></p>
-                      </div>
-                    </div>
-                  </article>
-
-                  <article class="twin-agent agent-purple" data-agent="2">
-                    <div class="agent-empty">
-                      <span class="agent-number">3</span>
-                      <div class="task-field"><span class="typed-task"></span><i>Task for Agent 3…</i></div>
-                      <div class="runtime-row"><b>◎</b><b>✳</b><b>›_</b></div>
-                    </div>
-                    <div class="agent-live">
-                      <header><img class="agent-avatar" src="../assets/bscode/avatars/matilda.png" alt=""><strong>Matilda</strong><em class="agent-state">Working</em><b>☷　⋯</b></header>
-                      <div class="terminal-view">
-                        <p><span>fish</span></p><p>~/Projects/bscode</p>
-                        <p><b>›</b> Review keyboard workflows</p>
-                        <p class="terminal-green">Checking Enter and Shift+Enter</p>
-                      </div>
-                      <div class="zen-view">
-                        <p class="now-row"><b>NOW</b><span>Reviewing keyboard flows</span></p>
-                        <h4>Checklist</h4>
-                        <ul><li class="done">Agent launcher <span>done</span></li><li class="working">Zen follow-up <span>1m</span></li></ul>
-                        <p class="eta-row"><b>ETA</b><span>1 minute</span></p>
-                      </div>
-                    </div>
-                  </article>
-
-                  <article class="twin-agent agent-green" data-agent="3">
-                    <div class="agent-empty">
-                      <span class="agent-number">4</span>
-                      <div class="task-field"><span class="typed-task"></span><i>Task for Agent 4…</i></div>
-                      <div class="runtime-row"><b>◎</b><b>✳</b><b>›_</b></div>
-                    </div>
-                    <div class="agent-live">
-                      <header><img class="agent-avatar" src="../assets/bscode/avatars/aurelia.png" alt=""><strong>Aurelia</strong><em class="agent-state">Working</em><b>☷　⋯</b></header>
-                      <div class="terminal-view">
-                        <p><span>fish</span></p><p>~/Projects/bscode</p>
-                        <p><b>›</b> Validate responsive layouts</p>
-                        <p class="terminal-green">Running visual checks</p>
-                      </div>
-                      <div class="zen-view">
-                        <p class="now-row"><b>NOW</b><span>Validating responsive layouts</span></p>
-                        <h4>Checklist</h4>
-                        <ul><li class="done">Desktop <span>done</span></li><li class="working">Tablet and phone <span>2m</span></li></ul>
-                        <p class="eta-row"><b>ETA</b><span>2 minutes</span></p>
-                      </div>
-                    </div>
-                  </article>
-                </div>
-              </div>
-
-              <aside class="twin-outputs">
-                <header><strong>Outputs</strong><span>↻ ×</span></header>
-                <div class="output-path">Paste a local or remote file path…</div>
-                <h4>Session files</h4>
-                <div class="output-empty">No files created in this session yet.</div>
-                <button id="twinOutputFile" class="output-file" type="button">
-                  <span>◎</span><span><strong>performance-report.md</strong><small>Mario · just now</small></span>
-                </button>
-                <div class="output-preview">
-                  <header><strong>performance-report.md</strong><span>Expand output　×</span></header>
-                  <div>
-                    <h5>API reliability review</h5>
-                    <p>Added bounded retries and focused coverage for failed requests.</p>
-                    <ul><li>12 tests passed</li><li>0 regressions</li><li>3 files changed</li></ul>
-                    <pre><b>+</b> await retry(request, { attempts: 3 })</pre>
-                  </div>
-                </div>
-              </aside>
-            </section>
-
-            <section class="twin-cinematic-view" aria-label="Cinematic mode">
-              <img src="../assets/bscode/motion/workspace-cinematic.jpg" alt="">
-              <div class="cinematic-shade"></div>
-              <div class="cinematic-agent-grid" aria-hidden="true">
-                <span>Mario</span><span>Alayah</span><span>Matilda</span><span>Aurelia</span>
-              </div>
-              <div class="mention-menu">
-                <button type="button" data-mention-agent="Mario"><img src="../assets/bscode/avatars/mario.png" alt=""><strong>Mario</strong><small>working</small></button>
-                <button type="button" data-mention-agent="Alayah"><img src="../assets/bscode/avatars/alayah.png" alt=""><strong>Alayah</strong><small>working</small></button>
-                <button type="button" data-mention-agent="Matilda"><img src="../assets/bscode/avatars/matilda.png" alt=""><strong>Matilda</strong><small>working</small></button>
-              </div>
-              <div class="cinematic-dock">
-                <span class="cinematic-input"><strong class="cinematic-mention-token"></strong><span class="cinematic-command-copy">What should we work on?</span></span>
-                <b>Results</b><kbd>⌘K</kbd><i>↵</i>
-              </div>
-              <span class="cinematic-toast">Sent to Mario</span>
-            </section>
-
-            <section class="twin-pixel-view" aria-label="Pixel mode">
-              <img src="../assets/bscode/pixel-mode.jpg" alt="">
-              <button class="pixel-pet-target" type="button" aria-label="Inspect Nibbles, the pet on this floor"></button>
-              <aside class="pet-sheet">
-                <header><span class="pet-avatar">🐕</span><span><strong>Nibbles</strong><small>Dog · Floor 1 companion</small></span></header>
-                <div class="pet-vital"><b>HP</b><span><i></i></span><em>86/86</em></div>
-                <div class="pet-vital energy"><b>Energy</b><span><i></i></span><em>92%</em></div>
-                <dl>
-                  <dt>Level</dt><dd>4</dd>
-                  <dt>Mood</dt><dd>Curious</dd>
-                  <dt>Favorite food</dt><dd>Salmon bites</dd>
-                  <dt>Hobbies</dt><dd>Desk patrol · Sun naps</dd>
-                  <dt>Trait</dt><dd>Loyal</dd>
-                  <dt>Talent</dt><dd>Bug detection</dd>
-                </dl>
-              </aside>
-            </section>
-
-            <div id="twinCursor" class="twin-cursor" aria-hidden="true"><i></i></div>
-            <div id="twinClick" class="twin-click" aria-hidden="true"></div>
-            <div id="twinKeypress" class="twin-keypress" aria-hidden="true">↵ Enter</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="product-chapter" aria-labelledby="parallel-title">
-      <div class="chapter-copy">
-        <span class="section-number">02</span>
-        <h2 id="parallel-title">Parallel work without parallel confusion.</h2>
-        <p>
-          Each agent gets a real terminal, deterministic identity, live task,
-          state, checklist, ETA, and relevant-file history. The project remains
-          one place even when the work splits four ways.
-        </p>
-        <button class="chapter-jump" type="button" data-jump-workflow="delegate">Run the delegation workflow <span>→</span></button>
-      </div>
-      <figure>
-        <img src="../assets/bscode/agent-grid.jpg" alt="Four BsCode agent terminals running side by side with Files and Outputs visible" loading="lazy">
-      </figure>
-    </section>
-
-    <section id="cinematic" class="product-chapter reverse" aria-labelledby="cinematic-title">
-      <div class="chapter-copy">
-        <span class="section-number">03</span>
-        <h2 id="cinematic-title">Focus changes. Context does not.</h2>
-        <p>
-          Press ⌘K for the full-screen Cinematic wall. The same sessions remain
-          alive underneath, while one shared command dock routes follow-ups to
-          a selected active agent.
-        </p>
-        <button class="chapter-jump" type="button" data-jump-workflow="cinematic">Try Cinematic mode <span>→</span></button>
-      </div>
-      <figure>
-        <img src="../assets/bscode/motion/workspace-cinematic.jpg" alt="BsCode Cinematic mode showing four agents over a landscape" loading="lazy">
-      </figure>
-    </section>
-
-    <section id="pixel" class="product-chapter" aria-labelledby="pixel-title">
-      <div class="chapter-copy">
-        <span class="section-number">04</span>
-        <h2 id="pixel-title">A spatial view of the same live system.</h2>
-        <p>
-          Pixel mode assigns agents to tower floors. Move with the arrow keys,
-          jump to an agent from the clipboard, or click a pet to see its
-          RPG-style stats without interrupting the work.
-        </p>
-        <button class="chapter-jump" type="button" data-jump-workflow="pixel">Enter the Pixel tower <span>→</span></button>
-      </div>
-      <figure>
-        <img src="../assets/bscode/pixel-mode.jpg" alt="BsCode Pixel mode with its tower, floor plan, agent, and pet" loading="lazy">
-      </figure>
-    </section>
-
-    <section class="final-cta" aria-labelledby="download-title">
-      <img src="../assets/bscode/app-icon.png" alt="" width="72" height="72">
-      <h2 id="download-title">Give every agent a place to work.</h2>
-      <p>Native for Apple silicon. Local and SSH workspaces included.</p>
-      <a href="https://github.com/axel-slid/agent-workbench/releases/latest/download/BsCode-macOS-arm64.zip">
-        Download BsCode <span aria-hidden="true">↓</span>
-      </a>
-    </section>
+  <main id="product-demo" class="product-demo">
+    <h1 class="sr-only">BsCode</h1>
+    <figure class="demo-frame">
+      <video
+        id="bscodeOverview"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        disablepictureinpicture
+        poster="../assets/bscode/motion/bscode-overview-poster.jpg"
+        aria-describedby="demo-description"
+      >
+        <source src="../assets/bscode/motion/bscode-overview.mp4" type="video/mp4">
+        <a href="../assets/bscode/motion/bscode-overview.mp4">Watch the BsCode product demo</a>
+      </video>
+      <figcaption id="demo-description" class="sr-only">
+        An animated BsCode tour cycling through parallel agent terminals, Cinematic mode, and the Pixel tower.
+      </figcaption>
+    </figure>
   </main>
 
-  <script src="demo-workflows.js"></script>
-  <script src="bscode.js"></script>
+  <script>
+    (() => {
+      const demo = document.getElementById("bscodeOverview");
+      const copyButton = document.getElementById("copyQuarantineCommand");
+      const quarantineCommand = document.getElementById("quarantineCommand");
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const syncPlayback = () => {
+        if (reducedMotion.matches || document.hidden) {
+          demo.pause();
+          return;
+        }
+        demo.play().catch(() => {});
+      };
+      reducedMotion.addEventListener?.("change", syncPlayback);
+      document.addEventListener("visibilitychange", syncPlayback);
+      copyButton.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(quarantineCommand.textContent);
+        copyButton.textContent = "Copied";
+        window.setTimeout(() => {
+          copyButton.textContent = "Copy";
+        }, 1400);
+      });
+      syncPlayback();
+    })();
+  </script>
 </body>
 </html>
