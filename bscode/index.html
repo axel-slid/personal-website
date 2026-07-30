@@ -1,268 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BsCode — An agent workspace by Alex Dils</title>
-<meta name="description" content="BsCode is a desktop workspace for running Codex, Claude, and shell agents across local and SSH projects.">
-<link rel="canonical" href="https://alex-dils.com/bscode/">
-<meta property="og:title" content="BsCode — Keep every coding agent in view">
-<meta property="og:description" content="A focused desktop workspace for running, organizing, and monitoring coding agents.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://alex-dils.com/bscode/">
-<meta property="og:image" content="https://alex-dils.com/assets/bscode/agent-grid.jpg">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="../assets/bscode/app-icon.png">
-<link rel="apple-touch-icon" href="../assets/bscode/app-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../style.css">
-<link rel="stylesheet" href="bscode.css">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "BsCode",
-  "applicationCategory": "DeveloperApplication",
-  "operatingSystem": "macOS, Windows, Linux",
-  "description": "A desktop workspace for running and organizing Codex, Claude, and shell agents.",
-  "author": {
-    "@type": "Person",
-    "name": "Alex Dils",
-    "url": "https://alex-dils.com/"
-  },
-  "codeRepository": "https://github.com/axel-slid/agent-workbench"
-}
-</script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BsCode — Keep every coding agent in view</title>
+  <meta name="description" content="BsCode is a calm desktop workspace for running Codex, Claude, and shell agents across local and SSH projects.">
+  <link rel="canonical" href="https://alex-dils.com/bscode/">
+  <meta property="og:title" content="BsCode — Keep every coding agent in view">
+  <meta property="og:description" content="Four agents, one workspace, and every terminal, file, task, and output still in view.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://alex-dils.com/bscode/">
+  <meta property="og:image" content="https://alex-dils.com/assets/bscode/agent-grid.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/bscode/app-icon.png">
+  <link rel="apple-touch-icon" href="../assets/bscode/app-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="bscode.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "BsCode",
+    "softwareVersion": "0.2.2",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "macOS",
+    "description": "A desktop workspace for running and organizing Codex, Claude, and shell agents.",
+    "author": {"@type": "Person", "name": "Alex Dils", "url": "https://alex-dils.com/"},
+    "downloadUrl": "https://github.com/axel-slid/agent-workbench/releases/latest/download/BsCode-macOS-arm64.zip",
+    "codeRepository": "https://github.com/axel-slid/agent-workbench"
+  }
+  </script>
 </head>
-<body class="product-page">
-<a class="skip-link" href="#main">Skip to content</a>
-<div class="site product-site">
-  <header class="topbar product-topbar">
-    <a class="brand" href="../">Alex Dils</a>
-    <nav aria-label="Primary">
-      <a class="current" href="./" aria-current="page">BsCode</a>
-      <a class="nav-download" href="https://github.com/axel-slid/agent-workbench/releases/latest/download/BsCode-macOS-arm64.zip">Download</a>
-      <a href="https://github.com/axel-slid/agent-workbench" target="_blank" rel="noreferrer">Source</a>
-      <a href="../#work">Other work</a>
-      <a href="../#contact">Contact</a>
-    </nav>
-  </header>
+<body>
+  <a class="skip-link" href="#product">Skip to BsCode</a>
 
-  <main id="main">
-    <section class="product-hero" aria-labelledby="product-title">
-      <div class="product-hero-copy">
-        <div class="product-mark reveal">
-          <img src="../assets/bscode/app-icon.png" alt="" width="48" height="48">
-          <span>BsCode</span>
-          <span class="version">v0.2 · Apple silicon</span>
-        </div>
-        <p class="eyebrow reveal">A command center for coding agents</p>
-        <h1 id="product-title" class="reveal">Keep every agent in view.</h1>
-        <p class="product-intro reveal">
-          Run Codex, Claude, and shell agents side by side. BsCode keeps their
-          terminals, files, progress, and outputs together across local and SSH
-          workspaces.
+  <main id="product" class="product-window">
+    <header class="window-bar">
+      <a class="product-brand" href="./" aria-label="BsCode home">
+        <img src="../assets/bscode/app-icon.png" alt="" width="32" height="32">
+        <span>BsCode</span>
+      </a>
+      <nav aria-label="Product links">
+        <a href="../">Alex Dils</a>
+        <a href="../resume.pdf" target="_blank" rel="noreferrer">Résumé</a>
+        <a href="https://github.com/axel-slid/agent-workbench" target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
+      <span class="release-chip">v0.2.2 · arm64</span>
+    </header>
+
+    <section class="product-stage" aria-labelledby="product-title">
+      <div class="product-copy">
+        <p class="eyebrow"><span></span>Agent workspace for macOS</p>
+        <h1 id="product-title">Run agents.<br>Keep the plot.</h1>
+        <p class="lede">
+          Codex, Claude, and shell sessions stay together with their files,
+          progress, outputs, and system health—locally or over SSH.
         </p>
-        <div class="product-actions reveal" role="group" aria-label="BsCode links">
-          <a class="product-button primary" href="https://github.com/axel-slid/agent-workbench/releases/latest/download/BsCode-macOS-arm64.zip">
-          <span>Download for macOS</span><small>Apple silicon · v0.2.0</small>
+        <div class="actions">
+          <a class="download-button" href="https://github.com/axel-slid/agent-workbench/releases/latest/download/BsCode-macOS-arm64.zip">
+            <span>Download for Mac</span>
+            <small>Apple silicon</small>
           </a>
-          <a class="product-button secondary" href="https://github.com/axel-slid/agent-workbench" target="_blank" rel="noreferrer">
-            View source
+          <a class="release-link" href="https://github.com/axel-slid/agent-workbench/releases/latest" target="_blank" rel="noreferrer">
+            Release notes <span aria-hidden="true">↗</span>
           </a>
         </div>
-        <p class="release-note reveal">Version 0.2.0 · Native ARM64 app · Open source.</p>
+        <ul class="product-facts" aria-label="Product highlights">
+          <li><strong>4</strong><span>live agents</span></li>
+          <li><strong>Local + SSH</strong><span>persistent workspaces</span></li>
+          <li><strong>Free</strong><span>open source</span></li>
+        </ul>
       </div>
 
-      <figure class="hero-product-shot reveal">
-        <div class="shot-bar" aria-hidden="true">
-          <span></span><span></span><span></span>
-          <strong>agent-workbench · 2×2</strong>
+      <figure class="demo-window">
+        <div class="demo-titlebar" aria-hidden="true">
+          <span class="traffic red"></span>
+          <span class="traffic amber"></span>
+          <span class="traffic green"></span>
+          <strong>agent-workbench</strong>
+          <i>4 agents</i>
         </div>
-        <video autoplay muted loop playsinline poster="../assets/bscode/agent-grid.jpg" aria-label="Animated walkthrough of a four-agent BsCode workspace">
-          <source src="../assets/bscode/motion/workspace-loop.mp4" type="video/mp4">
+        <video autoplay muted loop playsinline preload="metadata" poster="../assets/bscode/agent-grid.jpg" aria-label="Twelve-second guided tour of BsCode agent, Cinematic, and Pixel modes">
+          <source src="../assets/bscode/motion/bscode-overview.mp4" type="video/mp4">
         </video>
-        <figcaption>Four independent agents, one shared workspace.</figcaption>
+        <figcaption>
+          <span>One window. Every agent.</span>
+          <span>12-second tour</span>
+        </figcaption>
       </figure>
     </section>
 
-    <section class="motion-showcase" aria-labelledby="motion-title">
-      <header>
-        <p class="eyebrow">See it move</p>
-        <h2 id="motion-title">A workspace that explains itself.</h2>
-        <p>Short, motion-designed walkthroughs show the real interface—not a concept render.</p>
-      </header>
-      <div class="motion-grid">
-        <article class="motion-card reveal">
-          <div class="motion-frame">
-            <video autoplay muted loop playsinline poster="../assets/bscode/agent-grid.jpg" aria-label="Animated agent workspace walkthrough">
-              <source src="../assets/bscode/motion/workspace-loop.mp4" type="video/mp4">
-            </video>
-            <div class="motion-callout"><strong>01</strong><span>Live agents stay individually inspectable.</span></div>
-          </div>
-          <h3>Terminal orchestration</h3>
-          <p>Follow state, ETA, checklist, output, and files without switching windows.</p>
-        </article>
-        <article class="motion-card reveal">
-          <div class="motion-frame">
-            <video autoplay muted loop playsinline poster="../assets/bscode/pixel-mode.jpg" aria-label="Animated Pixel Mode walkthrough">
-              <source src="../assets/bscode/motion/pixel-loop.mp4" type="video/mp4">
-            </video>
-            <div class="motion-callout amber"><strong>02</strong><span>The tower mirrors actual agent activity.</span></div>
-          </div>
-          <h3>Pixel tower</h3>
-          <p>Twenty premade floors, live agents, pet sheets, time-aware skies, and instant previews.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="product-section product-proof" aria-labelledby="overview-title">
-      <div class="section-heading">
-        <span>01</span>
-        <h2 id="overview-title">A calmer way to orchestrate</h2>
-      </div>
-      <div>
-        <p class="section-lead">
-          Agent work gets noisy fast. BsCode turns the moving parts into one
-          legible workspace—without hiding the terminals that make the work
-          inspectable.
-        </p>
-        <ul class="proof-strip" aria-label="Product capabilities">
-          <li><strong>4</strong><span>agents per workspace</span></li>
-          <li><strong>Local + SSH</strong><span>persistent project tabs</span></li>
-          <li><strong>Live</strong><span>ETA, outputs, and system health</span></li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="product-section" aria-labelledby="features-title">
-      <div class="section-heading">
-        <span>02</span>
-        <h2 id="features-title">Built around the work</h2>
-      </div>
-      <div class="feature-grid">
-        <article class="feature-card reveal">
-          <span class="feature-index">A</span>
-          <h3>Four agents, clearly separated</h3>
-          <p>Color-coded cells keep each agent’s prompt, terminal, state, ETA, checklist, and recent files easy to scan.</p>
-        </article>
-        <article class="feature-card reveal">
-          <span class="feature-index">B</span>
-          <h3>Files and outputs stay attached</h3>
-          <p>Drag files into agents, preview generated work in place, and move between Explorer and outputs without losing context.</p>
-        </article>
-        <article class="feature-card reveal">
-          <span class="feature-index">C</span>
-          <h3>Local and remote, together</h3>
-          <p>Keep local and SSH workspaces in persistent tabs, reuse remote connections, and transfer files between them.</p>
-        </article>
-        <article class="feature-card reveal">
-          <span class="feature-index">D</span>
-          <h3>Zen when you need it</h3>
-          <p>Hide terminal noise globally while preserving prompts, active checklist items, ETAs, and produced files.</p>
-        </article>
-        <article class="feature-card reveal">
-          <span class="feature-index">E</span>
-          <h3>The system stays visible</h3>
-          <p>Monitor CPU, memory, NVIDIA GPU usage, battery, Codex usage, notifications, and even current Spotify playback.</p>
-        </article>
-        <article class="feature-card reveal">
-          <span class="feature-index">F</span>
-          <h3>Keyboard first</h3>
-          <p>Jump to agents with ⌘1–⌘4, search from a command palette, and work with familiar VS Code-inspired controls.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="product-section visual-section" aria-labelledby="pixel-title">
-      <div class="section-heading">
-        <span>03</span>
-        <h2 id="pixel-title">See the team at work</h2>
-      </div>
-      <div class="visual-copy">
-        <p class="section-lead">
-          Pixel Mode turns the same live agent state into a navigable office.
-          Working agents move to desks, idle agents gather in the lounge, and
-          each floor remains connected to the real task.
-        </p>
-        <ul class="detail-list">
-          <li>Pan, zoom, and move between persistent floors</li>
-          <li>Hover for current task and ETA</li>
-          <li>Open any agent’s logs, files, and controls</li>
-        </ul>
-      </div>
-      <figure class="pixel-shot reveal">
-        <video autoplay muted loop playsinline poster="../assets/bscode/pixel-mode.jpg" aria-label="BsCode Pixel Mode showing agents inside a pixel-art tower">
-          <source src="../assets/bscode/motion/pixel-loop.mp4" type="video/mp4">
-        </video>
-        <figcaption>Pixel Mode uses the open-source Pixel Agents environment.</figcaption>
-      </figure>
-    </section>
-
-    <section class="product-section workflow-section" aria-labelledby="workflow-title">
-      <div class="section-heading">
-        <span>04</span>
-        <h2 id="workflow-title">One continuous loop</h2>
-      </div>
-      <ol class="workflow">
-        <li class="reveal">
-          <span>1</span>
-          <div>
-            <h3>Open a project</h3>
-            <p>Choose a local folder or reconnect to a saved SSH workspace.</p>
-          </div>
-        </li>
-        <li class="reveal">
-          <span>2</span>
-          <div>
-            <h3>Brief the agents</h3>
-            <p>Send focused tasks, attach files, and choose Codex, Claude, or a shell.</p>
-          </div>
-        </li>
-        <li class="reveal">
-          <span>3</span>
-          <div>
-            <h3>Watch the handoff</h3>
-            <p>Follow checklists and ETAs, then inspect the exact files each agent produced.</p>
-          </div>
-        </li>
-      </ol>
-    </section>
-
-    <section class="download-panel reveal" aria-labelledby="download-title">
-      <div>
-        <p class="eyebrow">Version 0.2.0</p>
-        <h2 id="download-title">Build alongside the agents.</h2>
-        <p>Download the signed-for-local-use Apple silicon build, move it to Applications, and open your first workspace. Source and release notes stay one click away.</p>
-      </div>
-      <div class="download-actions">
-        <div class="download-platforms">
-          <a class="product-button primary" href="https://github.com/axel-slid/agent-workbench/releases/latest/download/BsCode-macOS-arm64.zip">macOS · Apple silicon</a>
-          <a class="product-button secondary" href="https://github.com/axel-slid/agent-workbench/releases/latest">All release files</a>
-        </div>
-        <a class="text-link" href="https://github.com/axel-slid/agent-workbench/releases/latest" target="_blank" rel="noreferrer">Release notes and checksums →</a>
-      </div>
-    </section>
+    <footer class="window-footer">
+      <p>Built by <a href="../">Alex Dils</a></p>
+      <p>Native Apple silicon · macOS 13+</p>
+      <a href="https://github.com/axel-slid/agent-workbench" target="_blank" rel="noreferrer">View source ↗</a>
+    </footer>
   </main>
-
-  <footer>
-    <span>BsCode by Alex Dils</span>
-    <div class="footer-links">
-      <a href="../">Portfolio</a>
-      <a href="https://github.com/axel-slid/agent-workbench" target="_blank" rel="noreferrer">GitHub</a>
-      <a href="#main">Back to top</a>
-    </div>
-  </footer>
-</div>
-
-<a class="floating-download" href="https://github.com/axel-slid/agent-workbench/releases/latest/download/BsCode-macOS-arm64.zip">
-  <img src="../assets/bscode/app-icon.png" alt="">
-  <span><strong>Download BsCode</strong><small>macOS · Apple silicon</small></span>
-  <b>↓</b>
-</a>
-
-<script src="../site.js"></script>
 </body>
 </html>

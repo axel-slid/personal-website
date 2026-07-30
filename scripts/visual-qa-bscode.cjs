@@ -146,8 +146,12 @@ async function main() {
           .map((link) => link.href)
           .filter((href) => href.includes("BsCode-macOS-arm64.zip")),
         keyRects: Object.fromEntries(
-          ["product-title", "motion-title", "download-title"].map((id) => {
-            const element = document.getElementById(id);
+          [
+            ["product-window", document.querySelector(".product-window")],
+            ["product-title", document.getElementById("product-title")],
+            ["download-button", document.querySelector(".download-button")],
+            ["demo-window", document.querySelector(".demo-window")]
+          ].map(([id, element]) => {
             const rect = element?.getBoundingClientRect();
             return [id, rect ? {
               left: Math.round(rect.left),
@@ -183,7 +187,8 @@ async function main() {
     || entry.videos.some((video) => (
       video.readyState < 2 || video.width !== 1280 || video.height !== 720
     ))
-    || entry.downloadLinks.length < 3
+    || entry.videos.length !== 1
+    || entry.downloadLinks.length < 1
     || Object.values(entry.keyRects).some((rect) => (
       !rect || rect.left < 0 || rect.left + rect.width > entry.viewport.width
     ))

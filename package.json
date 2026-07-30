@@ -1,0 +1,14 @@
+{
+  "name": "alex-dils-personal-site",
+  "private": true,
+  "scripts": {
+    "video:render": "remotion render remotion/index.jsx BsCodeOverview assets/bscode/motion/bscode-overview.mp4 --public-dir . --codec h264 --crf 18 --pixel-format yuv420p",
+    "check": "node scripts/check-site.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.501",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "remotion": "4.0.501"
+  }
+}
