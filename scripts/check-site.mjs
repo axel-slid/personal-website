@@ -39,7 +39,7 @@ if (!html.includes("BsCode-macOS-arm64.zip")) {
 if (!html.includes('xattr -dr com.apple.quarantine "/Applications/BsCode.app"')) {
   throw new Error("The required first-launch quarantine command is missing.");
 }
-if (!html.includes('"softwareVersion": "0.2.2"')) {
+if (!html.includes('"softwareVersion": "0.2.3"')) {
   throw new Error("The current BsCode release metadata is missing.");
 }
 if ((html.match(/<main\b/g) || []).length !== 1) {
