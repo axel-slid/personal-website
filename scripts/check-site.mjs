@@ -36,13 +36,13 @@ if (!html.includes("bscode-digital-twin-poster.jpg")) {
 if (!html.includes("BsCode-macOS-arm64.zip")) {
   throw new Error("The Apple silicon download link is missing.");
 }
-if (!html.includes("releases/download/v0.2.4/BsCode-macOS-arm64.zip")) {
-  throw new Error("The Apple silicon download does not target BsCode v0.2.4.");
+if (!html.includes("releases/download/v0.2.5/BsCode-macOS-arm64.zip")) {
+  throw new Error("The Apple silicon download does not target BsCode v0.2.5.");
 }
 if (!html.includes('xattr -dr com.apple.quarantine "/Applications/BsCode.app"')) {
   throw new Error("The required first-launch quarantine command is missing.");
 }
-if (!html.includes('"softwareVersion": "0.2.4"')) {
+if (!html.includes('"softwareVersion": "0.2.5"')) {
   throw new Error("The current BsCode release metadata is missing.");
 }
 if (!html.includes('"codeRepository": "https://github.com/axel-slid/bscode"')) {
@@ -83,7 +83,11 @@ for (const removedElement of [
   "demo-workflows.js",
   "Agent workspace for macOS",
   "The real workflow,\nnot a highlight reel.",
-  "No mock dashboard."
+  "No mock dashboard.",
+  "Native command center for macOS",
+  "BsCode puts Codex, Claude, shell sessions, local files, and SSH workspaces in one window.",
+  "From a task to a finished file.",
+  "A faithful digital twin follows the real controls and states"
 ]) {
   if (html.includes(removedElement)) {
     throw new Error(`Obsolete launch-page content is still present: ${removedElement}`);
