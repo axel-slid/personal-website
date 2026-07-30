@@ -23,14 +23,17 @@ if ((html.match(/<video\b/g) || []).length !== 1) {
 if (!html.includes("BsCode-macOS-arm64.zip")) {
   throw new Error("The Apple silicon download link is missing.");
 }
-if (!html.includes("../resume.pdf")) {
-  throw new Error("The current résumé link is missing.");
+if (!html.includes('"softwareVersion": "0.2.2"')) {
+  throw new Error("The current BsCode release metadata is missing.");
 }
-if (!html.includes("v0.2.2 · arm64")) {
-  throw new Error("The current BsCode release label is missing.");
-}
-if (!css.includes("min-height: calc(100svh")) {
-  throw new Error("The one-window viewport layout is missing.");
+if (!css.includes("min-height: 100svh")) {
+  throw new Error("The full-viewport product layout is missing.");
 }
 
-console.log("BsCode one-page product site is complete.");
+for (const removedElement of ["<nav", "<footer", "class=\"eyebrow\"", "class=\"product-facts\"", "class=\"demo-titlebar\""]) {
+  if (html.includes(removedElement)) {
+    throw new Error(`Obsolete landing-page chrome is still present: ${removedElement}`);
+  }
+}
+
+console.log("BsCode product page is clean, current, and download-ready.");
