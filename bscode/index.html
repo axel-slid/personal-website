@@ -53,34 +53,48 @@
     </nav>
   </header>
 
-  <main>
+  <main class="stage">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-glow" aria-hidden="true"></div>
-      <h1 id="hero-title">Coordinate every coding move from one polished, live workspace.</h1>
-      <div class="hero-actions">
-        <a class="primary-download" href="https://github.com/axel-slid/bscode/releases/download/v0.2.5/BsCode-macOS-arm64.zip">
-          1) Download for Apple silicon
-          <span aria-hidden="true">↓</span>
-        </a>
-        <a class="release-link" href="#first-launch" aria-label="Run this command to finish setup">
-          2) Run this
-        </a>
-      </div>
 
-      <div class="first-launch" aria-labelledby="first-launch-title">
-        <div>
-          <p id="first-launch-title">2) Run this</p>
-          <span>Move BsCode to Applications, then run this command:</span>
-        </div>
-        <div class="install-command">
-          <code id="quarantineCommand">xattr -dr com.apple.quarantine "/Applications/BsCode.app"</code>
-          <button id="copyQuarantineCommand" type="button" aria-label="Copy first-launch command">Copy</button>
-        </div>
-      </div>
+      <p class="eyebrow">
+        <span class="eyebrow-dot" aria-hidden="true"></span>
+        Native for macOS · v0.2.5
+      </p>
+
+      <h1 id="hero-title">One command center for every coding agent.</h1>
+
+      <p class="hero-lede">
+        Direct Codex, Claude, and shell sessions across local and SSH workspaces —
+        watch live progress and review what they wrote without losing your place.
+      </p>
+
+      <ol class="setup">
+        <li class="setup-step">
+          <span class="step-index" aria-hidden="true">1</span>
+          <div class="step-body">
+            <p class="step-label">Get the app</p>
+            <a class="primary-download" href="https://github.com/axel-slid/bscode/releases/download/v0.2.5/BsCode-macOS-arm64.zip">
+              Download for Apple silicon
+              <span aria-hidden="true">↓</span>
+            </a>
+          </div>
+        </li>
+        <li class="setup-step">
+          <span class="step-index" aria-hidden="true">2</span>
+          <div class="step-body">
+            <p class="step-label">Move it to Applications, then run</p>
+            <div class="install-command">
+              <code id="quarantineCommand">xattr -dr com.apple.quarantine "/Applications/BsCode.app"</code>
+              <button id="copyQuarantineCommand" type="button" aria-label="Copy first-launch command">Copy</button>
+            </div>
+          </div>
+        </li>
+      </ol>
     </section>
 
     <section id="product-film" class="film-section" aria-label="BsCode product film">
-      <figure class="film-stage reveal">
+      <figure class="film-stage">
         <video
           id="bscodeDigitalTwin"
           autoplay
@@ -101,7 +115,6 @@
         </figcaption>
       </figure>
     </section>
-
   </main>
 
   <footer class="site-footer">
@@ -142,21 +155,6 @@
           copyButton.textContent = "Copy";
         }, 1400);
       };
-
-      const revealObserver = "IntersectionObserver" in window
-        ? new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-              if (!entry.isIntersecting) return;
-              entry.target.classList.add("is-visible");
-              revealObserver.unobserve(entry.target);
-            });
-          }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 })
-        : null;
-
-      document.querySelectorAll(".reveal").forEach((element) => {
-        if (revealObserver) revealObserver.observe(element);
-        else element.classList.add("is-visible");
-      });
 
       reducedMotion.addEventListener?.("change", syncPlayback);
       document.addEventListener("visibilitychange", syncPlayback);
