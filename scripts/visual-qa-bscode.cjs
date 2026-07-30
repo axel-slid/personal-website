@@ -25,9 +25,10 @@ async function connect() {
   const target = targets.find((candidate) => (
     candidate.type === "page"
     && (
-      candidate.title === "BsCode"
+      candidate.title.startsWith("BsCode")
       || candidate.url.endsWith("/index.html")
       || candidate.url.includes("127.0.0.1:4173/bscode")
+      || candidate.url.includes("alex-dils.com/bscode")
     )
   ));
   if (!target?.webSocketDebuggerUrl) {
@@ -88,7 +89,21 @@ async function main() {
   await send("Page.enable");
   await send("Runtime.enable");
   await send("Network.enable");
+  await send("Page.addScriptToEvaluateOnNewDocument", {
+    source: `
+      window.__bscodeQaErrors = [];
+      window.addEventListener("error", (event) => {
+        window.__bscodeQaErrors.push(event.message || "Unknown page error");
+      });
+      window.addEventListener("unhandledrejection", (event) => {
+        window.__bscodeQaErrors.push(String(event.reason || "Unhandled rejection"));
+      });
+    `
+  });
   await send("Network.setCacheDisabled", { cacheDisabled: true });
+  await send("Emulation.setEmulatedMedia", {
+    features: [{ name: "prefers-reduced-motion", value: "reduce" }]
+  });
 
   const loaded = once("Page.loadEventFired");
   await send("Page.navigate", { url: targetUrl });
@@ -101,10 +116,11 @@ async function main() {
   await evaluate(send, `
     Promise.all([
       document.fonts?.ready || Promise.resolve(),
-      ...Array.from(document.querySelectorAll("video")).map((video) => new Promise((resolve) => {
-        if (video.readyState >= 2) resolve();
+      ...Array.from(document.images).map((image) => new Promise((resolve) => {
+        if (image.complete) resolve();
         else {
-          video.addEventListener("loadeddata", resolve, { once: true });
+          image.addEventListener("load", resolve, { once: true });
+          image.addEventListener("error", resolve, { once: true });
           setTimeout(resolve, 5000);
         }
       }))
@@ -122,8 +138,20 @@ async function main() {
       screenHeight: viewport.height
     });
     await delay(900);
+    await evaluate(send, `
+      Promise.all(Array.from(document.images).map(async (image) => {
+        image.loading = "eager";
+        if (!image.complete) {
+          await new Promise((resolve) => {
+            image.addEventListener("load", resolve, { once: true });
+            image.addEventListener("error", resolve, { once: true });
+            setTimeout(resolve, 5000);
+          });
+        }
+        if (image.decode) await image.decode().catch(() => {});
+      }))
+    `);
     const metrics = await evaluate(send, `(() => {
-      const videos = Array.from(document.querySelectorAll("video"));
       const links = Array.from(document.querySelectorAll("a[href]"));
       return {
         title: document.title,
@@ -133,12 +161,10 @@ async function main() {
           height: document.documentElement.scrollHeight
         },
         hasHorizontalOverflow: document.documentElement.scrollWidth > innerWidth + 1,
-        videos: videos.map((video) => ({
-          readyState: video.readyState,
-          width: video.videoWidth,
-          height: video.videoHeight,
-          source: video.currentSrc
-        })),
+        hasDigitalTwin: Boolean(document.querySelector(".digital-twin #twinCanvas")),
+        twinView: document.querySelector("#twinCanvas")?.dataset.view || null,
+        workflowIds: Array.from(document.querySelectorAll("[data-workflow]"))
+          .map((button) => button.dataset.workflow),
         brokenImages: Array.from(document.images)
           .filter((image) => !image.complete || image.naturalWidth === 0)
           .map((image) => image.currentSrc || image.src),
@@ -150,7 +176,7 @@ async function main() {
             ["product-window", document.querySelector(".product-window")],
             ["product-title", document.getElementById("product-title")],
             ["download-button", document.querySelector(".download-button")],
-            ["demo-window", document.querySelector(".demo-window")]
+            ["digital-twin", document.querySelector(".digital-twin")]
           ].map(([id, element]) => {
             const rect = element?.getBoundingClientRect();
             return [id, rect ? {
@@ -175,27 +201,60 @@ async function main() {
     report.push({ ...viewport, ...metrics });
   }
 
+  const workflowReport = [];
+  const workflowExpectations = {
+    workspace: { view: "workspace", className: "" },
+    delegate: { view: "workspace", className: "is-team" },
+    progress: { view: "workspace", className: "is-complete" },
+    output: { view: "workspace", className: "is-output-preview" },
+    cinematic: { view: "cinematic", className: "is-sent" },
+    pixel: { view: "pixel", className: "is-pet-open" }
+  };
+  for (const workflowId of ["workspace", "delegate", "progress", "output", "cinematic", "pixel"]) {
+    await evaluate(send, `document.querySelector('[data-workflow="${workflowId}"]')?.click()`);
+    await delay(700);
+    workflowReport.push(await evaluate(send, `(() => ({
+      workflow: "${workflowId}",
+      selected: document.querySelector('[data-workflow="${workflowId}"]')?.getAttribute("aria-selected"),
+      view: document.querySelector("#twinCanvas")?.dataset.view || null,
+      classes: Array.from(document.querySelector("#twinCanvas")?.classList || []),
+      status: document.querySelector("#twinStatus")?.textContent?.trim() || "",
+      step: document.querySelector("#twinStepCount")?.textContent?.trim() || "",
+      labelledBy: document.querySelector("#productTwin")?.getAttribute("aria-labelledby") || ""
+    }))()`));
+  }
+
+  const pageErrors = await evaluate(send, `window.__bscodeQaErrors || []`);
   socket.close();
   await fs.writeFile(
     path.join(outputDirectory, "report.json"),
-    `${JSON.stringify(report, null, 2)}\n`
+    `${JSON.stringify({ viewports: report, workflows: workflowReport, pageErrors }, null, 2)}\n`
   );
 
   const failures = report.filter((entry) => (
     entry.hasHorizontalOverflow
     || entry.brokenImages.length > 0
-    || entry.videos.some((video) => (
-      video.readyState < 2 || video.width !== 1280 || video.height !== 720
-    ))
-    || entry.videos.length !== 1
+    || !entry.hasDigitalTwin
+    || entry.workflowIds.length !== 6
     || entry.downloadLinks.length < 1
     || Object.values(entry.keyRects).some((rect) => (
       !rect || rect.left < 0 || rect.left + rect.width > entry.viewport.width
     ))
   ));
+  const workflowFailures = workflowReport.filter((entry) => {
+    const expectation = workflowExpectations[entry.workflow];
+    return (
+      entry.selected !== "true"
+      || entry.view !== expectation.view
+      || (expectation.className && !entry.classes.includes(expectation.className))
+      || !entry.status
+      || !entry.step
+      || !entry.labelledBy
+    );
+  });
 
-  process.stdout.write(`${JSON.stringify({ outputDirectory, report, failures }, null, 2)}\n`);
-  if (failures.length) process.exitCode = 1;
+  process.stdout.write(`${JSON.stringify({ outputDirectory, report, workflowReport, pageErrors, failures, workflowFailures }, null, 2)}\n`);
+  if (failures.length || workflowFailures.length || pageErrors.length) process.exitCode = 1;
 }
 
 main().catch((error) => {

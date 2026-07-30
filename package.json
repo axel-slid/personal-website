@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "video:render": "remotion render remotion/index.jsx BsCodeOverview assets/bscode/motion/bscode-overview.mp4 --public-dir . --codec h264 --crf 18 --pixel-format yuv420p",
-    "check": "node scripts/check-site.mjs"
+    "check": "node scripts/check-site.mjs && node --check bscode/demo-workflows.js && node --check bscode/bscode.js",
+    "visual:qa": "node scripts/visual-qa-bscode.cjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.501",
