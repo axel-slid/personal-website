@@ -181,37 +181,26 @@ a {
 
 /* ---------- one-screen stage ---------- */
 
-/*
-  The hero and the film share one grid cell: the film runs as wide as the
-  screen allows and the copy sits on top of its left edge. Side by side, the
-  film could only ever have the width the copy column left over.
-*/
 .stage {
   flex: 1;
   width: var(--page);
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  align-items: center;
-  padding: 28px 0;
-}
-
-.hero,
-.film-section {
-  grid-column: 1;
-  grid-row: 1;
+  align-content: center;
+  gap: 26px;
+  padding: 22px 0;
 }
 
 .hero {
   position: relative;
-  z-index: 2;
-  width: min(100%, 560px);
+  width: 100%;
   animation: rise 900ms var(--ease) both;
 }
 
 .hero h1 {
   margin: 0;
-  font-size: clamp(64px, 8.4vw, 132px);
+  font-size: clamp(46px, 5.6vw, 92px);
   font-weight: 640;
   letter-spacing: -0.05em;
   line-height: 0.94;
@@ -222,8 +211,8 @@ a {
 }
 
 .hero-lede {
-  max-width: 43ch;
-  margin: 18px 0 0;
+  max-width: 82ch;
+  margin: 14px 0 0;
   color: var(--muted);
   font-size: 16px;
   line-height: 1.62;
@@ -233,11 +222,13 @@ a {
 /* ---------- setup steps ---------- */
 
 .setup {
-  margin: clamp(26px, 3.2vh, 36px) 0 0;
+  margin: 22px 0 0;
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, max-content));
+  align-items: start;
+  gap: 44px;
 }
 
 .setup-step {
@@ -334,14 +325,15 @@ a {
 /* ---------- film ---------- */
 
 /*
-  Width is whichever is smaller: the page, or the width whose 1920:944 height
-  still clears the header, footer, and stage padding (68 + 60 + 56 = 184px).
-  That keeps the film as large as a single screen allows without scrolling.
+  Width is whichever is smaller: the page, or the width whose 1920:849 height
+  still clears the chrome (68 header + 60 footer + 44 padding = 172px) and the
+  copy stacked above it (~278px including the row gap). That keeps the film as
+  large as one screen allows without scrolling.
 */
 .film-section {
   min-width: 0;
-  justify-self: end;
-  width: min(100%, calc((100svh - 184px) * 2.2615));
+  justify-self: center;
+  width: min(100%, calc((100svh - 172px - 278px) * 2.2615));
   animation: rise 1100ms var(--ease) 120ms both;
 }
 
@@ -350,23 +342,6 @@ a {
   margin: 0;
   overflow: hidden;
   border-radius: 16px;
-}
-
-/* Darkens the left of the film so the overlaid copy stays legible. */
-.film-stage::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(
-    100deg,
-    rgba(7, 8, 10, 0.985) 0%,
-    rgba(7, 8, 10, 0.97) 28%,
-    rgba(7, 8, 10, 0.88) 42%,
-    rgba(7, 8, 10, 0.42) 56%,
-    rgba(7, 8, 10, 0) 72%
-  );
 }
 
 /*
@@ -447,7 +422,7 @@ a {
   }
 
   .hero h1 {
-    font-size: clamp(64px, 12vw, 116px);
+    font-size: clamp(46px, 8.6vw, 84px);
   }
 
   .hero-lede {
@@ -465,15 +440,12 @@ a {
     width: min(100%, 720px);
   }
 
-  .film-stage::after {
-    display: none;
-  }
 }
 
 /* Short windows: give the film the height back by easing off the type. */
 @media (min-width: 941px) and (max-height: 800px) {
   .hero h1 {
-    font-size: clamp(56px, 6.4vw, 104px);
+    font-size: clamp(42px, 4.6vw, 72px);
   }
 
   .hero-lede {
@@ -510,7 +482,7 @@ a {
   }
 
   .hero h1 {
-    font-size: clamp(52px, 15vw, 88px);
+    font-size: clamp(38px, 10.5vw, 66px);
   }
 
   .hero-lede {
