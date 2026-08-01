@@ -1,0 +1,362 @@
+[
+  {
+    "src": "assets/brain-ai/gifs/event-order-clean.gif",
+    "title": "Irregular event order \u00b7 clean accuracy",
+    "tag": "TEMPORAL / SYNTHETIC",
+    "metric": "CLEAN ACCURACY",
+    "unit": "%",
+    "source": "5 seeds \u00b7 40-step stream \u00b7 28% missing stress",
+    "note": "higher is better",
+    "category": "accuracy"
+  },
+  {
+    "src": "assets/brain-ai/gifs/event-order-stress.gif",
+    "title": "Irregular event order \u00b7 stress accuracy",
+    "tag": "TEMPORAL / SYNTHETIC",
+    "metric": "STRESS ACCURACY",
+    "unit": "%",
+    "source": "5 seeds \u00b7 40-step stream \u00b7 28% missing stress",
+    "note": "held-out corruption / missing data",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/event-order-gap.gif",
+    "title": "Irregular event order \u00b7 clean \u2192 stress drop",
+    "tag": "TEMPORAL / SYNTHETIC",
+    "metric": "CLEAN \u2192 STRESS DROP",
+    "unit": "percentage points",
+    "source": "5 seeds \u00b7 40-step stream \u00b7 28% missing stress",
+    "note": "lower is better",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/event-order-active.gif",
+    "title": "Irregular event order \u00b7 active expensive updates",
+    "tag": "TEMPORAL / SYNTHETIC",
+    "metric": "ACTIVE EXPENSIVE UPDATES",
+    "unit": "%",
+    "source": "5 seeds \u00b7 40-step stream \u00b7 28% missing stress",
+    "note": "algorithmic proxy; not joules",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/event-order-latency-ms.gif",
+    "title": "Irregular event order \u00b7 inference latency",
+    "tag": "TEMPORAL / SYNTHETIC",
+    "metric": "INFERENCE LATENCY",
+    "unit": "ms / example",
+    "source": "5 seeds \u00b7 40-step stream \u00b7 28% missing stress",
+    "note": "lower is better",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/event-order-params-m.gif",
+    "title": "Irregular event order \u00b7 parameter count",
+    "tag": "TEMPORAL / SYNTHETIC",
+    "metric": "PARAMETER COUNT",
+    "unit": "million",
+    "source": "5 seeds \u00b7 40-step stream \u00b7 28% missing stress",
+    "note": "matched budget where noted",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/mnist-stream-clean.gif",
+    "title": "MNIST as a stream \u00b7 clean accuracy",
+    "tag": "PUBLIC / TEMPORAL",
+    "metric": "CLEAN ACCURACY",
+    "unit": "%",
+    "source": "5 seeds \u00b7 8,000 train \u00b7 missing rows",
+    "note": "higher is better",
+    "category": "accuracy"
+  },
+  {
+    "src": "assets/brain-ai/gifs/mnist-stream-stress.gif",
+    "title": "MNIST as a stream \u00b7 stress accuracy",
+    "tag": "PUBLIC / TEMPORAL",
+    "metric": "STRESS ACCURACY",
+    "unit": "%",
+    "source": "5 seeds \u00b7 8,000 train \u00b7 missing rows",
+    "note": "held-out corruption / missing data",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/mnist-stream-gap.gif",
+    "title": "MNIST as a stream \u00b7 clean \u2192 stress drop",
+    "tag": "PUBLIC / TEMPORAL",
+    "metric": "CLEAN \u2192 STRESS DROP",
+    "unit": "percentage points",
+    "source": "5 seeds \u00b7 8,000 train \u00b7 missing rows",
+    "note": "lower is better",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/mnist-stream-active.gif",
+    "title": "MNIST as a stream \u00b7 active expensive updates",
+    "tag": "PUBLIC / TEMPORAL",
+    "metric": "ACTIVE EXPENSIVE UPDATES",
+    "unit": "%",
+    "source": "5 seeds \u00b7 8,000 train \u00b7 missing rows",
+    "note": "algorithmic proxy; not joules",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/mnist-stream-latency-ms.gif",
+    "title": "MNIST as a stream \u00b7 inference latency",
+    "tag": "PUBLIC / TEMPORAL",
+    "metric": "INFERENCE LATENCY",
+    "unit": "ms / example",
+    "source": "5 seeds \u00b7 8,000 train \u00b7 missing rows",
+    "note": "lower is better",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/mnist-stream-params-m.gif",
+    "title": "MNIST as a stream \u00b7 parameter count",
+    "tag": "PUBLIC / TEMPORAL",
+    "metric": "PARAMETER COUNT",
+    "unit": "million",
+    "source": "5 seeds \u00b7 8,000 train \u00b7 missing rows",
+    "note": "matched budget where noted",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/procedural-convnext-clean.gif",
+    "title": "ConvNeXt low-data \u00b7 clean accuracy",
+    "tag": "VISION / PROCEDURAL",
+    "metric": "CLEAN ACCURACY",
+    "unit": "%",
+    "source": "5 seeds \u00b7 1,200 train \u00b7 occlusion stress",
+    "note": "higher is better",
+    "category": "accuracy"
+  },
+  {
+    "src": "assets/brain-ai/gifs/procedural-convnext-stress.gif",
+    "title": "ConvNeXt low-data \u00b7 stress accuracy",
+    "tag": "VISION / PROCEDURAL",
+    "metric": "STRESS ACCURACY",
+    "unit": "%",
+    "source": "5 seeds \u00b7 1,200 train \u00b7 occlusion stress",
+    "note": "held-out corruption / missing data",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/procedural-convnext-gap.gif",
+    "title": "ConvNeXt low-data \u00b7 clean \u2192 stress drop",
+    "tag": "VISION / PROCEDURAL",
+    "metric": "CLEAN \u2192 STRESS DROP",
+    "unit": "percentage points",
+    "source": "5 seeds \u00b7 1,200 train \u00b7 occlusion stress",
+    "note": "lower is better",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/procedural-convnext-active.gif",
+    "title": "ConvNeXt low-data \u00b7 active expensive updates",
+    "tag": "VISION / PROCEDURAL",
+    "metric": "ACTIVE EXPENSIVE UPDATES",
+    "unit": "%",
+    "source": "5 seeds \u00b7 1,200 train \u00b7 occlusion stress",
+    "note": "algorithmic proxy; not joules",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/procedural-convnext-latency-ms.gif",
+    "title": "ConvNeXt low-data \u00b7 inference latency",
+    "tag": "VISION / PROCEDURAL",
+    "metric": "INFERENCE LATENCY",
+    "unit": "ms / example",
+    "source": "5 seeds \u00b7 1,200 train \u00b7 occlusion stress",
+    "note": "lower is better",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/procedural-convnext-params-m.gif",
+    "title": "ConvNeXt low-data \u00b7 parameter count",
+    "tag": "VISION / PROCEDURAL",
+    "metric": "PARAMETER COUNT",
+    "unit": "million",
+    "source": "5 seeds \u00b7 1,200 train \u00b7 occlusion stress",
+    "note": "matched budget where noted",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/mnist-convnext-clean.gif",
+    "title": "ConvNeXt public transfer \u00b7 clean accuracy",
+    "tag": "VISION / PUBLIC",
+    "metric": "CLEAN ACCURACY",
+    "unit": "%",
+    "source": "5 seeds \u00b7 MNIST \u00b7 25% pixel corruption",
+    "note": "higher is better",
+    "category": "accuracy"
+  },
+  {
+    "src": "assets/brain-ai/gifs/mnist-convnext-stress.gif",
+    "title": "ConvNeXt public transfer \u00b7 stress accuracy",
+    "tag": "VISION / PUBLIC",
+    "metric": "STRESS ACCURACY",
+    "unit": "%",
+    "source": "5 seeds \u00b7 MNIST \u00b7 25% pixel corruption",
+    "note": "held-out corruption / missing data",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/mnist-convnext-gap.gif",
+    "title": "ConvNeXt public transfer \u00b7 clean \u2192 stress drop",
+    "tag": "VISION / PUBLIC",
+    "metric": "CLEAN \u2192 STRESS DROP",
+    "unit": "percentage points",
+    "source": "5 seeds \u00b7 MNIST \u00b7 25% pixel corruption",
+    "note": "lower is better",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/mnist-convnext-active.gif",
+    "title": "ConvNeXt public transfer \u00b7 active expensive updates",
+    "tag": "VISION / PUBLIC",
+    "metric": "ACTIVE EXPENSIVE UPDATES",
+    "unit": "%",
+    "source": "5 seeds \u00b7 MNIST \u00b7 25% pixel corruption",
+    "note": "algorithmic proxy; not joules",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/mnist-convnext-latency-ms.gif",
+    "title": "ConvNeXt public transfer \u00b7 inference latency",
+    "tag": "VISION / PUBLIC",
+    "metric": "INFERENCE LATENCY",
+    "unit": "ms / example",
+    "source": "5 seeds \u00b7 MNIST \u00b7 25% pixel corruption",
+    "note": "lower is better",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/mnist-convnext-params-m.gif",
+    "title": "ConvNeXt public transfer \u00b7 parameter count",
+    "tag": "VISION / PUBLIC",
+    "metric": "PARAMETER COUNT",
+    "unit": "million",
+    "source": "5 seeds \u00b7 MNIST \u00b7 25% pixel corruption",
+    "note": "matched budget where noted",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/swin-v2-clean.gif",
+    "title": "Swin V2-Tiny transfer \u00b7 clean accuracy",
+    "tag": "MODERN BACKBONE / PRETRAINED",
+    "metric": "CLEAN ACCURACY",
+    "unit": "%",
+    "source": "official ImageNet weights \u00b7 3 epochs \u00b7 held-out stress",
+    "note": "higher is better",
+    "category": "accuracy"
+  },
+  {
+    "src": "assets/brain-ai/gifs/swin-v2-stress.gif",
+    "title": "Swin V2-Tiny transfer \u00b7 stress accuracy",
+    "tag": "MODERN BACKBONE / PRETRAINED",
+    "metric": "STRESS ACCURACY",
+    "unit": "%",
+    "source": "official ImageNet weights \u00b7 3 epochs \u00b7 held-out stress",
+    "note": "held-out corruption / missing data",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/swin-v2-gap.gif",
+    "title": "Swin V2-Tiny transfer \u00b7 clean \u2192 stress drop",
+    "tag": "MODERN BACKBONE / PRETRAINED",
+    "metric": "CLEAN \u2192 STRESS DROP",
+    "unit": "percentage points",
+    "source": "official ImageNet weights \u00b7 3 epochs \u00b7 held-out stress",
+    "note": "lower is better",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/swin-v2-active.gif",
+    "title": "Swin V2-Tiny transfer \u00b7 active expensive updates",
+    "tag": "MODERN BACKBONE / PRETRAINED",
+    "metric": "ACTIVE EXPENSIVE UPDATES",
+    "unit": "%",
+    "source": "official ImageNet weights \u00b7 3 epochs \u00b7 held-out stress",
+    "note": "algorithmic proxy; not joules",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/swin-v2-latency-ms.gif",
+    "title": "Swin V2-Tiny transfer \u00b7 inference latency",
+    "tag": "MODERN BACKBONE / PRETRAINED",
+    "metric": "INFERENCE LATENCY",
+    "unit": "ms / example",
+    "source": "official ImageNet weights \u00b7 3 epochs \u00b7 held-out stress",
+    "note": "lower is better",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/swin-v2-params-m.gif",
+    "title": "Swin V2-Tiny transfer \u00b7 parameter count",
+    "tag": "MODERN BACKBONE / PRETRAINED",
+    "metric": "PARAMETER COUNT",
+    "unit": "million",
+    "source": "official ImageNet weights \u00b7 3 epochs \u00b7 held-out stress",
+    "note": "matched budget where noted",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/early-exit-speed-clean.gif",
+    "title": "Early exit on CPU \u00b7 clean accuracy",
+    "tag": "COMPUTE / MEASURED",
+    "metric": "CLEAN ACCURACY",
+    "unit": "%",
+    "source": "5 repeated end-to-end passes \u00b7 CPU \u00b7 clean validation",
+    "note": "higher is better",
+    "category": "accuracy"
+  },
+  {
+    "src": "assets/brain-ai/gifs/early-exit-speed-stress.gif",
+    "title": "Early exit on CPU \u00b7 stress accuracy",
+    "tag": "COMPUTE / MEASURED",
+    "metric": "STRESS ACCURACY",
+    "unit": "%",
+    "source": "5 repeated end-to-end passes \u00b7 CPU \u00b7 clean validation",
+    "note": "held-out corruption / missing data",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/early-exit-speed-gap.gif",
+    "title": "Early exit on CPU \u00b7 clean \u2192 stress drop",
+    "tag": "COMPUTE / MEASURED",
+    "metric": "CLEAN \u2192 STRESS DROP",
+    "unit": "percentage points",
+    "source": "5 repeated end-to-end passes \u00b7 CPU \u00b7 clean validation",
+    "note": "lower is better",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/early-exit-speed-active.gif",
+    "title": "Early exit on CPU \u00b7 active expensive updates",
+    "tag": "COMPUTE / MEASURED",
+    "metric": "ACTIVE EXPENSIVE UPDATES",
+    "unit": "%",
+    "source": "5 repeated end-to-end passes \u00b7 CPU \u00b7 clean validation",
+    "note": "algorithmic proxy; not joules",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/early-exit-speed-latency-ms.gif",
+    "title": "Early exit on CPU \u00b7 inference latency",
+    "tag": "COMPUTE / MEASURED",
+    "metric": "INFERENCE LATENCY",
+    "unit": "ms / example",
+    "source": "5 repeated end-to-end passes \u00b7 CPU \u00b7 clean validation",
+    "note": "lower is better",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/early-exit-speed-params-m.gif",
+    "title": "Early exit on CPU \u00b7 parameter count",
+    "tag": "COMPUTE / MEASURED",
+    "metric": "PARAMETER COUNT",
+    "unit": "million",
+    "source": "5 repeated end-to-end passes \u00b7 CPU \u00b7 clean validation",
+    "note": "matched budget where noted",
+    "category": "compute"
+  }
+]

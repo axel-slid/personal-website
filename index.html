@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Alex Dils - Experience</title>
-<meta name="description" content="Alex Dils is a UC Berkeley computer science student, founder, builder, and medical AI researcher." />
+<title>Alex Dils — Research Lab</title>
+<meta name="description" content="Alex Dils is a UC Berkeley computer science student and builder researching efficient, predictive AI systems." />
 <link rel="canonical" href="https://alex-dils.com/" />
-<meta property="og:title" content="Alex Dils | Experience" />
-<meta property="og:description" content="UC Berkeley CS. Founder, builder, and medical AI researcher." />
+<meta property="og:title" content="Alex Dils | Research Lab" />
+<meta property="og:description" content="Empirical research into predictive-budget neurons, modern backbones, and efficient AI." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://alex-dils.com/" />
 <meta property="og:image" content="https://alex-dils.com/headshot.png" />
@@ -35,6 +35,7 @@
   <header class="topbar">
     <a class="brand" href="#top">Alex Dils</a>
     <nav aria-label="Primary">
+      <a href="#research">Research lab</a>
       <a href="#experience">Experience</a>
       <a href="#work">Work</a>
       <a href="bscode/">BsCode</a>
@@ -49,8 +50,8 @@
         <p class="eyebrow reveal">UC Berkeley CS / Stanford Medicine</p>
         <h1 id="hero-title" class="reveal">Alex Dils</h1>
         <p class="intro reveal">
-          Founder and computer vision researcher working across medical AI,
-          biomedical data fusion, and applied ML systems.
+          Building models that know when to think harder.
+          Researching predictive computation across vision, temporal streams, and modern AI backbones.
         </p>
         <div class="actions reveal" aria-label="Profile links">
           <a href="#" data-email data-email-user="dils" data-email-domain="berkeley.edu">Email</a>
@@ -65,9 +66,79 @@
       </a>
     </section>
 
+    <section class="research-lab" id="research" aria-labelledby="research-title">
+      <div class="lab-topline">
+        <span class="lab-kicker">01 / RESEARCH LOG · UPDATED AUG 2026</span>
+        <span class="lab-status"><i></i> experiments live</span>
+      </div>
+      <div class="lab-intro">
+        <div>
+          <h2 id="research-title">The brain may be less about bigger models<br /><em>and more about selective effort.</em></h2>
+          <p class="lab-dek">A working hypothesis: give each token a small state packet—content, prediction, surprise, eligibility, and budget—then let error decide where the model spends its next unit of compute.</p>
+        </div>
+        <div class="lab-proof">
+          <span class="lab-proof-label">STRONGEST CURRENT TRANSFER</span>
+          <strong>+7.8<span>pp</span></strong>
+          <p>PBN-Swin V2 corruption accuracy<br />68.6 → 76.4 · matched 27.6M params</p>
+        </div>
+      </div>
+
+      <div class="lab-stat-row" aria-label="Research counts">
+        <div><strong>36</strong><span>animated evidence views</span></div>
+        <div><strong>6</strong><span>applications tested</span></div>
+        <div><strong>5</strong><span>held-out stress protocols</span></div>
+        <div><strong>1</strong><span>falsifiable neuron idea</span></div>
+      </div>
+
+      <div class="state-packet" aria-label="Predictive-budget neuron state packet">
+        <div class="packet-copy">
+          <span class="lab-proof-label">THE NEW UNIT</span>
+          <h3>Predictive-budget neuron</h3>
+          <p>Not one activation. A living packet that carries what the unit thinks is happening, how wrong it is, what it is eligible to learn, and how much work it can afford.</p>
+        </div>
+        <div class="packet-diagram" aria-hidden="true">
+          <div class="packet-node packet-content"><span>h</span><small>content</small></div>
+          <div class="packet-node packet-prediction"><span>p</span><small>prediction</small></div>
+          <div class="packet-node packet-error"><span>δ</span><small>surprise</small></div>
+          <div class="packet-node packet-eligibility"><span>z</span><small>eligibility</small></div>
+          <div class="packet-node packet-budget"><span>b</span><small>budget</small></div>
+          <div class="packet-orbit"></div>
+        </div>
+      </div>
+
+      <div class="lab-toolbar">
+        <div>
+          <span class="lab-proof-label">THE EVIDENCE WALL</span>
+          <h3>Every card is rendered from a saved run</h3>
+        </div>
+        <div class="visual-filters" role="group" aria-label="Filter evidence views">
+          <button class="is-active" data-filter="all">All 36</button>
+          <button data-filter="accuracy">Accuracy</button>
+          <button data-filter="stress">Stress</button>
+          <button data-filter="compute">Compute</button>
+        </div>
+      </div>
+      <div class="visual-grid" data-visual-grid aria-live="polite"></div>
+
+      <div class="lab-bottom-grid">
+        <div class="lab-method">
+          <span class="lab-proof-label">APPLICATIONS</span>
+          <h3>From toy streams to a modern backbone</h3>
+          <div class="application-list">
+            <span>irregular event order</span><span>MNIST row streams</span><span>ConvNeXt</span><span>public corruption</span><span>Swin V2-Tiny</span><span>measured early exit</span>
+          </div>
+        </div>
+        <div class="lab-method lab-falsifier">
+          <span class="lab-proof-label">WHAT WOULD BREAK IT</span>
+          <h3>Speed is not inferred from a sparse-looking chart.</h3>
+          <p>Hard temporal skipping failed an early test. Public MNIST image exits were slower in this implementation. The next falsifier is a fused kernel with measured joules, not a proxy.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="experience">
       <div class="section-heading">
-        <span>01</span>
+        <span>02</span>
         <h2>Experience</h2>
       </div>
 
@@ -146,7 +217,7 @@
 
     <section class="section" id="work">
       <div class="section-heading">
-        <span>02</span>
+        <span>03</span>
         <h2>Selected Work</h2>
       </div>
 
@@ -217,7 +288,7 @@
 
     <section class="section" id="contact">
       <div class="section-heading">
-        <span>03</span>
+        <span>04</span>
         <h2>Contact</h2>
       </div>
 
@@ -232,7 +303,7 @@
   </main>
 
   <footer>
-    <span>Updated 2026-06-14</span>
+    <span>Updated 2026-08-01</span>
     <a href="#top">Back to top</a>
   </footer>
 </div>
