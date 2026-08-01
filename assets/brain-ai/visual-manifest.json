@@ -245,7 +245,7 @@
     "tag": "MODERN BACKBONE / PRETRAINED",
     "metric": "CLEAN ACCURACY",
     "unit": "%",
-    "source": "official ImageNet weights \u00b7 3 epochs \u00b7 held-out stress",
+    "source": "3 seeds \u00b7 pretrained ImageNet weights \u00b7 held-out stress",
     "note": "higher is better",
     "category": "accuracy"
   },
@@ -255,7 +255,7 @@
     "tag": "MODERN BACKBONE / PRETRAINED",
     "metric": "STRESS ACCURACY",
     "unit": "%",
-    "source": "official ImageNet weights \u00b7 3 epochs \u00b7 held-out stress",
+    "source": "3 seeds \u00b7 pretrained ImageNet weights \u00b7 held-out stress",
     "note": "held-out corruption / missing data",
     "category": "stress"
   },
@@ -265,7 +265,7 @@
     "tag": "MODERN BACKBONE / PRETRAINED",
     "metric": "CLEAN \u2192 STRESS DROP",
     "unit": "percentage points",
-    "source": "official ImageNet weights \u00b7 3 epochs \u00b7 held-out stress",
+    "source": "3 seeds \u00b7 pretrained ImageNet weights \u00b7 held-out stress",
     "note": "lower is better",
     "category": "stress"
   },
@@ -275,7 +275,7 @@
     "tag": "MODERN BACKBONE / PRETRAINED",
     "metric": "ACTIVE EXPENSIVE UPDATES",
     "unit": "%",
-    "source": "official ImageNet weights \u00b7 3 epochs \u00b7 held-out stress",
+    "source": "3 seeds \u00b7 pretrained ImageNet weights \u00b7 held-out stress",
     "note": "algorithmic proxy; not joules",
     "category": "compute"
   },
@@ -285,7 +285,7 @@
     "tag": "MODERN BACKBONE / PRETRAINED",
     "metric": "INFERENCE LATENCY",
     "unit": "ms / example",
-    "source": "official ImageNet weights \u00b7 3 epochs \u00b7 held-out stress",
+    "source": "3 seeds \u00b7 pretrained ImageNet weights \u00b7 held-out stress",
     "note": "lower is better",
     "category": "compute"
   },
@@ -295,7 +295,7 @@
     "tag": "MODERN BACKBONE / PRETRAINED",
     "metric": "PARAMETER COUNT",
     "unit": "million",
-    "source": "official ImageNet weights \u00b7 3 epochs \u00b7 held-out stress",
+    "source": "3 seeds \u00b7 pretrained ImageNet weights \u00b7 held-out stress",
     "note": "matched budget where noted",
     "category": "compute"
   },
