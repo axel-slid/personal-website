@@ -38,7 +38,7 @@
 <main>
   <header class="publication-header">
     <div class="container narrow">
-      <p class="eyebrow">EMPIRICAL RESEARCH UPDATE · AUGUST 2026</p>
+      <p class="eyebrow">EMPIRICAL RESEARCH LOG · AUGUST 2026</p>
       <h1>Predictive Retinotopic Memory:<br /><span>Hardware-aware completion for missing vision</span></h1>
       <p class="authors"><a href="../">Alex Dils</a><sup>1</sup></p>
       <p class="affiliation"><sup>1</sup> UC Berkeley · Independent research</p>
@@ -70,7 +70,7 @@
   <section class="section" id="abstract">
     <div class="container text-column">
       <h2>Abstract</h2>
-      <p class="lead">The revised method starts from a more specific brain logic: retinotopic sensory sheets preserve spatial layout, predictive feedback fills in expected input, and fast episodic signals are recruited when the incoming pattern violates the slow model.</p>
+      <p class="lead">The method starts from a more specific brain logic: retinotopic sensory sheets preserve spatial layout, predictive feedback fills in expected input, and fast episodic signals are recruited when the incoming pattern violates the slow model.</p>
       <p><strong>Predictive Retinotopic Memory (PRM, ours)</strong> adds a topographic completion adapter to a ConvNeXt backbone. A cheap predictor runs for every masked image; a mismatch signal selects a fixed-capacity contiguous subbatch for refinement; the completed sheet is then passed to the unchanged ConvNeXt body. The auxiliary reconstruction objective is self-supervised from the unmasked training image.</p>
       <p>Across three seeds on public MNIST with 45% held-out row missingness, PRM improves masked ConvNeXt stress accuracy from 91.1% to 93.1% (+2.0 points) with only 1.4% more parameters. A fixed 25% hardware route recovers 0.95 points while running about 21% faster than the full predictive adapter in the measured seed. This is a robustness/efficiency pilot, not a broad ImageNet or neuroscience claim.</p>
     </div>

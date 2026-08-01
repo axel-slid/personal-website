@@ -46,15 +46,15 @@ h1 span { color: var(--blue); }
 .button-dark:hover { background: var(--blue-dark); color: #fff; }
 
 .teaser-section { padding: 0 0 24px; }
-.teaser-grid { display: grid; grid-template-columns: 1.35fr 0.65fr; gap: 16px; }
+.teaser-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
 figure { margin: 0; }
 .teaser-main, .teaser-side figure { overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: var(--tint); box-shadow: var(--large); }
 .teaser-main img { display: block; width: 100%; }
-.teaser-side { display: grid; gap: 16px; }
+.teaser-side { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 .teaser-side img { display: block; width: 100%; }
-.teaser-stat { display: flex; flex-direction: column; justify-content: center; padding: 24px; border: 1px solid var(--line); border-radius: 14px; background: #fff; box-shadow: var(--soft); }
+.teaser-stat { display: flex; flex-direction: column; justify-content: center; min-height: 120px; padding: 18px 22px; border: 1px solid var(--line); border-radius: 14px; background: #fff; box-shadow: var(--soft); }
 .teaser-stat span, .section-kicker { color: var(--blue); font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .08em; }
-.teaser-stat strong { margin-top: 10px; color: var(--ink); font-size: 42px; line-height: 1; letter-spacing: -.06em; }
+.teaser-stat strong { margin-top: 8px; color: var(--ink); font-size: 32px; line-height: 1; letter-spacing: -.06em; }
 .teaser-stat p { margin: 10px 0 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
 figcaption { padding: 10px 13px; color: var(--muted); font-size: 11px; font-weight: 600; }
 
