@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Brain-Inspired AI | Alex Dils</title>
-<meta name="description" content="Predictive-Budget Neurons: an empirical brain-inspired AI research project across temporal streams, ConvNeXt, and Swin V2-Tiny." />
+<title>Predictive Retinotopic Memory | Alex Dils</title>
+<meta name="description" content="Predictive Retinotopic Memory: a brain-grounded, hardware-aware ConvNeXt intervention for missing visual evidence." />
 <link rel="canonical" href="https://alex-dils.com/brain-inspired-ai/" />
-<meta property="og:title" content="Brain-Inspired AI | Alex Dils" />
-<meta property="og:description" content="An empirical research project page for Predictive-Budget Neurons." />
+<meta property="og:title" content="Predictive Retinotopic Memory | Alex Dils" />
+<meta property="og:description" content="An empirical research project page for predictive retinotopic completion and fixed-capacity routing." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://alex-dils.com/brain-inspired-ai/" />
 <meta property="og:image" content="https://alex-dils.com/assets/brain-ai/gifs/mnist-stream-stress.gif" />
@@ -38,11 +38,11 @@
 <main>
   <header class="publication-header">
     <div class="container narrow">
-      <p class="eyebrow">EMPIRICAL RESEARCH LOG · AUGUST 2026</p>
-      <h1>Predictive-Budget Neurons:<br /><span>Selective Effort for Efficient AI</span></h1>
+      <p class="eyebrow">EMPIRICAL RESEARCH UPDATE · AUGUST 2026</p>
+      <h1>Predictive Retinotopic Memory:<br /><span>Hardware-aware completion for missing vision</span></h1>
       <p class="authors"><a href="../">Alex Dils</a><sup>1</sup></p>
       <p class="affiliation"><sup>1</sup> UC Berkeley · Independent research</p>
-      <div class="venue">Working paper / reproducible research prototype</div>
+      <div class="venue">Working paper / three-seed public-data pilot</div>
       <div class="button-row">
         <a class="button button-dark" href="#results">Explore evidence</a>
         <a class="button" href="#method">Read the method</a>
@@ -56,12 +56,12 @@
     <div class="container">
       <div class="teaser-grid">
         <figure class="teaser-main">
-          <img src="../assets/brain-ai/neuron-pbn-bridge.gif" alt="Animated illustrative leaky integrate-and-fire neuron beside the Predictive-Budget Neuron control packet" />
-          <figcaption>Biophysical analogy: a leaky integrate-and-fire trace mapped to prediction error, budget, and selective refinement. This is an illustrative simulation, not brain-scan data.</figcaption>
+          <img src="../assets/brain-ai/real-brain-fmri-pbn-adaptation.gif" alt="Animated real fMRI BOLD volume montage beside an explicit adaptation of its temporal signal into predictive retinotopic memory" />
+          <figcaption>Real preprocessed fMRI BOLD volumes from an open movie-watching dataset, paired with the algorithmic abstraction used here. BOLD voxels are not neurons; the right panel is our model mapping.</figcaption>
         </figure>
         <div class="teaser-side">
-          <div class="teaser-stat"><span>STRONGEST SIGNAL</span><strong>+1.7 pp</strong><p>PBN (ours) over GRU on public MNIST row-stream stress.</p></div>
-          <div class="teaser-stat"><span>HONEST BOUNDARY</span><strong>−0.1 pp</strong><p>Three-seed Swin V2 stress change; the backbone is not improved yet.</p></div>
+          <div class="teaser-stat"><span>3-SEED PUBLIC STRESS</span><strong>+2.0 pp</strong><p>Retinotopic predictive ConvNeXt (ours) over masked ConvNeXt at 45% missing rows.</p></div>
+          <div class="teaser-stat"><span>HARDWARE ROUTE</span><strong>25%</strong><p>Fixed-capacity contiguous refinement batch; no per-example Python branching.</p></div>
         </div>
       </div>
     </div>
@@ -70,9 +70,9 @@
   <section class="section" id="abstract">
     <div class="container text-column">
       <h2>Abstract</h2>
-      <p class="lead">Brains appear to spend energy selectively: predicting routine input, amplifying surprise, updating memory when it matters, and replaying useful traces. This project translates that idea into a model-level state packet rather than a biological claim.</p>
-      <p>A <strong>Predictive-Budget Neuron</strong> carries content, a local prediction, a signed residual, an eligibility trace, and a slow compute budget. The residual gates refinement, memory writes, and—in carefully tested settings—conditional execution. I test the same mechanism across irregular temporal streams, public MNIST, a ConvNeXt-style vision model, and a pretrained Swin V2-Tiny backbone.</p>
-      <p>The result is mixed by design: temporal state updates show a repeatable gain, while the three-seed Swin V2 pilot does not improve accuracy and is slower. The page is an evidence log, not a leaderboard claim.</p>
+      <p class="lead">The revised method starts from a more specific brain logic: retinotopic sensory sheets preserve spatial layout, predictive feedback fills in expected input, and fast episodic signals are recruited when the incoming pattern violates the slow model.</p>
+      <p><strong>Predictive Retinotopic Memory (PRM, ours)</strong> adds a topographic completion adapter to a ConvNeXt backbone. A cheap predictor runs for every masked image; a mismatch signal selects a fixed-capacity contiguous subbatch for refinement; the completed sheet is then passed to the unchanged ConvNeXt body. The auxiliary reconstruction objective is self-supervised from the unmasked training image.</p>
+      <p>Across three seeds on public MNIST with 45% held-out row missingness, PRM improves masked ConvNeXt stress accuracy from 91.1% to 93.1% (+2.0 points) with only 1.4% more parameters. A fixed 25% hardware route recovers 0.95 points while running about 21% faster than the full predictive adapter in the measured seed. This is a robustness/efficiency pilot, not a broad ImageNet or neuroscience claim.</p>
     </div>
   </section>
 
@@ -80,37 +80,44 @@
     <div class="container">
       <h2>Method</h2>
       <div class="method-grid">
-        <article class="method-card"><span class="method-index">01</span><h3>Predict</h3><p>Estimate the next local state before spending a full update.</p><div class="equation">\(p_t = f_p(h_{t-1})\)</div></article>
-        <article class="method-card"><span class="method-index">02</span><h3>Measure surprise</h3><p>Use the residual as a control signal, not only as a loss term.</p><div class="equation">\(\delta_t = x_t - p_t\)</div></article>
-        <article class="method-card"><span class="method-index">03</span><h3>Spend selectively</h3><p>Refine, write, or replay when error and budget justify the cost.</p><div class="equation">\(g_t = \sigma\!\left(\alpha(|\delta_t|-\theta)\right)\)</div></article>
+        <article class="method-card"><span class="method-index">01</span><h3>Predict topographically</h3><p>Use a local cortical-sheet operator to fill unobserved sensory locations.</p><div class="equation">\(\hat{x}_t=f_{\mathrm{topo}}(x_t,m_t)\)</div></article>
+        <article class="method-card"><span class="method-index">02</span><h3>Measure mismatch</h3><p>Estimate novelty only where sensory evidence is actually observed.</p><div class="equation">\(r_t=m_t\odot|x_t-\hat{x}_t|\)</div></article>
+        <article class="method-card"><span class="method-index">03</span><h3>Route fixed capacity</h3><p>Gather a contiguous top-k batch for refinement so sparsity maps to hardware.</p><div class="equation">\(I_t=\operatorname{TopK}(r_t),\quad |I_t|=\rho B\)</div></article>
       </div>
-      <div class="state-strip"><strong>PBN state packet (ours)</strong><span>\(h_t\) content</span><span>\(p_t\) prediction</span><span>\(\delta_t\) residual</span><span>\(z_t\) eligibility</span><span>\(b_t\) budget</span></div>
+      <div class="state-strip"><strong>PRM state packet (ours)</strong><span>\(x_t\) sensory sheet</span><span>\(m_t\) observation mask</span><span>\(\hat{x}_t\) prediction</span><span>\(r_t\) mismatch</span><span>\(I_t\) fixed route</span></div>
     </div>
   </section>
 
   <section class="section pipeline-section" id="pipeline">
     <div class="container">
       <div class="section-kicker">FIGURE 1 · MODEL PIPELINE</div>
-      <h2>Prediction turns surprise into compute.</h2>
-      <p class="section-intro">The central design move is to make a biologically motivated signal operational: routine input follows a cheap path; surprising input earns refinement, memory writes, or replay.</p>
+      <h2>Prediction turns mismatch into a hardware route.</h2>
+      <p class="section-intro">The new integration makes the biological analogy operational and measurable: preserve retinotopy, predict missing evidence, score observed mismatch, and route a fixed-size contiguous batch.</p>
       <figure class="pipeline-figure" aria-label="Predictive-Budget Neuron pipeline from input through prediction, residual gating, budget allocation, selective refinement, and output">
-        <div class="pipeline-node input-node"><span class="node-number">01</span><strong>Input stream</strong><small>pixels · events · tokens</small></div>
+        <div class="pipeline-node input-node"><span class="node-number">01</span><strong>Retinotopic input</strong><small>sensory sheet + mask</small></div>
         <div class="pipeline-arrow">→</div>
-        <div class="pipeline-node"><span class="node-number">02</span><strong>Local prediction</strong><small>\(p_t=f_p(h_{t-1})\)</small></div>
+        <div class="pipeline-node"><span class="node-number">02</span><strong>Predictive sheet</strong><small>\(\hat{x}=f_{topo}(x,m)\)</small></div>
         <div class="pipeline-arrow">→</div>
-        <div class="pipeline-node surprise-node"><span class="node-number">03</span><strong>Residual / surprise</strong><small>\(\delta_t=x_t-p_t\)</small></div>
+        <div class="pipeline-node surprise-node"><span class="node-number">03</span><strong>Observed mismatch</strong><small>\(r=m\odot|x-\hat{x}|\)</small></div>
         <div class="pipeline-arrow">→</div>
-        <div class="pipeline-node budget-node"><span class="node-number">04</span><strong>Budget + eligibility</strong><small>gate, \(z_t\), \(b_t\)</small></div>
-        <div class="pipeline-branch"><span>low surprise</span><b>predict / skip</b><span>high surprise</span><b>refine / write / replay</b></div>
-        <div class="pipeline-node output-node"><span class="node-number">05</span><strong>State + output</strong><small>updated representation</small></div>
+        <div class="pipeline-node budget-node"><span class="node-number">04</span><strong>Fixed-capacity route</strong><small>\(I=\operatorname{TopK}(r)\)</small></div>
+        <div class="pipeline-branch"><span>routine / low mismatch</span><b>cheap completion</b><span>novel / high mismatch</span><b>contiguous refine batch</b></div>
+        <div class="pipeline-node output-node"><span class="node-number">05</span><strong>ConvNeXt output</strong><small>completed sheet → classifier</small></div>
       </figure>
-      <p class="figure-caption"><strong>PBN (ours).</strong> A single state packet carries content, prediction, residual, eligibility, and a slow budget. The gate is an algorithmic control signal inspired by sparse biological updating—not a claim that the implementation reproduces cortical circuitry.</p>
+      <p class="figure-caption"><strong>PRM (ours).</strong> The fixed-capacity route is the hardware intervention: all samples take the cheap path, while a contiguous top-k subbatch takes the expensive refinement path. The mapping is inspired by predictive and retinotopic computation, not a claim that the network reproduces cortical circuitry.</p>
+    </div>
+  </section>
+
+  <section class="section section-tint" id="neuroimaging">
+    <div class="container neuroimaging-grid">
+      <div><div class="section-kicker">REAL DATA / PROVENANCE</div><h2>What came from the brain—and what did not.</h2><p class="section-intro">The left side is rendered from a real preprocessed 4D fMRI BOLD time series. The right side is our explicit algorithmic abstraction: regional signal → prediction → mismatch → fixed-capacity route.</p><p class="neuroimaging-links"><a href="https://nilearn.github.io/dev/modules/generated/nilearn.datasets.fetch_development_fmri.html" target="_blank" rel="noreferrer">Nilearn dataset documentation</a> · <a href="https://openneuro.org/datasets/ds000228/versions/1.0.0" target="_blank" rel="noreferrer">OpenNeuro ds000228</a> · <a href="https://doi.org/10.1038/s41467-018-03399-2" target="_blank" rel="noreferrer">Richardson et al. 2018</a></p></div>
+      <figure class="neuroimaging-figure"><img src="../assets/brain-ai/real-brain-fmri-pbn-adaptation.gif" alt="Real fMRI BOLD montage and the predictive retinotopic memory abstraction" /><figcaption>Real BOLD volume animation; not a neural-network activation visualization. The architecture mapping is shown as a separate, labeled panel.</figcaption></figure>
     </div>
   </section>
 
   <section class="section" id="results">
     <div class="container">
-      <div class="section-head"><div><div class="section-kicker">INTERACTIVE EVIDENCE EXPLORER</div><h2>Results</h2><p>Hover, zoom, and switch protocols. Every point is summarized from saved multi-seed experiment JSON; PBN (ours) is labeled in blue.</p></div><label class="benchmark-picker">Protocol <select id="benchmark-select" aria-label="Select benchmark"></select></label></div>
+      <div class="section-head"><div><div class="section-kicker">INTERACTIVE EVIDENCE EXPLORER</div><h2>Results</h2><p>Hover, zoom, and switch protocols. The default view is the new three-seed public ConvNeXt row-mask pilot; historical temporal and Swin boundaries remain available in the selector.</p></div><label class="benchmark-picker">Protocol <select id="benchmark-select" aria-label="Select benchmark"></select></label></div>
       <div class="plot-toolbar" role="group" aria-label="Select evidence plot"><button class="active" data-chart="accuracy">Accuracy</button><button data-chart="efficiency">Selective compute</button><button data-chart="tradeoff">Latency / stress</button></div>
       <div id="accuracy-plot" class="interactive-plot" role="img" aria-label="Interactive clean and stress accuracy plot"></div>
       <div class="plot-grid"><div id="efficiency-plot" class="interactive-plot" role="img" aria-label="Interactive active update and parameter plot"></div><div id="tradeoff-plot" class="interactive-plot" role="img" aria-label="Interactive latency and stress accuracy plot"></div></div>
@@ -122,9 +129,9 @@
     <div class="container">
       <h2>What the experiments say</h2>
       <div class="finding-grid">
-        <article><span class="finding-label positive">POSITIVE · PBN (OURS)</span><h3>Temporal memory is the strongest fit.</h3><p>On public MNIST row streams, PBN (ours) reached 85.4% under missing rows vs 83.7% for GRU across five seeds, with a smaller parameter count.</p></article>
-        <article><span class="finding-label boundary">BOUNDARY</span><h3>Swin V2 did not improve yet.</h3><p>Across three seeds, PBN-Swin was 97.35% clean vs 97.63% for dense Swin and was about 20% slower. The negative result stays visible.</p></article>
-        <article><span class="finding-label next">NEXT FALSIFIER</span><h3>Measure fused execution.</h3><p>The active-update fraction is only a proxy. A real claim needs fused kernels, bytes moved, latency, and joules at equal accuracy.</p></article>
+        <article><span class="finding-label positive">POSITIVE · PRM (OURS)</span><h3>Retinotopic completion improves stress.</h3><p>Across three seeds, the full predictive adapter improves masked ConvNeXt stress accuracy from 91.1% to 93.1% (+2.0 points) at 45% missing rows.</p></article>
+        <article><span class="finding-label boundary">HARDWARE TRADE-OFF</span><h3>Fixed routing is safer than vague sparsity.</h3><p>The fixed 25% route recovers +0.95 points in the measured seed and runs about 21% faster than the full predictive adapter, though still slightly slower than the dense baseline.</p></article>
+        <article><span class="finding-label next">NEXT FALSIFIER</span><h3>Scale beyond digit images.</h3><p>The claim now needs naturally asynchronous video, audio, or event-camera data plus fused-kernel measurements. MNIST is a controlled public stress test, not SOTA vision.</p></article>
       </div>
     </div>
   </section>
@@ -133,7 +140,7 @@
     <div class="container text-column">
       <div class="bibtex-head"><h2>BibTeX</h2><button class="copy-button" data-copy-bibtex>Copy</button></div>
       <pre><code id="bibtex-code">@misc{dils2026predictivebudget,
-  title={Predictive-Budget Neurons: Selective Effort for Efficient AI},
+  title={Predictive Retinotopic Memory: Hardware-aware Completion for Missing Visual Evidence},
   author={Dils, Alex},
   year={2026},
   url={https://alex-dils.com/brain-inspired-ai/},

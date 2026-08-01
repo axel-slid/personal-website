@@ -51,7 +51,7 @@
       data.benchmarks.forEach((benchmark) => {
         const option = document.createElement("option"); option.value = benchmark.id; option.textContent = `${benchmark.title} — ${benchmark.tag}`; select.append(option);
       });
-      select.value = data.benchmarks.find((item) => item.id === "mnist-stream")?.id || data.benchmarks[0].id;
+      select.value = data.benchmarks.find((item) => item.id === "retinotopic-convnext")?.id || data.benchmarks[0].id;
       select.addEventListener("change", () => render(data));
       render(data);
       chartButtons.forEach((button) => button.addEventListener("click", () => { chartButtons.forEach((item) => item.classList.toggle("active", item === button)); document.querySelector(`#${button.dataset.chart}-plot`)?.scrollIntoView({ behavior: "smooth", block: "center" }); }));

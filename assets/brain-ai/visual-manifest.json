@@ -300,6 +300,66 @@
     "category": "compute"
   },
   {
+    "src": "assets/brain-ai/gifs/retinotopic-convnext-clean.gif",
+    "title": "Retinotopic predictive ConvNeXt \u00b7 clean accuracy",
+    "tag": "VISION / PUBLIC / OURS",
+    "metric": "CLEAN ACCURACY",
+    "unit": "%",
+    "source": "3 seeds \u00b7 public MNIST row masks \u00b7 45% held-out stress; latency seed 43",
+    "note": "higher is better",
+    "category": "accuracy"
+  },
+  {
+    "src": "assets/brain-ai/gifs/retinotopic-convnext-stress.gif",
+    "title": "Retinotopic predictive ConvNeXt \u00b7 stress accuracy",
+    "tag": "VISION / PUBLIC / OURS",
+    "metric": "STRESS ACCURACY",
+    "unit": "%",
+    "source": "3 seeds \u00b7 public MNIST row masks \u00b7 45% held-out stress; latency seed 43",
+    "note": "held-out corruption / missing data",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/retinotopic-convnext-gap.gif",
+    "title": "Retinotopic predictive ConvNeXt \u00b7 clean \u2192 stress drop",
+    "tag": "VISION / PUBLIC / OURS",
+    "metric": "CLEAN \u2192 STRESS DROP",
+    "unit": "percentage points",
+    "source": "3 seeds \u00b7 public MNIST row masks \u00b7 45% held-out stress; latency seed 43",
+    "note": "lower is better",
+    "category": "stress"
+  },
+  {
+    "src": "assets/brain-ai/gifs/retinotopic-convnext-active.gif",
+    "title": "Retinotopic predictive ConvNeXt \u00b7 active expensive updates",
+    "tag": "VISION / PUBLIC / OURS",
+    "metric": "ACTIVE EXPENSIVE UPDATES",
+    "unit": "%",
+    "source": "3 seeds \u00b7 public MNIST row masks \u00b7 45% held-out stress; latency seed 43",
+    "note": "algorithmic proxy; not joules",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/retinotopic-convnext-latency-ms.gif",
+    "title": "Retinotopic predictive ConvNeXt \u00b7 inference latency",
+    "tag": "VISION / PUBLIC / OURS",
+    "metric": "INFERENCE LATENCY",
+    "unit": "ms / example",
+    "source": "3 seeds \u00b7 public MNIST row masks \u00b7 45% held-out stress; latency seed 43",
+    "note": "lower is better",
+    "category": "compute"
+  },
+  {
+    "src": "assets/brain-ai/gifs/retinotopic-convnext-params-m.gif",
+    "title": "Retinotopic predictive ConvNeXt \u00b7 parameter count",
+    "tag": "VISION / PUBLIC / OURS",
+    "metric": "PARAMETER COUNT",
+    "unit": "million",
+    "source": "3 seeds \u00b7 public MNIST row masks \u00b7 45% held-out stress; latency seed 43",
+    "note": "matched budget where noted",
+    "category": "compute"
+  },
+  {
     "src": "assets/brain-ai/gifs/early-exit-speed-clean.gif",
     "title": "Early exit on CPU \u00b7 clean accuracy",
     "tag": "COMPUTE / MEASURED",

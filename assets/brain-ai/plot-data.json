@@ -169,6 +169,42 @@
       ]
     },
     {
+      "id": "retinotopic-convnext",
+      "title": "Retinotopic predictive ConvNeXt",
+      "tag": "VISION / PUBLIC / OURS",
+      "source": "3 seeds \u00b7 public MNIST row masks \u00b7 45% held-out stress; latency seed 43",
+      "models": [
+        "Masked ConvNeXt",
+        "Retinotopic Predictive ConvNeXt (ours)",
+        "Hardware-routed Retinotopic (ours)"
+      ],
+      "clean": [
+        0.9545833333333333,
+        0.9585,
+        0.956
+      ],
+      "stress": [
+        0.9105833333333333,
+        0.9305,
+        0.926
+      ],
+      "active": [
+        1.0,
+        1.0,
+        0.25
+      ],
+      "latency_ms": [
+        0.04173182500235271,
+        0.05852104999939911,
+        0.04638310625159647
+      ],
+      "params_m": [
+        0.23797,
+        0.241251,
+        0.238788
+      ]
+    },
+    {
       "id": "early-exit-speed",
       "title": "Early exit on CPU",
       "tag": "COMPUTE / MEASURED",
@@ -202,6 +238,7 @@
   "notes": {
     "accuracy": "Held-out accuracy; clean and stress are separate evaluation streams.",
     "compute": "Active updates are algorithmic proxies. Latency is measured wall-clock time for the stated implementation.",
-    "swin": "Three-seed pretrained Swin V2-Tiny pilot; PBN did not improve the backbone in this setup."
+    "swin": "Three-seed pretrained Swin V2-Tiny pilot; PBN did not improve the backbone in this setup.",
+    "retinotopic": "Three-seed public MNIST row-mask pilot; full predictive adapter and fixed-capacity hardware route are reported separately."
   }
 }

@@ -1,0 +1,14 @@
+{
+  "modality": "preprocessed 4D fMRI BOLD",
+  "dataset": "Development of the social brain from age three to twelve years",
+  "source_dataset": "OpenNeuro ds000228",
+  "source_subject_file": "sub-pixar123_task-pixar_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz",
+  "tr_seconds": 2.0,
+  "displayed_frames": 56,
+  "display_note": "Real fMRI volume visualization; the PBN panel is an algorithmic abstraction, not a neural decoding result.",
+  "references": [
+    "https://nilearn.github.io/dev/modules/generated/nilearn.datasets.fetch_development_fmri.html",
+    "https://openneuro.org/datasets/ds000228/versions/1.0.0",
+    "https://doi.org/10.1038/s41467-018-03399-2"
+  ]
+}

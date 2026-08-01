@@ -91,6 +91,12 @@ code { color: #164e9b; font-family: var(--mono); font-size: 12px; }
 .pipeline-branch b { color: var(--ink); font-weight: 600; }.pipeline-branch span:nth-of-type(2), .pipeline-branch b:nth-of-type(2) { color: #059669; }
 .figure-caption { max-width: 850px; margin: 16px 0 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
 .figure-caption strong { color: var(--ink); }
+.neuroimaging-grid { display: grid; grid-template-columns: .78fr 1.22fr; gap: 28px; align-items: center; }
+.neuroimaging-grid h2 { margin-top: 14px; margin-bottom: 18px; }
+.neuroimaging-links { color: var(--muted); font-family: var(--mono); font-size: 11px; line-height: 1.6; }
+.neuroimaging-figure { overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: #09111f; box-shadow: var(--large); }
+.neuroimaging-figure img { display: block; width: 100%; }
+.neuroimaging-figure figcaption { color: #9fb1cc; background: #111c30; }
 
 .section-head { display: flex; align-items: end; justify-content: space-between; gap: 28px; margin-bottom: 28px; }
 .section-head h2 { margin-bottom: 8px; }
@@ -128,7 +134,7 @@ pre code { color: #334155; font-size: 12px; line-height: 1.65; white-space: pre;
   .nav-inner { align-items: flex-start; flex-direction: column; gap: 2px; padding: 12px 0; }
   .nav-links { gap: 10px 15px; }
   .publication-header { padding: 58px 0 42px; }
-  .teaser-grid, .method-grid, .finding-grid, .results-grid, .plot-grid { grid-template-columns: 1fr; }
+  .teaser-grid, .method-grid, .finding-grid, .results-grid, .plot-grid, .neuroimaging-grid { grid-template-columns: 1fr; }
   .teaser-side { grid-template-columns: 1fr 1fr; }
   .section-head { align-items: flex-start; flex-direction: column; }
   .benchmark-picker, .benchmark-picker select { width: 100%; }
