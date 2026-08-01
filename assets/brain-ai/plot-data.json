@@ -1,0 +1,207 @@
+{
+  "benchmarks": [
+    {
+      "id": "event-order",
+      "title": "Irregular event order",
+      "tag": "TEMPORAL / SYNTHETIC",
+      "source": "5 seeds \u00b7 40-step stream \u00b7 28% missing stress",
+      "models": [
+        "Scalar liquid",
+        "GRU",
+        "PBN"
+      ],
+      "clean": [
+        0.6976,
+        0.8402,
+        0.9752
+      ],
+      "stress": [
+        0.6162,
+        0.7392,
+        0.9
+      ],
+      "active": [
+        1.0,
+        1.0,
+        0.4614
+      ],
+      "latency_ms": [
+        0.0394,
+        0.0249,
+        0.0849
+      ],
+      "params_m": [
+        6.97,
+        7.176,
+        6.982
+      ]
+    },
+    {
+      "id": "mnist-stream",
+      "title": "MNIST as a stream",
+      "tag": "PUBLIC / TEMPORAL",
+      "source": "5 seeds \u00b7 8,000 train \u00b7 missing rows",
+      "models": [
+        "Scalar liquid",
+        "GRU",
+        "PBN"
+      ],
+      "clean": [
+        0.8253,
+        0.90295,
+        0.91765
+      ],
+      "stress": [
+        0.7468,
+        0.8372499999999999,
+        0.85445
+      ],
+      "active": [
+        1.0,
+        1.0,
+        0.40740896984934805
+      ],
+      "latency_ms": [
+        0.0132,
+        0.0099,
+        0.0344
+      ],
+      "params_m": [
+        8.833,
+        9.986,
+        8.588
+      ]
+    },
+    {
+      "id": "procedural-convnext",
+      "title": "ConvNeXt low-data",
+      "tag": "VISION / PROCEDURAL",
+      "source": "5 seeds \u00b7 1,200 train \u00b7 occlusion stress",
+      "models": [
+        "ConvNeXt",
+        "PBN block",
+        "Predictive exit"
+      ],
+      "clean": [
+        0.3262,
+        0.9175,
+        1.0
+      ],
+      "stress": [
+        0.263,
+        0.8595,
+        0.8892
+      ],
+      "active": [
+        1.0,
+        0.8013,
+        0.1752
+      ],
+      "latency_ms": [
+        0.326,
+        0.3438,
+        0.2282
+      ],
+      "params_m": [
+        0.238,
+        0.238,
+        0.238
+      ]
+    },
+    {
+      "id": "mnist-convnext",
+      "title": "ConvNeXt public transfer",
+      "tag": "VISION / PUBLIC",
+      "source": "5 seeds \u00b7 MNIST \u00b7 25% pixel corruption",
+      "models": [
+        "ConvNeXt",
+        "PBN block"
+      ],
+      "clean": [
+        0.9383,
+        0.9516
+      ],
+      "stress": [
+        0.6775,
+        0.5607
+      ],
+      "active": [
+        1.0,
+        0.9952
+      ],
+      "latency_ms": [
+        0.04,
+        0.173
+      ],
+      "params_m": [
+        0.238,
+        0.239
+      ]
+    },
+    {
+      "id": "swin-v2",
+      "title": "Swin V2-Tiny transfer",
+      "tag": "MODERN BACKBONE / PRETRAINED",
+      "source": "3 seeds \u00b7 pretrained ImageNet weights \u00b7 held-out stress",
+      "models": [
+        "Swin V2-Tiny",
+        "PBN-Swin V2"
+      ],
+      "clean": [
+        0.97625,
+        0.9735
+      ],
+      "stress": [
+        0.7404166666666666,
+        0.7396666666666667
+      ],
+      "active": [
+        1.0,
+        1.0
+      ],
+      "latency_ms": [
+        1.381837490750412,
+        1.6616412048897473
+      ],
+      "params_m": [
+        27.59026,
+        27.5947
+      ]
+    },
+    {
+      "id": "early-exit-speed",
+      "title": "Early exit on CPU",
+      "tag": "COMPUTE / MEASURED",
+      "source": "5 repeated end-to-end passes \u00b7 CPU \u00b7 clean validation",
+      "models": [
+        "Dense baseline",
+        "Predictive exit"
+      ],
+      "clean": [
+        1.0,
+        1.0
+      ],
+      "stress": [
+        0.99875,
+        0.995
+      ],
+      "active": [
+        1.0,
+        0.0
+      ],
+      "latency_ms": [
+        0.32598327100276947,
+        0.2282240937493043
+      ],
+      "params_m": [
+        0.237966,
+        0.23826
+      ]
+    }
+  ],
+  "notes": {
+    "accuracy": "Held-out accuracy; clean and stress are separate evaluation streams.",
+    "compute": "Active updates are algorithmic proxies. Latency is measured wall-clock time for the stated implementation.",
+    "swin": "Three-seed pretrained Swin V2-Tiny pilot; PBN did not improve the backbone in this setup."
+  }
+}

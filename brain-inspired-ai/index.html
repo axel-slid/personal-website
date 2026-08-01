@@ -16,6 +16,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="style.css" />
+<script>
+  window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] }, svg: { fontCache: 'global' } };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 </head>
 <body>
 <nav class="project-nav" aria-label="Project navigation">
@@ -41,6 +46,7 @@
       <div class="button-row">
         <a class="button button-dark" href="#results">Explore evidence</a>
         <a class="button" href="#method">Read the method</a>
+        <a class="button" href="../assets/brain-ai/predictive_budget_neurons_neurips_style.pdf">Paper PDF</a>
         <a class="button" href="https://github.com/axel-slid/personal-website" target="_blank" rel="noreferrer">Page source</a>
       </div>
     </div>
@@ -50,12 +56,12 @@
     <div class="container">
       <div class="teaser-grid">
         <figure class="teaser-main">
-          <img src="../assets/brain-ai/gifs/mnist-stream-stress.gif" alt="Animated bar chart comparing missing-row accuracy for liquid, GRU, and predictive-budget models" />
-          <figcaption>Public MNIST row-stream stress: the strongest current transfer signal.</figcaption>
+          <img src="../assets/brain-ai/neuron-pbn-bridge.gif" alt="Animated illustrative leaky integrate-and-fire neuron beside the Predictive-Budget Neuron control packet" />
+          <figcaption>Biophysical analogy: a leaky integrate-and-fire trace mapped to prediction error, budget, and selective refinement. This is an illustrative simulation, not brain-scan data.</figcaption>
         </figure>
         <div class="teaser-side">
-          <figure><img src="../assets/brain-ai/gifs/event-order-clean.gif" alt="Animated event-order accuracy comparison" /><figcaption>Irregular event order</figcaption></figure>
-          <figure><img src="../assets/brain-ai/gifs/swin-v2-stress.gif" alt="Animated three-seed Swin V2 stress comparison" /><figcaption>Modern-backbone boundary</figcaption></figure>
+          <div class="teaser-stat"><span>STRONGEST SIGNAL</span><strong>+1.7 pp</strong><p>PBN (ours) over GRU on public MNIST row-stream stress.</p></div>
+          <div class="teaser-stat"><span>HONEST BOUNDARY</span><strong>−0.1 pp</strong><p>Three-seed Swin V2 stress change; the backbone is not improved yet.</p></div>
         </div>
       </div>
     </div>
@@ -74,18 +80,41 @@
     <div class="container">
       <h2>Method</h2>
       <div class="method-grid">
-        <article class="method-card"><span class="method-index">01</span><h3>Predict</h3><p>Estimate the next local state before spending a full update.</p><code>p<sub>t</sub> ≈ f(h<sub>t−1</sub>)</code></article>
-        <article class="method-card"><span class="method-index">02</span><h3>Measure surprise</h3><p>Use the residual as a control signal, not only as a loss term.</p><code>δ<sub>t</sub> = x<sub>t</sub> − p<sub>t</sub></code></article>
-        <article class="method-card"><span class="method-index">03</span><h3>Spend selectively</h3><p>Refine, write, or replay when error and budget justify the cost.</p><code>gate<sub>t</sub> = σ(α(|δ<sub>t</sub>| − θ))</code></article>
+        <article class="method-card"><span class="method-index">01</span><h3>Predict</h3><p>Estimate the next local state before spending a full update.</p><div class="equation">\(p_t = f_p(h_{t-1})\)</div></article>
+        <article class="method-card"><span class="method-index">02</span><h3>Measure surprise</h3><p>Use the residual as a control signal, not only as a loss term.</p><div class="equation">\(\delta_t = x_t - p_t\)</div></article>
+        <article class="method-card"><span class="method-index">03</span><h3>Spend selectively</h3><p>Refine, write, or replay when error and budget justify the cost.</p><div class="equation">\(g_t = \sigma\!\left(\alpha(|\delta_t|-\theta)\right)\)</div></article>
       </div>
-      <div class="state-strip"><strong>state packet</strong><span>h content</span><span>p prediction</span><span>δ residual</span><span>z eligibility</span><span>b budget</span></div>
+      <div class="state-strip"><strong>PBN state packet (ours)</strong><span>\(h_t\) content</span><span>\(p_t\) prediction</span><span>\(\delta_t\) residual</span><span>\(z_t\) eligibility</span><span>\(b_t\) budget</span></div>
+    </div>
+  </section>
+
+  <section class="section pipeline-section" id="pipeline">
+    <div class="container">
+      <div class="section-kicker">FIGURE 1 · MODEL PIPELINE</div>
+      <h2>Prediction turns surprise into compute.</h2>
+      <p class="section-intro">The central design move is to make a biologically motivated signal operational: routine input follows a cheap path; surprising input earns refinement, memory writes, or replay.</p>
+      <figure class="pipeline-figure" aria-label="Predictive-Budget Neuron pipeline from input through prediction, residual gating, budget allocation, selective refinement, and output">
+        <div class="pipeline-node input-node"><span class="node-number">01</span><strong>Input stream</strong><small>pixels · events · tokens</small></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-node"><span class="node-number">02</span><strong>Local prediction</strong><small>\(p_t=f_p(h_{t-1})\)</small></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-node surprise-node"><span class="node-number">03</span><strong>Residual / surprise</strong><small>\(\delta_t=x_t-p_t\)</small></div>
+        <div class="pipeline-arrow">→</div>
+        <div class="pipeline-node budget-node"><span class="node-number">04</span><strong>Budget + eligibility</strong><small>gate, \(z_t\), \(b_t\)</small></div>
+        <div class="pipeline-branch"><span>low surprise</span><b>predict / skip</b><span>high surprise</span><b>refine / write / replay</b></div>
+        <div class="pipeline-node output-node"><span class="node-number">05</span><strong>State + output</strong><small>updated representation</small></div>
+      </figure>
+      <p class="figure-caption"><strong>PBN (ours).</strong> A single state packet carries content, prediction, residual, eligibility, and a slow budget. The gate is an algorithmic control signal inspired by sparse biological updating—not a claim that the implementation reproduces cortical circuitry.</p>
     </div>
   </section>
 
   <section class="section" id="results">
     <div class="container">
-      <div class="section-head"><div><h2>Results</h2><p>36 animated views generated from saved experiment JSON. Filter the atlas by what the model got right, where it broke, or what compute it spent.</p></div><div class="filters" role="group" aria-label="Filter results"><button class="active" data-filter="all">All 36</button><button data-filter="accuracy">Accuracy</button><button data-filter="stress">Stress</button><button data-filter="compute">Compute</button></div></div>
-      <div class="results-grid" data-results-grid></div>
+      <div class="section-head"><div><div class="section-kicker">INTERACTIVE EVIDENCE EXPLORER</div><h2>Results</h2><p>Hover, zoom, and switch protocols. Every point is summarized from saved multi-seed experiment JSON; PBN (ours) is labeled in blue.</p></div><label class="benchmark-picker">Protocol <select id="benchmark-select" aria-label="Select benchmark"></select></label></div>
+      <div class="plot-toolbar" role="group" aria-label="Select evidence plot"><button class="active" data-chart="accuracy">Accuracy</button><button data-chart="efficiency">Selective compute</button><button data-chart="tradeoff">Latency / stress</button></div>
+      <div id="accuracy-plot" class="interactive-plot" role="img" aria-label="Interactive clean and stress accuracy plot"></div>
+      <div class="plot-grid"><div id="efficiency-plot" class="interactive-plot" role="img" aria-label="Interactive active update and parameter plot"></div><div id="tradeoff-plot" class="interactive-plot" role="img" aria-label="Interactive latency and stress accuracy plot"></div></div>
+      <p class="plot-note">Accuracy is held-out fraction correct. Active updates are algorithmic proxies for how often the expensive branch fires. Latency is wall-clock time for the stated implementation, not a hardware-independent energy measurement.</p>
     </div>
   </section>
 
@@ -93,7 +122,7 @@
     <div class="container">
       <h2>What the experiments say</h2>
       <div class="finding-grid">
-        <article><span class="finding-label positive">POSITIVE</span><h3>Temporal memory is the strongest fit.</h3><p>On public MNIST row streams, PBN reached 85.4% under missing rows vs 83.7% for GRU across five seeds, with a smaller parameter count.</p></article>
+        <article><span class="finding-label positive">POSITIVE · PBN (OURS)</span><h3>Temporal memory is the strongest fit.</h3><p>On public MNIST row streams, PBN (ours) reached 85.4% under missing rows vs 83.7% for GRU across five seeds, with a smaller parameter count.</p></article>
         <article><span class="finding-label boundary">BOUNDARY</span><h3>Swin V2 did not improve yet.</h3><p>Across three seeds, PBN-Swin was 97.35% clean vs 97.63% for dense Swin and was about 20% slower. The negative result stays visible.</p></article>
         <article><span class="finding-label next">NEXT FALSIFIER</span><h3>Measure fused execution.</h3><p>The active-update fraction is only a proxy. A real claim needs fused kernels, bytes moved, latency, and joules at equal accuracy.</p></article>
       </div>
