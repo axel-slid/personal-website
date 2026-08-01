@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Brain-Inspired AI | Alex Dils</title>
+<meta name="description" content="Predictive-Budget Neurons: an empirical brain-inspired AI research project across temporal streams, ConvNeXt, and Swin V2-Tiny." />
+<link rel="canonical" href="https://alex-dils.com/brain-inspired-ai/" />
+<meta property="og:title" content="Brain-Inspired AI | Alex Dils" />
+<meta property="og:description" content="An empirical research project page for Predictive-Budget Neurons." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://alex-dils.com/brain-inspired-ai/" />
+<meta property="og:image" content="https://alex-dils.com/assets/brain-ai/gifs/mnist-stream-stress.gif" />
+<link rel="icon" href="../headshot.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<nav class="project-nav" aria-label="Project navigation">
+  <div class="nav-inner">
+    <a class="nav-name" href="../">Alex Dils</a>
+    <div class="nav-links">
+      <a href="#abstract">Abstract</a>
+      <a href="#results">Results</a>
+      <a href="#bibtex">Citation</a>
+      <a href="../">Portfolio</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <header class="publication-header">
+    <div class="container narrow">
+      <p class="eyebrow">EMPIRICAL RESEARCH LOG · AUGUST 2026</p>
+      <h1>Predictive-Budget Neurons:<br /><span>Selective Effort for Efficient AI</span></h1>
+      <p class="authors"><a href="../">Alex Dils</a><sup>1</sup></p>
+      <p class="affiliation"><sup>1</sup> UC Berkeley · Independent research</p>
+      <div class="venue">Working paper / reproducible research prototype</div>
+      <div class="button-row">
+        <a class="button button-dark" href="#results">Explore evidence</a>
+        <a class="button" href="#method">Read the method</a>
+        <a class="button" href="https://github.com/axel-slid/personal-website" target="_blank" rel="noreferrer">Page source</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="teaser-section">
+    <div class="container">
+      <div class="teaser-grid">
+        <figure class="teaser-main">
+          <img src="../assets/brain-ai/gifs/mnist-stream-stress.gif" alt="Animated bar chart comparing missing-row accuracy for liquid, GRU, and predictive-budget models" />
+          <figcaption>Public MNIST row-stream stress: the strongest current transfer signal.</figcaption>
+        </figure>
+        <div class="teaser-side">
+          <figure><img src="../assets/brain-ai/gifs/event-order-clean.gif" alt="Animated event-order accuracy comparison" /><figcaption>Irregular event order</figcaption></figure>
+          <figure><img src="../assets/brain-ai/gifs/swin-v2-stress.gif" alt="Animated three-seed Swin V2 stress comparison" /><figcaption>Modern-backbone boundary</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="abstract">
+    <div class="container text-column">
+      <h2>Abstract</h2>
+      <p class="lead">Brains appear to spend energy selectively: predicting routine input, amplifying surprise, updating memory when it matters, and replaying useful traces. This project translates that idea into a model-level state packet rather than a biological claim.</p>
+      <p>A <strong>Predictive-Budget Neuron</strong> carries content, a local prediction, a signed residual, an eligibility trace, and a slow compute budget. The residual gates refinement, memory writes, and—in carefully tested settings—conditional execution. I test the same mechanism across irregular temporal streams, public MNIST, a ConvNeXt-style vision model, and a pretrained Swin V2-Tiny backbone.</p>
+      <p>The result is mixed by design: temporal state updates show a repeatable gain, while the three-seed Swin V2 pilot does not improve accuracy and is slower. The page is an evidence log, not a leaderboard claim.</p>
+    </div>
+  </section>
+
+  <section class="section section-tint" id="method">
+    <div class="container">
+      <h2>Method</h2>
+      <div class="method-grid">
+        <article class="method-card"><span class="method-index">01</span><h3>Predict</h3><p>Estimate the next local state before spending a full update.</p><code>p<sub>t</sub> ≈ f(h<sub>t−1</sub>)</code></article>
+        <article class="method-card"><span class="method-index">02</span><h3>Measure surprise</h3><p>Use the residual as a control signal, not only as a loss term.</p><code>δ<sub>t</sub> = x<sub>t</sub> − p<sub>t</sub></code></article>
+        <article class="method-card"><span class="method-index">03</span><h3>Spend selectively</h3><p>Refine, write, or replay when error and budget justify the cost.</p><code>gate<sub>t</sub> = σ(α(|δ<sub>t</sub>| − θ))</code></article>
+      </div>
+      <div class="state-strip"><strong>state packet</strong><span>h content</span><span>p prediction</span><span>δ residual</span><span>z eligibility</span><span>b budget</span></div>
+    </div>
+  </section>
+
+  <section class="section" id="results">
+    <div class="container">
+      <div class="section-head"><div><h2>Results</h2><p>36 animated views generated from saved experiment JSON. Filter the atlas by what the model got right, where it broke, or what compute it spent.</p></div><div class="filters" role="group" aria-label="Filter results"><button class="active" data-filter="all">All 36</button><button data-filter="accuracy">Accuracy</button><button data-filter="stress">Stress</button><button data-filter="compute">Compute</button></div></div>
+      <div class="results-grid" data-results-grid></div>
+    </div>
+  </section>
+
+  <section class="section section-tint">
+    <div class="container">
+      <h2>What the experiments say</h2>
+      <div class="finding-grid">
+        <article><span class="finding-label positive">POSITIVE</span><h3>Temporal memory is the strongest fit.</h3><p>On public MNIST row streams, PBN reached 85.4% under missing rows vs 83.7% for GRU across five seeds, with a smaller parameter count.</p></article>
+        <article><span class="finding-label boundary">BOUNDARY</span><h3>Swin V2 did not improve yet.</h3><p>Across three seeds, PBN-Swin was 97.35% clean vs 97.63% for dense Swin and was about 20% slower. The negative result stays visible.</p></article>
+        <article><span class="finding-label next">NEXT FALSIFIER</span><h3>Measure fused execution.</h3><p>The active-update fraction is only a proxy. A real claim needs fused kernels, bytes moved, latency, and joules at equal accuracy.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="bibtex">
+    <div class="container text-column">
+      <div class="bibtex-head"><h2>BibTeX</h2><button class="copy-button" data-copy-bibtex>Copy</button></div>
+      <pre><code id="bibtex-code">@misc{dils2026predictivebudget,
+  title={Predictive-Budget Neurons: Selective Effort for Efficient AI},
+  author={Dils, Alex},
+  year={2026},
+  url={https://alex-dils.com/brain-inspired-ai/},
+  note={Reproducible empirical research prototype}
+}</code></pre>
+    </div>
+  </section>
+</main>
+
+<footer class="project-footer">
+  <div class="container"><p>This page uses the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noreferrer">Academic Project Page Template</a>, adapted for this research log.</p><a href="../">← Back to Alex Dils</a></div>
+</footer>
+<script src="site.js"></script>
+</body>
+</html>
