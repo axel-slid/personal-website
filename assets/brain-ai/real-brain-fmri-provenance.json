@@ -5,7 +5,7 @@
   "source_subject_file": "sub-pixar123_task-pixar_space-MNI152NLin2009cAsym_desc-preproc_bold.nii.gz",
   "tr_seconds": 2.0,
   "displayed_frames": 56,
-  "display_note": "Real fMRI volume visualization; the PRM panel is an algorithmic abstraction, not a neural decoding result.",
+  "display_note": "Provenance-only real fMRI volume visualization. Architecture claims are intentionally kept out of the raster.",
   "references": [
     "https://nilearn.github.io/dev/modules/generated/nilearn.datasets.fetch_development_fmri.html",
     "https://openneuro.org/datasets/ds000228/versions/1.0.0",

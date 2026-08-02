@@ -1,0 +1,11 @@
+{
+  "modality": "in vivo cortical calcium imaging",
+  "display": "4-second excerpt cropped to the raw-data quadrant; no spatial or temporal content added",
+  "source": "Giovannucci et al., CaImAn an open source tool for scalable calcium imaging data analysis, eLife 8:e38173 (2019), Video 1",
+  "source_doi": "https://doi.org/10.7554/eLife.38173.016",
+  "source_article": "https://elifesciences.org/articles/38173",
+  "credit": "Original video authors; source data described as a small patch of in vivo cortex data",
+  "license": "Creative Commons Attribution 4.0",
+  "license_url": "https://creativecommons.org/licenses/by/4.0/",
+  "note": "This is real calcium imaging, not a model activation and not a direct measurement used to fit Dual-RF."
+}

@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Predictive Retinotopic Memory | Alex Dils</title>
-<meta name="description" content="Predictive Retinotopic Memory: a brain-grounded, hardware-aware ConvNeXt intervention for missing visual evidence." />
-<link rel="canonical" href="https://alex-dils.com/brain-inspired-ai/" />
-<meta property="og:title" content="Predictive Retinotopic Memory | Alex Dils" />
-<meta property="og:description" content="An empirical research project page for predictive retinotopic completion and fixed-capacity routing." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://alex-dils.com/brain-inspired-ai/" />
-<meta property="og:image" content="https://alex-dils.com/assets/brain-ai/gifs/mnist-stream-stress.gif" />
-<link rel="icon" href="../headshot.png" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dual Receptive-Field Routing | Alex Dils</title>
+<meta name="description" content="Dual-RF (ours): complementary receptive-field completion and fixed-capacity selective depth for robust, faster Swin V2 inference under missing visual evidence.">
+<link rel="canonical" href="https://alex-dils.com/brain-inspired-ai/">
+<meta property="og:title" content="Dual Receptive-Field Routing | Alex Dils">
+<meta property="og:description" content="A parameter-matched empirical study of missing-evidence robustness and measured selective-depth latency in pretrained Swin V2-Tiny.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://alex-dils.com/brain-inspired-ai/">
+<meta property="og:image" content="https://alex-dils.com/assets/brain-ai/paired-swin-effects.png">
+<link rel="icon" href="../headshot.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500;600;700;800&amp;family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 <script>
   window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] }, svg: { fontCache: 'global' } };
 </script>
 <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
-<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
 </head>
 <body>
 <nav class="project-nav" aria-label="Project navigation">
@@ -28,7 +28,8 @@
     <a class="nav-name" href="../">Alex Dils</a>
     <div class="nav-links">
       <a href="#abstract">Abstract</a>
-      <a href="#results">Results</a>
+      <a href="#method">Method</a>
+      <a href="#results">Evidence</a>
       <a href="#bibtex">Citation</a>
       <a href="../">Portfolio</a>
     </div>
@@ -36,123 +37,231 @@
 </nav>
 
 <main>
-  <header class="publication-header">
-    <div class="container narrow">
-      <p class="eyebrow">EMPIRICAL RESEARCH LOG · AUGUST 2026</p>
-      <h1>Predictive Retinotopic Memory:<br /><span>Hardware-aware completion for missing vision</span></h1>
+  <header class="hero">
+    <div class="container hero-copy">
+      <p class="eyebrow">BRAIN-INSPIRED SYSTEMS · PAIRED EMPIRICAL STUDY</p>
+      <h1>Dual receptive fields.<br><span>Measured selective depth.</span></h1>
+      <p class="hero-deck">A local complementary surround restores missing visual evidence; a fixed-size subbatch earns Swin’s final stage. We test the mapping as an architecture and executable hardware path, with biological correspondence bounded explicitly.</p>
       <p class="authors"><a href="../">Alex Dils</a><sup>1</sup></p>
       <p class="affiliation"><sup>1</sup> UC Berkeley · Independent research</p>
-      <div class="venue">Working paper / three-seed public-data pilot</div>
+      <div class="venue">15-page technical report · exact parameter match · public data</div>
       <div class="button-row">
-        <a class="button button-dark" href="#results">Explore evidence</a>
-        <a class="button" href="#method">Read the method</a>
-        <a class="button" href="../assets/brain-ai/predictive_budget_neurons_neurips_style.pdf">Paper PDF</a>
+        <a class="button button-dark" href="#results">Inspect every seed</a>
+        <a class="button" href="#field-lab">Try the field lab</a>
+        <a class="button" href="../assets/brain-ai/dual_receptive_field_routing_neurips_style.pdf">Paper PDF</a>
         <a class="button" href="https://github.com/axel-slid/personal-website" target="_blank" rel="noreferrer">Page source</a>
       </div>
     </div>
+
+    <div class="container evidence-rail" role="group" aria-label="Headline evidence">
+      <div><span>CIFAR-10 · 45% ROWS MISSING</span><strong id="stat-row-gain">—</strong><small>paired gain, Dual-RF (ours)</small></div>
+      <div><span>M4 MPS · END TO END</span><strong id="stat-speedup">—</strong><small>25% final-stage route vs dense</small></div>
+      <div><span>LEARNED PARAMETERS</span><strong id="stat-params">equal</strong><small>same Swin, same two heads</small></div>
+      <div class="boundary"><span>VISIBLE BOUNDARY · MNIST</span><strong id="stat-block-gain">—</strong><small>large-block result is not hidden</small></div>
+    </div>
   </header>
 
-  <section class="teaser-section">
+  <section class="field-lab-section" id="field-lab">
     <div class="container">
-      <div class="teaser-grid">
-        <figure class="teaser-main">
-          <img src="../assets/brain-ai/real-brain-fmri-pbn-adaptation.gif" alt="Animated real fMRI BOLD volume montage beside an explicit adaptation of its temporal signal into predictive retinotopic memory" />
-          <figcaption>Real preprocessed fMRI BOLD volumes from an open movie-watching dataset, paired with the algorithmic abstraction used here. BOLD voxels are not neurons; the right panel is our model mapping.</figcaption>
-        </figure>
-        <div class="teaser-side">
-          <div class="teaser-stat"><span>3-SEED PUBLIC STRESS</span><strong>+2.0 pp</strong><p>Retinotopic predictive ConvNeXt (ours) over masked ConvNeXt at 45% missing rows.</p></div>
-          <div class="teaser-stat"><span>HARDWARE ROUTE</span><strong>25%</strong><p>Fixed-capacity contiguous refinement batch; no per-example Python branching.</p></div>
+      <div class="lab-header">
+        <div>
+          <p class="section-kicker">INTERACTIVE METHOD FIGURE</p>
+          <h2>Move through the actual operator.</h2>
+          <p>These are saved public-MNIST pixels passed through the adaptive-reach Dual-RF operator used in the experiment. Switch the mask to see when a local surround is sufficient and when the field expands. No illustrative model activation is substituted.</p>
+        </div>
+        <div class="lab-controls" role="group" aria-label="Method figure controls">
+          <div class="segmented" role="group" aria-label="Missingness pattern">
+            <button type="button" class="active" data-demo-condition="row45">Rows</button>
+            <button type="button" data-demo-condition="block35">Block</button>
+            <button type="button" data-demo-condition="pixel45">Pixels</button>
+          </div>
+          <div class="capacity-label"><label for="route-capacity">Final-stage capacity</label><output id="route-output" for="route-capacity">25%</output></div>
+          <input id="route-capacity" type="range" min="0" max="100" step="5" value="25">
         </div>
       </div>
+
+      <div class="field-lab">
+        <figure><div class="canvas-shell"><canvas id="observed-canvas" width="320" height="320"></canvas></div><figcaption><b>01 · Basal evidence</b><span>Observed pixels are clamped; absent pixels remain explicit.</span></figcaption></figure>
+        <div class="lab-arrow" aria-hidden="true">→</div>
+        <figure><div class="canvas-shell"><canvas id="completed-canvas" width="320" height="320"></canvas></div><figcaption><b>02 · Complementary surround</b><span>Use local support first; expand only where it is absent.</span></figcaption></figure>
+        <div class="lab-arrow" aria-hidden="true">→</div>
+        <figure><div class="canvas-shell field-map"><canvas id="radius-canvas" width="320" height="320"></canvas></div><figcaption><b>03 · Field recruited</b><span>Color records the contextual radius selected at each location.</span></figcaption></figure>
+      </div>
+
+      <div class="route-simulator">
+        <div><span>EARLY SWIN HEAD</span><strong>all 64 examples</strong></div>
+        <div class="route-packets" id="route-packets" role="img" aria-label="Simulated fixed-capacity route occupancy"></div>
+        <div><span>FINAL SWIN STAGE</span><strong id="route-count">16 / 64 examples</strong></div>
+      </div>
+      <p class="lab-note">The route display shows capacity, not measured neural activity. Experiment latency is reported separately below.</p>
     </div>
   </section>
 
   <section class="section" id="abstract">
     <div class="container text-column">
-      <h2>Abstract</h2>
-      <p class="lead">The method starts from a more specific brain logic: retinotopic sensory sheets preserve spatial layout, predictive feedback fills in expected input, and fast episodic signals are recruited when the incoming pattern violates the slow model.</p>
-      <p><strong>Predictive Retinotopic Memory (PRM, ours)</strong> adds a topographic completion adapter to a ConvNeXt backbone. A cheap predictor runs for every masked image; a mismatch signal selects a fixed-capacity contiguous subbatch for refinement; the completed sheet is then passed to the unchanged ConvNeXt body. The auxiliary reconstruction objective is self-supervised from the unmasked training image.</p>
-      <p>Across three seeds on public MNIST with 45% held-out row missingness, PRM improves masked ConvNeXt stress accuracy from 91.1% to 93.1% (+2.0 points) with only 1.4% more parameters. A fixed 25% hardware route recovers 0.95 points while running about 21% faster than the full predictive adapter in the measured seed. This is a robustness/efficiency pilot, not a broad ImageNet or neuroscience claim.</p>
+      <p class="section-kicker">ABSTRACT</p>
+      <h2>A narrow biological observation, translated into a testable system.</h2>
+      <p class="lead">Visual feedback can create a receptive field outside a neuron’s feedforward center, providing contextual evidence where direct sensory drive is absent. Dual-RF translates that complement—not the biology itself—into a masked-image operator.</p>
+      <p><strong>Dual Receptive-Field Routing (Dual-RF, ours)</strong> preserves observed pixels and fills missing locations only from center-excluded observed context. The supported local operator uses one (3!	imes!3) surround; an adaptive-reach variant expands through (5,9,17,) and (31)-pixel fields when local support is absent. The completed sheet and mask enter an official pretrained Swin V2-Tiny. An early head serves every example; one fixed-capacity contiguous top-(k) subbatch executes the final Swin stage.</p>
+      <p>On paired CIFAR-10 subsets, adaptive Dual-RF changes 45%-row, 35%-block, and 45%-pixel accuracy by <strong>+12.3, +1.5, and +27.0 percentage points</strong> while cutting measured M4 MPS latency by <strong>29.2%</strong>. Baseline and method have exactly the same 27.6M learned parameters, checkpoint, examples, masks, initialization, and optimizer schedule.</p>
+      <p>The direct control is the important part: one local (3!	imes!3) surround recovers nearly all CIFAR-10 improvement and is 31.5% faster. Adaptive reach adds only +2.2 mean points on rows and its interval crosses zero. The supported claim is therefore local evidence-preserving completion plus executable fixed capacity—not a general advantage for field expansion, ImageNet state of the art, or an energy measurement.</p>
     </div>
   </section>
 
-  <section class="section section-tint" id="method">
+  <section class="section neuroscience" id="neuroscience">
     <div class="container">
-      <h2>Method</h2>
-      <div class="method-grid">
-        <article class="method-card"><span class="method-index">01</span><h3>Predict topographically</h3><p>Use a local cortical-sheet operator to fill unobserved sensory locations.</p><div class="equation">\(\hat{x}_t=f_{\mathrm{topo}}(x_t,m_t)\)</div></article>
-        <article class="method-card"><span class="method-index">02</span><h3>Measure mismatch</h3><p>Estimate novelty only where sensory evidence is actually observed.</p><div class="equation">\(r_t=m_t\odot|x_t-\hat{x}_t|\)</div></article>
-        <article class="method-card"><span class="method-index">03</span><h3>Route fixed capacity</h3><p>Gather a contiguous top-k batch for refinement so sparsity maps to hardware.</p><div class="equation">\(I_t=\operatorname{TopK}(r_t),\quad |I_t|=\rho B\)</div></article>
+      <div class="section-heading">
+        <p class="section-kicker">MEASUREMENT → ABSTRACTION</p>
+        <h2>What came from neuroscience—and what did not.</h2>
+        <p>The architecture is grounded in cellular and systems findings cited below. The fMRI animation is real open human imaging for provenance and scale; it did not supervise the model.</p>
       </div>
-      <div class="state-strip"><strong>PRM state packet (ours)</strong><span>\(x_t\) sensory sheet</span><span>\(m_t\) observation mask</span><span>\(\hat{x}_t\) prediction</span><span>\(r_t\) mismatch</span><span>\(I_t\) fixed route</span></div>
+      <div class="neuro-media">
+        <figure class="fmri-figure">
+          <img src="../assets/brain-ai/real-brain-fmri.gif" alt="Animated real human fMRI BOLD axial, coronal, sagittal, and frame-change views with a regional time trace" loading="lazy" decoding="async" fetchpriority="low">
+          <figcaption><b>Real human fMRI / BOLD.</b> OpenNeuro ds000228, one preprocessed movie-watching run. Voxels are hemodynamic measurements—not individual neurons and not model activations.</figcaption>
+        </figure>
+        <figure class="calcium-figure">
+          <img src="../assets/brain-ai/real-cortical-calcium-imaging.gif" alt="Cropped raw in vivo cortical calcium imaging movie showing fluorescent neuronal activity" loading="lazy" decoding="async" fetchpriority="low">
+          <figcaption><b>Real in-vivo cortical calcium imaging.</b> Raw-data quadrant from Giovannucci et al., eLife 2019, Video 1; 4-second excerpt, cropped only. <a href="https://doi.org/10.7554/eLife.38173.016" target="_blank" rel="noreferrer">Source ↗</a> · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>.</figcaption>
+        </figure>
+      </div>
+      <div class="translation-label"><span>MEASUREMENTS</span><i aria-hidden="true"></i><b>algorithmic abstraction—not biological equivalence</b><i aria-hidden="true"></i><span>DUAL-RF</span></div>
+      <div class="translation-grid">
+        <article>
+          <span class="evidence-tag">MEASURED IN VISUAL CORTEX</span>
+          <h3>Feedback supplies a complementary receptive field.</h3>
+          <p>Feedback-driven responses can occur outside the feedforward receptive field and carry information about spatial context and missing input.</p>
+          <a href="https://www.nature.com/articles/s41586-020-2319-4" target="_blank" rel="noreferrer">Keller et al., Nature 2020 ↗</a>
+        </article>
+        <article>
+          <span class="evidence-tag">MEASURED AT APICAL DENDRITES</span>
+          <h3>Feedback influence depends on spatial alignment.</h3>
+          <p>Retinotopically offset feedback can facilitate dendritic events while aligned feedback can be suppressive. Dual-RF borrows the separation of center and surround; it does not model dendritic voltage.</p>
+          <a href="https://www.nature.com/articles/s41586-023-06007-6" target="_blank" rel="noreferrer">Fişek et al., Nature 2023 ↗</a>
+        </article>
+        <article class="ours-card">
+          <span class="evidence-tag">DUAL-RF (OURS)</span>
+          <h3>Preserve the center; recruit observed surround evidence.</h3>
+          <p>The supported operator uses a local center-excluded \(3\!\times\!3\) field and clamps every observed value exactly. Broader adaptive reach is isolated as a separate, currently inconclusive extension.</p>
+        </article>
+      </div>
+      <p class="provenance-links"><a href="https://openneuro.org/datasets/ds000228/versions/1.0.0" target="_blank" rel="noreferrer">OpenNeuro fMRI</a><span>·</span><a href="https://nilearn.github.io/dev/modules/generated/nilearn.datasets.fetch_development_fmri.html" target="_blank" rel="noreferrer">Nilearn loader</a><span>·</span><a href="https://doi.org/10.1038/s41467-018-03399-2" target="_blank" rel="noreferrer">Richardson et al. 2018</a><span>·</span><a href="https://elifesciences.org/articles/38173" target="_blank" rel="noreferrer">Giovannucci et al. 2019</a></p>
     </div>
   </section>
 
-  <section class="section pipeline-section" id="pipeline">
+  <section class="section method" id="method">
     <div class="container">
-      <div class="section-kicker">FIGURE 1 · MODEL PIPELINE</div>
-      <h2>Prediction turns mismatch into a hardware route.</h2>
-      <p class="section-intro">The new integration makes the biological analogy operational and measurable: preserve retinotopy, predict missing evidence, score observed mismatch, and route a fixed-size contiguous batch.</p>
-      <figure class="pipeline-figure" aria-label="Predictive-Budget Neuron pipeline from input through prediction, residual gating, budget allocation, selective refinement, and output">
-        <div class="pipeline-node input-node"><span class="node-number">01</span><strong>Retinotopic input</strong><small>sensory sheet + mask</small></div>
-        <div class="pipeline-arrow">→</div>
-        <div class="pipeline-node"><span class="node-number">02</span><strong>Predictive sheet</strong><small>\(\hat{x}=f_{topo}(x,m)\)</small></div>
-        <div class="pipeline-arrow">→</div>
-        <div class="pipeline-node surprise-node"><span class="node-number">03</span><strong>Observed mismatch</strong><small>\(r=m\odot|x-\hat{x}|\)</small></div>
-        <div class="pipeline-arrow">→</div>
-        <div class="pipeline-node budget-node"><span class="node-number">04</span><strong>Fixed-capacity route</strong><small>\(I=\operatorname{TopK}(r)\)</small></div>
-        <div class="pipeline-branch"><span>routine / low mismatch</span><b>cheap completion</b><span>novel / high mismatch</span><b>contiguous refine batch</b></div>
-        <div class="pipeline-node output-node"><span class="node-number">05</span><strong>ConvNeXt output</strong><small>completed sheet → classifier</small></div>
+      <div class="section-heading">
+        <p class="section-kicker">FIGURE 1 · FULL ARCHITECTURE</p>
+        <h2>One architecture, two independently testable interventions.</h2>
+        <p>Completion changes the evidence presented to Swin. Fixed capacity changes which examples execute late depth. The direct local-field control isolates whether adaptive spatial reach contributes beyond simple completion.</p>
+      </div>
+
+      <figure class="pipeline" aria-label="Dual Receptive-Field Routing architecture pipeline">
+        <div class="pipeline-input pipeline-box"><span>INPUT</span><b>sensory sheet (x)</b><small>observation mask (m)</small></div>
+        <div class="pipeline-split" aria-hidden="true">↙ &nbsp; ↘</div>
+        <div class="pipeline-lanes">
+          <div class="lane basal"><span>BASAL / CENTER</span><b>preserve observed evidence</b><div class="pipeline-math">\(m\odot x\)</div></div>
+          <div class="lane apical"><span>COMPLEMENTARY / SURROUND</span><b>local \(3\!\times\!3\) observed context</b><div class="pipeline-math">\(p_i=A_{3}(x,m)\)</div><small>adaptive variant expands only without local support</small></div>
+        </div>
+        <div class="pipeline-merge" aria-hidden="true">↘ &nbsp; ↙</div>
+        <div class="pipeline-box completion"><span>DUAL-RF (OURS)</span><b>evidence-preserving completion</b><div class="pipeline-math">\(\widetilde{x}=m\odot x+(1-m)\odot p\)</div></div>
+        <div class="pipeline-down" aria-hidden="true">↓</div>
+        <div class="swin-track">
+          <div class="pipeline-box shared"><span>SHARED DENSE PATH</span><b>Swin stages 1–3 + early head</b><small>all examples · static batch shape</small></div>
+          <div class="route-gate"><span>FIXED CAPACITY</span><div class="pipeline-math">\(I=\operatorname{TopK}(H(q),\lceil\rho B\rceil)\)</div><small>\(\rho\) is declared before evaluation</small></div>
+          <div class="pipeline-box deep"><span>CONTIGUOUS SUBBATCH</span><b>Swin final stage</b><small>gather (h[I]) · execute · scatter</small></div>
+        </div>
+        <div class="pipeline-output pipeline-box"><span>OUTPUT</span><b>early logits or refined logits</b><small>one prediction per example</small></div>
       </figure>
-      <p class="figure-caption"><strong>PRM (ours).</strong> The fixed-capacity route is the hardware intervention: all samples take the cheap path, while a contiguous top-k subbatch takes the expensive refinement path. The mapping is inspired by predictive and retinotopic computation, not a claim that the network reproduces cortical circuitry.</p>
-    </div>
-  </section>
 
-  <section class="section section-tint" id="neuroimaging">
-    <div class="container neuroimaging-grid">
-      <div><div class="section-kicker">REAL DATA / PROVENANCE</div><h2>What came from the brain—and what did not.</h2><p class="section-intro">The left side is rendered from a real preprocessed 4D fMRI BOLD time series. The right side is our explicit algorithmic abstraction: regional signal → prediction → mismatch → fixed-capacity route.</p><p class="neuroimaging-links"><a href="https://nilearn.github.io/dev/modules/generated/nilearn.datasets.fetch_development_fmri.html" target="_blank" rel="noreferrer">Nilearn dataset documentation</a> · <a href="https://openneuro.org/datasets/ds000228/versions/1.0.0" target="_blank" rel="noreferrer">OpenNeuro ds000228</a> · <a href="https://doi.org/10.1038/s41467-018-03399-2" target="_blank" rel="noreferrer">Richardson et al. 2018</a></p></div>
-      <figure class="neuroimaging-figure"><img src="../assets/brain-ai/real-brain-fmri-pbn-adaptation.gif" alt="Real fMRI BOLD montage and the predictive retinotopic memory abstraction" /><figcaption>Real BOLD volume animation; not a neural-network activation visualization. The architecture mapping is shown as a separate, labeled panel.</figcaption></figure>
-    </div>
-  </section>
-
-  <section class="section" id="results">
-    <div class="container">
-      <div class="section-head"><div><div class="section-kicker">INTERACTIVE EVIDENCE EXPLORER</div><h2>Results</h2><p>Hover, zoom, and switch protocols. The default view is the new three-seed public ConvNeXt row-mask pilot; historical temporal and Swin boundaries remain available in the selector.</p></div><label class="benchmark-picker">Protocol <select id="benchmark-select" aria-label="Select benchmark"></select></label></div>
-      <div class="plot-toolbar" role="group" aria-label="Select evidence plot"><button class="active" data-chart="accuracy">Accuracy</button><button data-chart="efficiency">Selective compute</button><button data-chart="tradeoff">Latency / stress</button></div>
-      <div id="accuracy-plot" class="interactive-plot" role="img" aria-label="Interactive clean and stress accuracy plot"></div>
-      <div class="plot-grid"><div id="efficiency-plot" class="interactive-plot" role="img" aria-label="Interactive active update and parameter plot"></div><div id="tradeoff-plot" class="interactive-plot" role="img" aria-label="Interactive latency and stress accuracy plot"></div></div>
-      <p class="plot-note">Accuracy is held-out fraction correct. Active updates are algorithmic proxies for how often the expensive branch fires. Latency is wall-clock time for the stated implementation, not a hardware-independent energy measurement.</p>
-    </div>
-  </section>
-
-  <section class="section section-tint">
-    <div class="container">
-      <h2>What the experiments say</h2>
-      <div class="finding-grid">
-        <article><span class="finding-label positive">POSITIVE · PRM (OURS)</span><h3>Retinotopic completion improves stress.</h3><p>Across three seeds, the full predictive adapter improves masked ConvNeXt stress accuracy from 91.1% to 93.1% (+2.0 points) at 45% missing rows.</p></article>
-        <article><span class="finding-label boundary">HARDWARE TRADE-OFF</span><h3>Fixed routing is safer than vague sparsity.</h3><p>The fixed 25% route recovers +0.95 points in the measured seed and runs about 21% faster than the full predictive adapter, though still slightly slower than the dense baseline.</p></article>
-        <article><span class="finding-label next">NEXT FALSIFIER</span><h3>Scale beyond digit images.</h3><p>The claim now needs naturally asynchronous video, audio, or event-camera data plus fused-kernel measurements. MNIST is a controlled public stress test, not SOTA vision.</p></article>
+      <div class="equation-grid">
+        <article><span>SUPPORTED FIELD</span><div class="display-equation">
+          \[s_i^*=\min\{s:\sum_{j\in\mathcal N_s(i)\setminus i}m_j>0\}\]
+        </div><p>The center is excluded. The local operator uses \(\mathcal S=\{3\}\); the adaptive extension uses \(\mathcal S=\{3,5,9,17,31\}\).</p></article>
+        <article><span>FIXED EXECUTION</span><div class="display-equation">
+          \[\ell_i=\begin{cases}f_{\mathrm{deep}}(h_i),&amp;i\in I\\f_{\mathrm{early}}(h_i),&amp;i\notin I\end{cases}\]
+        </div><p>The expensive path receives a fixed-size dense tensor; no per-example Python branch enters the measured path.</p></article>
       </div>
     </div>
   </section>
 
-  <section class="section" id="bibtex">
+  <section class="section results" id="results">
+    <div class="container">
+      <div class="results-heading">
+        <div>
+          <p class="section-kicker">INTERACTIVE EVIDENCE</p>
+          <h2>Every seed, capacity, and causal control stays inspectable.</h2>
+          <p>The default comparison is pretrained Swin V2-Tiny on natural-color CIFAR-10; toggle MNIST for an independent transfer study. Both use mixed 15–25% training missingness and held-out severe masks.</p>
+        </div>
+        <div class="protocol-chip"><span>PRIMARY PROTOCOL</span><b id="protocol-seeds">loading saved JSON…</b></div>
+      </div>
+
+      <div class="evidence-toolbar">
+        <div class="condition-tabs study-tabs" role="group" aria-label="Select evidence dataset">
+          <button type="button" class="active" data-effect-study="swin-cifar10">CIFAR-10</button>
+          <button type="button" data-effect-study="swin-mnist">MNIST</button>
+        </div>
+        <div class="condition-tabs" role="group" aria-label="Select effect condition">
+          <button type="button" class="active" data-effect-condition="row45">Rows missing</button>
+          <button type="button" data-effect-condition="pixel45">Pixels missing</button>
+          <button type="button" data-effect-condition="block35">Block missing</button>
+          <button type="button" data-effect-condition="clean">Clean</button>
+        </div>
+      </div>
+      <div id="effect-plot" class="interactive-plot effect-plot" role="img" aria-label="Paired per-seed accuracy comparison"></div>
+
+      <div class="plot-pair">
+        <article class="plot-panel"><div><span>MNIST · HARDWARE PARETO</span><h3>Accuracy versus measured latency</h3></div><div id="pareto-plot" class="interactive-plot" role="img" aria-label="Accuracy latency Pareto plot"></div></article>
+        <article class="plot-panel"><div><span>MNIST · ROUTER CONTROL</span><h3>Entropy does not beat random consistently</h3></div><div id="router-plot" class="interactive-plot" role="img" aria-label="Routing control comparison"></div></article>
+      </div>
+
+      <article class="plot-panel completion-panel"><div><span>DECISIVE CAUSAL CONTROL · CIFAR-10</span><h3>Local completion explains nearly all robustness</h3><p>The local control has the same checkpoint, learned parameters, data, masks, initialization, optimizer, and 25% route. Removing broader fields changes clean, row, block, and pixel means by +0.7, −2.2, +0.7, and +0.03 points relative to adaptive Dual-RF; every adaptive-minus-local interval crosses zero.</p></div><div id="completion-plot" class="interactive-plot" role="img" aria-label="Adaptive and single-scale completion comparison"></div></article>
+
+      <article class="plot-panel replication-panel"><div><span>CROSS-DATASET / BACKBONE</span><h3>Paired effect matrix</h3><p>CIFAR-10 and MNIST test the same pretrained Swin path; the smaller ConvNeXt-style replication shows where effects shrink.</p></div><div id="replication-plot" class="interactive-plot" role="img" aria-label="Cross-backbone paired gain heatmap"></div></article>
+
+      <p class="plot-note">Accuracy is held-out fraction correct. Error intervals are 95% t intervals over paired seeds and are wide at (n=3). Latency is end-to-end Apple M4 MPS time at the recorded batch shape; it is not FLOPs, joules, or a hardware-independent claim. Oracle routing uses labels and is diagnostic only.</p>
+    </div>
+  </section>
+
+  <section class="section ledger-section">
+    <div class="container">
+      <div class="section-heading"><p class="section-kicker">CLAIM LEDGER</p><h2>What the audit supports.</h2></div>
+      <div class="claim-ledger">
+        <article class="supported"><span>SUPPORTED</span><h3>Local surround completion improves missing-evidence robustness.</h3><p>The exact CIFAR-10 control improves every tested mask topology with one center-excluded \(3\!\times\!3\) field; row and pixel direction repeats on MNIST.</p></article>
+        <article class="supported"><span>SUPPORTED</span><h3>Fixed capacity produces real wall-clock savings.</h3><p>The final stage executes on one contiguous 25% subbatch; savings are measured against dense masked Swin.</p></article>
+        <article class="rejected"><span>NOT SUPPORTED</span><h3>Adaptive field expansion is generally better.</h3><p>It has a +2.2 pp row mean over the local control, but is lower on clean and blocks, tied on pixels, and every paired interval crosses zero.</p></article>
+        <article class="bounded"><span>BOUNDARY</span><h3>This is not broad visual state of the art.</h3><p>The backbone is strong and pretrained, but the datasets and missingness protocols remain small. ImageNet-scale and direct energy tests are still absent.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section limitations">
     <div class="container text-column">
-      <div class="bibtex-head"><h2>BibTeX</h2><button class="copy-button" data-copy-bibtex>Copy</button></div>
-      <pre><code id="bibtex-code">@misc{dils2026predictivebudget,
-  title={Predictive Retinotopic Memory: Hardware-aware Completion for Missing Visual Evidence},
+      <p class="section-kicker">LIMITATIONS</p>
+      <h2>Where this can still fail.</h2>
+      <p>Dual-RF assumes an explicit missingness mask; it does not detect arbitrary semantic corruption. The deterministic completion operator is related to normalized and partial convolution, while fixed top-\(k\) execution has clear ancestors in conditional-computation work. The direct control shows that adaptive spatial reach is not yet a distinct empirical contribution. The claim is the center/surround co-design, its exact integration, and the measured operating point—not that either ingredient appeared from nowhere.</p>
+      <p>The largest effects use a 6,000-example CIFAR-10 subset; MNIST supplies a second dataset and the smaller ConvNeXt supplies a second backbone, but neither substitutes for ImageNet-scale evaluation. A final-stage exit can be unusually safe on these transfer tasks, so the measured latency gain may shrink at scale. Three seeds provide replication but low statistical power. The real fMRI animation is provenance and communication—not training data, neural supervision, or evidence that a BOLD voxel implements Dual-RF.</p>
+    </div>
+  </section>
+
+  <section class="section citation" id="bibtex">
+    <div class="container text-column">
+      <div class="bibtex-head"><div><p class="section-kicker">CITATION</p><h2>BibTeX</h2></div><button type="button" class="copy-button" data-copy-bibtex>Copy</button></div>
+      <pre><code id="bibtex-code">@misc{dils2026dualrf,
+  title={Dual Receptive-Field Routing: Robust Missing-Evidence Vision with Fixed-Capacity Depth},
   author={Dils, Alex},
   year={2026},
   url={https://alex-dils.com/brain-inspired-ai/},
-  note={Reproducible empirical research prototype}
+  note={Paired empirical research artifact}
 }</code></pre>
     </div>
   </section>
 </main>
 
 <footer class="project-footer">
-  <div class="container"><p>This page uses the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noreferrer">Academic Project Page Template</a>, adapted for this research log.</p><a href="../">← Back to Alex Dils</a></div>
+  <div class="container"><p>Layout adapted from the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noreferrer">Academic Project Page Template</a>. Experimental claims are generated from saved per-seed JSON.</p><a href="../">← Back to Alex Dils</a></div>
 </footer>
-<script src="site.js"></script>
+<script defer src="site.js"></script>
 </body>
 </html>
