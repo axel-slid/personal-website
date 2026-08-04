@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Visualizations | Alex Dils</title>
+<meta name="description" content="Interactive figures and data visualizations by Alex Dils." />
+<link rel="canonical" href="https://alex-dils.com/visualizations/" />
+<meta property="og:title" content="Visualizations | Alex Dils" />
+<meta property="og:description" content="Interactive figures and data visualizations." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://alex-dils.com/visualizations/" />
+<meta property="og:image" content="https://alex-dils.com/headshot.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="../headshot.png" />
+<link rel="apple-touch-icon" href="../headshot.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../style.css" />
+<style>
+  .viz-hero {
+    display: grid;
+    justify-items: center;
+    gap: 34px;
+    padding: 84px 0 64px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .viz-hero h1 {
+    margin-bottom: 0;
+  }
+
+  .viz-hero .intro {
+    margin-bottom: 0;
+  }
+
+  .smiley {
+    width: min(340px, 62vw);
+    height: auto;
+    overflow: visible;
+  }
+
+  .smiley .face {
+    fill: var(--panel);
+    stroke: var(--ink);
+    stroke-width: 5;
+  }
+
+  .smiley .eye {
+    fill: var(--ink);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .smiley .mouth {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 5;
+    stroke-linecap: round;
+  }
+
+  /* Slow, occasional blink; mouth draws itself in once on load. */
+  body.motion-ready .smiley .eye {
+    animation: blink 6.5s ease-in-out 1.4s infinite;
+  }
+
+  body.motion-ready .smiley .mouth {
+    stroke-dasharray: 132;
+    stroke-dashoffset: 132;
+    animation: draw 900ms cubic-bezier(.2, .8, .2, 1) 320ms forwards;
+  }
+
+  @keyframes blink {
+    0%, 92%, 100% { transform: scaleY(1); }
+    95%           { transform: scaleY(0.1); }
+  }
+
+  @keyframes draw {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* Future visualizations drop in here -- one <article class="viz-item"> each. */
+  .viz-list {
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .viz-list:empty {
+    border-top: 0;
+  }
+
+  .viz-item {
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .viz-empty {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body.motion-ready .smiley .eye {
+      animation: none;
+    }
+
+    body.motion-ready .smiley .mouth {
+      stroke-dasharray: none;
+      stroke-dashoffset: 0;
+      animation: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .viz-hero {
+      padding: 56px 0 44px;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="site">
+  <header class="topbar">
+    <a class="brand" href="../">Alex Dils</a>
+    <nav aria-label="Primary">
+      <a href="../brain-inspired-ai/">Brain-inspired AI</a>
+      <a href="../#experience">Experience</a>
+      <a href="../#work">Work</a>
+      <a href="../bscode/">BsCode</a>
+      <a href="../resume.pdf" target="_blank" rel="noreferrer">Resume</a>
+      <a href="../#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="viz-hero" aria-labelledby="viz-title">
+      <p class="eyebrow reveal">Work in progress</p>
+      <h1 id="viz-title" class="reveal">Visualizations</h1>
+
+      <svg class="smiley reveal" viewBox="0 0 200 200" role="img" aria-label="A smiling face">
+        <circle class="face" cx="100" cy="100" r="82" />
+        <circle class="eye" cx="72" cy="82" r="9" />
+        <circle class="eye" cx="128" cy="82" r="9" />
+        <path class="mouth" d="M62 118 Q100 152 138 118" />
+      </svg>
+
+      <p class="intro reveal">Interactive figures and data visualizations, soon.</p>
+    </section>
+
+    <section class="section" id="figures">
+      <div class="section-heading">
+        <span>01</span>
+        <h2>Figures</h2>
+      </div>
+
+      <div class="viz-list">
+        <!--
+          Add each visualization as:
+
+          <article class="viz-item reveal">
+            <p class="label">Category</p>
+            <h3>Title</h3>
+            <p>One-line description of what the figure shows.</p>
+            <a href="...">Open</a>
+          </article>
+        -->
+        <p class="viz-empty reveal">Nothing here yet.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Updated 2026-08-04</span>
+    <a href="#top">Back to top</a>
+  </footer>
+</div>
+
+<script src="../site.js"></script>
+</body>
+</html>
