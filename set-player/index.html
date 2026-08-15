@@ -33,8 +33,7 @@
       <span>Set Player</span>
     </a>
     <nav aria-label="Primary navigation">
-      <a href="#rekordbox">Rekordbox</a>
-      <a href="#features">Features</a>
+      <a href="#timeline">Features</a>
       <a href="https://github.com/axel-slid/set-player" target="_blank" rel="noreferrer">GitHub</a>
     </nav>
     <a class="nav-cta" href="https://github.com/axel-slid/set-player/releases/latest/download/Set-Player-macOS-arm64.zip">Download for Mac</a>
@@ -42,7 +41,7 @@
 
   <main id="top">
     <section class="hero" aria-labelledby="heroTitle">
-      <div class="hero-copy" data-reveal="copy">
+      <div class="hero-copy">
         <p class="eyebrow">Native macOS + iPhone app</p>
         <h1 id="heroTitle">Your DJ sets,<br /><em>remembered.</em></h1>
         <p class="hero-lede">Set Player connects the recording to everything that made it matter—Rekordbox history, the exact tracklist, the waveform, the photos, and the place.</p>
@@ -55,92 +54,64 @@
         </div>
       </div>
 
-      <figure class="app-shot hero-shot" data-reveal="screen">
-        <img src="app-set-detail.png" alt="Actual Set Player set detail showing waveform, current and next track, location map, and timed tracklist" />
+      <figure class="hero-screenshot">
+        <img src="app-set-detail.png" alt="Set Player set detail showing waveform, current and next track, location map, and timed tracklist" />
       </figure>
     </section>
 
-    <section class="integration-band" aria-label="Rekordbox to Set Player workflow" data-reveal="workflow">
-      <div class="workflow-topline">
-        <p>Rekordbox integration</p>
-        <p>Native on macOS · syncs to iPhone</p>
+    <section class="feature-timeline" id="timeline" aria-labelledby="timelineTitle">
+      <div class="timeline-sticky">
+        <div class="timeline-inner">
+          <div class="timeline-copy">
+            <p class="eyebrow">Scroll through the workflow</p>
+            <p class="timeline-count" id="timelineCount">01 / 04</p>
+
+            <div class="timeline-copy-swap" id="timelineCopy">
+              <div class="timeline-lockup" id="timelineLockup">
+                <span class="rekordbox-mark"><img src="rekordbox-logo.svg" alt="Rekordbox logo" /></span>
+                <span>Rekordbox integration</span>
+              </div>
+              <h2 id="timelineTitle">Play history,<br />connected.</h2>
+              <p id="timelineDescription">Browse every Rekordbox session, then attach its timed tracklist to the recording.</p>
+            </div>
+
+            <div class="timeline-progress" aria-hidden="true">
+              <span class="timeline-progress-fill"></span>
+              <ol>
+                <li class="active"><i></i><span>Rekordbox</span></li>
+                <li><i></i><span>Extensions</span></li>
+                <li><i></i><span>Volume mixer</span></li>
+                <li><i></i><span>Appearance</span></li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="timeline-stage" aria-live="polite">
+            <figure class="timeline-screen active" data-screen="0" data-title="Play history,<br />connected." data-description="Browse every Rekordbox session, then attach its timed tracklist to the recording." data-label="Rekordbox integration" data-kind="rekordbox">
+              <img src="rekordbox-history.png" alt="Set Player Rekordbox Played Track History with sessions, tracks, key, BPM, and source" />
+            </figure>
+            <figure class="timeline-screen" data-screen="1" data-title="Every tool.<br />One launchpad." data-description="Open lyrics, visuals, history, recording, mixing, iPhone sync, and import from one native workspace." data-label="Library + extensions" data-kind="app">
+              <img src="app-home.png" alt="Set Player library and extension home" />
+            </figure>
+            <figure class="timeline-screen compact-screen" data-screen="2" data-title="Control<br />the room." data-description="See every application producing audio and change its level without leaving the set." data-label="Per-app volume mixer" data-kind="mixer">
+              <img src="app-volume-mixer.png" alt="Set Player per-application volume mixer" />
+            </figure>
+            <figure class="timeline-screen compact-screen" data-screen="3" data-title="Make the workspace<br />yours." data-description="Move between curated dark, light, and transparent themes across the entire app." data-label="Themes + appearance" data-kind="themes">
+              <img src="app-themes.png" alt="Set Player appearance settings with theme gallery" />
+            </figure>
+            <div class="timeline-screen-label"><span id="screenLabel">Rekordbox integration</span><span>Actual app</span></div>
+          </div>
+        </div>
+        <div class="scroll-cue" aria-hidden="true"><span></span>Keep scrolling</div>
       </div>
-      <div class="workflow-lockup">
-        <div class="workflow-brand rekordbox-brand">
-          <span class="rekordbox-mark"><img src="rekordbox-logo.svg" alt="" /></span>
-          <strong>rekordbox</strong>
-        </div>
-        <div class="workflow-transfer" aria-hidden="true">
-          <span>PLAYED-TRACK HISTORY</span>
-          <i></i>
-          <b>→</b>
-        </div>
-        <div class="workflow-brand set-player-brand">
-          <img src="app-icon.png" alt="" />
-          <strong>Set Player</strong>
-        </div>
-      </div>
-      <p class="workflow-output">Sessions / track order / BPM / timed setlists / Now + Next</p>
     </section>
 
-    <section class="rekordbox-section" id="rekordbox" aria-labelledby="rekordboxTitle">
-      <div class="rekordbox-copy" data-reveal="copy">
-        <div class="rekordbox-lockup">
-          <span class="rekordbox-mark large"><img src="rekordbox-logo.svg" alt="Rekordbox logo" /></span>
-          <p>Rekordbox integration</p>
-        </div>
-        <h2 id="rekordboxTitle">Your play history,<br />connected to the set.</h2>
-        <p class="integration-equation">History → timed tracks → Now/Next</p>
-      </div>
-
-      <figure class="app-shot history-shot" data-reveal="screen">
-        <img src="rekordbox-history.png" alt="Actual Set Player Rekordbox Played Track History screen with sessions, tracks, key, BPM, play count, and source" />
-      </figure>
-    </section>
-
-    <section class="features-section" id="features" aria-labelledby="featuresTitle">
-      <div class="section-heading" data-reveal="copy">
-        <div>
-          <p class="eyebrow">Beyond playback</p>
-          <h2 id="featuresTitle">Everything around the set.</h2>
-        </div>
-        <p>The extensions visible in the actual app are part of one continuous workflow.</p>
-      </div>
-
-      <div class="feature-list" data-reveal="stagger">
-        <article>
-          <div class="feature-label">Performance</div>
-          <h3>Live Lyrics + Rave Lyrics</h3>
-          <p>Follow the track currently playing in Rekordbox with synced lyrics, or open beat- and phrase-reactive visuals with curated presets.</p>
-        </article>
-        <article>
-          <div class="feature-label">Capture</div>
-          <h3>Record Set + Volume Mixer</h3>
-          <p>Capture application audio into a new recording and control per-application levels from inside Set Player.</p>
-        </article>
-        <article>
-          <div class="feature-label">Memory</div>
-          <h3>Photos, video, notes + places</h3>
-          <p>Keep the visual memory, description, date, artwork, and interactive map location attached to the recording.</p>
-        </article>
-        <article>
-          <div class="feature-label">Continuity</div>
-          <h3>Native Mac + iPhone library</h3>
-          <p>Search and curate on desktop, then sync the same set library to the native iPhone companion.</p>
-        </article>
-      </div>
-
-      <figure class="app-shot extensions-shot" data-reveal="screen">
-        <img src="app-home.png" alt="Actual Set Player library and extension home showing Rave Lyrics, Live Lyrics, Rekordbox History, recording, mixing, iPhone sync, and import" />
-      </figure>
-    </section>
-
-    <section class="final-cta" id="download" data-reveal="copy">
+    <section class="final-cta" id="download">
       <img src="app-icon.png" alt="Set Player app icon" />
       <p class="eyebrow">Set Player 1.0</p>
       <h2>Give every set<br />somewhere to live.</h2>
       <p>Download the native Apple silicon build or explore the complete source.</p>
-      <div class="hero-actions centered-actions">
+      <div class="hero-actions">
         <a class="primary-button" href="https://github.com/axel-slid/set-player/releases/latest/download/Set-Player-macOS-arm64.zip">
           <span aria-hidden="true"></span>
           <span><strong>Download for macOS</strong><small>Apple silicon · macOS 14+</small></span>
