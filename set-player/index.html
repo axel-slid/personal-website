@@ -34,7 +34,6 @@
     </a>
     <nav aria-label="Primary navigation">
       <a href="#rekordbox">Rekordbox</a>
-      <a href="#product">Product</a>
       <a href="#features">Features</a>
       <a href="https://github.com/axel-slid/set-player" target="_blank" rel="noreferrer">GitHub</a>
     </nav>
@@ -43,7 +42,7 @@
 
   <main id="top">
     <section class="hero" aria-labelledby="heroTitle">
-      <div class="hero-copy">
+      <div class="hero-copy" data-reveal="copy">
         <p class="eyebrow">Native macOS + iPhone app</p>
         <h1 id="heroTitle">Your DJ sets,<br /><em>remembered.</em></h1>
         <p class="hero-lede">Set Player connects the recording to everything that made it matter—Rekordbox history, the exact tracklist, the waveform, the photos, and the place.</p>
@@ -56,36 +55,36 @@
         </div>
       </div>
 
-      <figure class="app-shot hero-shot">
+      <figure class="app-shot hero-shot" data-reveal="screen">
         <img src="app-set-detail.png" alt="Actual Set Player set detail showing waveform, current and next track, location map, and timed tracklist" />
       </figure>
     </section>
 
-    <section class="integration-band" aria-label="Set Player integrations">
-      <p class="integration-kicker">Built around your DJ workflow</p>
-      <div class="integration-lockup">
-        <div class="integration-product rekordbox-product">
+    <section class="integration-band" aria-label="Rekordbox to Set Player workflow" data-reveal="workflow">
+      <div class="workflow-topline">
+        <p>Rekordbox integration</p>
+        <p>Native on macOS · syncs to iPhone</p>
+      </div>
+      <div class="workflow-lockup">
+        <div class="workflow-brand rekordbox-brand">
           <span class="rekordbox-mark"><img src="rekordbox-logo.svg" alt="" /></span>
           <strong>rekordbox</strong>
         </div>
-        <div class="integration-connector" aria-hidden="true">
-          <span>PLAY HISTORY</span>
+        <div class="workflow-transfer" aria-hidden="true">
+          <span>PLAYED-TRACK HISTORY</span>
           <i></i>
           <b>→</b>
         </div>
-        <div class="integration-product">
+        <div class="workflow-brand set-player-brand">
           <img src="app-icon.png" alt="" />
           <strong>Set Player</strong>
         </div>
       </div>
-      <div class="platform-row">
-        <span><b aria-hidden="true"></b> Native on macOS</span>
-        <span><b class="phone-glyph" aria-hidden="true"></b> Syncs to iPhone</span>
-      </div>
+      <p class="workflow-output">Sessions / track order / BPM / timed setlists / Now + Next</p>
     </section>
 
     <section class="rekordbox-section" id="rekordbox" aria-labelledby="rekordboxTitle">
-      <div class="rekordbox-copy">
+      <div class="rekordbox-copy" data-reveal="copy">
         <div class="rekordbox-lockup">
           <span class="rekordbox-mark large"><img src="rekordbox-logo.svg" alt="Rekordbox logo" /></span>
           <p>Rekordbox integration</p>
@@ -94,34 +93,13 @@
         <p class="integration-equation">History → timed tracks → Now/Next</p>
       </div>
 
-      <figure class="app-shot history-shot">
+      <figure class="app-shot history-shot" data-reveal="screen">
         <img src="rekordbox-history.png" alt="Actual Set Player Rekordbox Played Track History screen with sessions, tracks, key, BPM, play count, and source" />
       </figure>
     </section>
 
-    <section class="product-section" id="product" aria-labelledby="productTitle">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Real product surfaces</p>
-          <h2 id="productTitle">See the app itself.</h2>
-        </div>
-        <p>No conceptual mockups. Switch between screens captured directly from the installed macOS application.</p>
-      </div>
-
-      <div class="product-tabs" role="tablist" aria-label="Set Player screens">
-        <button role="tab" aria-selected="true" data-image="app-set-detail.png" data-alt="Actual Set Player set detail showing waveform, location, and timed tracks" data-caption="Set detail · waveform, Now/Next, media, map, and timed tracks">Set detail</button>
-        <button role="tab" aria-selected="false" data-image="app-home.png" data-alt="Actual Set Player extension home and set library" data-caption="Library home · search, sets, and built-in extensions">Library + extensions</button>
-        <button role="tab" aria-selected="false" data-image="rekordbox-history.png" data-alt="Actual Set Player Rekordbox Played Track History browser" data-caption="Rekordbox history · sessions, stats, tracks, paths, and import">Rekordbox history</button>
-      </div>
-
-      <figure class="product-viewer app-shot">
-        <img id="productImage" src="app-set-detail.png" alt="Actual Set Player set detail showing waveform, location, and timed tracks" />
-        <figcaption id="productCaption">Set detail · waveform, Now/Next, media, map, and timed tracks</figcaption>
-      </figure>
-    </section>
-
     <section class="features-section" id="features" aria-labelledby="featuresTitle">
-      <div class="section-heading">
+      <div class="section-heading" data-reveal="copy">
         <div>
           <p class="eyebrow">Beyond playback</p>
           <h2 id="featuresTitle">Everything around the set.</h2>
@@ -129,7 +107,7 @@
         <p>The extensions visible in the actual app are part of one continuous workflow.</p>
       </div>
 
-      <div class="feature-list">
+      <div class="feature-list" data-reveal="stagger">
         <article>
           <div class="feature-label">Performance</div>
           <h3>Live Lyrics + Rave Lyrics</h3>
@@ -152,12 +130,12 @@
         </article>
       </div>
 
-      <figure class="app-shot extensions-shot">
+      <figure class="app-shot extensions-shot" data-reveal="screen">
         <img src="app-home.png" alt="Actual Set Player library and extension home showing Rave Lyrics, Live Lyrics, Rekordbox History, recording, mixing, iPhone sync, and import" />
       </figure>
     </section>
 
-    <section class="final-cta" id="download">
+    <section class="final-cta" id="download" data-reveal="copy">
       <img src="app-icon.png" alt="Set Player app icon" />
       <p class="eyebrow">Set Player 1.0</p>
       <h2>Give every set<br />somewhere to live.</h2>
