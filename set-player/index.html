@@ -65,38 +65,76 @@
         <div class="timeline-inner">
           <div class="timeline-copy">
             <p class="eyebrow">Scroll through the workflow</p>
-            <p class="timeline-count" id="timelineCount">01 / 03</p>
+            <p class="timeline-count" id="timelineCount">01 / 04</p>
 
             <div class="timeline-copy-swap" id="timelineCopy">
               <div class="timeline-lockup" id="timelineLockup">
                 <span class="rekordbox-mark"><img src="rekordbox-logo.svg" alt="Rekordbox logo" /></span>
                 <span>Rekordbox integration</span>
               </div>
-              <h2 id="timelineTitle">Play history,<br />connected.</h2>
-              <p id="timelineDescription">Browse every Rekordbox session, then attach its timed tracklist to the recording.</p>
+              <h2 id="timelineTitle">Connect to<br />Rekordbox history.</h2>
+              <p id="timelineDescription">Read local play history and turn each session into a timed tracklist.</p>
             </div>
 
             <div class="timeline-progress" aria-hidden="true">
               <span class="timeline-progress-fill"></span>
               <ol>
-                <li class="active"><i></i><span>Rekordbox</span></li>
-                <li><i></i><span>Extensions</span></li>
-                <li><i></i><span>Appearance</span></li>
+                <li class="active"><i></i><span>Connect</span></li>
+                <li><i></i><span>Record</span></li>
+                <li><i></i><span>Live lyrics</span></li>
+                <li><i></i><span>iPhone</span></li>
               </ol>
             </div>
           </div>
 
           <div class="timeline-stage" aria-live="polite">
-            <figure class="timeline-screen active" data-screen="0" data-title="Play history,<br />connected." data-description="Browse every Rekordbox session, then attach its timed tracklist to the recording." data-label="Rekordbox integration" data-kind="rekordbox">
+            <figure class="timeline-screen image-screen active" data-screen="0" data-title="Connect to<br />Rekordbox history." data-description="Read local play history and turn each session into a timed tracklist." data-label="Rekordbox history" data-kind="rekordbox">
               <img src="rekordbox-history.png" alt="Set Player Rekordbox Played Track History with sessions, tracks, key, BPM, and source" />
             </figure>
-            <figure class="timeline-screen" data-screen="1" data-title="Every tool.<br />One launchpad." data-description="Open lyrics, visuals, history, recording, mixing, iPhone sync, and import from one native workspace." data-label="Library + extensions" data-kind="app">
-              <img src="app-home.png" alt="Set Player library and extension home" />
+
+            <figure class="timeline-screen ui-screen" data-screen="1" data-title="Record<br />your sets." data-description="Capture app audio in MP3 or WAV and keep every recording in the Set Player library." data-label="Native set recorder" data-kind="record">
+              <div class="recorder-demo" aria-label="Set Player recording interface">
+                <div class="demo-topbar"><span class="demo-accent">●</span><strong>Set Recorder</strong><span>Ready</span></div>
+                <div class="recorder-options">
+                  <div><small>Format</small><span class="segmented"><b>MP3</b><i>WAV</i></span></div>
+                  <div><small>Quality</small><span class="segmented"><i>128k</i><i>192k</i><b>320k</b></span></div>
+                </div>
+                <div class="recorder-source"><span><small>App audio</small><strong>Google Chrome</strong></span><em>Ready</em></div>
+                <div class="recorder-wave" aria-hidden="true"></div>
+                <button class="record-button" type="button" tabindex="-1"><i></i> Start recording</button>
+                <div class="recorded-set"><span><small>Recorded sets</small><strong>Beach Set</strong></span><em>29:38 · MP3</em></div>
+              </div>
             </figure>
-            <figure class="timeline-screen settings-screen" data-screen="2" data-title="Make the workspace<br />yours." data-description="Move between curated dark, light, and transparent themes across the entire app." data-label="Themes + appearance" data-kind="themes">
-              <img src="app-themes.png" alt="Set Player appearance settings with theme gallery" />
+
+            <figure class="timeline-screen ui-screen" data-screen="2" data-title="Show lyrics<br />live." data-description="Follow the current Rekordbox track with lyrics that update in time while the set is happening." data-label="Rekordbox-synced lyrics" data-kind="lyrics">
+              <div class="lyrics-demo" aria-label="Set Player live lyrics interface">
+                <div class="demo-topbar"><span class="live-pill">Rekordbox live</span><strong>Live Lyrics</strong><span>Deck 1</span></div>
+                <div class="lyrics-track"><small>Now playing</small><strong>Falling Back</strong><span>Obskür</span></div>
+                <div class="lyric-lines" aria-hidden="true">
+                  <p>Every word</p>
+                  <p class="current">lands on the beat</p>
+                  <p>right when it should</p>
+                </div>
+                <div class="lyrics-progress"><span></span></div>
+                <div class="lyrics-time"><span>02:33</span><span>03:59</span></div>
+              </div>
             </figure>
-            <div class="timeline-screen-label"><span id="screenLabel">Rekordbox integration</span><span>Actual app</span></div>
+
+            <figure class="timeline-screen ui-screen" data-screen="3" data-title="Sync on<br />iPhone." data-description="Send the latest set library to the companion app and take every recording with you." data-label="iPhone companion" data-kind="iphone">
+              <div class="sync-demo" aria-label="Set Player iPhone sync interface">
+                <div class="sync-source"><img src="app-icon.png" alt="" /><strong>Set Player</strong><small>18 sets</small></div>
+                <div class="sync-beam" aria-hidden="true"><span></span><b>→</b></div>
+                <div class="iphone-frame">
+                  <div class="iphone-island"></div>
+                  <div class="iphone-head"><img src="app-icon.png" alt="" /><span><strong>Set Player</strong><small>Synced just now</small></span></div>
+                  <div class="iphone-set featured"><small>Now available</small><strong>Beach Set</strong><span>29:38 · 15 tracks</span></div>
+                  <div class="iphone-set"><strong>House Set</strong><span>2:03:22 · 42 tracks</span></div>
+                  <div class="iphone-set"><strong>Birthday Party</strong><span>5:10:33 · 61 tracks</span></div>
+                </div>
+                <div class="sync-status"><i>✓</i><span><strong>Library synced</strong><small>Recordings, artwork, and tracklists</small></span></div>
+              </div>
+            </figure>
+            <div class="timeline-screen-label"><span id="screenLabel">Rekordbox history</span><span>Set Player workflow</span></div>
           </div>
         </div>
         <div class="scroll-cue" aria-hidden="true"><span></span>Keep scrolling</div>
