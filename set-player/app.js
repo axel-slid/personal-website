@@ -5,17 +5,13 @@
   const screens = Array.from(document.querySelectorAll(".timeline-screen"));
   const markers = Array.from(document.querySelectorAll(".timeline-progress li"));
   const count = document.querySelector("#timelineCount");
-  const copy = document.querySelector("#timelineCopy");
   const title = document.querySelector("#timelineTitle");
   const description = document.querySelector("#timelineDescription");
   const lockup = document.querySelector("#timelineLockup");
   const screenLabel = document.querySelector("#screenLabel");
   const year = document.querySelector("#year");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
   let activeIndex = 0;
   let framePending = false;
-  let copyTimer;
 
   if (year) year.textContent = String(new Date().getFullYear());
 
@@ -34,15 +30,10 @@
     count.textContent = `${String(index + 1).padStart(2, "0")} / ${String(screens.length).padStart(2, "0")}`;
 
     const screen = screens[index];
-    copy.classList.add("switching");
-    clearTimeout(copyTimer);
-    copyTimer = setTimeout(() => {
-      title.innerHTML = screen.dataset.title;
-      description.textContent = screen.dataset.description;
-      lockup.innerHTML = lockupMarkup(screen.dataset.kind, screen.dataset.label);
-      screenLabel.textContent = screen.dataset.label;
-      copy.classList.remove("switching");
-    }, reduceMotion ? 0 : 150);
+    title.innerHTML = screen.dataset.title;
+    description.textContent = screen.dataset.description;
+    lockup.innerHTML = lockupMarkup(screen.dataset.kind, screen.dataset.label);
+    screenLabel.textContent = screen.dataset.label;
   }
 
   function updateTimeline() {
