@@ -135,15 +135,13 @@ async function main() {
       path.join(outputDirectory, `${viewport.name}-top.png`),
       Buffer.from(topScreenshot.data, "base64")
     );
+    await evaluate(send, `document.querySelector(".film-stage")?.scrollIntoView({ block: "center" })`);
     await delay(400);
     const metrics = await evaluate(send, `(() => {
       const video = document.querySelector("#bscodeDigitalTwin");
-      const command = document.querySelector(".install-command");
-      const background = document.querySelector(".digital-twin");
-      const caption = document.querySelector(".film-caption");
-      const commandRect = command?.getBoundingClientRect();
-      const backgroundRect = background?.getBoundingClientRect();
-      const captionRect = caption?.getBoundingClientRect();
+      const frame = document.querySelector(".film-stage");
+      const frameRect = frame?.getBoundingClientRect();
+      const links = Array.from(document.querySelectorAll("a[href]"));
       return {
         title: document.title,
         viewport: { width: innerWidth, height: innerHeight },
@@ -157,33 +155,18 @@ async function main() {
         videoSource: video?.querySelector("source")?.getAttribute("src") || "",
         videoPoster: video?.getAttribute("poster") || "",
         videoPausedForReducedMotion: Boolean(video?.paused),
-        videoPlaybackRate: video?.playbackRate || 0,
-        hasProductHeadline: document.querySelector("h1")?.textContent.trim() === "BsCode",
-        hasSetupCommand: document.body.innerText.includes("curl -fsSL https://alex-dils.com/bscode/install.sh | bash"),
-        hasVisibleCaption: Boolean(caption?.textContent.includes("Four coding agents run side by side")),
-        commandRect: commandRect ? {
-          left: Math.round(commandRect.left),
-          top: Math.round(commandRect.top),
-          right: Math.round(commandRect.right),
-          bottom: Math.round(commandRect.bottom),
-          width: Math.round(commandRect.width),
-          height: Math.round(commandRect.height)
-        } : null,
-        backgroundRect: backgroundRect ? {
-          left: Math.round(backgroundRect.left),
-          top: Math.round(backgroundRect.top),
-          right: Math.round(backgroundRect.right),
-          bottom: Math.round(backgroundRect.bottom),
-          width: Math.round(backgroundRect.width),
-          height: Math.round(backgroundRect.height)
-        } : null,
-        captionRect: captionRect ? {
-          left: Math.round(captionRect.left),
-          top: Math.round(captionRect.top),
-          right: Math.round(captionRect.right),
-          bottom: Math.round(captionRect.bottom),
-          width: Math.round(captionRect.width),
-          height: Math.round(captionRect.height)
+        hasProductHeadline: document.body.innerText.includes("Run the whole coding session from one place."),
+        hasSetupCommand: document.body.innerText.includes("xattr -dr com.apple.quarantine"),
+        downloadLinks: links
+          .map((link) => link.href)
+          .filter((href) => href.includes("BsCode-macOS-arm64.zip")),
+        frameRect: frameRect ? {
+          left: Math.round(frameRect.left),
+          top: Math.round(frameRect.top),
+          right: Math.round(frameRect.right),
+          bottom: Math.round(frameRect.bottom),
+          width: Math.round(frameRect.width),
+          height: Math.round(frameRect.height)
         } : null
       };
     })()`);
@@ -222,19 +205,16 @@ async function main() {
   );
 
   const failures = report.filter((entry) => {
-    const rect = entry.commandRect;
-    const background = entry.backgroundRect;
-    const caption = entry.captionRect;
+    const rect = entry.frameRect;
     return (
       entry.hasHorizontalOverflow
       || entry.videoCount !== 1
       || !entry.videoSource.includes("bscode-digital-twin.mp4")
       || !entry.videoPoster.includes("bscode-digital-twin-poster.jpg")
       || !entry.videoPausedForReducedMotion
-      || Math.abs(entry.videoPlaybackRate - 0.65) > 0.01
       || !entry.hasProductHeadline
       || !entry.hasSetupCommand
-      || !entry.hasVisibleCaption
+      || entry.downloadLinks.length < 1
       || !rect
       || rect.width < 1
       || rect.height < 1
@@ -242,16 +222,6 @@ async function main() {
       || rect.top < 0
       || rect.right > entry.viewport.width + 1
       || rect.bottom > entry.viewport.height + 1
-      || !background
-      || background.left !== 0
-      || background.top !== 0
-      || background.width !== entry.viewport.width
-      || background.height !== entry.viewport.height
-      || !caption
-      || caption.left < 0
-      || caption.top < 0
-      || caption.right > entry.viewport.width + 1
-      || caption.bottom > entry.viewport.height + 1
     );
   });
 

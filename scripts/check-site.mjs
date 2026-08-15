@@ -4,17 +4,13 @@ import path from "node:path";
 const root = process.cwd();
 const html = fs.readFileSync(path.join(root, "bscode", "index.html"), "utf8");
 const css = fs.readFileSync(path.join(root, "bscode", "bscode.css"), "utf8");
-const javascript = fs.readFileSync(path.join(root, "bscode", "bscode.js"), "utf8");
-const installer = fs.readFileSync(path.join(root, "bscode", "install.sh"), "utf8");
 const requiredFiles = [
   "resume.pdf",
   "assets/bscode/app-icon.png",
   "assets/bscode/motion/bscode-digital-twin.mp4",
   "assets/bscode/motion/bscode-digital-twin-poster.jpg",
   "bscode/bscode.css",
-  "bscode/bscode.js",
-  "bscode/index.html",
-  "bscode/install.sh"
+  "bscode/index.html"
 ];
 
 for (const file of requiredFiles) {
@@ -24,30 +20,27 @@ for (const file of requiredFiles) {
 }
 
 if ((html.match(/<video\b/g) || []).length !== 1) {
-  throw new Error("The launch page must contain exactly one Remotion background film.");
+  throw new Error("The launch page must contain exactly one product film.");
 }
 for (const attribute of ["autoplay", "muted", "loop", "playsinline"]) {
   if (!new RegExp(`\\b${attribute}\\b`).test(html)) {
-    throw new Error(`The Remotion background is missing its ${attribute} behavior.`);
+    throw new Error(`The product film is missing its ${attribute} behavior.`);
   }
 }
-for (const asset of ["bscode-digital-twin.mp4", "bscode-digital-twin-poster.jpg"]) {
-  if (!html.includes(asset)) {
-    throw new Error(`The Remotion background is missing ${asset}.`);
-  }
+if (!html.includes("bscode-digital-twin.mp4")) {
+  throw new Error("The Remotion digital-twin film is missing.");
 }
-
-if ((html.match(/<main\b/g) || []).length !== 1) {
-  throw new Error("The page must have one unnested main landmark.");
+if (!html.includes("bscode-digital-twin-poster.jpg")) {
+  throw new Error("The digital-twin poster is missing.");
 }
-if (!html.includes("<h1>BsCode</h1>")) {
-  throw new Error("The centered BsCode product name is missing.");
+if (!html.includes("BsCode-macOS-arm64.zip")) {
+  throw new Error("The Apple silicon download link is missing.");
 }
-if (!html.includes("curl -fsSL https://alex-dils.com/bscode/install.sh | bash")) {
-  throw new Error("The one-line BsCode install command is missing.");
+if (!html.includes("releases/download/v0.2.5/BsCode-macOS-arm64.zip")) {
+  throw new Error("The Apple silicon download does not target BsCode v0.2.5.");
 }
-if (!html.includes('id="copyInstall"')) {
-  throw new Error("The install command copy control is missing.");
+if (!html.includes('xattr -dr com.apple.quarantine "/Applications/BsCode.app"')) {
+  throw new Error("The required first-launch quarantine command is missing.");
 }
 if (!html.includes('"softwareVersion": "0.2.5"')) {
   throw new Error("The current BsCode release metadata is missing.");
@@ -55,58 +48,60 @@ if (!html.includes('"softwareVersion": "0.2.5"')) {
 if (!html.includes('"codeRepository": "https://github.com/axel-slid/bscode"')) {
   throw new Error("The BsCode repository metadata is incorrect.");
 }
+if ((html.match(/<main\b/g) || []).length !== 1) {
+  throw new Error("The page must have one unnested main landmark.");
+}
+
+const expectedCopy = [
+  "1) Download",
+  "2) Run this"
+];
+for (const copy of expectedCopy) {
+  if (!html.includes(copy)) {
+    throw new Error(`Product-specific launch copy is missing: ${copy}`);
+  }
+}
 
 for (const rule of [
-  ".digital-twin",
-  "position: fixed",
-  "object-fit: cover",
-  "overflow: hidden",
-  "backdrop-filter: blur(24px)",
-  ".film-caption",
-  ".cinematic-bars",
-  "body.is-cinematic .digital-twin video",
-  "@keyframes caption-enter",
-  "pointer-events: none",
-  "@media (max-width: 620px)",
+  ".film-stage",
+  "aspect-ratio: 16 / 9",
+  "@media (max-width: 560px)",
   "prefers-reduced-motion"
 ]) {
   if (!css.includes(rule)) {
-    throw new Error(`The full-screen Remotion presentation is incomplete: ${rule}`);
+    throw new Error(`The responsive product-film presentation is incomplete: ${rule}`);
   }
 }
 
-for (const behavior of [
-  'navigator.clipboard.writeText(value)',
-  'copyLabel.textContent = "Copied"',
-  'const playbackRate = 0.65',
-  'film.playbackRate = playbackRate',
-  'document.body.classList.toggle("is-cinematic", sceneIndex === 2)',
-  'filmCaption.classList.add("is-changing")',
-  'One instruction switches the team into a focused cinematic workspace.',
-  'film.play().catch(() => {})',
-  'film.pause()'
+for (const removedElement of [
+  "bscode-overview.mp4",
+  "bscode-overview-poster.jpg",
+  "workflow-tabs",
+  "demo-workflows.js",
+  "Agent workspace for macOS",
+  "The real workflow,\nnot a highlight reel.",
+  "No mock dashboard.",
+  "Native command center for macOS",
+  "BsCode puts Codex, Claude, shell sessions, local files, and SSH workspaces in one window.",
+  "From a task to a finished file.",
+  "A faithful digital twin follows the real controls and states",
+  "Start four agents without opening four terminals.",
+  "Know what is happening before a terminal stops.",
+  "Local and SSH workspaces keep the same rhythm.",
+  "Change the view. Keep the work.",
+  "Built for Apple silicon",
+  "Less window management.",
+  "More finished work."
 ]) {
-  if (!javascript.includes(behavior)) {
-    throw new Error(`The launch-page behavior is incomplete: ${behavior}`);
-  }
-}
-
-for (const installerBehavior of [
-  'releases/latest/download',
-  'shasum -a 256 -c',
-  'TARGET_APP="/Applications/BsCode.app"',
-  'xattr -dr com.apple.quarantine',
-  'the previous BsCode installation was restored'
-]) {
-  if (!installer.includes(installerBehavior)) {
-    throw new Error(`The BsCode installer is incomplete: ${installerBehavior}`);
+  if (html.includes(removedElement)) {
+    throw new Error(`Obsolete launch-page content is still present: ${removedElement}`);
   }
 }
 
 const videoSize = fs.statSync(path.join(root, "assets", "bscode", "motion", "bscode-digital-twin.mp4")).size;
 const posterSize = fs.statSync(path.join(root, "assets", "bscode", "motion", "bscode-digital-twin-poster.jpg")).size;
 if (videoSize < 100_000 || posterSize < 10_000) {
-  throw new Error("The Remotion background film or poster is unexpectedly small.");
+  throw new Error("The digital-twin film or poster is unexpectedly small.");
 }
 
-console.log("BsCode launch page matches the Openleaf format with a full-screen Remotion background and working install command.");
+console.log("BsCode launch page has one responsive digital-twin product film and product-specific copy.");

@@ -3,20 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BsCode</title>
-  <meta name="description" content="BsCode is a live coding command center for Codex, Claude, shell sessions, local files, and SSH workspaces.">
-  <link rel="canonical" href="https://www.alex-dils.com/bscode/">
-  <meta property="og:title" content="BsCode">
-  <meta property="og:description" content="A live coding command center for macOS.">
+  <title>BsCode — A live coding command center</title>
+  <meta name="description" content="BsCode brings Codex, Claude, shell sessions, local files, and SSH workspaces into one native macOS command center.">
+  <link rel="canonical" href="https://alex-dils.com/bscode/">
+  <meta property="og:title" content="BsCode — A live coding command center">
+  <meta property="og:description" content="Direct coding agents, watch live progress, and review their output without losing context.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://www.alex-dils.com/bscode/">
-  <meta property="og:image" content="https://www.alex-dils.com/assets/bscode/motion/bscode-digital-twin-poster.jpg">
+  <meta property="og:url" content="https://alex-dils.com/bscode/">
+  <meta property="og:image" content="https://alex-dils.com/assets/bscode/motion/bscode-digital-twin-poster.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="BsCode">
-  <meta name="twitter:description" content="A live coding command center for macOS.">
-  <meta name="twitter:image" content="https://www.alex-dils.com/assets/bscode/motion/bscode-digital-twin-poster.jpg">
-  <meta name="theme-color" content="#070b12">
-  <link rel="icon" href="../assets/bscode/app-icon.png" type="image/png">
+  <link rel="icon" href="../assets/bscode/app-icon.png">
   <link rel="apple-touch-icon" href="../assets/bscode/app-icon.png">
   <link rel="preload" href="../assets/bscode/motion/bscode-digital-twin-poster.jpg" as="image" fetchpriority="high">
   <link rel="stylesheet" href="bscode.css">
@@ -28,45 +24,136 @@
     "softwareVersion": "0.2.5",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "macOS",
-    "description": "A live coding command center for directing Codex, Claude, and shell agents across local and SSH workspaces.",
-    "author": {"@type": "Person", "name": "Alex Dils", "url": "https://www.alex-dils.com/"},
-    "downloadUrl": "https://github.com/axel-slid/bscode/releases/latest/download/BsCode-macOS-arm64.zip",
+    "description": "A native macOS command center for directing Codex, Claude, and shell agents across local and SSH workspaces.",
+    "author": {"@type": "Person", "name": "Alex Dils", "url": "https://alex-dils.com/"},
+    "downloadUrl": "https://github.com/axel-slid/bscode/releases/download/v0.2.5/BsCode-macOS-arm64.zip",
     "codeRepository": "https://github.com/axel-slid/bscode"
   }
   </script>
 </head>
 <body>
-  <div class="digital-twin" aria-hidden="true">
-    <video
-      id="bscodeDigitalTwin"
-      autoplay
-      muted
-      loop
-      playsinline
-      preload="auto"
-      disablepictureinpicture
-      poster="../assets/bscode/motion/bscode-digital-twin-poster.jpg"
-    >
-      <source src="../assets/bscode/motion/bscode-digital-twin.mp4" type="video/mp4">
-    </video>
-  </div>
-  <div class="video-wash" aria-hidden="true"></div>
-  <div class="cinematic-bars" aria-hidden="true"></div>
+  <a class="skip-link" href="#product-film">Skip to product film</a>
 
-  <aside class="film-caption" aria-label="Current product film scene">
-    <span id="sceneEyebrow">The workspace</span>
-    <p id="sceneCaption">Four coding agents run side by side while their terminals stay visible.</p>
-  </aside>
+  <header class="site-header">
+    <a class="product-brand" href="./" aria-label="BsCode home">
+      <img src="../assets/bscode/app-icon.png" alt="" width="30" height="30">
+      <span>BsCode</span>
+    </a>
+    <nav class="header-nav" aria-label="Product">
+      <a class="quiet-link" href="https://github.com/axel-slid/bscode" target="_blank" rel="noreferrer">
+        <svg class="github-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.292 9.407 7.865 10.936.575.106.785-.25.785-.555 0-.274-.01-1.004-.015-1.97-3.203.696-3.88-1.544-3.88-1.544-.524-1.33-1.279-1.684-1.279-1.684-1.046-.715.08-.7.08-.7 1.156.08 1.765 1.188 1.765 1.188 1.028 1.76 2.698 1.251 3.357.957.104-.744.402-1.25.73-1.538-2.554-.29-5.238-1.277-5.238-5.68 0-1.256.45-2.283 1.187-3.086-.119-.29-.514-1.462.112-3.047 0 0 .966-.31 3.166 1.178a10.98 10.98 0 0 1 2.884-.386c.98.004 1.968.132 2.888.386 2.199-1.488 3.164-1.178 3.164-1.178.628 1.585.232 2.756.114 3.047.739.804 1.186 1.83 1.186 3.086 0 4.414-2.69 5.387-5.254 5.67.414.355.786 1.058.786 2.133 0 1.54-.014 2.783-.014 3.16 0 .307.208.667.793.554C20.71 21.403 24 17.088 24 12 24 5.65 18.85.5 12 .5Z"/>
+        </svg>
+        <span>GitHub</span>
+      </a>
+      <a class="header-download" href="https://github.com/axel-slid/bscode/releases/download/v0.2.5/BsCode-macOS-arm64.zip">
+        Download <span class="download-detail">for Apple silicon</span>
+        <span aria-hidden="true">↓</span>
+      </a>
+    </nav>
+  </header>
 
-  <main>
-    <h1>BsCode</h1>
-    <button class="install-command" id="copyInstall" type="button" aria-label="Copy the BsCode install command">
-      <span class="prompt" aria-hidden="true">$</span>
-      <code id="installCommand">curl -fsSL https://alex-dils.com/bscode/install.sh | bash</code>
-      <span class="copy-label" id="copyLabel" aria-live="polite">Copy</span>
-    </button>
+  <main class="stage">
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title">Vibecode Aesthetically<span class="accent" aria-hidden="true">.</span></h1>
+
+      <p class="hero-lede">
+        Direct Codex, Claude, and shell sessions across local and SSH workspaces —
+        watch live progress and review what they wrote without losing your place.
+      </p>
+
+      <ol class="setup">
+        <li class="setup-step">
+          <span class="step-index" aria-hidden="true">1</span>
+          <div class="step-body">
+            <p class="step-label">Get the app</p>
+            <a class="primary-download" href="https://github.com/axel-slid/bscode/releases/download/v0.2.5/BsCode-macOS-arm64.zip">
+              Download for Apple silicon
+              <span aria-hidden="true">↓</span>
+            </a>
+          </div>
+        </li>
+        <li class="setup-step">
+          <span class="step-index" aria-hidden="true">2</span>
+          <div class="step-body">
+            <p class="step-label">Move it to Applications, then run</p>
+            <div class="install-command">
+              <code id="quarantineCommand">xattr -dr com.apple.quarantine "/Applications/BsCode.app"</code>
+              <button id="copyQuarantineCommand" type="button" aria-label="Copy first-launch command">Copy</button>
+            </div>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section id="product-film" class="film-section" aria-label="BsCode product film">
+      <figure class="film-stage">
+        <video
+          id="bscodeDigitalTwin"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="auto"
+          disablepictureinpicture
+          poster="../assets/bscode/motion/bscode-digital-twin-poster.jpg"
+          aria-describedby="film-description"
+        >
+          <source src="../assets/bscode/motion/bscode-digital-twin.mp4" type="video/mp4">
+          <a href="../assets/bscode/motion/bscode-digital-twin.mp4">Watch the BsCode product film</a>
+        </video>
+        <figcaption id="film-description" class="sr-only">
+          A close product tour showing a BsCode workspace, four live coding agents, progress views,
+          generated outputs, Cinematic mode, and the Pixel tower.
+        </figcaption>
+      </figure>
+    </section>
   </main>
 
-  <script src="bscode.js"></script>
+  <footer class="site-footer">
+    <span>BsCode v0.2.5</span>
+    <a href="https://github.com/axel-slid/bscode" target="_blank" rel="noreferrer">Source on GitHub ↗</a>
+  </footer>
+
+  <script>
+    (() => {
+      const film = document.getElementById("bscodeDigitalTwin");
+      const copyButton = document.getElementById("copyQuarantineCommand");
+      const quarantineCommand = document.getElementById("quarantineCommand");
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      const syncPlayback = () => {
+        if (reducedMotion.matches || document.hidden) {
+          film.pause();
+          return;
+        }
+        film.play().catch(() => {});
+      };
+
+      const copyCommand = async () => {
+        const command = quarantineCommand.textContent.trim();
+        try {
+          await navigator.clipboard.writeText(command);
+        } catch {
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(quarantineCommand);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          document.execCommand("copy");
+          selection.removeAllRanges();
+        }
+        copyButton.textContent = "Copied";
+        window.setTimeout(() => {
+          copyButton.textContent = "Copy";
+        }, 1400);
+      };
+
+      reducedMotion.addEventListener?.("change", syncPlayback);
+      document.addEventListener("visibilitychange", syncPlayback);
+      copyButton.addEventListener("click", copyCommand);
+      syncPlayback();
+    })();
+  </script>
 </body>
 </html>
