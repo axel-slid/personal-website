@@ -3,177 +3,237 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#10110f" />
-  <title>Set Player — Alex Dils</title>
-  <meta name="description" content="A private, browser-based player for long mixes and DJ sets." />
+  <meta name="theme-color" content="#0d0f0c" />
+  <title>Set Player — The memory layer for every DJ set</title>
+  <meta name="description" content="Set Player turns recorded DJ mixes into a visual, searchable memory library with waveforms, Rekordbox tracklists, lyrics, media, and places." />
   <link rel="canonical" href="https://alex-dils.com/set-player/" />
-  <meta property="og:title" content="Set Player — Alex Dils" />
-  <meta property="og:description" content="Drop in a set. Stay in the mix." />
+  <meta property="og:title" content="Set Player — Every set, remembered" />
+  <meta property="og:description" content="Recordings, waveforms, Rekordbox history, live lyrics, photos, and places—in one native app." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://alex-dils.com/set-player/" />
-  <meta property="og:image" content="https://alex-dils.com/set-player/og.png" />
-  <meta property="og:image:width" content="1731" />
-  <meta property="og:image:height" content="908" />
-  <meta property="og:image:alt" content="Set Player waveform and play control" />
+  <meta property="og:image" content="https://alex-dils.com/set-player/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Set Player desktop app showing a DJ set library" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://alex-dils.com/set-player/og.png" />
+  <meta name="twitter:image" content="https://alex-dils.com/set-player/og.jpg" />
+  <link rel="icon" href="app-icon.png" />
+  <link rel="apple-touch-icon" href="app-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="icon" href="og.png" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="grain" aria-hidden="true"></div>
+  <div class="page-noise" aria-hidden="true"></div>
 
-  <header class="site-header">
-    <a class="wordmark" href="/set-player/" aria-label="Set Player home">
-      <span class="wordmark-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  <header class="nav-shell">
+    <a class="brand" href="#top" aria-label="Set Player home">
+      <img src="app-icon.png" alt="" />
       <span>Set Player</span>
     </a>
-    <div class="header-actions">
-      <button class="text-button" id="shortcutsButton" type="button">Shortcuts <kbd>?</kbd></button>
-      <a class="text-button" href="/">Alex Dils <span aria-hidden="true">↗</span></a>
-    </div>
+    <nav aria-label="Primary navigation">
+      <a href="#product">Product</a>
+      <a href="#features">Features</a>
+      <a href="#workflow">Workflow</a>
+      <a href="https://github.com/axel-slid/set-player" target="_blank" rel="noreferrer">GitHub</a>
+    </nav>
+    <a class="nav-download" href="https://github.com/axel-slid/set-player/releases/latest/download/Set-Player-macOS-arm64.zip">Download <span>↘</span></a>
   </header>
 
-  <main>
-    <section class="intro" aria-labelledby="pageTitle">
-      <p class="kicker">Local audio player / 001</p>
-      <h1 id="pageTitle">Drop in a set.<br /><em>Stay in the mix.</em></h1>
-      <p class="lede">Built for long listens. Your files never leave your browser.</p>
-    </section>
-
-    <section class="workspace" aria-label="Audio player">
-      <div class="deck" id="dropZone">
-        <div class="deck-header">
-          <div class="track-identity">
-            <p class="micro-label">Now playing</p>
-            <h2 id="trackTitle">No set loaded</h2>
-            <p id="trackMeta">Choose audio to begin</p>
-          </div>
-          <div class="status" id="statusText"><span></span> Ready</div>
+  <main id="top">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span> Native on macOS + iPhone</p>
+        <h1 id="heroTitle">Every set has a story.<br /><em>Keep all of it.</em></h1>
+        <p class="hero-lede">Set Player is the memory layer for every DJ set—bringing the recording, tracklist, waveform, photos, and place back together.</p>
+        <div class="hero-actions">
+          <a class="primary-button" href="https://github.com/axel-slid/set-player/releases/latest/download/Set-Player-macOS-arm64.zip">
+            <span class="apple-mark" aria-hidden="true">●</span>
+            <span><strong>Download for macOS</strong><small>Apple silicon · macOS 14+</small></span>
+          </a>
+          <a class="secondary-button" href="#product">Watch the tour <span aria-hidden="true">↓</span></a>
         </div>
-
-        <div class="visualizer" id="visualizer" role="slider" aria-label="Track position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
-          <canvas id="waveform" aria-hidden="true"></canvas>
-          <div class="drop-message" id="dropMessage">
-            <span class="drop-icon" aria-hidden="true">↓</span>
-            <strong>Drop audio anywhere</strong>
-            <span>MP3, WAV, M4A, AAC, FLAC, OGG</span>
-          </div>
-          <div class="playhead" id="playhead" aria-hidden="true"><span></span></div>
-        </div>
-
-        <div class="time-row" aria-live="off">
-          <span id="currentTime">00:00</span>
-          <span class="time-divider"></span>
-          <span id="remainingTime">−00:00</span>
-        </div>
-
-        <div class="transport">
-          <div class="transport-group left-controls">
-            <button class="icon-button small" id="shuffleButton" type="button" aria-label="Shuffle queue" aria-pressed="false" title="Shuffle">
-              <span aria-hidden="true">⇄</span>
-            </button>
-            <button class="icon-button small" id="previousButton" type="button" aria-label="Previous set" title="Previous set">
-              <span aria-hidden="true">|◀</span>
-            </button>
-          </div>
-
-          <div class="primary-controls">
-            <button class="skip-button" id="backButton" type="button" aria-label="Back 15 seconds"><span>−15</span></button>
-            <button class="play-button" id="playButton" type="button" aria-label="Play" disabled>
-              <span class="play-symbol" aria-hidden="true"></span>
-            </button>
-            <button class="skip-button" id="forwardButton" type="button" aria-label="Forward 15 seconds"><span>+15</span></button>
-          </div>
-
-          <div class="transport-group right-controls">
-            <button class="icon-button small loop-button" id="loopButton" type="button" aria-label="Repeat current set" aria-pressed="false" title="Repeat current set">
-              <span aria-hidden="true">↻</span>
-            </button>
-            <label class="speed-control" title="Playback speed">
-              <span class="sr-only">Playback speed</span>
-              <select id="speedSelect" aria-label="Playback speed">
-                <option value="0.75">0.75×</option>
-                <option value="1" selected>1×</option>
-                <option value="1.25">1.25×</option>
-                <option value="1.5">1.5×</option>
-                <option value="2">2×</option>
-              </select>
-            </label>
-          </div>
-        </div>
-
-        <div class="utility-row">
-          <label class="volume-control">
-            <button class="volume-button" id="muteButton" type="button" aria-label="Mute" title="Mute"><span aria-hidden="true">VOL</span></button>
-            <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.85" aria-label="Volume" />
-          </label>
-          <p id="privacyNote">Audio stays on this device</p>
-        </div>
+        <p class="release-note">Version 1.0 · Free download · Native SwiftUI</p>
       </div>
 
-      <aside class="queue-panel" aria-labelledby="queueTitle">
-        <div class="queue-header">
-          <div>
-            <p class="micro-label">Up next</p>
-            <h2 id="queueTitle">Set queue</h2>
-          </div>
-          <span id="queueCount">0 tracks</span>
-        </div>
-
-        <ol class="queue-list" id="queueList"></ol>
-
-        <div class="empty-queue" id="emptyQueue">
-          <div class="empty-lines" aria-hidden="true"><span></span><span></span><span></span></div>
-          <p>Your queue is empty.</p>
-          <span>Add one set or a whole folder’s worth.</span>
-        </div>
-
-        <div class="queue-actions">
-          <label class="add-button" for="fileInput">
-            <span aria-hidden="true">＋</span> Add audio
-          </label>
-          <input id="fileInput" type="file" accept="audio/*,.mp3,.wav,.m4a,.aac,.flac,.ogg" multiple hidden />
-          <button class="clear-button" id="clearButton" type="button" disabled>Clear</button>
-        </div>
-      </aside>
+      <div class="hero-orbit" aria-hidden="true">
+        <img class="hero-icon" src="app-icon.png" alt="" />
+        <div class="orbit-chip chip-one"><span>15</span> tracks matched</div>
+        <div class="orbit-chip chip-two"><span>⌖</span> Devil's Slide</div>
+        <div class="orbit-chip chip-three"><span>≋</span> waveform ready</div>
+      </div>
     </section>
 
-    <section class="notes" aria-label="Player details">
-      <div><span>01</span><p><strong>Private by default.</strong> Nothing uploads; the player reads directly from your device.</p></div>
-      <div><span>02</span><p><strong>Built for the long haul.</strong> Fast seeking, playback speeds, and queue controls for hour-plus mixes.</p></div>
-      <div><span>03</span><p><strong>Keyboard friendly.</strong> Space to play, arrows to seek, and L to loop.</p></div>
+    <section class="product-stage" id="product" aria-labelledby="tourTitle">
+      <div class="section-intro centered">
+        <p class="eyebrow"><span></span> The whole set, not just the file</p>
+        <h2 id="tourTitle">Your library becomes a place<br />you actually want to return to.</h2>
+      </div>
+
+      <div class="window-wrap">
+        <div class="window-chrome" aria-hidden="true">
+          <span></span><span></span><span></span>
+          <p>Set Player</p>
+        </div>
+        <video id="productVideo" autoplay loop muted playsinline poster="og.jpg" aria-label="Animated tour of Set Player">
+          <source src="set-player-demo.mp4" type="video/mp4" />
+        </video>
+        <button class="video-toggle" id="videoToggle" type="button" aria-label="Pause product tour"><span aria-hidden="true">Ⅱ</span></button>
+      </div>
+
+      <div class="capability-strip" aria-label="Core capabilities">
+        <span>Full-set waveforms</span>
+        <i></i>
+        <span>Timed tracklists</span>
+        <i></i>
+        <span>Photos + places</span>
+        <i></i>
+        <span>Live performance tools</span>
+      </div>
+    </section>
+
+    <section class="manifesto">
+      <p class="manifesto-label">A set is more than an MP3.</p>
+      <p class="manifesto-copy">It is the track you nearly forgot. The place the sun went down. The transition that finally landed. <strong>Set Player keeps the full memory.</strong></p>
+    </section>
+
+    <section class="feature-story" id="features" aria-labelledby="featuresTitle">
+      <div class="section-intro">
+        <p class="eyebrow"><span></span> Your set, reconstructed</p>
+        <h2 id="featuresTitle">From recording<br />to living archive.</h2>
+        <p>Everything around a performance stays attached to the performance—not scattered across folders, apps, and camera rolls.</p>
+      </div>
+
+      <article class="memory-card">
+        <img src="set-player-sunset.jpg" alt="DJ setup overlooking the ocean at sunset" />
+        <div class="memory-scrim"></div>
+        <div class="memory-heading">
+          <p>July 16, 2026 · Ocean overlook</p>
+          <h3>Sunset Session</h3>
+        </div>
+        <div class="memory-wave" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          <i></i>
+        </div>
+        <div class="now-next">
+          <div><small>Playing</small><strong>Falling Back — Obskür</strong></div>
+          <div><small>Next</small><strong>Breather — Chris Stussy</strong></div>
+        </div>
+        <div class="memory-stats"><span>⌖ Devil's Slide</span><span>15 tracks</span><span>29:38</span></div>
+      </article>
+    </section>
+
+    <section class="feature-grid">
+      <article class="feature-card rekordbox-card">
+        <div class="feature-number">01</div>
+        <p class="card-kicker">Rekordbox, aligned</p>
+        <h3>Know exactly what played—and when.</h3>
+        <p>Match a recording against Rekordbox history to create a timed setlist with track order, start position, and length.</p>
+        <div class="track-table" aria-label="Example timed tracklist">
+          <div class="track-head"><span>#</span><span>Track</span><span>Start</span></div>
+          <div class="active"><span>01</span><span><b>Falling Back</b><small>Obskür</small></span><span>02:33</span></div>
+          <div><span>02</span><span><b>Breather</b><small>Chris Stussy, S.A.M.</small></span><span>04:00</span></div>
+          <div><span>03</span><span><b>Call It What You Like</b><small>Robbie Doherty</small></span><span>04:40</span></div>
+        </div>
+      </article>
+
+      <article class="feature-card recording-card">
+        <div class="feature-number">02</div>
+        <p class="card-kicker">Capture + control</p>
+        <h3>Record app audio. Mix every source.</h3>
+        <p>Capture a new set directly on macOS, then inspect and control per-application volume without leaving the library.</p>
+        <div class="mixer-ui" aria-label="Example application volume mixer">
+          <div><span class="app-dot rekordbox"></span><b>rekordbox</b><i style="--level: 86%"></i><small>86</small></div>
+          <div><span class="app-dot browser"></span><b>Safari</b><i style="--level: 34%"></i><small>34</small></div>
+          <div><span class="app-dot system"></span><b>System</b><i style="--level: 62%"></i><small>62</small></div>
+        </div>
+      </article>
+
+      <article class="feature-card lyrics-card">
+        <div class="feature-number">03</div>
+        <p class="card-kicker">Performance extensions</p>
+        <h3>Lyrics that move with the room.</h3>
+        <p>Open Live Lyrics synced to the current Rekordbox track—or switch to Rave Lyrics for beat- and phrase-reactive visuals.</p>
+        <div class="lyric-visual" aria-hidden="true">
+          <div class="rings"><i></i><i></i><i></i></div>
+          <p>FEEL IT<br /><span>COMING</span></p>
+          <small>BEAT 03 / PHRASE 08</small>
+        </div>
+      </article>
+    </section>
+
+    <section class="workflow" id="workflow" aria-labelledby="workflowTitle">
+      <div class="workflow-copy">
+        <p class="eyebrow"><span></span> One continuous workflow</p>
+        <h2 id="workflowTitle">Play it on Mac.<br />Carry it on iPhone.</h2>
+        <p>Search and curate the full library on desktop, then keep the same set memories close with the native iPhone companion.</p>
+        <ul>
+          <li><span>01</span> Import or record a set</li>
+          <li><span>02</span> Match Rekordbox history</li>
+          <li><span>03</span> Add notes, media, and location</li>
+          <li><span>04</span> Sync the library to iPhone</li>
+        </ul>
+      </div>
+
+      <div class="devices" aria-label="Set Player on Mac and iPhone">
+        <div class="mac-device">
+          <div class="mini-sidebar"><i></i><i></i><i></i><i></i></div>
+          <div class="mini-content">
+            <img src="set-player-sunset.jpg" alt="" />
+            <span class="mini-wave"></span>
+            <b>Sunset Session</b>
+            <small>15 tracks · Ocean overlook</small>
+          </div>
+        </div>
+        <div class="phone-device">
+          <div class="phone-notch"></div>
+          <img src="set-player-sunset.jpg" alt="" />
+          <div class="phone-copy"><small>NOW PLAYING</small><b>Sunset Session</b><span>Falling Back — Obskür</span></div>
+          <div class="phone-controls"><i></i><button aria-hidden="true">▶</button><i></i></div>
+        </div>
+        <div class="sync-pill"><span>◫</span> Library synced</div>
+      </div>
+    </section>
+
+    <section class="extensions" aria-labelledby="extensionsTitle">
+      <div class="section-intro centered">
+        <p class="eyebrow"><span></span> Built-in extensions</p>
+        <h2 id="extensionsTitle">The tools around the set.<br />All one click away.</h2>
+      </div>
+      <div class="extension-grid">
+        <article><span class="extension-icon orange">◫</span><h3>Rave Lyrics</h3><p>Beat and phrase visuals</p></article>
+        <article><span class="extension-icon pink">❞</span><h3>Live Lyrics</h3><p>Synced to Rekordbox</p></article>
+        <article><span class="extension-icon pink">↻</span><h3>Rekordbox History</h3><p>Sets, tracks, and stats</p></article>
+        <article><span class="extension-icon pink">●</span><h3>Record Set</h3><p>Capture application audio</p></article>
+        <article><span class="extension-icon orange">≋</span><h3>Volume Mixer</h3><p>Control application levels</p></article>
+        <article><span class="extension-icon cyan">◫</span><h3>Sync iPhone</h3><p>Library continuity</p></article>
+      </div>
+    </section>
+
+    <section class="final-cta" id="download">
+      <img src="app-icon.png" alt="Set Player app icon" />
+      <p class="eyebrow"><span></span> Set Player 1.0</p>
+      <h2>Your best sets deserve<br />more than a filename.</h2>
+      <p>Turn every recording into a place you can revisit.</p>
+      <div class="cta-actions">
+        <a class="primary-button" href="https://github.com/axel-slid/set-player/releases/latest/download/Set-Player-macOS-arm64.zip">
+          <span class="apple-mark" aria-hidden="true">●</span>
+          <span><strong>Download for macOS</strong><small>Apple silicon · macOS 14+</small></span>
+        </a>
+        <a class="secondary-button" href="https://github.com/axel-slid/set-player" target="_blank" rel="noreferrer">View source ↗</a>
+      </div>
+      <small class="build-note">Ad-hoc signed preview · iPhone target available from source</small>
     </section>
   </main>
 
   <footer>
-    <span>Set Player / v1.0</span>
-    <span>A small tool by <a href="/">Alex Dils</a></span>
+    <a class="brand" href="#top"><img src="app-icon.png" alt="" /><span>Set Player</span></a>
+    <p>Built by <a href="/">Alex Dils</a></p>
+    <p>© <span id="year">2026</span> · <a href="https://github.com/axel-slid/set-player" target="_blank" rel="noreferrer">GitHub</a></p>
   </footer>
 
-  <dialog id="shortcutsDialog" aria-labelledby="shortcutsTitle">
-    <div class="dialog-header">
-      <div>
-        <p class="micro-label">Controls</p>
-        <h2 id="shortcutsTitle">Keyboard shortcuts</h2>
-      </div>
-      <button id="closeDialog" type="button" aria-label="Close shortcuts">×</button>
-    </div>
-    <dl class="shortcut-list">
-      <div><dt><kbd>Space</kbd></dt><dd>Play / pause</dd></div>
-      <div><dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Seek 15 seconds</dd></div>
-      <div><dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Adjust volume</dd></div>
-      <div><dt><kbd>N</kbd> <kbd>P</kbd></dt><dd>Next / previous set</dd></div>
-      <div><dt><kbd>L</kbd></dt><dd>Toggle repeat</dd></div>
-      <div><dt><kbd>M</kbd></dt><dd>Mute</dd></div>
-    </dl>
-  </dialog>
-
-  <audio id="audio" preload="metadata"></audio>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="app.js"></script>
 </body>
 </html>
