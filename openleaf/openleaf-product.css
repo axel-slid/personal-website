@@ -47,7 +47,7 @@ button {
 .digital-twin {
   z-index: 0;
   overflow: hidden;
-  background: #17121f url("motion/openleaf-digital-twin-poster.jpg?v=20260816-latex-themes-v9") center / cover no-repeat;
+  background: #120e19 url("motion/openleaf-digital-twin-poster.png?v=20260816-background-film-v10") center / cover no-repeat;
 }
 
 .digital-twin video {
@@ -55,7 +55,7 @@ button {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  filter: saturate(0.98) brightness(0.9) contrast(1.04);
+  filter: saturate(0.94) brightness(0.82) contrast(1.04);
   transform: scale(1.01);
 }
 
