@@ -411,8 +411,6 @@
       </div>
       <div id="navMenu" class="navbar-menu">
         <div class="navbar-end">
-          <a class="navbar-item is-section-link is-hidden-widescreen" href="#dataset">Dataset</a>
-          <a class="navbar-item is-section-link is-hidden-widescreen" href="#method">Method</a>
           <a class="navbar-item is-section-link is-hidden-widescreen" href="#results">Results</a>
           <a class="navbar-item is-section-link is-hidden-widescreen" href="#figures">Figures</a>
           <a class="navbar-item is-section-link is-hidden-widescreen" href="#availability">Availability</a>
@@ -433,8 +431,6 @@
   <nav class="section-tracker" aria-label="Section navigation">
     <ul>
       <li><a href="#abstract"><span class="dot"></span><span class="lbl">Abstract</span></a></li>
-      <li><a href="#dataset"><span class="dot"></span><span class="lbl">Dataset</span></a></li>
-      <li><a href="#method"><span class="dot"></span><span class="lbl">Method</span></a></li>
       <li><a href="#results"><span class="dot"></span><span class="lbl">Results</span></a></li>
       <li><a href="#figures"><span class="dot"></span><span class="lbl">Figures</span></a></li>
       <li><a href="#availability"><span class="dot"></span><span class="lbl">Availability</span></a></li>
@@ -536,96 +532,6 @@
           </div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section class="section alt" id="dataset" data-spy>
-    <div class="container is-max-desktop">
-      <div class="has-text-centered">
-        <p class="section-kicker">Dataset</p>
-        <h2 class="title is-3">Three cohorts, one held-out ecological test set</h2>
-      </div>
-      <div class="content has-text-justified paper-copy">
-        <p>
-          The manuscript assembles <strong>1,198 microscopy images</strong>: 368 laboratory microplastic image-mask pairs, 733 unlabeled ecological background images, and 97 ecological microplastic image-mask pairs held out for final testing. Cohort 3 is never used during training, so the reported metrics measure transfer to real ecological samples rather than synthetic validation performance.
-        </p>
-      </div>
-      <div class="cohort-grid">
-        <article class="cohort-card">
-          <div class="cohort-title">
-            <h3>Cohort 1</h3>
-            <span class="cohort-role">Training labels</span>
-          </div>
-          <span class="cohort-number">368</span>
-          <p>Laboratory microplastic images paired with manual masks for supervised training and synthetic mask templates.</p>
-          <div class="cohort-meta">
-            <span><strong>368</strong> images</span>
-            <span><strong>368</strong> masks</span>
-          </div>
-        </article>
-        <article class="cohort-card">
-          <div class="cohort-title">
-            <h3>Cohort 2</h3>
-            <span class="cohort-role">Context bank</span>
-          </div>
-          <span class="cohort-number">733</span>
-          <p>Unlabeled ecological microscopy backgrounds supplying sediment, fibers, bubbles, and organic matter.</p>
-          <div class="cohort-meta">
-            <span><strong>733</strong> images</span>
-            <span><strong>0</strong> masks</span>
-          </div>
-        </article>
-        <article class="cohort-card">
-          <div class="cohort-title">
-            <h3>Cohort 3</h3>
-            <span class="cohort-role">Held-out test</span>
-          </div>
-          <span class="cohort-number">97</span>
-          <p>Ecological microplastic image-mask pairs reserved for final segmentation metrics and never used for training.</p>
-          <div class="cohort-meta">
-            <span><strong>97</strong> images</span>
-            <span><strong>97</strong> masks</span>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="method" data-spy>
-    <div class="container is-max-desktop">
-      <div class="has-text-centered">
-        <p class="section-kicker">Method</p>
-        <h2 class="title is-3">Synthetic ecological context with quality control</h2>
-      </div>
-      <div class="content has-text-justified paper-copy">
-        <p>
-          The study treats synthetic data as a controlled fusion problem. Real manually segmented masks preserve the pixel-level labels, ecological microscopy images provide the background distribution, and Stable Diffusion inpainting regenerates plausible foreground appearance inside transformed mask regions. The generator produced <strong>10,000 candidate synthetic image-mask pairs</strong>, but the final training condition admits only candidates that pass the manuscript's quality-control ranking and diversity constraints.
-        </p>
-      </div>
-      <div class="method-grid">
-        <article class="method-card">
-          <h3>1. Preserve real labels</h3>
-          <p>Cohort 1 masks are transformed and retained as the ground-truth segmentation labels.</p>
-        </article>
-        <article class="method-card">
-          <h3>2. Add ecological context</h3>
-          <p>Transformed masks are placed into unlabeled ecological backgrounds from Cohort 2.</p>
-        </article>
-        <article class="method-card">
-          <h3>3. Inpaint foregrounds</h3>
-          <p>Stable Diffusion regenerates the masked particle region while preserving surrounding background pixels.</p>
-        </article>
-        <article class="method-card">
-          <h3>4. Filter before training</h3>
-          <p>Examples are ranked for visible mask-region change, non-empty masks, plausible scale, and background diversity.</p>
-        </article>
-      </div>
-      <figure class="qc-figure">
-        <a href="../assets/microplastic-qc-equation.png" data-lightbox>
-          <img src="../assets/microplastic-qc-equation.png" alt="Synthetic inpainting quality-control score">
-        </a>
-        <figcaption>Quality-control score used to retain visibly changed, plausible, and diverse synthetic inpainting examples.</figcaption>
-      </figure>
     </div>
   </section>
 
