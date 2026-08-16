@@ -53,8 +53,9 @@ if ((html.match(/<main\b/g) || []).length !== 1) {
 }
 
 const expectedCopy = [
-  "1) Download",
-  "2) Run this"
+  "Vibecode Aesthetically",
+  "Get the app",
+  "Move it to Applications, then run"
 ];
 for (const copy of expectedCopy) {
   if (!html.includes(copy)) {
@@ -64,8 +65,8 @@ for (const copy of expectedCopy) {
 
 for (const rule of [
   ".film-stage",
-  "aspect-ratio: 16 / 9",
-  "@media (max-width: 560px)",
+  "aspect-ratio: 1920 / 849",
+  "@media (max-width: 620px)",
   "prefers-reduced-motion"
 ]) {
   if (!css.includes(rule)) {

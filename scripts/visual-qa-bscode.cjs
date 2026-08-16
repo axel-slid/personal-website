@@ -155,7 +155,7 @@ async function main() {
         videoSource: video?.querySelector("source")?.getAttribute("src") || "",
         videoPoster: video?.getAttribute("poster") || "",
         videoPausedForReducedMotion: Boolean(video?.paused),
-        hasProductHeadline: document.body.innerText.includes("Run the whole coding session from one place."),
+        hasProductHeadline: document.body.innerText.includes("Vibecode Aesthetically"),
         hasSetupCommand: document.body.innerText.includes("xattr -dr com.apple.quarantine"),
         downloadLinks: links
           .map((link) => link.href)
