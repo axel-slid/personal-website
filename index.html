@@ -26,33 +26,39 @@
 <body>
   <a class="skip-link" href="#about-me">Skip to content</a>
 
-  <div class="color-lab" data-color-lab>
-    <button class="color-lab-toggle" type="button" data-color-toggle aria-expanded="false" aria-controls="color-lab-panel">
-      <i class="fa-solid fa-palette" aria-hidden="true"></i>
-      <span>Colors</span>
-    </button>
-    <div class="color-lab-panel" id="color-lab-panel" data-color-panel hidden>
-      <div class="color-lab-heading">
-        <strong>Color scheme</strong>
-        <span>Saved preference</span>
-      </div>
-      <div class="color-lab-options" role="group" aria-label="Choose a website color scheme">
-        <button class="color-choice" type="button" data-color-choice="original" aria-pressed="true">
-          <span class="color-swatches original" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span>Original</span>
-        </button>
-        <button class="color-choice" type="button" data-color-choice="berkeley" aria-pressed="false">
-          <span class="color-swatches berkeley" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span>Berkeley</span>
-        </button>
-        <button class="color-choice" type="button" data-color-choice="cardinal" aria-pressed="false">
-          <span class="color-swatches cardinal" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span>Cardinal</span>
-        </button>
-        <button class="color-choice" type="button" data-color-choice="sage" aria-pressed="false">
-          <span class="color-swatches sage" aria-hidden="true"><i></i><i></i><i></i></span>
-          <span>Sage</span>
-        </button>
+  <div class="floating-tools">
+    <a class="floating-dj" href="dj/">
+      <i class="fa-solid fa-compact-disc" aria-hidden="true"></i>
+      <span>DJ</span>
+    </a>
+    <div class="color-lab" data-color-lab>
+      <button class="color-lab-toggle" type="button" data-color-toggle aria-expanded="false" aria-controls="color-lab-panel">
+        <i class="fa-solid fa-palette" aria-hidden="true"></i>
+        <span>Colors</span>
+      </button>
+      <div class="color-lab-panel" id="color-lab-panel" data-color-panel hidden>
+        <div class="color-lab-heading">
+          <strong>Color scheme</strong>
+          <span>Saved preference</span>
+        </div>
+        <div class="color-lab-options" role="group" aria-label="Choose a website color scheme">
+          <button class="color-choice" type="button" data-color-choice="original" aria-pressed="true">
+            <span class="color-swatches original" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span>Original</span>
+          </button>
+          <button class="color-choice" type="button" data-color-choice="berkeley" aria-pressed="false">
+            <span class="color-swatches berkeley" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span>Berkeley</span>
+          </button>
+          <button class="color-choice" type="button" data-color-choice="cardinal" aria-pressed="false">
+            <span class="color-swatches cardinal" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span>Cardinal</span>
+          </button>
+          <button class="color-choice" type="button" data-color-choice="sage" aria-pressed="false">
+            <span class="color-swatches sage" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span>Sage</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -60,7 +66,6 @@
   <header class="masthead">
     <div class="masthead-inner">
       <nav class="site-nav" aria-label="Primary navigation">
-        <a class="home-link" href="#about-me">Homepage</a>
         <a href="#about-me">About Me</a>
         <a href="#news">News</a>
         <a href="#publications">Selected Publications</a>
@@ -97,11 +102,6 @@
           <li><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i><a href="https://scholar.google.com/citations?user=0Sz8VPoAAAAJ" target="_blank" rel="noreferrer">Google Scholar</a></li>
         </ul>
 
-        <a class="author-dj-link" href="dj/">
-          <span class="author-dj-icon" aria-hidden="true"><i class="fa-solid fa-compact-disc"></i></span>
-          <span><strong>DJ</strong><small>Playlists, Set Player &amp; booking</small></span>
-          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-        </a>
       </div>
     </aside>
 
