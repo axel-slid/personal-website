@@ -34,19 +34,37 @@
     body {
       margin: 0;
       min-width: 320px;
+      min-height: 100svh;
+      overflow-x: hidden;
       color: var(--text);
       background: var(--bg);
       font-family: var(--sans);
       -webkit-font-smoothing: antialiased;
     }
 
+    body::after {
+      position: fixed;
+      z-index: 1;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(12,15,22,0.08) 0 24%, rgba(12,15,22,0.42) 72%),
+        linear-gradient(180deg, rgba(12,15,22,0.32), rgba(12,15,22,0.58));
+      content: "";
+    }
+
     a { color: inherit; }
     button { color: inherit; font: inherit; }
 
     main {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      min-height: 100svh;
+      flex-direction: column;
       width: min(760px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 48px 0 72px;
+      padding: 32px 0 34px;
     }
 
     .github {
@@ -58,7 +76,9 @@
       padding: 0 12px;
       border: 1px solid var(--line);
       border-radius: 999px;
-      background: var(--panel);
+      background: rgba(20,25,35,0.82);
+      box-shadow: 0 10px 34px rgba(0,0,0,0.2);
+      backdrop-filter: blur(16px) saturate(1.15);
       color: var(--muted);
       font-size: 12px;
       font-weight: 600;
@@ -79,7 +99,8 @@
     }
 
     .hero {
-      padding: 84px 0 52px;
+      margin: auto 0;
+      padding: 78px 0 52px;
       text-align: center;
     }
 
@@ -89,6 +110,7 @@
       font-weight: 650;
       letter-spacing: -0.065em;
       line-height: 0.95;
+      text-shadow: 0 8px 38px rgba(0,0,0,0.78);
     }
 
     .intro {
@@ -119,8 +141,9 @@
       overflow-x: auto;
       border: 1px solid var(--line);
       border-radius: 12px;
-      background: var(--panel);
-      box-shadow: 0 18px 70px rgba(0,0,0,0.28);
+      background: rgba(20,25,35,0.86);
+      box-shadow: 0 18px 70px rgba(0,0,0,0.42);
+      backdrop-filter: blur(20px) saturate(1.12);
     }
 
     .command::before {
@@ -163,25 +186,34 @@
     }
 
     .preview {
-      margin: 62px 0 0;
-      overflow: visible;
+      position: fixed;
+      z-index: 0;
+      inset: 0;
+      display: grid;
+      width: 100vw;
+      height: 100svh;
+      margin: 0;
+      place-items: center;
+      overflow: hidden;
       border: 0;
       background: transparent;
       box-shadow: none;
+      pointer-events: none;
     }
 
     .preview video {
       display: block;
-      width: 100%;
-      height: auto;
-      aspect-ratio: 16 / 9;
+      width: 100vw;
+      height: 100svh;
+      max-width: none;
       object-fit: cover;
       background: transparent;
-      cursor: pointer;
+      filter: brightness(0.78) saturate(0.86) contrast(1.04);
+      opacity: 0.82;
     }
 
     footer {
-      margin-top: 24px;
+      margin-top: 0;
       color: #6f7a8c;
       font-size: 11px;
       text-align: center;
@@ -191,16 +223,37 @@
     :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
 
     @media (max-width: 560px) {
-      main { padding-top: 28px; }
-      .hero { padding-top: 84px; }
+      main { padding-top: 20px; }
+      .hero { padding-top: 72px; }
       .command { padding-right: 66px; }
       code { font-size: 10px; }
       .copy { padding: 0 10px; }
-      .preview { margin-top: 46px; border-radius: 9px; }
+      .preview video { opacity: 0.7; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .preview video { display: none; }
     }
   </style>
 </head>
 <body>
+  <figure class="preview" aria-hidden="true">
+    <video
+      id="bscode-film"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      poster="/bscode/bscode-digital-twin-poster.png?v=20260816-background-v13"
+      tabindex="-1"
+    >
+      <source src="/bscode/bscode-digital-twin-alpha.mov?v=20260816-background-v13" type='video/mp4; codecs="hvc1"' />
+      <source src="/bscode/bscode-digital-twin.webm?v=20260816-background-v13" type="video/webm" />
+      <source src="/bscode/bscode-digital-twin.mp4?v=20260816-background-v13" type="video/mp4" />
+    </video>
+  </figure>
+
   <main>
     <section class="hero">
       <h1>BsCode</h1>
@@ -222,23 +275,6 @@
       </div>
     </section>
 
-    <figure class="preview">
-      <video
-        id="bscode-film"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="auto"
-        poster="/bscode/bscode-digital-twin-poster.png"
-        aria-label="BsCode coordinating multiple agents, entering Cinematic Mode, and switching to City View"
-      >
-        <source src="/bscode/bscode-digital-twin-alpha.mov" type='video/mp4; codecs="hvc1"' />
-        <source src="/bscode/bscode-digital-twin.webm" type="video/webm" />
-        <source src="/bscode/bscode-digital-twin.mp4" type="video/mp4" />
-      </video>
-    </figure>
-
     <footer>
       Free and open source · <a href="https://github.com/axel-slid/bscode" target="_blank" rel="noreferrer">View the code on GitHub</a>
     </footer>
@@ -250,14 +286,6 @@
     const film = document.getElementById("bscode-film");
 
     film.play().catch(function () {});
-    film.addEventListener("click", function () {
-      if (film.paused) {
-        film.play().catch(function () {});
-      } else {
-        film.pause();
-      }
-    });
-
     button.addEventListener("click", async function () {
       const original = button.textContent;
       try {
