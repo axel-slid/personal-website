@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Openleaf</title>
+  <meta name="description" content="Openleaf is your complete local research workspace for LaTeX, live PDF, PowerPoint, Python, and coding agents.">
+  <link rel="canonical" href="https://www.alex-dils.com/openleaf/">
+  <meta property="og:title" content="Openleaf">
+  <meta property="og:description" content="Your complete local research workspace.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.alex-dils.com/openleaf/">
+  <meta property="og:image" content="https://www.alex-dils.com/openleaf/motion/openleaf-digital-twin-poster.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Openleaf">
+  <meta name="twitter:description" content="Your complete local research workspace.">
+  <meta name="twitter:image" content="https://www.alex-dils.com/openleaf/motion/openleaf-digital-twin-poster.jpg">
+  <meta name="theme-color" content="#120e19">
+  <link rel="icon" href="icon.png" type="image/png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="preload" href="motion/openleaf-digital-twin-poster.jpg?v=20260816-latex-themes-v9" as="image" fetchpriority="high">
+  <link rel="stylesheet" href="openleaf-product.css">
+</head>
+<body>
+  <div class="digital-twin" aria-hidden="true">
+    <video
+      id="openleafDigitalTwin"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      disablepictureinpicture
+      poster="motion/openleaf-digital-twin-poster.jpg?v=20260816-latex-themes-v9"
+    >
+      <source src="motion/openleaf-digital-twin.mp4?v=20260816-latex-themes-v9" type="video/mp4">
+    </video>
+  </div>
+  <div class="video-wash" aria-hidden="true"></div>
+
+  <main>
+    <section class="hero-panel">
+      <h1>Openleaf</h1>
+      <p class="product-blurb">An agent-native desktop studio for writing LaTeX, editing visually, compiling live PDFs, and working with coding agents locally or over SSH.</p>
+      <div class="install-command" id="install">
+        <span class="prompt" aria-hidden="true">$</span>
+        <code id="installCommand">curl -fsSL https://alex-dils.com/openleaf/install.sh | bash</code>
+        <button id="copyInstall" type="button" aria-label="Copy the Openleaf install command">Copy</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="openleaf-product.js"></script>
+</body>
+</html>

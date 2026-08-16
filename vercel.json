@@ -1,5 +1,11 @@
 {
   "installCommand": null,
   "buildCommand": null,
-  "outputDirectory": "."
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/set-player", "destination": "/set-player/index.html" },
+    { "source": "/bscode", "destination": "/bscode/index.html" },
+    { "source": "/openleaf", "destination": "/openleaf/index.html" },
+    { "source": "/openleaf/docs", "destination": "/openleaf/docs.html" }
+  ]
 }

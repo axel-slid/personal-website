@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="110" y1="65" x2="1095" y2="595" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f5f8f4"/>
+      <stop offset="1" stop-color="#e5efe7"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="252" y1="92" x2="935" y2="566" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#17201c"/>
+      <stop offset="1" stop-color="#0b120f"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="30" stdDeviation="32" flood-color="#052913" flood-opacity="0.24"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <path d="M72 506c135-76 253-78 390-17 165 74 304 51 535-100" fill="none" stroke="#138a07" stroke-width="34" stroke-linecap="round" opacity="0.14"/>
+  <g filter="url(#shadow)">
+    <rect x="80" y="72" width="1040" height="486" rx="34" fill="url(#panel)"/>
+    <rect x="80" y="72" width="1040" height="486" rx="34" fill="none" stroke="#2d3c34" stroke-width="2"/>
+  </g>
+  <g transform="translate(128 132)">
+    <rect width="132" height="132" rx="30" fill="#138a07"/>
+    <path d="M42 20h42l18 18v76H42z" fill="#fff"/>
+    <path d="M84 20v18h18z" fill="#bcead0"/>
+    <path d="M52 79c2-18 16-31 36-31-2 20-15 34-36 36z" fill="#138a07"/>
+    <path d="M56 82c12-5 22-13 30-24" fill="none" stroke="#eaf7ef" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="96" cy="97" r="20" fill="#0d4f2b"/>
+    <path d="M96 86v22M85 97h22" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <text x="128" y="335" fill="#f8fbf8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" font-size="92" font-weight="400" letter-spacing="0">Openleaf</text>
+  <text x="132" y="402" fill="#b9c7bf" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" font-size="31" font-weight="400" letter-spacing="0">Local LaTeX on your desk.</text>
+  <text x="132" y="446" fill="#b9c7bf" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" font-size="31" font-weight="400" letter-spacing="0">Agents, vim, ssh, GitHub Action,</text>
+  <text x="132" y="490" fill="#b9c7bf" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif" font-size="31" font-weight="400" letter-spacing="0">cool themes, and more!</text>
+  <g transform="translate(770 154)">
+    <rect width="270" height="300" rx="18" fill="#eef4ef"/>
+    <rect x="30" y="46" width="210" height="9" rx="4.5" fill="#0f1a15" opacity="0.8"/>
+    <rect x="30" y="78" width="176" height="9" rx="4.5" fill="#0f1a15" opacity="0.26"/>
+    <rect x="30" y="104" width="194" height="9" rx="4.5" fill="#0f1a15" opacity="0.26"/>
+    <rect x="30" y="130" width="144" height="9" rx="4.5" fill="#0f1a15" opacity="0.26"/>
+    <path d="M70 225c4-49 43-87 101-87-5 57-43 94-101 99z" fill="#138a07"/>
+    <path d="M82 230c36-15 64-38 88-70" fill="none" stroke="#eef4ef" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="205" cy="235" r="38" fill="#0d4f2b"/>
+    <path d="M205 213v44M183 235h44" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+  </g>
+</svg>
