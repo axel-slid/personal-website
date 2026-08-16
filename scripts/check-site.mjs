@@ -8,7 +8,8 @@ const requiredFiles = [
   "resume.pdf",
   "assets/bscode/app-icon.png",
   "assets/bscode/motion/bscode-digital-twin.mp4",
-  "assets/bscode/motion/bscode-digital-twin-poster.jpg",
+  "assets/bscode/motion/bscode-digital-twin.webm",
+  "assets/bscode/motion/bscode-digital-twin-poster.png",
   "bscode/bscode.css",
   "bscode/index.html"
 ];
@@ -30,7 +31,10 @@ for (const attribute of ["autoplay", "muted", "loop", "playsinline"]) {
 if (!html.includes("bscode-digital-twin.mp4")) {
   throw new Error("The Remotion digital-twin film is missing.");
 }
-if (!html.includes("bscode-digital-twin-poster.jpg")) {
+if (!html.includes("bscode-digital-twin.webm")) {
+  throw new Error("The transparent Remotion digital-twin film is missing.");
+}
+if (!html.includes("bscode-digital-twin-poster.png")) {
   throw new Error("The digital-twin poster is missing.");
 }
 if (!html.includes("BsCode-macOS-arm64.zip")) {
@@ -100,8 +104,9 @@ for (const removedElement of [
 }
 
 const videoSize = fs.statSync(path.join(root, "assets", "bscode", "motion", "bscode-digital-twin.mp4")).size;
-const posterSize = fs.statSync(path.join(root, "assets", "bscode", "motion", "bscode-digital-twin-poster.jpg")).size;
-if (videoSize < 100_000 || posterSize < 10_000) {
+const transparentVideoSize = fs.statSync(path.join(root, "assets", "bscode", "motion", "bscode-digital-twin.webm")).size;
+const posterSize = fs.statSync(path.join(root, "assets", "bscode", "motion", "bscode-digital-twin-poster.png")).size;
+if (videoSize < 100_000 || transparentVideoSize < 100_000 || posterSize < 10_000) {
   throw new Error("The digital-twin film or poster is unexpectedly small.");
 }
 

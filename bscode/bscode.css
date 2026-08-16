@@ -340,8 +340,7 @@ a {
 .film-stage {
   position: relative;
   margin: 0;
-  overflow: hidden;
-  border-radius: 16px;
+  overflow: visible;
 }
 
 /*
@@ -357,7 +356,7 @@ a {
   display: block;
   object-fit: cover;
   object-position: 50% 59%;
-  background: #05060a;
+  background: transparent;
 }
 
 /* ---------- footer ---------- */

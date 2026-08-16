@@ -209,8 +209,8 @@ async function main() {
     return (
       entry.hasHorizontalOverflow
       || entry.videoCount !== 1
-      || !entry.videoSource.includes("bscode-digital-twin.mp4")
-      || !entry.videoPoster.includes("bscode-digital-twin-poster.jpg")
+      || !entry.videoSource.includes("bscode-digital-twin.webm")
+      || !entry.videoPoster.includes("bscode-digital-twin-poster.png")
       || !entry.videoPausedForReducedMotion
       || !entry.hasProductHeadline
       || !entry.hasSetupCommand
