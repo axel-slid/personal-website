@@ -19,7 +19,7 @@
   <script>
     try {
       const savedScheme = localStorage.getItem("alex-color-scheme");
-      if (savedScheme && savedScheme !== "original") document.documentElement.dataset.theme = savedScheme;
+      if (["sage", "midnight", "charcoal"].includes(savedScheme)) document.documentElement.dataset.theme = savedScheme;
     } catch (_) {}
   </script>
 </head>
@@ -46,17 +46,17 @@
             <span class="color-swatches original" aria-hidden="true"><i></i><i></i><i></i></span>
             <span>Original</span>
           </button>
-          <button class="color-choice" type="button" data-color-choice="berkeley" aria-pressed="false">
-            <span class="color-swatches berkeley" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span>Berkeley</span>
-          </button>
-          <button class="color-choice" type="button" data-color-choice="cardinal" aria-pressed="false">
-            <span class="color-swatches cardinal" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span>Cardinal</span>
-          </button>
           <button class="color-choice" type="button" data-color-choice="sage" aria-pressed="false">
             <span class="color-swatches sage" aria-hidden="true"><i></i><i></i><i></i></span>
             <span>Sage</span>
+          </button>
+          <button class="color-choice" type="button" data-color-choice="midnight" aria-pressed="false">
+            <span class="color-swatches midnight" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span>Midnight</span>
+          </button>
+          <button class="color-choice" type="button" data-color-choice="charcoal" aria-pressed="false">
+            <span class="color-swatches charcoal" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span>Charcoal</span>
           </button>
         </div>
       </div>

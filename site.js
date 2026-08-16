@@ -17,12 +17,12 @@
   const colorToggle = document.querySelector("[data-color-toggle]");
   const colorPanel = document.querySelector("[data-color-panel]");
   const colorChoices = [...document.querySelectorAll("[data-color-choice]")];
-  const validSchemes = new Set(["original", "berkeley", "cardinal", "sage"]);
+  const validSchemes = new Set(["original", "sage", "midnight", "charcoal"]);
   const themeColors = {
     original: "#ffffff",
-    berkeley: "#fbfaf5",
-    cardinal: "#fffaf8",
-    sage: "#f7faf7"
+    sage: "#f7faf7",
+    midnight: "#0b1220",
+    charcoal: "#151617"
   };
 
   const getScheme = () => {

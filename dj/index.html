@@ -20,7 +20,7 @@
   <script>
     try {
       const scheme = localStorage.getItem("alex-color-scheme");
-      if (scheme && scheme !== "original") document.documentElement.dataset.theme = scheme;
+      if (["sage", "midnight", "charcoal"].includes(scheme)) document.documentElement.dataset.theme = scheme;
     } catch (_) {}
   </script>
 </head>
