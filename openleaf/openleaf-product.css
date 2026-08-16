@@ -47,7 +47,7 @@ button {
 .digital-twin {
   z-index: 0;
   overflow: hidden;
-  background: #120e19 url("motion/openleaf-digital-twin-poster.png?v=20260816-background-film-v10") center / cover no-repeat;
+  background: #120e19;
 }
 
 .digital-twin video {
