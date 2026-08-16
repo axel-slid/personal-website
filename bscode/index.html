@@ -1,161 +1,278 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BsCode — A live coding command center</title>
-  <meta name="description" content="BsCode brings Codex, Claude, shell sessions, local files, and SSH workspaces into one native macOS command center.">
-  <link rel="canonical" href="https://alex-dils.com/bscode/">
-  <meta property="og:title" content="BsCode — A live coding command center">
-  <meta property="og:description" content="Direct coding agents, watch live progress, and review their output without losing context.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://alex-dils.com/bscode/">
-  <meta property="og:image" content="https://alex-dils.com/assets/bscode/motion/bscode-digital-twin-poster.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="../assets/bscode/app-icon.png">
-  <link rel="apple-touch-icon" href="../assets/bscode/app-icon.png">
-  <link rel="preload" href="../assets/bscode/motion/bscode-digital-twin-poster.png" as="image" fetchpriority="high">
-  <link rel="stylesheet" href="bscode.css">
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": "BsCode",
-    "softwareVersion": "0.2.5",
-    "applicationCategory": "DeveloperApplication",
-    "operatingSystem": "macOS",
-    "description": "A native macOS command center for directing Codex, Claude, and shell agents across local and SSH workspaces.",
-    "author": {"@type": "Person", "name": "Alex Dils", "url": "https://alex-dils.com/"},
-    "downloadUrl": "https://github.com/axel-slid/bscode/releases/download/v0.2.5/BsCode-macOS-arm64.zip",
-    "codeRepository": "https://github.com/axel-slid/bscode"
-  }
-  </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BsCode — Download</title>
+  <meta name="description" content="Download BsCode, a living desktop for coordinating Codex, Claude, and shell agents." />
+  <link rel="canonical" href="https://www.alex-dils.com/bscode" />
+  <meta property="og:title" content="BsCode" />
+  <meta property="og:description" content="Run and coordinate Codex, Claude, and shell agents in one living desktop workspace." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.alex-dils.com/bscode" />
+  <meta property="og:image" content="https://www.alex-dils.com/bscode/social-preview.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BsCode" />
+  <meta name="twitter:description" content="Run and coordinate Codex, Claude, and shell agents in one living desktop workspace." />
+  <meta name="twitter:image" content="https://www.alex-dils.com/bscode/social-preview.png" />
+  <meta name="theme-color" content="#0c0f16" />
+  <link rel="icon" href="/bscode/icon.png" type="image/png" />
+  <style>
+    :root {
+      --bg: #0c0f16;
+      --panel: #141923;
+      --line: #293142;
+      --text: #f4f7fb;
+      --muted: #9aa5b5;
+      --blue: #70b7ff;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--text);
+      background: var(--bg);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+    button { color: inherit; font: inherit; }
+
+    main {
+      width: min(760px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0 72px;
+    }
+
+    .github {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 34px;
+      margin-top: 22px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: border-color 140ms ease, color 140ms ease, transform 140ms ease;
+    }
+
+    .github:hover {
+      border-color: #45516a;
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    .github svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .hero {
+      padding: 84px 0 52px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(56px, 12vw, 92px);
+      font-weight: 650;
+      letter-spacing: -0.065em;
+      line-height: 0.95;
+    }
+
+    .intro {
+      max-width: 540px;
+      margin: 24px auto 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    .install {
+      margin-top: 38px;
+      text-align: left;
+    }
+
+    .install-label {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .command {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 64px;
+      padding: 16px 78px 16px 18px;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      box-shadow: 0 18px 70px rgba(0,0,0,0.28);
+    }
+
+    .command::before {
+      flex: none;
+      margin-right: 10px;
+      color: var(--blue);
+      content: "$";
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+
+    code {
+      color: #e0e8f4;
+      font-family: var(--mono);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .copy {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      height: 38px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #1b2230;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .copy:hover { border-color: #45516a; }
+
+    .hint {
+      margin: 11px 0 0;
+      color: #6f7a8c;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .preview {
+      margin: 62px 0 0;
+      overflow: visible;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .preview video {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    footer {
+      margin-top: 24px;
+      color: #6f7a8c;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    footer a { color: var(--muted); text-underline-offset: 3px; }
+    :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+
+    @media (max-width: 560px) {
+      main { padding-top: 28px; }
+      .hero { padding-top: 84px; }
+      .command { padding-right: 66px; }
+      code { font-size: 10px; }
+      .copy { padding: 0 10px; }
+      .preview { margin-top: 46px; border-radius: 9px; }
+    }
+  </style>
 </head>
 <body>
-  <a class="skip-link" href="#product-film">Skip to product film</a>
-
-  <header class="site-header">
-    <a class="product-brand" href="./" aria-label="BsCode home">
-      <img src="../assets/bscode/app-icon.png" alt="" width="30" height="30">
-      <span>BsCode</span>
-    </a>
-    <nav class="header-nav" aria-label="Product">
-      <a class="quiet-link" href="https://github.com/axel-slid/bscode" target="_blank" rel="noreferrer">
-        <svg class="github-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.292 9.407 7.865 10.936.575.106.785-.25.785-.555 0-.274-.01-1.004-.015-1.97-3.203.696-3.88-1.544-3.88-1.544-.524-1.33-1.279-1.684-1.279-1.684-1.046-.715.08-.7.08-.7 1.156.08 1.765 1.188 1.765 1.188 1.028 1.76 2.698 1.251 3.357.957.104-.744.402-1.25.73-1.538-2.554-.29-5.238-1.277-5.238-5.68 0-1.256.45-2.283 1.187-3.086-.119-.29-.514-1.462.112-3.047 0 0 .966-.31 3.166 1.178a10.98 10.98 0 0 1 2.884-.386c.98.004 1.968.132 2.888.386 2.199-1.488 3.164-1.178 3.164-1.178.628 1.585.232 2.756.114 3.047.739.804 1.186 1.83 1.186 3.086 0 4.414-2.69 5.387-5.254 5.67.414.355.786 1.058.786 2.133 0 1.54-.014 2.783-.014 3.16 0 .307.208.667.793.554C20.71 21.403 24 17.088 24 12 24 5.65 18.85.5 12 .5Z"/>
+  <main>
+    <section class="hero">
+      <h1>BsCode</h1>
+      <a class="github" href="https://github.com/axel-slid/bscode" target="_blank" rel="noreferrer" aria-label="BsCode source code on GitHub">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-1.9c-3.14.68-3.8-1.34-3.8-1.34-.52-1.3-1.26-1.65-1.26-1.65-1.02-.7.08-.68.08-.68 1.13.08 1.73 1.16 1.73 1.16 1 .1 2.63.9 3.28.55.1-.73.4-1.23.72-1.51-2.5-.29-5.14-1.25-5.14-5.57 0-1.23.44-2.24 1.16-3.03-.12-.29-.5-1.44.11-2.99 0 0 .95-.3 3.1 1.16A10.8 10.8 0 0 1 12 5.91c.96 0 1.92.13 2.82.38 2.15-1.46 3.1-1.16 3.1-1.16.61 1.55.23 2.7.11 2.99.72.79 1.16 1.8 1.16 3.03 0 4.33-2.64 5.28-5.15 5.56.41.35.77 1.04.77 2.1v3.12c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"></path>
         </svg>
-        <span>GitHub</span>
+        <span>Open source on GitHub</span>
       </a>
-      <a class="header-download" href="https://github.com/axel-slid/bscode/releases/download/v0.2.5/BsCode-macOS-arm64.zip">
-        Download <span class="download-detail">for Apple silicon</span>
-        <span aria-hidden="true">↓</span>
-      </a>
-    </nav>
-  </header>
+      <p class="intro">Run Codex, Claude, and shell agents together across local or SSH workspaces in one living desktop.</p>
 
-  <main class="stage">
-    <section class="hero" aria-labelledby="hero-title">
-      <h1 id="hero-title">Vibecode Aesthetically<span class="accent" aria-hidden="true">.</span></h1>
-
-      <p class="hero-lede">
-        Direct Codex, Claude, and shell sessions across local and SSH workspaces —
-        watch live progress and review what they wrote without losing your place.
-      </p>
-
-      <ol class="setup">
-        <li class="setup-step">
-          <span class="step-index" aria-hidden="true">1</span>
-          <div class="step-body">
-            <p class="step-label">Get the app</p>
-            <a class="primary-download" href="https://github.com/axel-slid/bscode/releases/download/v0.2.5/BsCode-macOS-arm64.zip">
-              Download for Apple silicon
-              <span aria-hidden="true">↓</span>
-            </a>
-          </div>
-        </li>
-        <li class="setup-step">
-          <span class="step-index" aria-hidden="true">2</span>
-          <div class="step-body">
-            <p class="step-label">Move it to Applications, then run</p>
-            <div class="install-command">
-              <code id="quarantineCommand">xattr -dr com.apple.quarantine "/Applications/BsCode.app"</code>
-              <button id="copyQuarantineCommand" type="button" aria-label="Copy first-launch command">Copy</button>
-            </div>
-          </div>
-        </li>
-      </ol>
+      <div class="install">
+        <p class="install-label">Paste this into Terminal</p>
+        <div class="command">
+          <code id="install-command">curl -fsSL https://alex-dils.com/bscode/install.sh | bash</code>
+          <button class="copy" type="button" aria-label="Copy install command">Copy</button>
+        </div>
+        <p class="hint">macOS · Apple Silicon · v0.2.5</p>
+      </div>
     </section>
 
-    <section id="product-film" class="film-section" aria-label="BsCode product film">
-      <figure class="film-stage">
-        <video
-          id="bscodeDigitalTwin"
-          autoplay
-          muted
-          loop
-          playsinline
-          preload="auto"
-          disablepictureinpicture
-          poster="../assets/bscode/motion/bscode-digital-twin-poster.png"
-          aria-describedby="film-description"
-        >
-          <source src="../assets/bscode/motion/bscode-digital-twin-alpha.mov" type='video/mp4; codecs="hvc1"'>
-          <source src="../assets/bscode/motion/bscode-digital-twin.webm" type="video/webm">
-          <source src="../assets/bscode/motion/bscode-digital-twin.mp4" type="video/mp4">
-          <a href="../assets/bscode/motion/bscode-digital-twin.mp4">Watch the BsCode product film</a>
-        </video>
-        <figcaption id="film-description" class="sr-only">
-          A close product tour showing a BsCode workspace, four live coding agents, progress views,
-          generated outputs, Cinematic mode, and the Pixel tower.
-        </figcaption>
-      </figure>
-    </section>
+    <figure class="preview">
+      <video
+        id="bscode-film"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        poster="/bscode/bscode-digital-twin-poster.png"
+        aria-label="BsCode coordinating multiple agents, entering Cinematic Mode, and switching to City View"
+      >
+        <source src="/bscode/bscode-digital-twin-alpha.mov" type='video/mp4; codecs="hvc1"' />
+        <source src="/bscode/bscode-digital-twin.webm" type="video/webm" />
+        <source src="/bscode/bscode-digital-twin.mp4" type="video/mp4" />
+      </video>
+    </figure>
+
+    <footer>
+      Free and open source · <a href="https://github.com/axel-slid/bscode" target="_blank" rel="noreferrer">View the code on GitHub</a>
+    </footer>
   </main>
 
-  <footer class="site-footer">
-    <span>BsCode v0.2.5</span>
-    <a href="https://github.com/axel-slid/bscode" target="_blank" rel="noreferrer">Source on GitHub ↗</a>
-  </footer>
-
   <script>
-    (() => {
-      const film = document.getElementById("bscodeDigitalTwin");
-      const copyButton = document.getElementById("copyQuarantineCommand");
-      const quarantineCommand = document.getElementById("quarantineCommand");
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const button = document.querySelector(".copy");
+    const command = document.getElementById("install-command");
+    const film = document.getElementById("bscode-film");
 
-      const syncPlayback = () => {
-        if (reducedMotion.matches || document.hidden) {
-          film.pause();
-          return;
-        }
-        film.play().catch(() => {});
-      };
+    film.play().catch(function () {});
+    film.addEventListener("click", function () {
+      if (film.paused) {
+        film.play().catch(function () {});
+      } else {
+        film.pause();
+      }
+    });
 
-      const copyCommand = async () => {
-        const command = quarantineCommand.textContent.trim();
-        try {
-          await navigator.clipboard.writeText(command);
-        } catch {
-          const selection = window.getSelection();
-          const range = document.createRange();
-          range.selectNodeContents(quarantineCommand);
-          selection.removeAllRanges();
-          selection.addRange(range);
-          document.execCommand("copy");
-          selection.removeAllRanges();
-        }
-        copyButton.textContent = "Copied";
-        window.setTimeout(() => {
-          copyButton.textContent = "Copy";
-        }, 1400);
-      };
-
-      reducedMotion.addEventListener?.("change", syncPlayback);
-      document.addEventListener("visibilitychange", syncPlayback);
-      copyButton.addEventListener("click", copyCommand);
-      syncPlayback();
-    })();
+    button.addEventListener("click", async function () {
+      const original = button.textContent;
+      try {
+        await navigator.clipboard.writeText(command.textContent.trim());
+        button.textContent = "Copied";
+      } catch (error) {
+        const range = document.createRange();
+        range.selectNodeContents(command);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        button.textContent = "Selected";
+      }
+      window.setTimeout(function () { button.textContent = original; }, 1500);
+    });
   </script>
 </body>
 </html>

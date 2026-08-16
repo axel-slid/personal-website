@@ -1,11 +1,19 @@
 {
   "installCommand": null,
   "buildCommand": null,
+  "outputDirectory": ".",
   "cleanUrls": true,
   "rewrites": [
     { "source": "/set-player", "destination": "/set-player/index.html" },
     { "source": "/bscode", "destination": "/bscode/index.html" },
     { "source": "/openleaf", "destination": "/openleaf/index.html" },
-    { "source": "/openleaf/docs", "destination": "/openleaf/docs.html" }
+    { "source": "/openleaf/docs", "destination": "/openleaf/docs.html" },
+    { "source": "/lanterntrace", "destination": "/lanterntrace/index.html" },
+    { "source": "/lanterntrace/app", "destination": "/lanterntrace/app/index.html" }
+  ],
+  "redirects": [
+    { "source": "/lanterntrace", "destination": "/lanterntrace/", "permanent": true },
+    { "source": "/overleaf-plus", "destination": "/openleaf", "permanent": false },
+    { "source": "/overleaf-plus/:path*", "destination": "/openleaf/:path*", "permanent": false }
   ]
 }

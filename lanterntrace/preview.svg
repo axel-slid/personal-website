@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">LanternTrace Explorer model field</title>
+  <desc id="desc">A dark green scientific map with model-pressure cells, observations, and gradient vectors.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0b2a1d"/><stop offset="1" stop-color="#03110b"/></linearGradient>
+    <radialGradient id="field"><stop stop-color="#bdf06b" stop-opacity=".65"/><stop offset="1" stop-color="#55b987" stop-opacity="0"/></radialGradient>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse"><path d="M42 0H0V42" fill="none" stroke="#8ac59f" stroke-opacity=".14"/></pattern>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="m0 0 10 5-10 5z" fill="#c7f36d"/></marker>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/><rect width="1200" height="630" fill="url(#grid)"/>
+  <ellipse cx="755" cy="326" rx="350" ry="240" fill="url(#field)"/>
+  <g fill="#83d398" fill-opacity=".22" stroke="#9ee7b2" stroke-opacity=".28">
+    <path d="M360 490h60v-60h60v-54h60v-58h60v-38h60v-53h60v-40h60v47h60v-18h60v61h60v-23h60v64h60v-9h60v62h-60v48h-60v39h-60v-17h-60v46h-60v-24h-60v39h-60v-54h-60v26h-60v-62h-60v28h-60v-54h-60z"/>
+  </g>
+  <g fill="none" stroke="#c7f36d" stroke-width="3" marker-end="url(#arr)"><path d="M445 448l48-44"/><path d="M564 384l55-47"/><path d="M691 326l57-51"/><path d="M815 272l62-36"/><path d="M933 248l57-24"/></g>
+  <g fill="#ff8c76" fill-opacity=".16" stroke="#ff8c76" stroke-width="4"><circle cx="440" cy="462" r="11"/><circle cx="534" cy="403" r="11"/><circle cx="635" cy="356" r="11"/><circle cx="728" cy="307" r="11"/><circle cx="823" cy="268" r="11"/><circle cx="920" cy="245" r="11"/><circle cx="1002" cy="226" r="11"/></g>
+  <g font-family="ui-monospace, monospace"><text x="68" y="83" fill="#a7f3c2" font-size="18" letter-spacing="3">MODEL EVIDENCE LAB</text><text x="66" y="154" fill="#eef8ef" font-family="Arial, sans-serif" font-size="58" font-weight="700">LanternTrace</text><text x="69" y="194" fill="#93aa9b" font-size="17">FROZEN REPLAY · REGIONAL EXPLANATIONS · PHYSICS FIELDS</text></g>
+  <g transform="translate(70 518)" font-family="ui-monospace, monospace"><rect width="310" height="62" rx="7" fill="#092117" stroke="#3e6e53"/><text x="20" y="25" fill="#789780" font-size="12">SELECTED MODEL</text><text x="20" y="47" fill="#c7f36d" font-size="17" font-weight="700">OG-RDE · OURS</text></g>
+</svg>

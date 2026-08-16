@@ -1,244 +1,329 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Alex Dils - Experience</title>
-<meta name="description" content="Alex Dils is a UC Berkeley computer science student, founder, builder, and medical AI researcher." />
-<link rel="canonical" href="https://alex-dils.com/" />
-<meta property="og:title" content="Alex Dils | Experience" />
-<meta property="og:description" content="UC Berkeley CS. Founder, builder, and medical AI researcher." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://alex-dils.com/" />
-<meta property="og:image" content="https://alex-dils.com/headshot.png" />
-<meta name="twitter:card" content="summary_large_image" />
-<link rel="icon" href="headshot.png" />
-<link rel="apple-touch-icon" href="headshot.png" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="style.css" />
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Alex Dils",
-  "url": "https://alex-dils.com/",
-  "sameAs": ["https://www.linkedin.com/in/alex-dils/", "https://github.com/axel-slid", "https://scholar.google.com/citations?user=0Sz8VPoAAAAJ&hl=en&oi=ao"],
-  "affiliation": {"@type":"CollegeOrUniversity","name":"University of California, Berkeley"},
-  "knowsAbout": ["Computer Vision","Medical AI","Machine Learning","Segmentation","Data Augmentation","Biomedical Data Fusion"]
-}
-</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>Alex Dils — Homepage</title>
+  <meta name="description" content="Alex Dils is a UC Berkeley computer science undergraduate and Stanford Medicine researcher working on computer vision, medical AI, and applied machine learning." />
+  <link rel="canonical" href="https://alex-dils.com/" />
+  <meta property="og:title" content="Alex Dils — Homepage" />
+  <meta property="og:description" content="Computer vision, medical AI, scientific software, and applied machine learning." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://alex-dils.com/" />
+  <meta property="og:image" content="https://alex-dils.com/headshot.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="headshot.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    try {
+      const savedScheme = localStorage.getItem("alex-color-scheme");
+      if (savedScheme && savedScheme !== "original") document.documentElement.dataset.theme = savedScheme;
+    } catch (_) {}
+  </script>
 </head>
 <body>
-<div class="site">
-  <header class="topbar">
-    <a class="brand" href="#top">Alex Dils</a>
-    <nav aria-label="Primary">
-      <a href="brain-inspired-ai/">Brain-inspired AI</a>
-      <a href="#experience">Experience</a>
-      <a href="#work">Work</a>
-      <a href="bscode/">BsCode</a>
-      <a href="set-player/">Set Player</a>
-      <a href="resume.pdf" target="_blank" rel="noreferrer">Resume</a>
-      <a href="#contact">Contact</a>
-    </nav>
+  <a class="skip-link" href="#about-me">Skip to content</a>
+
+  <div class="color-lab" data-color-lab>
+    <button class="color-lab-toggle" type="button" data-color-toggle aria-expanded="false" aria-controls="color-lab-panel">
+      <i class="fa-solid fa-palette" aria-hidden="true"></i>
+      <span>Colors</span>
+    </button>
+    <div class="color-lab-panel" id="color-lab-panel" data-color-panel hidden>
+      <div class="color-lab-heading">
+        <strong>Color scheme</strong>
+        <span>Temporary preview</span>
+      </div>
+      <div class="color-lab-options" role="group" aria-label="Choose a website color scheme">
+        <button class="color-choice" type="button" data-color-choice="original" aria-pressed="true">
+          <span class="color-swatches original" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>Original</span>
+        </button>
+        <button class="color-choice" type="button" data-color-choice="berkeley" aria-pressed="false">
+          <span class="color-swatches berkeley" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>Berkeley</span>
+        </button>
+        <button class="color-choice" type="button" data-color-choice="cardinal" aria-pressed="false">
+          <span class="color-swatches cardinal" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>Cardinal</span>
+        </button>
+        <button class="color-choice" type="button" data-color-choice="sage" aria-pressed="false">
+          <span class="color-swatches sage" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>Sage</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <header class="masthead">
+    <div class="masthead-inner">
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a class="home-link" href="#about-me">Homepage</a>
+        <a href="#about-me">About Me</a>
+        <a href="#news">News</a>
+        <a href="#publications">Selected Publications</a>
+        <a href="#projects">Side Projects</a>
+        <a href="#education">Education</a>
+        <a href="#experience">Experience</a>
+        <a href="resume.pdf" target="_blank" rel="noreferrer">CV</a>
+      </nav>
+    </div>
   </header>
 
-  <main id="top">
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-copy">
-        <p class="eyebrow reveal">UC Berkeley CS / Stanford Medicine</p>
-        <h1 id="hero-title" class="reveal">Alex Dils</h1>
-        <p class="intro reveal">
-          Founder and computer vision researcher working across medical AI,
-          biomedical data fusion, and applied ML systems.
-        </p>
-        <div class="actions reveal" aria-label="Profile links">
-          <a href="#" data-email data-email-user="dils" data-email-domain="berkeley.edu">Email</a>
-          <a href="resume.pdf" target="_blank" rel="noreferrer">Resume</a>
-          <a href="https://github.com/axel-slid" target="_blank" rel="noreferrer">GitHub</a>
-          <a href="https://www.linkedin.com/in/alex-dils/" target="_blank" rel="noreferrer">LinkedIn</a>
-          <a href="https://scholar.google.com/citations?user=0Sz8VPoAAAAJ" target="_blank" rel="noreferrer">Scholar</a>
+  <div id="main">
+    <aside class="sidebar" aria-label="Profile">
+      <div class="profile-box">
+        <div class="author-avatar">
+          <img src="headshot.png" alt="Alex Dils" />
         </div>
-      </div>
-      <a class="hero-portrait reveal" href="assets/alex-portrait.png" target="_blank" rel="noreferrer" aria-label="Open portrait">
-        <img src="assets/alex-portrait.png" alt="Alex Dils portrait" />
-      </a>
-    </section>
 
-    <section class="section" id="experience">
-      <div class="section-heading">
-        <span>01</span>
+        <div class="author-content">
+          <div class="author-heading">
+            <h1 class="author-name">Alex Dils</h1>
+            <a class="author-cv" href="resume.pdf" target="_blank" rel="noreferrer" aria-label="Open Alex Dils's CV"><i class="fa-regular fa-file-lines" aria-hidden="true"></i> CV</a>
+          </div>
+          <div class="author-email">dils [at] berkeley [dot] edu</div>
+          <p class="author-bio">Computer Science undergrad working on computer vision, medical AI, and applied ML</p>
+        </div>
+
+        <ul class="author-links">
+          <li><i class="fa-solid fa-location-dot" aria-hidden="true"></i><span>Berkeley, CA</span></li>
+          <li><i class="fa-solid fa-building-columns" aria-hidden="true"></i><span>UC Berkeley / Stanford Medicine</span></li>
+          <li><i class="fa-solid fa-envelope" aria-hidden="true"></i><a href="#" data-email data-email-user="dils" data-email-domain="berkeley.edu">Email</a></li>
+          <li><i class="fa-brands fa-linkedin" aria-hidden="true"></i><a href="https://www.linkedin.com/in/alex-dils/" target="_blank" rel="noreferrer">LinkedIn</a></li>
+          <li><i class="fa-brands fa-github" aria-hidden="true"></i><a href="https://github.com/axel-slid" target="_blank" rel="noreferrer">GitHub</a></li>
+          <li><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i><a href="https://scholar.google.com/citations?user=0Sz8VPoAAAAJ" target="_blank" rel="noreferrer">Google Scholar</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="page">
+      <section class="about" id="about-me" aria-label="About me">
+        <p>
+          I am currently a Computer Science undergraduate at <a href="https://www.berkeley.edu/" target="_blank" rel="noreferrer">UC Berkeley</a>
+          and a researcher with <a href="https://med.stanford.edu/gevaertlab.html" target="_blank" rel="noreferrer">Stanford Medicine’s Gevaert Lab</a>.
+          My work focuses on computer vision, medical imaging, and machine-learning systems.
+        </p>
+        <p>
+          My current research interests lie in <strong>robust visual learning</strong>, <strong>synthetic data</strong>, and <strong>biomedical AI</strong>.
+          I also build scientific and creative software, including research workspaces, agent tools, forecasting interfaces, and tools for DJs.
+          I am currently building <a href="https://infrastructs.com" target="_blank" rel="noreferrer">Infrastruct</a>.
+        </p>
+      </section>
+
+      <section id="news" class="page-section">
+        <h2>News</h2>
+        <ul class="news-list">
+          <li><time datetime="2026-08">2026.08</time>: Completed my Canary CREST research internship and presented the final research poster. <span class="publication-links news-links"><a href="papers/canary-crest-poster.pdf" target="_blank" rel="noreferrer">Poster</a></span></li>
+          <li><time>2026.08</time>: Our cutaneous neurofibroma digital-twin work will appear at the inaugural MICCAI Workshop on Medical World Models.</li>
+        </ul>
+      </section>
+
+      <section id="publications" class="page-section">
+        <h2>Selected Publications</h2>
+
+        <div class="publication-list">
+          <article class="publication-card">
+            <a class="publication-thumb contain" href="https://mwm2026.github.io/" target="_blank" rel="noreferrer" aria-label="Open the MICCAI Medical World Models workshop website">
+              <img src="assets/cnf-mechanistic-modeling.png" alt="Mechanistic modeling and AI rendering workflow for longitudinal cutaneous neurofibroma imaging" />
+            </a>
+            <div class="publication-body">
+              <h3><a href="https://mwm2026.github.io/" target="_blank" rel="noreferrer">Synthesizing Longitudinal Cutaneous Neurofibroma Imaging for Digital-Twin Burden Quantification</a></h3>
+              <div class="publication-keywords"><span>Medical World Models</span><span>Longitudinal Imaging</span><span>Digital Twins</span></div>
+              <div class="publication-links">
+                <a href="https://mwm2026.github.io/" target="_blank" rel="noreferrer">Workshop</a>
+              </div>
+              <p class="publication-venue">The 1st MICCAI Workshop on Medical World Models, 2026</p>
+              <p class="publication-authors">Christoph Sadée<sup>*</sup>, <strong>Alex Dils<sup>*</sup></strong>, K. Sangani, L. Rubino, A. J. Ferenchick, V. Wadhwa, et al.<span class="publication-note"><sup>*</sup> Co-first authors.</span></p>
+            </div>
+          </article>
+
+          <article class="publication-card">
+            <a class="publication-thumb contain" href="papers/eye-for-an-eye.html" aria-label="Open the Eye For An Eye project page">
+              <img src="assets/image-2.png" alt="Three monocular-to-stereo image transformation pipelines" />
+            </a>
+            <div class="publication-body">
+              <h3><a href="papers/eye-for-an-eye.html">Eye For An Eye: A Deep-Learning and Analytical Method to Spatializing Stereoscopic Images</a></h3>
+              <div class="publication-keywords"><span>Depth Estimation</span><span>Stereoscopic Vision</span><span>Pix2Pix</span></div>
+              <div class="publication-links">
+                <a href="papers/eye-for-an-eye.html">Website</a>
+                <a href="https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/" target="_blank" rel="noreferrer">Paper</a>
+                <a href="https://nhsjs.com/wp-content/uploads/2025/04/Eye-For-An-Eye-A-Deep-Learning-and-Analytical-Methods-to-Spatializing-Stereoscopic-Images.pdf" target="_blank" rel="noreferrer">PDF</a>
+              </div>
+              <p class="publication-venue">National High School Journal of Science, 2025</p>
+              <p class="publication-authors">Jake Yoshinaka<sup>*</sup>, <strong>Alex Dils<sup>*</sup></strong>, and Leo McDonnell<sup>*</sup>.<span class="publication-note"><sup>*</sup> Equal contribution.</span></p>
+            </div>
+          </article>
+
+          <article class="publication-card">
+            <a class="publication-thumb contain" href="papers/microplastic.html" aria-label="Open the microplastic segmentation project page">
+              <img src="assets/microplastic-workflow-pipeline.webp" alt="Four-step microplastic synthetic-data and segmentation evaluation pipeline" />
+            </a>
+            <div class="publication-body">
+              <h3><a href="papers/microplastic.html">Microplastic Identification Using AI-Driven Image Segmentation with Synthetic Ecological Context</a></h3>
+              <div class="publication-keywords"><span>Image Segmentation</span><span>Synthetic Data</span><span>Ecological AI</span></div>
+              <div class="publication-links">
+                <a href="papers/microplastic.html">Website</a>
+                <a href="https://arxiv.org/abs/2410.19604" target="_blank" rel="noreferrer">arXiv</a>
+                <a href="https://github.com/axel-slid/synthetic-microplastic-detection" target="_blank" rel="noreferrer">Code</a>
+                <a href="https://dataverse.harvard.edu/dataverse/Microplastic-Segmentation-GAN/" target="_blank" rel="noreferrer">Dataset</a>
+              </div>
+              <p class="publication-venue">arXiv preprint 2024</p>
+              <p class="publication-authors"><strong>Alex Dils</strong>, David Raymond, Jack Spottiswood, Samay Kodige, Dylan Karmin, Rikhil Kokal, Win Cowger, and Christoph Sadée.</p>
+            </div>
+          </article>
+
+          <article class="publication-card">
+            <a class="publication-thumb contain" href="https://scientificcomputing.github.io/fenics2024/integrating-mechanistic" target="_blank" rel="noreferrer" aria-label="Open the FEniCS conference abstract">
+              <img src="assets/Figure2.png" alt="Simulated lung deformation and segmentation agreement across a breathing cycle" />
+            </a>
+            <div class="publication-body">
+              <h3><a href="https://scientificcomputing.github.io/fenics2024/integrating-mechanistic" target="_blank" rel="noreferrer">Integrating Mechanistic Knowledge into Deep Learning for Improved Cancer Detection</a></h3>
+              <div class="publication-keywords"><span>Physics-Informed AI</span><span>Lung CT</span><span>Cancer Segmentation</span></div>
+              <div class="publication-links">
+                <a href="https://scientificcomputing.github.io/fenics2024/integrating-mechanistic" target="_blank" rel="noreferrer">Conference abstract</a>
+              </div>
+              <p class="publication-venue">FEniCS Conference, 2024</p>
+              <p class="publication-authors">Christoph Sadée, Katherine Hartmann, <strong>Alex Dils</strong>, Ianto Xi, Francisco Carrillo-Perez, Ahmet Er Gorkem, Stefano Testa, Serena Zhang, and Olivier Gevaert.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="projects" class="page-section">
+        <h2>Side Projects</h2>
+        <div class="project-list">
+          <article class="project-item">
+            <a class="project-logo project-icon lanterntrace-icon" href="lanterntrace/"><img src="assets/project-icons/lanterntrace.webp" alt="LanternTrace spotted lanternfly icon" /></a>
+            <div class="project-body">
+              <h3><a href="lanterntrace/">LanternTrace Explorer</a></h3>
+              <div class="project-tags"><span>Scientific Software</span><span>Forecasting</span></div>
+              <div class="project-links"><a href="lanterntrace/">Website</a><a href="https://github.com/axel-slid/lanterntrace-explorer" target="_blank" rel="noreferrer">Code</a></div>
+              <p>A physics-based approach to track and predict the invasion of the spotted lanternfly across the U.S. East Coast.</p>
+            </div>
+          </article>
+
+          <article class="project-item">
+            <a class="project-logo project-icon" href="openleaf/"><img src="assets/project-icons/openleaf.webp" alt="Openleaf app icon" /></a>
+            <div class="project-body">
+              <h3><a href="openleaf/">Openleaf</a></h3>
+              <div class="project-tags"><span>Research Workspace</span><span>macOS</span></div>
+              <div class="project-links"><a href="openleaf/">Website</a><a href="openleaf/docs.html">Docs</a></div>
+              <p>A local research workspace combining LaTeX, live PDF, PowerPoint, Python, GitHub, SSH, and coding agents.</p>
+            </div>
+          </article>
+
+          <article class="project-item">
+            <a class="project-logo project-icon" href="bscode/"><img src="assets/project-icons/bscode.webp" alt="BsCode app icon" /></a>
+            <div class="project-body">
+              <h3><a href="bscode/">BsCode</a></h3>
+              <div class="project-tags"><span>Agent Tooling</span><span>Desktop</span></div>
+              <div class="project-links"><a href="bscode/">Website</a><a href="https://github.com/axel-slid/bscode" target="_blank" rel="noreferrer">Code</a></div>
+              <p>A living desktop for coordinating Codex, Claude, and shell agents across local and remote workspaces.</p>
+            </div>
+          </article>
+
+          <article class="project-item">
+            <a class="project-logo project-icon" href="set-player/"><img src="assets/project-icons/set-player.webp" alt="Set Player app icon" /></a>
+            <div class="project-body">
+              <h3><a href="set-player/">Set Player</a></h3>
+              <div class="project-tags"><span>Music Software</span><span>macOS + iPhone</span></div>
+              <div class="project-links"><a href="set-player/">Website</a><a href="https://github.com/axel-slid/set-player" target="_blank" rel="noreferrer">Code</a></div>
+              <p>A memory layer for DJ sets that connects recordings to Rekordbox history, timed tracks, live lyrics, photos, and places.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="education" class="page-section">
+        <h2>Education</h2>
+        <div class="timeline-list">
+          <article class="timeline-item">
+            <img class="timeline-logo" src="https://www.berkeley.edu/favicon.svg?v=2" alt="UC Berkeley logo" />
+            <div class="timeline-content">
+              <div class="timeline-row"><a class="timeline-title" href="https://www.berkeley.edu/" target="_blank" rel="noreferrer">University of California, Berkeley</a><time>2025.08 – 2029.05 (Expected)</time></div>
+              <div class="timeline-subtitle">B.A. in Computer Science</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="experience" class="page-section">
         <h2>Experience</h2>
-      </div>
+        <div class="timeline-list">
+          <article class="timeline-item">
+            <img class="timeline-logo brand-icon" src="assets/logos/infrastruct.png" alt="Infrastruct logo" />
+            <div class="timeline-content">
+              <div class="timeline-row"><a class="timeline-title" href="https://infrastructs.com" target="_blank" rel="noreferrer">Infrastruct</a><time>2026 – Present</time></div>
+              <div class="timeline-subtitle">CEO &amp; Founder</div>
+              <div class="timeline-note">Building AI-agent workflows for customer-support teams.</div>
+            </div>
+          </article>
 
-      <div class="timeline">
-        <article class="timeline-item reveal">
-          <time>2026 - Present</time>
-          <div>
-            <h3>CEO &amp; Founder, Infrastruct</h3>
-            <p>Building infrastructure for teams that need cleaner internal data workflows.</p>
-            <a href="https://infrastructs.com" target="_blank" rel="noreferrer">infrastructs.com</a>
-          </div>
-        </article>
+          <article class="timeline-item">
+            <img class="timeline-logo brand-icon" src="assets/logos/stanford-medicine.jpg" alt="Stanford Medicine logo" />
+            <div class="timeline-content">
+              <div class="timeline-row"><a class="timeline-title" href="https://med.stanford.edu/" target="_blank" rel="noreferrer">Stanford Medicine</a><time>2022 – Present</time></div>
+              <div class="timeline-subtitle">Research · Computational Medicine &amp; Dermatology</div>
 
-        <article class="timeline-item has-media reveal">
-          <time>Summer 2026</time>
-          <div>
-            <h3>Canary CREST Research Intern, Gevaert Lab, Stanford Medicine</h3>
-            <p>Working in Stanford's Canary Cancer Research Education Summer Training program with the Gevaert Lab on biomedical data fusion and machine learning for cancer early detection.</p>
-            <a href="https://med.stanford.edu/canarycenter/canarycrest.html" target="_blank" rel="noreferrer">Canary CREST</a>
-            <a href="https://med.stanford.edu/gevaertlab.html" target="_blank" rel="noreferrer">Gevaert Lab</a>
-          </div>
-          <a class="experience-card" href="assets/mammogram-figure.gif" target="_blank" rel="noreferrer" aria-label="Open mammogram model visualization">
-            <img src="assets/mammogram-figure.gif" alt="Mammogram model visualization" />
-            <span>Canary imaging</span>
-          </a>
-        </article>
+              <div class="timeline-subitem">
+                <img class="timeline-logo brand-icon" src="assets/logos/stanford-medicine.jpg" alt="Stanford Medicine logo" />
+                <div class="timeline-content">
+                  <div class="timeline-row"><a class="timeline-title" href="https://med.stanford.edu/gevaertlab.html" target="_blank" rel="noreferrer">Gevaert Lab</a><time>2022 – Present</time></div>
+                  <div class="timeline-subtitle">Research Intern</div>
+                  <div class="timeline-note">Medical imaging, segmentation robustness, and physiology-informed augmentation.</div>
+                </div>
+              </div>
 
-        <article class="timeline-item has-media reveal">
-          <time>2022 - Present</time>
-          <div>
-            <h3>Research Intern, Stanford CBIR / Gevaert Lab</h3>
-            <p>Medical AI research on skin-lesion confounders, segmentation, robustness, and physiology-informed augmentation.</p>
-            <a href="https://med.stanford.edu/gevaertlab.html" target="_blank" rel="noreferrer">Stanford CBIR</a>
-          </div>
-          <a class="experience-card" href="assets/ct-overlay.png" target="_blank" rel="noreferrer" aria-label="Open CT overlay visualization">
-            <img src="assets/ct-overlay.png" alt="CT overlay visualization" />
-            <span>Segmentation QA</span>
-          </a>
-        </article>
+              <div class="timeline-subitem">
+                <img class="timeline-logo brand-icon" src="assets/logos/stanford-medicine.jpg" alt="Stanford Medicine logo" />
+                <div class="timeline-content">
+                  <div class="timeline-row"><a class="timeline-title" href="https://med.stanford.edu/canarycenter/canarycrest.html" target="_blank" rel="noreferrer">Canary CREST</a><time>Summer 2026</time></div>
+                  <div class="timeline-subtitle">Research Intern</div>
+                  <div class="timeline-note">Developed and presented a physics-guided cNF medical digital-twin project.</div>
+                </div>
+              </div>
 
-        <article class="timeline-item has-media reveal">
-          <time>Nov 2025 - Jun 2026</time>
-          <div>
-            <h3>CTO &amp; Co-Founder, Appraise AI</h3>
-            <p>Built resale pricing workflows from product images, listing text, and comparable-sale signals. Raised $15K pre-seed.</p>
-            <a href="https://appraiseai.co" target="_blank" rel="noreferrer">appraiseai.co</a>
-          </div>
-          <a class="experience-card tall-card" href="assets/appraise-ui.png" target="_blank" rel="noreferrer" aria-label="Open Appraise AI product interface">
-            <img src="assets/appraise-ui.png" alt="Appraise AI product interface" />
-            <span>Pricing workflow</span>
-          </a>
-        </article>
+              <div class="timeline-subitem">
+                <img class="timeline-logo brand-icon" src="assets/logos/stanford-medicine.jpg" alt="Stanford Medicine logo" />
+                <div class="timeline-content">
+                  <div class="timeline-row"><a class="timeline-title" href="https://med.stanford.edu/dermatology/research/labs.html" target="_blank" rel="noreferrer">Sarin Lab</a><time>2026 – Present</time></div>
+                  <div class="timeline-subtitle">Research Collaborator</div>
+                  <div class="timeline-note">Cutaneous neurofibroma imaging and longitudinal burden estimation.</div>
+                </div>
+              </div>
+            </div>
+          </article>
 
-        <article class="timeline-item has-media reveal">
-          <time>2026</time>
-          <div>
-            <h3>Builder, Calshi</h3>
-            <p>Campus prediction market for Berkeley events. Reached 100 users at launch.</p>
-            <a href="https://calshi.app" target="_blank" rel="noreferrer">calshi.app</a>
-          </div>
-          <a class="experience-card" href="assets/calshi-berkeley.png" target="_blank" rel="noreferrer" aria-label="Open Calshi interface">
-            <img src="assets/calshi-berkeley.png" alt="Calshi Berkeley tournament interface" />
-            <span>Campus market</span>
-          </a>
-        </article>
+          <article class="timeline-item">
+            <img class="timeline-logo brand-icon mlab-icon" src="assets/logos/ml-at-berkeley.png" alt="Machine Learning at Berkeley logo" />
+            <div class="timeline-content">
+              <div class="timeline-row"><a class="timeline-title" href="https://ml.studentorg.berkeley.edu/" target="_blank" rel="noreferrer">Machine Learning at Berkeley</a><time>2026 – Present</time></div>
+              <div class="timeline-subtitle">Internal &amp; Research Committee</div>
+              <div class="timeline-note">Machine learning engineer building applied ML systems for industry partners.</div>
+              <div class="timeline-subitem">
+                <img class="timeline-logo brand-icon" src="assets/logos/logitech.webp" alt="Logitech logo" />
+                <div class="timeline-content">
+                  <div class="timeline-row"><a class="timeline-title" href="https://www.logitech.com/" target="_blank" rel="noreferrer">Logitech</a><time>2026.03 – 2026.06</time></div>
+                  <div class="timeline-subtitle">Industry Project · Machine Learning Engineer</div>
+                  <div class="timeline-note">Video-conferencing intelligence and meeting-room readiness modeling.</div>
+                </div>
+              </div>
+            </div>
+          </article>
 
-        <article class="timeline-item reveal">
-          <time>2025 - 2029</time>
-          <div>
-            <h3>B.A. Computer Science, UC Berkeley</h3>
-            <p>Undergraduate computer science student. Expected graduation: May 2029.</p>
-          </div>
-        </article>
-      </div>
-    </section>
+        </div>
+      </section>
 
-    <section class="section" id="work">
-      <div class="section-heading">
-        <span>02</span>
-        <h2>Selected Work</h2>
-      </div>
+      <footer>
+        <span>© <span id="year">2026</span> Alex Dils.</span>
+        <a href="#about-me">Back to top ↑</a>
+      </footer>
+    </main>
+  </div>
 
-      <div class="work-list">
-        <article class="work-item reveal">
-          <a class="work-media" href="bscode/">
-            <img src="assets/bscode/agent-grid.jpg" alt="BsCode multi-agent desktop workspace" />
-          </a>
-          <div>
-            <p class="label">Developer tool</p>
-            <h3>BsCode</h3>
-            <p>A desktop command center for running Codex, Claude, and shell agents across local and SSH workspaces.</p>
-            <a href="bscode/">Product page</a>
-            <a href="https://github.com/axel-slid/agent-workbench" target="_blank" rel="noreferrer">Code</a>
-          </div>
-        </article>
-
-        <article class="work-item reveal">
-          <a class="work-media" href="assets/Figure2.png" target="_blank" rel="noreferrer">
-            <img src="assets/Figure2.png" alt="Medical AI figure summary" />
-          </a>
-          <div>
-            <p class="label">Medical AI</p>
-            <h3>Physiologically-Informed Data Augmentation</h3>
-            <p>Augmentation pipelines for medical segmentation using breathing motion and anatomical deformation.</p>
-            <span>NeurIPS submission in progress</span>
-          </div>
-        </article>
-
-        <article class="work-item reveal">
-          <a class="work-media" href="assets/image (3).png" target="_blank" rel="noreferrer">
-            <img src="assets/image (3).png" alt="Microplastic segmentation results" />
-          </a>
-          <div>
-            <p class="label">arXiv 2024</p>
-            <h3>Microplastic Segmentation</h3>
-            <p>Segmentation model trained with generated field-like backgrounds for ecological imagery.</p>
-            <a href="https://arxiv.org/abs/2410.19604" target="_blank" rel="noreferrer">Paper</a>
-            <a href="https://github.com/axel-slid/Microplastic-Segmentation-GAN" target="_blank" rel="noreferrer">Code</a>
-          </div>
-        </article>
-
-        <article class="work-item reveal">
-          <a class="work-media" href="assets/poster-photo.png" target="_blank" rel="noreferrer">
-            <img src="assets/poster-photo.png" alt="Eye For An Eye project poster" />
-          </a>
-          <div>
-            <p class="label">NHSJS 2025</p>
-            <h3>Eye For An Eye</h3>
-            <p>Hybrid analytical and deep-learning method for stereoscopic image generation from one view.</p>
-            <a href="https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/#google_vignette" target="_blank" rel="noreferrer">Paper</a>
-          </div>
-        </article>
-
-        <article class="work-item reveal">
-          <a class="work-media" href="assets/ScreenRecording2026-02-16at9.17.09PM-ezgif.com-video-to-gif-converter.gif" target="_blank" rel="noreferrer">
-            <img src="assets/ScreenRecording2026-02-16at9.17.09PM-ezgif.com-video-to-gif-converter.gif" alt="Speed Reader demo" />
-          </a>
-          <div>
-            <p class="label">Project</p>
-            <h3>Speed Reader</h3>
-            <p>Lightweight RSVP reader for pacing, chunking, and focus controls.</p>
-            <a href="https://github.com/axel-slid/speed_reader" target="_blank" rel="noreferrer">Code</a>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section" id="contact">
-      <div class="section-heading">
-        <span>03</span>
-        <h2>Contact</h2>
-      </div>
-
-      <div class="contact-list reveal">
-        <a href="#" data-email data-email-user="dils" data-email-domain="berkeley.edu">dils [at] berkeley [dot] edu</a>
-        <a href="resume.pdf" target="_blank" rel="noreferrer">Resume PDF</a>
-        <a href="https://github.com/axel-slid" target="_blank" rel="noreferrer">github.com/axel-slid</a>
-        <a href="https://www.linkedin.com/in/alex-dils/" target="_blank" rel="noreferrer">linkedin.com/in/alex-dils</a>
-        <a href="https://x.com/DilsA36287vv" target="_blank" rel="noreferrer">@DilsA36287vv</a>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <span>Updated 2026-06-14</span>
-    <a href="#top">Back to top</a>
-  </footer>
-</div>
-
-<script src="site.js"></script>
+  <script src="site.js"></script>
 </body>
 </html>

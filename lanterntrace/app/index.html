@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https: data: blob:; worker-src blob:; connect-src 'self' https: data: blob:;" />
+    <title>LanternTrace Explorer — Interactive Web Lab</title>
+    <link rel="stylesheet" href="./vendor/maplibre-gl.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="reference-topbar">
+        <nav class="topbar-sections no-drag" aria-label="Explore sections">
+          <button class="topbar-section active" data-section="front">Species<br />Explorer</button>
+          <button class="topbar-section" data-section="evidence">Threats<br />&amp; Risks</button>
+          <button class="topbar-section" data-section="actions">Priorities<br />&amp; Protections</button>
+          <button class="topbar-section" data-section="methods">Diffusion<br />Models</button>
+        </nav>
+      </header>
+      <div class="app-body">
+      <aside class="sidebar">
+        <div class="brand-row" aria-hidden="true"></div>
+
+        <section class="species-hero">
+          <div class="toggle-line"><button class="switch on" data-layer="front" aria-label="Toggle front layer"><span></span></button><button class="collapse" aria-label="Collapse panel">−</button></div>
+          <div class="insect-art" aria-label="Spotted lanternfly entomology illustration"><img src="./assets/lanternfly-cutout.png" alt="Realistic entomology illustration of a spotted lanternfly" /></div>
+          <div class="species-title"><h1>SPOTTED<br />LANTERNFLY</h1></div>
+        </section>
+
+        <section class="sidebar-content" id="front-panel">
+          <div class="panel-heading"><div><span class="eyebrow">SPECIES &amp; SIGNALS</span><h2>Spotted lanternfly</h2></div><span class="info-dot">i</span></div>
+          <div class="layer-row"><button class="switch on" data-layer="heatmap" aria-label="Toggle observation heatmap" aria-pressed="true"><span></span></button><div><b>OBSERVATION HEATMAP</b><small>report density &amp; signal intensity</small></div><span class="layer-color heat"></span></div>
+          <div class="layer-row"><button class="switch on" data-layer="reports" aria-label="Toggle public occurrence points" aria-pressed="true"><span></span></button><div><b>PUBLIC OCCURRENCES</b><small>zoom in to inspect individual reports</small></div><span class="layer-color cyan"></span></div>
+          <div class="layer-row"><button class="switch on" data-layer="front" aria-label="Toggle report-derived core envelope" aria-pressed="true"><span></span></button><div><b>REPORT-DERIVED CORE</b><small>repeat-report clusters · not verified occupancy</small></div><span class="layer-color coral"></span></div>
+          <div class="layer-row"><button class="switch on" data-layer="interpolation" aria-label="Toggle reporting-gap interpolation" aria-pressed="true"><span></span></button><div><b>REPORTING-GAP INTERPOLATION</b><small>modeled continuity · not observed presence</small></div><span class="layer-color interpolation"></span></div>
+          <div class="layer-row"><button class="switch" data-layer="corridors" aria-label="Toggle schematic freight corridors" aria-pressed="false"><span></span></button><div><b>SCHEMATIC CORRIDORS</b><small>illustrative human-mediated pathways</small></div><span class="layer-color orange"></span></div>
+          <div class="layer-row"><button class="switch" data-layer="sites" aria-label="Toggle illustrative proposed survey sites" aria-pressed="false"><span></span></button><div><b>PROPOSED SITES · DEMO</b><small>illustrative points · not an agency network</small></div><span class="layer-color lime"></span></div>
+        </section>
+
+        <section class="sidebar-content hidden" id="evidence-panel">
+          <div class="panel-heading"><div><span class="eyebrow">DATA STREAMS</span><h2>Evidence &amp; signals</h2></div><span class="info-dot">i</span></div>
+          <div class="evidence-card"><b>Public observations</b><span id="public-observation-count">Loading…</span><small id="public-observation-source">GBIF occurrence index</small></div>
+          <div class="evidence-card"><b>Frozen replay</b><span>2024–25</span><small>coefficients fit through 2023, then reused unchanged</small></div>
+          <div class="evidence-card"><b>Evaluation target</b><span>FIRST REPORT</span><small>prior-year unreported 0.2° U.S. land cells</small></div>
+          <div class="evidence-card warn"><b>External field validation</b><span>NOT YET</span><small>post-hoc temporal replay, not preregistered occupancy validation</small></div>
+          <p class="small-note">Occurrence points are real public records. Observation density reflects reporting effort as well as biological presence and should not be read as abundance.</p>
+        </section>
+
+        <section class="sidebar-content hidden" id="actions-panel">
+          <div class="panel-heading"><div><span class="eyebrow">HYPOTHESIS-DRIVEN SEARCH</span><h2>Prototype prompts</h2></div><span class="info-dot">i</span></div>
+          <div class="action-card"><span class="action-number">01</span><div><b>Review missed frontier cells</b><small>compare 2024 and 2025 frozen evaluation maps</small></div><span class="arrow">↗</span></div>
+          <div class="action-card"><span class="action-number">02</span><div><b>Stress-test corridor hypotheses</b><small>compare Transport RD with simpler alternatives</small></div><span class="arrow">↗</span></div>
+          <div class="action-card"><span class="action-number">03</span><div><b>Plan independent sampling</b><small>record effort and non-detections for prospective validation</small></div><span class="arrow">↗</span></div>
+          <p class="small-note">Illustrative research prompts only. They are not quarantine, treatment, inspection, or agency recommendations.</p>
+        </section>
+
+        <section class="sidebar-content hidden" id="methods-panel">
+          <div class="panel-heading"><div><span class="eyebrow">EVALUATION + PHYSICS</span><h2>Model evidence lab</h2></div><span class="info-dot">i</span></div>
+          <div class="lab-mode-tabs" role="tablist" aria-label="Model lab mode">
+            <button id="benchmark-mode" class="active" type="button" role="tab" aria-selected="true" aria-controls="benchmark-lab-panel">Frozen evaluation</button>
+            <button id="scenario-mode" type="button" role="tab" aria-selected="false" aria-controls="scenario-lab-panel">Scenario playback</button>
+          </div>
+          <div id="benchmark-lab-panel" role="tabpanel" aria-labelledby="benchmark-mode">
+            <div class="benchmark-summary"><span>PRE-2024 COEFFICIENT FREEZE</span><b>FIRST-REPORT REPLAY</b><small>2024–2025 · annual state updates · no target-year refitting</small></div>
+            <div class="benchmark-year" role="group" aria-label="Frozen evaluation year"><button type="button" data-benchmark-year="2024">2024</button><button class="active" type="button" data-benchmark-year="2025">2025</button></div>
+            <button id="physics-view-inline" class="compare-models-inline physics-view-inline" type="button" aria-pressed="false"><span class="compare-icon">∿</span><span><b>Physics field view</b><small>Animated pressure surface + local gradient vectors</small></span><em>OFF</em></button>
+            <button id="explain-benchmark-inline" class="compare-models-inline explain-result-inline active" type="button" aria-pressed="true"><span class="compare-icon">Δ</span><span><b>Explain past literature → ours</b><small>Cook-2021 → OG-RDE (OURS) · regional changes + physics trace</small></span><em>ON</em></button>
+            <button id="compare-benchmark-inline" class="compare-models-inline" type="button" aria-pressed="false"><span class="compare-icon">≋</span><span><b>Compare top-5% allocations</b><small>OG-RDE, covariate, Transport RD, and Cook-2021</small></span><em>OFF</em></button>
+            <div id="benchmark-explanation" class="benchmark-explanation" aria-live="polite"></div>
+            <div id="benchmark-ranking" class="model-ranking benchmark-ranking" aria-label="Frozen first-report model comparisons"></div>
+            <div id="benchmark-detail" class="model-detail"></div>
+            <div class="map-key" aria-label="Frozen evaluation map legend"><span><i class="risk"></i>relative rank</span><span><i class="allocation"></i>top 5%</span><span><i class="truth"></i>first reports</span></div>
+            <a class="paper-link" href="./output/pdf/lanterntrace-frontier-forecasting.pdf" target="_blank" rel="noopener">Read the 11-page methods paper ↗</a>
+            <p class="small-note">AP and R@5% evaluate first reports among previously unreported cells. Scores are relative rankings, not occupancy probabilities. This replay is post-hoc and not independent field validation.</p>
+          </div>
+          <div id="scenario-lab-panel" class="hidden" role="tabpanel" aria-labelledby="scenario-mode">
+            <div class="equation-card"><div><span>REACTION–DIFFUSION SYSTEM</span><b>MONTHLY SOLVER · 0.2° GRID</b></div><code>∂u/∂t = ∇·(D∇u) − v·∇u + ru(1−u) + J + εθ</code><small><i>D</i> local spread <i>r</i> growth <i>J</i> transport jumps <i>εθ</i> learned correction</small></div>
+            <div class="model-summary"><span>20 DISPLAY VARIANTS</span><b>ASSIMILATING SCENARIOS</b><small>Monthly reports anchor every historical step · not forecast validation</small></div>
+            <button id="compare-models-inline" class="compare-models-inline" type="button" aria-pressed="false"><span class="compare-icon">≋</span><span><b>Compare display variants</b><small>Visual hypothesis comparison, not a winner ranking</small></span><em>OFF</em></button>
+            <div id="model-ranking" class="model-ranking" aria-label="Assimilating diffusion display variants"></div>
+            <div id="model-detail" class="model-detail"></div>
+            <div id="learned-model-note" class="learned-model-note"></div>
+            <div class="method-row"><span>Playback</span><b>420 backcast + 300 scenario frames</b></div>
+            <div class="method-row"><span>Field validation</span><b class="orange-text">Not demonstrated</b></div>
+            <p class="small-note">Legacy composite scores retain cumulative known-cell credit and threshold search. They are shown only to explore monthly model behavior and must not be interpreted as frozen validation or calibrated confidence.</p>
+          </div>
+        </section>
+
+      </aside>
+
+      <section class="map-stage globe-mode">
+        <div id="map" aria-label="LanternTrace invasion front map"></div>
+        <div class="starfield" aria-hidden="true"></div>
+        <div class="map-scrim"></div>
+        <header class="map-header">
+          <button id="sidebar-restore" class="sidebar-restore" type="button" aria-label="Show species panel" aria-expanded="false">›</button>
+          <div class="location-label"><span class="eyebrow">CURRENT VIEW</span><strong>NORTHEASTERN UNITED STATES</strong></div>
+          <div class="search-wrap no-drag"><span aria-hidden="true">⌕</span><label class="sr-only" for="place-search">Search built-in places</label><input id="place-search" type="search" placeholder="Search places" autocomplete="off" /><div id="search-results" class="search-results" aria-live="polite"></div></div>
+          <div class="map-brand"><span>✦</span><b>LANTERNTRACE<br />PROTECTING<br />THE FRONT</b></div>
+          <button id="export-snapshot" class="map-export no-drag" type="button" aria-label="Export the current view as JSON">EXPORT</button>
+          <button id="settings-toggle" class="map-settings-toggle" type="button" aria-label="Open model display settings" aria-expanded="false">⚙</button>
+        </header>
+
+        <section id="settings-panel" class="settings-panel hidden" role="dialog" aria-modal="false" aria-label="Model display settings" tabindex="-1">
+          <div class="settings-heading"><div><span class="eyebrow">MAP DISPLAY</span><h3>Model settings</h3></div><button id="settings-close" type="button" aria-label="Close settings">×</button></div>
+          <label class="setting-row"><span><b>Forecast scenarios</b><small>Extend the evidence timeline through 2030</small></span><input id="setting-projections" type="checkbox" /><i></i></label>
+          <label class="setting-row"><span><b>Compare scenario contours</b><small>Only for assimilating display playback</small></span><input id="setting-comparison" type="checkbox" /><i></i></label>
+          <label class="setting-row forecast-only"><span><b>Lower-threshold sensitivity envelope</b><small>Scenario contour at 0.4 × the display threshold; not confidence</small></span><input id="setting-uncertainty" type="checkbox" data-layer="uncertainty" /><i></i></label>
+          <p>Forecast scenarios are disabled on launch. They are hypothesis visualizations, not calibrated occupancy or an operational boundary.</p>
+        </section>
+
+        <section id="model-comparison-legend" class="model-comparison-legend hidden" aria-label="Compared diffusion models"></section>
+        <section id="physics-hud" class="physics-hud hidden" aria-label="Physics field controls">
+          <div class="physics-hud-head"><div><span>MODEL-DERIVED PHYSICS FIELD</span><b id="physics-hud-model">OG-RDE · OURS</b></div><button id="physics-play" type="button" aria-label="Pause physics growth sweep">Ⅱ</button></div>
+          <div id="physics-model-options" class="physics-model-options" role="group" aria-label="Physics model surface"></div>
+          <div class="physics-display-options" role="group" aria-label="Physics surface display"><button type="button" class="active" data-physics-display="height" aria-pressed="true">3D SURFACE</button><button type="button" data-physics-display="field" aria-pressed="false">2D FIELD</button></div>
+          <div class="physics-key"><span><i class="physics-low"></i>lower pressure</span><span><i class="physics-high"></i>higher pressure</span><span><i class="physics-front"></i>growth front</span><span><i class="physics-vector">↗</i>local gradient</span></div>
+          <small id="physics-hud-state">Animated threshold sweep over the frozen relative-pressure surface.</small>
+          <p>Diagnostic visualization of model score fields—not abundance, calibrated velocity, or a literal time forecast.</p>
+        </section>
+        <section id="benchmark-status" class="benchmark-status hidden" aria-live="polite"></section>
+        <section id="map-state" class="map-state" aria-live="polite"><b>Loading map</b><span>Preparing scientific layers…</span></section>
+        <div id="export-status" class="export-status hidden" role="status" aria-live="polite"></div>
+
+        <section class="front-insight">
+          <div class="insight-kicker"><span class="pulse"></span> FRONT ESTIMATE <span id="snapshot-label">2025 · LATEST EVIDENCE WINDOW</span></div>
+          <h2 id="leading-edge">New England watch zone</h2>
+          <div class="insight-grid"><div><b id="metric-cells">—</b><small>reported 0.45° cells</small></div><div><b id="metric-confidence">NOT CALIBRATED</b><small>relative scenario only</small></div><div><b id="metric-reports">—</b><small>public records to date</small></div></div>
+          <div class="status-bar"><span>FRONT STATUS</span><b>MODELLED · NEEDS FIELD CONFIRMATION</b></div>
+        </section>
+
+        <section class="timeline-dock">
+          <div class="timeline-top"><div><span class="eyebrow"><span id="timeline-mode-label">OBSERVED EVIDENCE</span> · <span id="timeline-step-count">84</span> MONTHLY STEPS</span><h3>Front progression</h3><span class="timeline-caption">Models assimilate dated reports at every historical step; forecasts are Settings-only</span></div><div class="timeline-date" aria-live="polite"><b id="timeline-year">2025 Dec</b><span id="timeline-phase">evidence step</span></div><div class="timeline-buttons"><button id="timeline-back" aria-label="Previous timestep">‹</button><button id="timeline-play" aria-label="Play evidence timeline">▶</button><button id="timeline-forward" aria-label="Next timestep">›</button></div></div>
+          <div class="timeline-track"><div class="timeline-progress" id="timeline-progress"></div><input id="timeline" type="range" min="0" max="83" value="83" step="1" aria-label="Front progression monthly timestep" /><div class="timeline-regions"><span>OBSERVED EVIDENCE <b>2019–2025</b></span></div><div class="timeline-ticks"></div></div>
+        </section>
+
+        <div class="map-attribution">Occurrences © GBIF contributors · Basemap © OpenStreetMap contributors · OpenFreeMap</div>
+      </section>
+      </div>
+    </main>
+    <script src="./vendor/maplibre-gl.js"></script>
+    <script src="./data.js"></script>
+    <script src="./generated/observations.js"></script>
+    <script src="./generated/model-results.js"></script>
+    <script src="./generated/frozen-benchmark.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Eye For An Eye project page: a hybrid deep-learning and analytical method for stereoscopic image transformation.">
+  <meta name="keywords" content="stereoscopic images, Pix2Pix, Depth Anything, computer vision, depth estimation, image-to-image translation">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:title" content="Eye For An Eye - Alex Dils">
+  <meta property="og:description" content="Hybrid Pix2Pix, depth-and-shift, and interpolation pipeline for generating offset stereoscopic views from one image.">
+  <meta property="og:image" content="https://alex-dils.com/assets/image-2.png">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://alex-dils.com/papers/eye-for-an-eye">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>Eye For An Eye - Alex Dils</title>
+
+  <link rel="canonical" href="https://alex-dils.com/papers/eye-for-an-eye">
+  <link rel="icon" href="../headshot.png">
+  <link rel="apple-touch-icon" href="../headshot.png">
+
+  <link rel="stylesheet" href="../cnf-volume/static/css/bulma.min.css">
+  <link rel="stylesheet" href="../cnf-volume/static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="../cnf-volume/static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="../cnf-volume/static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="../cnf-volume/static/css/index.css">
+
+  <style>
+    :root {
+      --accent: #365b8c;
+      --accent-soft: #5278ad;
+      --rust: #9b5138;
+      --ink: #1f2429;
+      --muted: #5b6168;
+      --line: #e1e5ea;
+      --panel: #f5f7fa;
+      --panel-line: #dce3eb;
+    }
+
+    .navbar-brand .home-button {
+      margin-right: 0.4rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .navbar-brand .home-button:hover {
+      border-color: var(--accent-soft);
+      color: var(--accent);
+      background: #fff;
+    }
+
+    .home-button-short {
+      display: none;
+    }
+
+    .project-mark {
+      display: inline-flex;
+      width: 42px;
+      height: 42px;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      color: var(--accent);
+      background: #fff;
+    }
+
+    .publication-title {
+      max-width: 980px;
+      margin-inline: auto;
+    }
+
+    .publication-authors sup {
+      font-size: 0.7em;
+      line-height: 0;
+    }
+
+    .paper-copy strong {
+      color: var(--ink);
+    }
+
+    .teaser .hero-body {
+      padding-top: 1rem;
+    }
+
+    .publication-banner img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .metric-strip,
+    .method-grid,
+    .figure-grid,
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .metric-strip {
+      gap: 0;
+      border: 1px solid var(--panel-line);
+      background: #fff;
+    }
+
+    .metric-card,
+    .method-card,
+    .resource-card {
+      padding: 1rem;
+      border: 1px solid var(--panel-line);
+      background: #fff;
+    }
+
+    .metric-card {
+      position: relative;
+      min-height: 126px;
+      padding: 1.05rem 1.1rem 1rem;
+      border: 0;
+      border-left: 1px solid var(--panel-line);
+    }
+
+    .metric-card:first-child {
+      border-left: 0;
+    }
+
+    .metric-card::before {
+      content: "";
+      display: block;
+      width: 36px;
+      height: 3px;
+      margin-bottom: 1rem;
+      background: var(--accent);
+    }
+
+    .metric-card strong {
+      display: block;
+      color: var(--accent);
+      font-size: clamp(2rem, 4vw, 2.7rem);
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .metric-card span {
+      display: block;
+      margin-top: 0.45rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .method-card h3,
+    .resource-card h3 {
+      margin-bottom: 0.45rem;
+      color: var(--ink);
+      font-size: 1.04rem;
+    }
+
+    .method-card p,
+    .resource-card p {
+      margin: 0;
+      color: #3a4249;
+      font-size: 0.98rem;
+      line-height: 1.55;
+    }
+
+    .result-table {
+      margin-top: 1.3rem;
+      border: 1px solid var(--panel-line);
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .result-table table {
+      margin: 0;
+      background: #fff;
+    }
+
+    .result-table th {
+      padding: 0.85rem 1rem;
+      border-bottom: 2px solid var(--panel-line);
+      color: var(--ink);
+      font-size: 0.88rem;
+    }
+
+    .result-table td {
+      padding: 0.85rem 1rem;
+      vertical-align: middle;
+    }
+
+    .result-table tbody tr.best-row td {
+      background: #edf3f8;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .best-pill {
+      display: inline-flex;
+      margin-left: 0.55rem;
+      padding: 0.15rem 0.45rem;
+      border: 1px solid #b9c9dc;
+      border-radius: 999px;
+      color: var(--accent);
+      font-size: 0.72rem;
+      font-weight: 800;
+      line-height: 1.2;
+      vertical-align: 0.08rem;
+    }
+
+    .figure-wide,
+    .figure-grid figure {
+      margin: 0;
+    }
+
+    .figure-wide a,
+    .figure-grid a {
+      display: block;
+      border: 1px solid var(--panel-line);
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    .figure-wide img,
+    .figure-grid img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .figure-wide figcaption,
+    .figure-grid figcaption {
+      margin-top: 0.55rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .figure-wide {
+      margin-top: 1.5rem;
+    }
+
+    @media screen and (max-width: 768px) {
+      .metric-strip,
+      .method-grid,
+      .figure-grid,
+      .resource-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .home-button-long {
+        display: none;
+      }
+
+      .home-button-short {
+        display: inline;
+      }
+    }
+  </style>
+
+  <script defer src="../cnf-volume/static/js/bulma-carousel.min.js"></script>
+  <script defer src="../cnf-volume/static/js/bulma-slider.min.js"></script>
+  <script defer src="../cnf-volume/static/js/index.js"></script>
+</head>
+
+<body>
+  <nav class="navbar is-spaced" role="navigation" aria-label="main navigation">
+    <div class="container is-max-desktop">
+      <div class="navbar-brand">
+        <a class="navbar-item home-button" href="https://www.alex-dils.com/">
+          <span class="icon"><i class="fas fa-arrow-left"></i></span><span class="home-button-long">Back to Home</span><span class="home-button-short">Home</span>
+        </a>
+        <a class="navbar-item" href="#top">
+          <span class="project-mark" aria-hidden="true"><i class="fas fa-eye"></i></span>
+          <span>Eye For An Eye</span>
+        </a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div id="navMenu" class="navbar-menu">
+        <div class="navbar-end">
+          <a class="navbar-item is-section-link is-hidden-widescreen" href="#abstract">Abstract</a>
+          <a class="navbar-item is-section-link is-hidden-widescreen" href="#method">Method</a>
+          <a class="navbar-item is-section-link is-hidden-widescreen" href="#results">Results</a>
+          <a class="navbar-item is-section-link is-hidden-widescreen" href="#figures">Figures</a>
+          <a class="navbar-item" href="https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/" target="_blank" rel="noreferrer">
+            <span class="icon"><i class="fas fa-scroll"></i></span><span>NHSJS</span>
+          </a>
+          <a class="navbar-item" href="https://nhsjs.com/wp-content/uploads/2025/04/Eye-For-An-Eye-A-Deep-Learning-and-Analytical-Methods-to-Spatializing-Stereoscopic-Images.pdf" target="_blank" rel="noreferrer">
+            <span class="icon"><i class="fas fa-file-pdf"></i></span><span>PDF</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <nav class="section-tracker" aria-label="Section navigation">
+    <ul>
+      <li><a href="#abstract"><span class="dot"></span><span class="lbl">Abstract</span></a></li>
+      <li><a href="#method"><span class="dot"></span><span class="lbl">Method</span></a></li>
+      <li><a href="#dataset"><span class="dot"></span><span class="lbl">Dataset</span></a></li>
+      <li><a href="#results"><span class="dot"></span><span class="lbl">Results</span></a></li>
+      <li><a href="#figures"><span class="dot"></span><span class="lbl">Figures</span></a></li>
+    </ul>
+  </nav>
+
+  <section class="hero publication-header" id="top">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-2 publication-title">
+              Eye For An Eye: A Deep-Learning and Analytical Method to Spatializing Stereoscopic Images
+            </h1>
+            <p class="subtitle is-5 publication-subtitle">
+              Turning a single left-eye image into an offset right-eye view with depth-aware image translation.
+            </p>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">Jake Yoshinaka,</span>
+              <span class="author-block">Alex Dils,</span>
+              <span class="author-block">Leo McDonnell</span>
+            </div>
+
+            <div class="is-size-6 publication-authors" style="margin-top:0.5rem;color:var(--muted);">
+              <span class="author-block">Published in NHSJS on April 17, 2025</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <a href="https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/" target="_blank" rel="noreferrer" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-scroll"></i></span><span>Article</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://nhsjs.com/wp-content/uploads/2025/04/Eye-For-An-Eye-A-Deep-Learning-and-Analytical-Methods-to-Spatializing-Stereoscopic-Images.pdf" target="_blank" rel="noreferrer" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span><span>PDF</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <div class="publication-banner">
+          <div class="banner-frame">
+            <a href="../assets/image-2.png" data-lightbox>
+              <img src="../assets/image-2.png" alt="Model comparison for Pix2Pix, depth-and-shift, and interpolation stereoscopic reconstruction">
+            </a>
+          </div>
+        </div>
+        <h2 class="subtitle has-text-centered">
+          The final pipeline uses an analytical depth-and-shift preprocessing step, fills blank pixels with interpolation, then trains Pix2Pix to synthesize the offset view.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="abstract" data-spy>
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              This project studies stereopsis-inspired image transformation: given a scene from one viewpoint, generate the corresponding image from a slightly offset viewpoint. The work compares a Pix2Pix-only image translation model, a hybrid method that combines monocular depth estimation with analytical pixel shifting before Pix2Pix, and a final variant that adds interpolation to repair blank regions introduced by the shift.
+            </p>
+            <p>
+              The interpolation-enhanced hybrid model performs best in the article's evaluation, reaching SSIM 0.81 and PSNR 20.6 dB on the held-out test set. The result supports a practical design principle: analytical depth cues can make the learned perspective transform easier, while the generator handles visual reconstruction and local realism.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="method" data-spy>
+    <div class="container is-max-desktop">
+      <div class="has-text-centered">
+        <p class="section-kicker">Method</p>
+        <h2 class="title is-3">Three approaches to monocular-to-stereo transformation</h2>
+      </div>
+      <div class="method-grid">
+        <article class="method-card">
+          <h3>1. Pix2Pix baseline</h3>
+          <p>A conditional GAN learns direct image-to-image translation from the left-eye frame to the right-eye target.</p>
+        </article>
+        <article class="method-card">
+          <h3>2. Depth-and-shift hybrid</h3>
+          <p>Depth Anything v2 generates a relative depth map, and pixels are shifted horizontally according to the estimated depth before Pix2Pix training.</p>
+        </article>
+        <article class="method-card">
+          <h3>3. Interpolation enhanced</h3>
+          <p>Blank regions left by the depth shift are filled before the image is passed to Pix2Pix, reducing reconstruction artifacts.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="dataset" data-spy>
+    <div class="container is-max-desktop">
+      <div class="has-text-centered">
+        <p class="section-kicker">Dataset</p>
+        <h2 class="title is-3">Paired stereo frames collected from two phones</h2>
+      </div>
+      <div class="content has-text-justified paper-copy">
+        <p>
+          The dataset was collected with two identical iPhone 12s placed <strong>75 mm</strong> apart to mimic eye separation. Videos were recorded at <strong>30 fps</strong>, then converted into <strong>3,960 paired frames</strong> with each left-eye image matched to a ground-truth right-eye image. Frames were cropped to <strong>512 &times; 512</strong> and split into training, validation, and testing partitions.
+        </p>
+      </div>
+      <div class="metric-strip" aria-label="Dataset summary">
+        <article class="metric-card">
+          <strong>3,960</strong>
+          <span>paired left/right frames</span>
+        </article>
+        <article class="metric-card">
+          <strong>75 mm</strong>
+          <span>camera separation</span>
+        </article>
+        <article class="metric-card">
+          <strong>512</strong>
+          <span>pixel crop size per side</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="results" data-spy>
+    <div class="container is-max-desktop">
+      <div class="has-text-centered">
+        <p class="section-kicker">Results</p>
+        <h2 class="title is-3">Interpolation-enhanced hybrid model performed best</h2>
+      </div>
+      <div class="metric-strip" aria-label="Best model metrics">
+        <article class="metric-card">
+          <strong>0.81</strong>
+          <span>SSIM for Model 3</span>
+        </article>
+        <article class="metric-card">
+          <strong>20.6</strong>
+          <span>PSNR in dB</span>
+        </article>
+        <article class="metric-card">
+          <strong>10.3</strong>
+          <span>MAE on the test set</span>
+        </article>
+      </div>
+
+      <div class="result-table table-container">
+        <table class="table is-fullwidth is-striped">
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Training input</th>
+              <th>SSIM</th>
+              <th>PSNR</th>
+              <th>MSE</th>
+              <th>MAE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Pix2Pix</td><td>Original</td><td>0.72</td><td>19.9</td><td>689.9</td><td>11.9</td></tr>
+            <tr><td>Composite</td><td>Combined</td><td>0.76</td><td>20.3</td><td>630.9</td><td>11.0</td></tr>
+            <tr class="best-row"><td>Model 3 <span class="best-pill">Best</span></td><td>Enhanced</td><td>0.81</td><td>20.6</td><td>628.0</td><td>10.3</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="figures" data-spy>
+    <div class="container is-max-desktop">
+      <div class="has-text-centered">
+        <p class="section-kicker">Figures</p>
+      </div>
+      <figure class="figure-wide">
+        <a href="../assets/poster-photo.png" data-lightbox>
+          <img src="../assets/poster-photo.png" alt="Eye For An Eye project poster presentation">
+        </a>
+        <figcaption>Poster presentation for Eye For An Eye.</figcaption>
+      </figure>
+      <div class="figure-grid">
+        <figure>
+          <a href="../assets/image-2.png" data-lightbox>
+            <img src="../assets/image-2.png" alt="Inference process comparison for three stereoscopic image models">
+          </a>
+          <figcaption>Comparison of the Pix2Pix baseline, depth-and-shift hybrid, and interpolation-enhanced model.</figcaption>
+        </figure>
+        <figure>
+          <a href="../assets/image-5.png" data-lightbox>
+            <img src="../assets/image-5.png" alt="Generated right-eye image compared with true right-eye image">
+          </a>
+          <figcaption>Example generated right-eye view compared with the true right-eye target.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="availability" data-spy>
+    <div class="container is-max-desktop">
+      <div class="has-text-centered">
+        <p class="section-kicker">Availability</p>
+        <h2 class="title is-3">Published article and PDF</h2>
+      </div>
+      <div class="resource-grid">
+        <article class="resource-card">
+          <h3>NHSJS article</h3>
+          <p><a href="https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/" target="_blank" rel="noreferrer">Open the published article</a>.</p>
+        </article>
+        <article class="resource-card">
+          <h3>PDF</h3>
+          <p><a href="https://nhsjs.com/wp-content/uploads/2025/04/Eye-For-An-Eye-A-Deep-Learning-and-Analytical-Methods-to-Spatializing-Stereoscopic-Images.pdf" target="_blank" rel="noreferrer">Open the article PDF</a>.</p>
+        </article>
+        <article class="resource-card">
+          <h3>Research area</h3>
+          <p>Stereoscopic view synthesis, monocular depth estimation, and image-to-image translation.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <a class="icon-link" href="https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/" target="_blank" rel="noreferrer" aria-label="NHSJS article"><i class="fas fa-scroll"></i></a>
+        <a class="icon-link" href="https://nhsjs.com/wp-content/uploads/2025/04/Eye-For-An-Eye-A-Deep-Learning-and-Analytical-Methods-to-Spatializing-Stereoscopic-Images.pdf" target="_blank" rel="noreferrer" aria-label="Article PDF"><i class="fas fa-file-pdf"></i></a>
+      </div>
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content has-text-centered">
+            <p>
+              <strong>Eye For An Eye.</strong> Hybrid analytical and deep-learning stereoscopic image transformation.
+            </p>
+            <p>
+              <a href="https://www.alex-dils.com/">Back to alex-dils.com</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="Close image preview">Close</button>
+    <img alt="">
+    <p></p>
+  </div>
+</body>
+</html>

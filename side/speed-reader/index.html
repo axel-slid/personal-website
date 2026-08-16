@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>speed reader</title>
+<link href="icon.png" rel="icon" type="image/png"/>
+<link href="manifest.json" rel="manifest"/>
+<meta content="#ffcc00" name="theme-color"/>
+<link href="style.css" rel="stylesheet"/>
+</head>
+<body>
+<header>
+<h1>speed<span class="accent">type</span> reader</h1>
+<nav class="nav">
+<button class="active" id="uploadTabBtn" onclick="switchTab('loader')">Upload</button>
+<button id="readerTabBtn" onclick="switchTab('reader')">Reader</button>
+<button id="libraryTabBtn" onclick="switchTab('library')">Library</button>
+</nav>
+</header>
+<!-- Loader Section -->
+<section class="active" id="loader">
+<textarea id="textArea" placeholder="Paste or drop text here..."></textarea><div class="upload-buttons"><button class="btn" id="uploadPdfBtn">Upload OCR PDF</button><button class="btn" id="uploadTxtBtn">Upload TXT</button></div>
+<div class="controls">
+<label for="speedSelect">Speed (WPM):</label>
+<select id="speedSelect">
+<option value="250">250</option>
+<option selected="" value="300">300</option>
+<option value="400">400</option>
+<option value="500">500</option>
+</select>
+</div>
+<button class="btn" onclick="prepareText()">Start →</button>
+</section>
+<!-- Reader Section -->
+<section id="reader">
+<div class="top-bar">
+<div class="title" id="title"></div>
+<div class="stats" id="stats"></div>
+<button class="btn" id="playPauseBtn" onclick="togglePlayPause()">Play</button>
+<button class="btn" id="resetBtn" onclick="resetReading()">Reset</button>
+<button class="btn" id="bookmarkBtn" onclick="addBookmark()">Bookmark ⭐</button>
+<button class="btn" id="saveBookBtn" onclick="saveCurrentToLibrary()">Save Book</button>
+</div>
+<!-- progress -->
+<div id="progressContainer"><div id="progressBar"></div></div>
+<div class="flash" id="flashWord"></div>
+<!-- preview text scroll -->
+<div class="preview" id="preview"></div>
+<!-- bookmark list -->
+<div class="bookmark-list" id="bookmarkList"></div>
+</section>
+<!-- Library Section -->
+<section id="library">
+<h2>Your Library</h2>
+<div class="library-grid" id="libraryGrid"></div>
+</section>
+<input accept=".txt,.pdf" id="fileInput" style="display:none;" type="file"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.1.392/pdf.min.js"></script>
+<script src="script.js"></script>
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+<script src="highlight.js"></script>
+</body>
+</html>
