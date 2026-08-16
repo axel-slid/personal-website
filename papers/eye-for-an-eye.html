@@ -285,7 +285,6 @@
       <div id="navMenu" class="navbar-menu">
         <div class="navbar-end">
           <a class="navbar-item is-section-link is-hidden-widescreen" href="#abstract">Abstract</a>
-          <a class="navbar-item is-section-link is-hidden-widescreen" href="#method">Method</a>
           <a class="navbar-item is-section-link is-hidden-widescreen" href="#results">Results</a>
           <a class="navbar-item is-section-link is-hidden-widescreen" href="#figures">Figures</a>
           <a class="navbar-item" href="https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/" target="_blank" rel="noreferrer">
@@ -302,8 +301,6 @@
   <nav class="section-tracker" aria-label="Section navigation">
     <ul>
       <li><a href="#abstract"><span class="dot"></span><span class="lbl">Abstract</span></a></li>
-      <li><a href="#method"><span class="dot"></span><span class="lbl">Method</span></a></li>
-      <li><a href="#dataset"><span class="dot"></span><span class="lbl">Dataset</span></a></li>
       <li><a href="#results"><span class="dot"></span><span class="lbl">Results</span></a></li>
       <li><a href="#figures"><span class="dot"></span><span class="lbl">Figures</span></a></li>
     </ul>
@@ -386,57 +383,6 @@
     </div>
   </section>
 
-  <section class="section alt" id="method" data-spy>
-    <div class="container is-max-desktop">
-      <div class="has-text-centered">
-        <p class="section-kicker">Method</p>
-        <h2 class="title is-3">Three approaches to monocular-to-stereo transformation</h2>
-      </div>
-      <div class="method-grid">
-        <article class="method-card">
-          <h3>1. Pix2Pix baseline</h3>
-          <p>A conditional GAN learns direct image-to-image translation from the left-eye frame to the right-eye target.</p>
-        </article>
-        <article class="method-card">
-          <h3>2. Depth-and-shift hybrid</h3>
-          <p>Depth Anything v2 generates a relative depth map, and pixels are shifted horizontally according to the estimated depth before Pix2Pix training.</p>
-        </article>
-        <article class="method-card">
-          <h3>3. Interpolation enhanced</h3>
-          <p>Blank regions left by the depth shift are filled before the image is passed to Pix2Pix, reducing reconstruction artifacts.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="dataset" data-spy>
-    <div class="container is-max-desktop">
-      <div class="has-text-centered">
-        <p class="section-kicker">Dataset</p>
-        <h2 class="title is-3">Paired stereo frames collected from two phones</h2>
-      </div>
-      <div class="content has-text-justified paper-copy">
-        <p>
-          The dataset was collected with two identical iPhone 12s placed <strong>75 mm</strong> apart to mimic eye separation. Videos were recorded at <strong>30 fps</strong>, then converted into <strong>3,960 paired frames</strong> with each left-eye image matched to a ground-truth right-eye image. Frames were cropped to <strong>512 &times; 512</strong> and split into training, validation, and testing partitions.
-        </p>
-      </div>
-      <div class="metric-strip" aria-label="Dataset summary">
-        <article class="metric-card">
-          <strong>3,960</strong>
-          <span>paired left/right frames</span>
-        </article>
-        <article class="metric-card">
-          <strong>75 mm</strong>
-          <span>camera separation</span>
-        </article>
-        <article class="metric-card">
-          <strong>512</strong>
-          <span>pixel crop size per side</span>
-        </article>
-      </div>
-    </div>
-  </section>
-
   <section class="section alt" id="results" data-spy>
     <div class="container is-max-desktop">
       <div class="has-text-centered">
@@ -504,29 +450,6 @@
           </a>
           <figcaption>Example generated right-eye view compared with the true right-eye target.</figcaption>
         </figure>
-      </div>
-    </div>
-  </section>
-
-  <section class="section alt" id="availability" data-spy>
-    <div class="container is-max-desktop">
-      <div class="has-text-centered">
-        <p class="section-kicker">Availability</p>
-        <h2 class="title is-3">Published article and PDF</h2>
-      </div>
-      <div class="resource-grid">
-        <article class="resource-card">
-          <h3>NHSJS article</h3>
-          <p><a href="https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/" target="_blank" rel="noreferrer">Open the published article</a>.</p>
-        </article>
-        <article class="resource-card">
-          <h3>PDF</h3>
-          <p><a href="https://nhsjs.com/wp-content/uploads/2025/04/Eye-For-An-Eye-A-Deep-Learning-and-Analytical-Methods-to-Spatializing-Stereoscopic-Images.pdf" target="_blank" rel="noreferrer">Open the article PDF</a>.</p>
-        </article>
-        <article class="resource-card">
-          <h3>Research area</h3>
-          <p>Stereoscopic view synthesis, monocular depth estimation, and image-to-image translation.</p>
-        </article>
       </div>
     </div>
   </section>
