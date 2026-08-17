@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
+const homeHtml = fs.readFileSync(path.join(root, "index.html"), "utf8");
 const html = fs.readFileSync(path.join(root, "bscode", "index.html"), "utf8");
 const css = fs.readFileSync(path.join(root, "bscode", "bscode.css"), "utf8");
 const requiredFiles = [
@@ -12,13 +13,25 @@ const requiredFiles = [
   "assets/bscode/motion/bscode-digital-twin.webm",
   "assets/bscode/motion/bscode-digital-twin-poster.png",
   "bscode/bscode.css",
-  "bscode/index.html"
+  "bscode/index.html",
+  "ct-pet-viewer/install.sh",
+  "ct-pet-viewer/install.ps1"
 ];
 
 for (const file of requiredFiles) {
   if (!fs.existsSync(path.join(root, file))) {
     throw new Error(`Missing required website asset: ${file}`);
   }
+}
+
+for (const requiredDownload of [
+  "CT-PET-Review-Workstation-1.1.0-macOS-arm64.dmg",
+  "CT-PET-Review-Workstation-1.1.0-Windows-x64.exe",
+  "curl -fsSL https://alex-dils.com/ct-pet-viewer/install.sh | bash",
+  "curl.exe -fsSL https://alex-dils.com/ct-pet-viewer/install.ps1 | powershell -NoProfile -ExecutionPolicy Bypass -Command -",
+  "task021"
+]) {
+  if (!homeHtml.includes(requiredDownload)) throw new Error(`CT-PET download UI is missing: ${requiredDownload}`);
 }
 
 if ((html.match(/<video\b/g) || []).length !== 1) {
@@ -41,19 +54,10 @@ if (!html.includes("bscode-digital-twin-alpha.mov")) {
 if (!html.includes("bscode-digital-twin-poster.png")) {
   throw new Error("The digital-twin poster is missing.");
 }
-if (!html.includes("BsCode-macOS-arm64.zip")) {
-  throw new Error("The Apple silicon download link is missing.");
+if (!html.includes("curl -fsSL https://alex-dils.com/bscode/install.sh | bash")) {
+  throw new Error("The BsCode installer command is missing.");
 }
-if (!html.includes("releases/download/v0.2.5/BsCode-macOS-arm64.zip")) {
-  throw new Error("The Apple silicon download does not target BsCode v0.2.5.");
-}
-if (!html.includes('xattr -dr com.apple.quarantine "/Applications/BsCode.app"')) {
-  throw new Error("The required first-launch quarantine command is missing.");
-}
-if (!html.includes('"softwareVersion": "0.2.5"')) {
-  throw new Error("The current BsCode release metadata is missing.");
-}
-if (!html.includes('"codeRepository": "https://github.com/axel-slid/bscode"')) {
+if (!html.includes("https://github.com/axel-slid/bscode")) {
   throw new Error("The BsCode repository metadata is incorrect.");
 }
 if ((html.match(/<main\b/g) || []).length !== 1) {
@@ -61,9 +65,9 @@ if ((html.match(/<main\b/g) || []).length !== 1) {
 }
 
 const expectedCopy = [
-  "Vibecode Aesthetically",
-  "Get the app",
-  "Move it to Applications, then run"
+  "BsCode",
+  "Paste this into Terminal",
+  "Free and open source"
 ];
 for (const copy of expectedCopy) {
   if (!html.includes(copy)) {
