@@ -710,17 +710,27 @@ function renderFarmImpactFigure() {
   const worstBenchmark = 99.1;
   const years = Array.from({ length: spreadTimelineEndYear - spreadTimelineStartYear + 1 }, (_, index) => spreadTimelineStartYear + index);
   const exposure = years.map((year) => farmImpactExposure(year));
+  const cumulativeExpected = [0];
+  const cumulativeWorst = [0];
+  for (let index = 1; index < years.length; index += 1) {
+    const annualizedExposure = (exposure[index - 1] + exposure[index]) / 2;
+    cumulativeExpected.push(cumulativeExpected[index - 1] + annualizedExposure * expectedBenchmark);
+    cumulativeWorst.push(cumulativeWorst[index - 1] + annualizedExposure * worstBenchmark);
+  }
   const x = (year) => 2 + ((year - spreadTimelineStartYear) / (spreadTimelineEndYear - spreadTimelineStartYear)) * 240;
-  const y = (millions) => 54 - Math.max(0, Math.min(1, millions / worstBenchmark)) * 48;
-  const expectedPoints = years.map((year, index) => [x(year), y(exposure[index] * expectedBenchmark)]);
-  const worstPoints = years.map((year, index) => [x(year), y(exposure[index] * worstBenchmark)]);
+  const chartMaximum = Math.max(cumulativeWorst.at(-1), 1);
+  const y = (millions) => 54 - Math.max(0, Math.min(1, millions / chartMaximum)) * 48;
+  const expectedPoints = years.map((year, index) => [x(year), y(cumulativeExpected[index])]);
+  const worstPoints = years.map((year, index) => [x(year), y(cumulativeWorst[index])]);
   const path = (points) => points.map(([px, py], index) => `${index ? 'L' : 'M'}${px.toFixed(2)} ${py.toFixed(2)}`).join(' ');
   $('#farm-impact-expected')?.setAttribute('d', path(expectedPoints));
   $('#farm-impact-worst')?.setAttribute('d', path(worstPoints));
   $('#farm-impact-area')?.setAttribute('d', `${path(worstPoints)} ${[...expectedPoints].reverse().map(([px, py]) => `L${px.toFixed(2)} ${py.toFixed(2)}`).join(' ')} Z`);
-  const currentExposure = farmImpactExposure(spreadTimelineYear);
-  const currentExpected = currentExposure * expectedBenchmark;
-  const currentWorst = currentExposure * worstBenchmark;
+  const lowerIndex = Math.max(0, Math.min(years.length - 1, Math.floor(spreadTimelineYear) - spreadTimelineStartYear));
+  const upperIndex = Math.min(years.length - 1, lowerIndex + 1);
+  const yearBlend = Math.max(0, Math.min(1, spreadTimelineYear - Math.floor(spreadTimelineYear)));
+  const currentExpected = cumulativeExpected[lowerIndex] + (cumulativeExpected[upperIndex] - cumulativeExpected[lowerIndex]) * yearBlend;
+  const currentWorst = cumulativeWorst[lowerIndex] + (cumulativeWorst[upperIndex] - cumulativeWorst[lowerIndex]) * yearBlend;
   const markerX = x(spreadTimelineYear);
   const markerY = y(currentWorst);
   const marker = $('#farm-impact-marker');
@@ -729,9 +739,9 @@ function renderFarmImpactFigure() {
   const dot = $('#farm-impact-dot');
   dot?.setAttribute('cx', markerX);
   dot?.setAttribute('cy', markerY);
-  if ($('#farm-impact-year')) $('#farm-impact-year').textContent = Number.isInteger(spreadTimelineYear) ? spreadTimelineYear : spreadTimelineYear.toFixed(1);
-  if ($('#farm-impact-value')) $('#farm-impact-value').textContent = `$${currentExpected.toFixed(1)}–$${currentWorst.toFixed(1)}M / year`;
-  chart.setAttribute('aria-label', `Illustrative Pennsylvania farm-loss exposure in ${spreadTimelineYear.toFixed(1)}: ${currentExpected.toFixed(1)} to ${currentWorst.toFixed(1)} million dollars per year`);
+  const formatBurden = (millions) => millions >= 1000 ? `$${(millions / 1000).toFixed(2)}B` : `$${millions.toFixed(1)}M`;
+  if ($('#farm-impact-value')) $('#farm-impact-value').textContent = `${formatBurden(currentExpected)}–${formatBurden(currentWorst)} cumulative`;
+  chart.setAttribute('aria-label', `Illustrative cumulative Pennsylvania farm-loss exposure through ${spreadTimelineYear.toFixed(1)}: ${formatBurden(currentExpected)} to ${formatBurden(currentWorst)}`);
 }
 
 function renderSpreadDisplayToggle() {

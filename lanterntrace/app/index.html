@@ -120,7 +120,7 @@
           </button>
         </div>
         <figure class="farm-impact-figure" aria-label="Published Pennsylvania agricultural loss scenarios from spotted lanternfly">
-          <figcaption><span>PA FARM-LOSS EXPOSURE · <i id="farm-impact-year">2026</i></span><b id="farm-impact-value">$0–$0M / year</b></figcaption>
+          <output id="farm-impact-value">$0–$0M cumulative</output>
           <svg id="farm-impact-chart" viewBox="0 0 244 66" role="img" aria-label="Model-linked Pennsylvania agricultural loss exposure from 2019 to 2056">
             <path class="farm-impact-grid" d="M2 54H242M2 30H242M2 6H242" />
             <path id="farm-impact-area" class="farm-impact-area" d="" />
@@ -130,8 +130,7 @@
             <circle id="farm-impact-dot" class="farm-impact-dot" cx="2" cy="54" r="2.7" />
           </svg>
           <div class="farm-impact-axis" aria-hidden="true"><span>2019</span><span>2026</span><span>2056</span></div>
-          <div class="farm-impact-key"><span><i></i>Expected benchmark</span><span><i></i>Worst-case benchmark</span></div>
-          <small>Model pressure × published PA statewide loss scenarios; illustrative exposure, not an economic forecast. <a href="https://aese.psu.edu/research/centers/cecd/publications/economic-impact/spotted-lanternfly-2019.pdf" target="_blank" rel="noreferrer">Penn State / Center for Rural PA ↗</a></small>
+          <span class="sr-only">Cumulative model pressure multiplied by published Pennsylvania statewide annual agricultural-loss scenarios. Illustrative exposure, not an economic forecast. Source: Penn State and Center for Rural Pennsylvania, 2019.</span>
         </figure>
         <header class="map-header">
           <button id="sidebar-restore" class="sidebar-restore" type="button" aria-label="Show species panel" aria-expanded="false">›</button>
