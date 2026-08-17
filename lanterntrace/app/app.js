@@ -221,6 +221,7 @@ function spreadCellValue(cell, sourceIndex = spreadCellIndices.get(`${cell?.r}:$
 function spreadGridData() {
   const displayStep = spreadGridSize;
   const level = spreadGridPyramid.levels?.[String(spreadGridSize)] || [];
+  const displayThreshold = spreadView === 'signal' || spreadView === 'scenario' ? .006 : .01;
   return {
     type: 'FeatureCollection',
     features: level.map((record, index) => {
@@ -233,6 +234,7 @@ function spreadGridData() {
           value += spreadCellValue(spreadBundle.cells[weightedSourceIndex], weightedSourceIndex) * weightPairs[pairIndex + 1];
         }
       }
+      if (landFraction <= (spreadGridPyramid.metadata?.landThreshold ?? .5) || value <= displayThreshold) return null;
       const sourceCell = cell ? `${cell.r}:${cell.c}` : 'water';
       return geojsonFeature('Polygon', [[
         [west, south], [west + displayStep, south], [west + displayStep, south + displayStep], [west, south + displayStep], [west, south],
@@ -248,7 +250,7 @@ function spreadGridData() {
         climate: cell?.climate || 0,
         geography: cell?.geography || 0,
       });
-    }),
+    }).filter(Boolean),
   };
 }
 
