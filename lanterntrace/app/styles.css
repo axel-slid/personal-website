@@ -945,10 +945,10 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
   align-items: center;
   min-height: 82px;
   padding: 10px 18px 9px;
-  border: 1px solid rgba(121, 240, 196, .28);
+  border: 0;
   border-radius: 13px;
   background: linear-gradient(110deg, rgba(3, 27, 24, .95), rgba(3, 22, 24, .9));
-  box-shadow: 0 16px 40px rgba(0, 0, 0, .34);
+  box-shadow: none;
   backdrop-filter: blur(10px);
 }
 .spread-timeline-heading { display: flex; min-width: 0; flex-direction: column; gap: 4px; }
@@ -998,9 +998,6 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 /* Focused controls: mode, cell size, and physics only. */
 .spread-only .sidebar { width: 360px; flex: 0 0 360px; }
 .spread-only #spread-panel { padding: 26px 24px; }
-.spread-mode-heading { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-.spread-mode-heading span { color: #72d9ad; font: 700 9px 'DM Mono', monospace; letter-spacing: .13em; }
-.spread-mode-heading b { color: #8fb8a7; font: 500 10px 'DM Mono', monospace; }
 .spread-only .spread-view-tabs { grid-template-columns: 1fr 1fr; gap: 9px; }
 .spread-only .spread-view-tabs button { position: relative; display: grid; min-height: 88px; padding: 13px; grid-template-columns: 32px minmax(0, 1fr); grid-template-rows: auto auto; gap: 2px 8px; align-content: center; border-color: rgba(121, 240, 196, .2); border-radius: 13px; background: rgba(3, 25, 23, .78); overflow: hidden; }
 .spread-only .spread-view-tabs button::after { position: absolute; right: 0; bottom: 0; left: 0; height: 3px; background: #6adcad; opacity: 0; content: ''; }
@@ -1014,6 +1011,18 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .spread-only .spread-view-tabs button:nth-child(4) > span { color: #d5ed75; }
 .spread-only .spread-view-tabs button:nth-child(4).active::after { background: #d5ed75; }
 .spread-only .spread-grid-size-control { margin-top: 14px; padding: 13px; border-radius: 12px; }
+.spread-wind-toggle { display: grid; width: 100%; min-height: 58px; margin-top: 10px; padding: 9px 11px; grid-template-columns: 27px minmax(0, 1fr) 28px; gap: 8px; align-items: center; border: 1px solid rgba(121, 240, 196, .17); border-radius: 11px; background: rgba(3, 25, 23, .66); color: #89b4a3; text-align: left; }
+.spread-wind-toggle:hover { border-color: rgba(121, 240, 196, .36); background: rgba(12, 47, 40, .72); }
+.spread-wind-toggle[aria-pressed="true"] { border-color: rgba(133, 218, 244, .58); background: linear-gradient(135deg, rgba(45, 126, 142, .22), rgba(7, 45, 39, .76)); color: #e8fff7; box-shadow: inset 0 0 0 1px rgba(133, 218, 244, .08); }
+.spread-wind-toggle svg { width: 25px; height: 25px; fill: none; stroke: #79c9d8; stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+.spread-wind-toggle > span { min-width: 0; }
+.spread-wind-toggle b, .spread-wind-toggle small { display: block; }
+.spread-wind-toggle b { color: inherit; font: 700 12px 'Barlow Condensed', sans-serif; letter-spacing: .05em; text-transform: uppercase; }
+.spread-wind-toggle small { margin-top: 2px; overflow: hidden; color: #6f9a8a; font: 500 7px 'DM Mono', monospace; text-overflow: ellipsis; white-space: nowrap; }
+.spread-wind-toggle > i { position: relative; display: block; width: 27px; height: 15px; border: 1px solid rgba(116, 176, 154, .48); border-radius: 999px; background: rgba(2, 17, 15, .74); }
+.spread-wind-toggle > i::after { position: absolute; top: 2px; left: 2px; width: 9px; height: 9px; border-radius: 50%; background: #729b8c; content: ''; transition: transform .18s ease, background .18s ease; }
+.spread-wind-toggle[aria-pressed="true"] > i { border-color: rgba(145, 230, 245, .68); background: rgba(67, 151, 166, .32); }
+.spread-wind-toggle[aria-pressed="true"] > i::after { background: #a7f0f0; transform: translateX(12px); box-shadow: 0 0 7px rgba(135, 224, 238, .62); }
 .spread-only .spread-scenario-controls { margin-top: 15px; }
 .spread-only .spread-model-options button { min-height: 52px; padding: 9px 11px; }
 .spread-only .spread-model-options button b { font-size: 12px; }
@@ -1036,7 +1045,7 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 #spread-timeline-play i { font: 500 17px 'DM Mono', monospace; font-style: normal; line-height: 1; }
 #spread-timeline-play span { color: inherit; font: 700 6px 'DM Mono', monospace; letter-spacing: .06em; }
 .spread-timeline-dock.playing #spread-timeline-play { border-color: #e8bd5f; background: rgba(232, 189, 95, .2); color: #ffdc83; box-shadow: 0 0 18px rgba(232, 189, 95, .15); }
-.spread-timeline-dock.scrubbing { border-color: rgba(221, 238, 123, .46); }
+.spread-timeline-dock.scrubbing { background: linear-gradient(110deg, rgba(4, 35, 29, .97), rgba(4, 28, 29, .93)); }
 .spread-timeline-dock.scrubbing .spread-timeline-track input { cursor: grabbing; }
 .spread-timeline-dock.scrubbing .spread-timeline-track input::-webkit-slider-thumb { transform: scale(1.16); box-shadow: 0 0 0 6px rgba(232, 189, 95, .18), 0 2px 10px rgba(0, 0, 0, .5); }
 .spread-timeline-ticks span:nth-child(2) { left: 18.919%; color: #d8f68c; }
@@ -1061,19 +1070,29 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 
 /* Top-right mesh / occurrence-report switch. */
 .spread-display-toggle { position: absolute; z-index: 8; top: 18px; right: 18px; display: flex; gap: 3px; padding: 4px; border: 1px solid rgba(121, 240, 196, .25); border-radius: 11px; background: rgba(3, 25, 22, .9); box-shadow: 0 10px 28px rgba(0, 0, 0, .28); backdrop-filter: blur(9px); }
-.spread-display-toggle button { display: flex; min-width: 91px; height: 34px; padding: 0 12px; align-items: center; justify-content: center; gap: 7px; border: 0; border-radius: 7px; background: transparent; color: #769f8f; font: 700 9px 'DM Mono', monospace; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; }
+.spread-display-toggle button { display: grid; width: 42px; min-width: 42px; height: 36px; padding: 0; place-items: center; border: 0; border-radius: 7px; background: transparent; color: #769f8f; cursor: pointer; }
 .spread-display-toggle button:hover { color: #c9e5d8; background: rgba(121, 240, 196, .07); }
 .spread-display-toggle button.active { background: rgba(89, 196, 151, .18); color: #e9fff2; box-shadow: inset 0 0 0 1px rgba(126, 237, 190, .3); }
 .spread-display-toggle button[data-spread-display="reports"].active { background: rgba(216, 244, 125, .15); color: #e8f99d; box-shadow: inset 0 0 0 1px rgba(216, 244, 125, .36); }
-.spread-display-toggle svg { width: 16px; height: 16px; flex: 0 0 16px; fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
+.spread-display-toggle svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
 .spread-display-toggle button[data-spread-display="mesh"] svg { stroke-width: 1.15; }
 .spread-display-toggle button.active svg { filter: drop-shadow(0 0 4px rgba(140, 245, 194, .35)); }
 .spread-display-toggle button[data-spread-display="reports"].active svg { filter: drop-shadow(0 0 4px rgba(216, 244, 125, .34)); }
 
 @media (max-width: 720px) {
   .spread-display-toggle { right: 10px; }
-  .spread-display-toggle button { min-width: 76px; padding-inline: 9px; }
+  .spread-display-toggle button { width: 39px; min-width: 39px; }
 }
+
+/* Apple Weather-style animated climatological wind overlay. */
+.wind-canvas { position: absolute; z-index: 5; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity .28s ease; mix-blend-mode: screen; }
+.wind-canvas.active { opacity: .92; }
+.wind-legend { position: absolute; z-index: 8; top: 70px; right: 18px; display: grid; width: 118px; gap: 3px; padding: 8px 9px; border-radius: 8px; background: rgba(2, 21, 21, .78); color: #8fb9aa; backdrop-filter: blur(8px); pointer-events: none; }
+.wind-legend.hidden { display: none; }
+.wind-legend b { color: #dffcf1; font: 700 7px 'DM Mono', monospace; letter-spacing: .1em; }
+.wind-legend span { display: flex; align-items: center; gap: 6px; font: 600 7px 'DM Mono', monospace; }
+.wind-legend span i { display: block; width: 48px; height: 3px; border-radius: 999px; background: linear-gradient(90deg, #54bfc1, #8ce6d0, #eff5b5); box-shadow: 0 0 7px rgba(121, 222, 207, .28); }
+.wind-legend small { color: #668f80; font: 500 6px 'DM Mono', monospace; }
 
 /* True globe presentation with a masked deep-space galaxy behind Earth. */
 .spread-only .map-stage { background: #01030a; }

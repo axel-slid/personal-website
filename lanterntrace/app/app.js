@@ -7,6 +7,7 @@ const modelBundle = window.LanternTraceModels || { metadata: {}, variants: [], t
 const benchmarkBundle = window.LanternTraceBenchmark || { metadata: {}, models: [], years: {} };
 const spreadBundle = window.LanternTraceSpread || { metadata: {}, models: [], cells: [] };
 const spreadHistory = window.LanternTraceSpreadHistory || { metadata: {}, signals: {}, rates: {}, reports: {} };
+const windClimatology = window.LanternTraceWindClimatology || { metadata: {}, latitudes: [], longitudes: [], u: [], v: [] };
 const spreadLongHorizon = window.LanternTraceSpreadLongHorizon || { metadata: {}, models: {} };
 const spreadGridPyramid = window.LanternTraceSpreadGridPyramid || { metadata: {}, levels: {} };
 const spreadPhysicsFrameCache = new Map();
@@ -29,6 +30,12 @@ let physicsAnimationLast = 0;
 let spreadView = 'signal';
 let spreadDisplayMode = 'mesh';
 let selectedSpreadModelId = 'coupled';
+let spreadWindEnabled = false;
+let windAnimationFrame;
+let windAnimationLastTime = 0;
+let windParticles = [];
+let windCanvasWidth = 0;
+let windCanvasHeight = 0;
 const spreadTimelineStartYear = 2019;
 const spreadPresentYear = spreadHistory.metadata?.presentYear || 2026;
 const spreadTimelineEndYear = spreadLongHorizon.metadata?.endYear || 2056;
@@ -227,9 +234,12 @@ function spreadCellValue(cell, sourceIndex = spreadCellIndices.get(`${cell?.r}:$
 }
 
 function spreadPhysicsFrames(modelId = selectedSpreadModelId, levelKey = String(spreadGridSize)) {
-  const cacheKey = `${modelId}:${levelKey}`;
+  const windAware = spreadWindEnabled && modelId === 'coupled';
+  const cacheKey = `${modelId}:${levelKey}:${windAware ? 'wind' : 'still'}`;
   if (spreadPhysicsFrameCache.has(cacheKey)) return spreadPhysicsFrameCache.get(cacheKey);
-  const encoded = spreadLongHorizon.models?.[modelId]?.[levelKey];
+  const encoded = windAware
+    ? spreadLongHorizon.windModels?.[modelId]?.[levelKey]
+    : spreadLongHorizon.models?.[modelId]?.[levelKey];
   if (!encoded?.data) return null;
   const binary = atob(encoded.data);
   const values = new Uint8Array(binary.length);
@@ -320,6 +330,201 @@ function spreadColorExpression() {
   return ['interpolate', ['linear'], ['get', 'value'], 0, '#0d322e', .18, '#176f5b', .48, '#31b78b', .75, '#9be17f', 1, '#f0e972'];
 }
 
+function windBracket(values, target, descending = false) {
+  if (values.length < 2) return null;
+  const first = descending ? -values[0] : values[0];
+  const last = descending ? -values.at(-1) : values.at(-1);
+  const transformed = descending ? -target : target;
+  if (transformed < first || transformed > last) return null;
+  let low = 0;
+  let high = values.length - 1;
+  while (high - low > 1) {
+    const middle = Math.floor((low + high) / 2);
+    const value = descending ? -values[middle] : values[middle];
+    if (value <= transformed) low = middle;
+    else high = middle;
+  }
+  const lowValue = descending ? -values[low] : values[low];
+  const highValue = descending ? -values[high] : values[high];
+  const blend = highValue === lowValue ? 0 : (transformed - lowValue) / (highValue - lowValue);
+  return { low, high, blend };
+}
+
+function sampleWind(longitude, latitude) {
+  const latitudes = windClimatology.latitudes || [];
+  const longitudes = windClimatology.longitudes || [];
+  const latitudeBracket = windBracket(latitudes, latitude, true);
+  const longitudeBracket = windBracket(longitudes, longitude);
+  if (!latitudeBracket || !longitudeBracket) return null;
+  const width = longitudes.length;
+  const interpolate = (values) => {
+    const northwest = values[latitudeBracket.low * width + longitudeBracket.low];
+    const northeast = values[latitudeBracket.low * width + longitudeBracket.high];
+    const southwest = values[latitudeBracket.high * width + longitudeBracket.low];
+    const southeast = values[latitudeBracket.high * width + longitudeBracket.high];
+    const north = northwest + (northeast - northwest) * longitudeBracket.blend;
+    const south = southwest + (southeast - southwest) * longitudeBracket.blend;
+    return north + (south - north) * latitudeBracket.blend;
+  };
+  const u = interpolate(windClimatology.u);
+  const v = interpolate(windClimatology.v);
+  return { u, v, speed: Math.hypot(u, v) };
+}
+
+function resetWindParticle(particle = {}) {
+  const latitudes = windClimatology.latitudes || [50, 25];
+  const longitudes = windClimatology.longitudes || [-125, -66];
+  particle.longitude = longitudes[0] + Math.random() * (longitudes.at(-1) - longitudes[0]);
+  particle.latitude = latitudes.at(-1) + Math.random() * (latitudes[0] - latitudes.at(-1));
+  particle.age = Math.floor(Math.random() * 80);
+  particle.maxAge = 80 + Math.floor(Math.random() * 90);
+  particle.previous = null;
+  return particle;
+}
+
+function resizeWindCanvas() {
+  const canvas = $('#wind-canvas');
+  if (!canvas) return null;
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  if (!width || !height) return null;
+  const density = Math.min(window.devicePixelRatio || 1, 2);
+  if (width !== windCanvasWidth || height !== windCanvasHeight) {
+    windCanvasWidth = width;
+    windCanvasHeight = height;
+    canvas.width = Math.round(width * density);
+    canvas.height = Math.round(height * density);
+    const context = canvas.getContext('2d');
+    context.setTransform(density, 0, 0, density, 0, 0);
+    windParticles.forEach((particle) => { particle.previous = null; });
+  }
+  return { canvas, context: canvas.getContext('2d'), width, height };
+}
+
+function clearWindCanvas() {
+  const canvasState = resizeWindCanvas();
+  if (canvasState) canvasState.context.clearRect(0, 0, canvasState.width, canvasState.height);
+}
+
+function drawStaticWindVectors() {
+  const canvasState = resizeWindCanvas();
+  if (!canvasState || !map) return;
+  const { context, width, height } = canvasState;
+  context.clearRect(0, 0, width, height);
+  const latitudes = windClimatology.latitudes || [];
+  const longitudes = windClimatology.longitudes || [];
+  for (let row = 0; row < latitudes.length; row += 2) {
+    for (let column = 0; column < longitudes.length; column += 2) {
+      const index = row * longitudes.length + column;
+      const u = windClimatology.u[index];
+      const v = windClimatology.v[index];
+      const speed = Math.hypot(u, v);
+      if (!speed) continue;
+      const point = map.project([longitudes[column], latitudes[row]]);
+      if (point.x < 0 || point.x > width || point.y < 0 || point.y > height) continue;
+      const length = 5 + Math.min(speed / 6.5, 1) * 9;
+      const scale = length / speed;
+      context.beginPath();
+      context.moveTo(point.x - u * scale / 2, point.y + v * scale / 2);
+      context.lineTo(point.x + u * scale / 2, point.y - v * scale / 2);
+      context.strokeStyle = 'rgba(167, 235, 219, .66)';
+      context.lineWidth = 1;
+      context.stroke();
+    }
+  }
+}
+
+function stopWindAnimation({ clear = false } = {}) {
+  cancelAnimationFrame(windAnimationFrame);
+  windAnimationLastTime = 0;
+  if (!spreadWindEnabled) {
+    $('#wind-canvas')?.classList.remove('active');
+    $('#wind-legend')?.classList.add('hidden');
+  }
+  if (clear) clearWindCanvas();
+}
+
+function startWindAnimation() {
+  stopWindAnimation();
+  const canvas = $('#wind-canvas');
+  canvas?.classList.toggle('active', spreadWindEnabled);
+  $('#wind-legend')?.classList.toggle('hidden', !spreadWindEnabled);
+  if (!spreadWindEnabled || !spreadActive() || document.hidden || !map || !windClimatology.u?.length) {
+    if (!spreadWindEnabled) clearWindCanvas();
+    return;
+  }
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    drawStaticWindVectors();
+    return;
+  }
+  const canvasState = resizeWindCanvas();
+  if (!canvasState) return;
+  const desiredParticles = Math.max(420, Math.min(980, Math.round(canvasState.width * canvasState.height / 2100)));
+  while (windParticles.length < desiredParticles) windParticles.push(resetWindParticle());
+  if (windParticles.length > desiredParticles) windParticles.length = desiredParticles;
+
+  const animate = (timestamp) => {
+    if (!spreadWindEnabled || !spreadActive() || document.hidden) return;
+    const state = resizeWindCanvas();
+    if (!state) return;
+    const { context, width, height } = state;
+    const elapsed = windAnimationLastTime ? Math.min((timestamp - windAnimationLastTime) / 1000, .06) : .016;
+    windAnimationLastTime = timestamp;
+    if (map.isMoving()) {
+      context.clearRect(0, 0, width, height);
+      windParticles.forEach((particle) => { particle.previous = null; });
+    } else {
+      context.globalCompositeOperation = 'destination-in';
+      context.fillStyle = 'rgba(0, 0, 0, .92)';
+      context.fillRect(0, 0, width, height);
+      context.globalCompositeOperation = 'source-over';
+    }
+    const speedRange = windClimatology.metadata?.speedRange || [0, 6.5];
+    windParticles.forEach((particle) => {
+      const wind = sampleWind(particle.longitude, particle.latitude);
+      if (!wind || particle.age >= particle.maxAge) {
+        resetWindParticle(particle);
+        return;
+      }
+      const current = map.project([particle.longitude, particle.latitude]);
+      const visualDegreesPerSecond = .18;
+      particle.longitude += wind.u * visualDegreesPerSecond * elapsed / Math.max(Math.cos(particle.latitude * Math.PI / 180), .45);
+      particle.latitude += wind.v * visualDegreesPerSecond * elapsed;
+      particle.age += 1;
+      const next = map.project([particle.longitude, particle.latitude]);
+      if (next.x < -30 || next.x > width + 30 || next.y < -30 || next.y > height + 30) {
+        resetWindParticle(particle);
+        return;
+      }
+      if (particle.previous) {
+        const strength = Math.max(0, Math.min(1, (wind.speed - speedRange[0]) / Math.max(speedRange[1] - speedRange[0], .1)));
+        const red = Math.round(91 + 145 * strength);
+        const green = Math.round(197 + 45 * strength);
+        const blue = Math.round(202 - 27 * strength);
+        context.beginPath();
+        context.moveTo(particle.previous.x, particle.previous.y);
+        context.lineTo(next.x, next.y);
+        context.strokeStyle = `rgba(${red}, ${green}, ${blue}, ${.25 + strength * .58})`;
+        context.lineWidth = .55 + strength * 1.35;
+        context.stroke();
+      }
+      particle.previous = { x: next.x, y: next.y };
+    });
+    windAnimationFrame = requestAnimationFrame(animate);
+  };
+  windAnimationFrame = requestAnimationFrame(animate);
+}
+
+function toggleSpreadWind(force) {
+  const nextEnabled = typeof force === 'boolean' ? force : !spreadWindEnabled;
+  if (nextEnabled === spreadWindEnabled) return;
+  spreadWindEnabled = nextEnabled;
+  if (spreadWindEnabled) selectedSpreadModelId = 'coupled';
+  $('#spread-wind-toggle')?.setAttribute('aria-pressed', String(spreadWindEnabled));
+  updateSpreadMap();
+  startWindAnimation();
+}
+
 function renderSpreadBenchmark() {
   const container = $('#spread-benchmark');
   if (!container || !benchmarkBundle.models?.length) return;
@@ -355,9 +560,10 @@ function renderSpreadLab() {
     }).join('');
   }
   const selected = spreadModel();
-  if ($('#spread-model-group')) $('#spread-model-group').textContent = selected?.group || 'MODEL';
+  if ($('#spread-model-group')) $('#spread-model-group').textContent = spreadWindEnabled ? 'LANTERNTRACE + WIND' : selected?.group || 'MODEL';
   if ($('#spread-grid-size-label')) $('#spread-grid-size-label').textContent = `${spreadGridSize}°`;
   if ($('#spread-grid-size')) $('#spread-grid-size').value = spreadGridSizes.indexOf(spreadGridSize);
+  $('#spread-wind-toggle')?.setAttribute('aria-pressed', String(spreadWindEnabled));
 }
 
 function renderSpreadTimeline() {
@@ -378,10 +584,11 @@ function renderSpreadTimeline() {
       : roundedYear;
   }
   const phase = spreadTimelinePhase();
+  const modelLabel = `${spreadModel()?.name || 'MODEL'}${spreadWindEnabled ? ' + average wind' : ''}`;
   const phaseLabel = spreadSimulationPlaying
-    ? `SIMULATING · ${spreadModel()?.name || 'MODEL'}`
+    ? `SIMULATING · ${modelLabel}`
     : phase === 'predicted'
-    ? `PREDICTED · ${spreadModel()?.name || 'MODEL'}`
+    ? `PREDICTED · ${modelLabel}`
     : phase === 'present'
       ? 'PRESENT · PARTIAL OBSERVATIONS'
       : 'OBSERVED · POPULATION-ADJUSTED';
@@ -431,7 +638,7 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
   const timeDriven = spreadView === 'signal' || spreadView === 'scenario';
   const predicted = spreadTimelineYear > spreadPresentYear;
   if ($('#spread-hud-title')) $('#spread-hud-title').textContent = timeDriven
-    ? predicted ? `${spreadModel()?.name || 'Model'} predicted pressure` : 'Population-adjusted observed signal'
+    ? predicted ? `${spreadModel()?.name || 'Model'}${spreadWindEnabled ? ' + wind' : ''} predicted pressure` : 'Population-adjusted observed signal'
     : profile.hud;
   if ($('#spread-hud-year')) $('#spread-hud-year').textContent = spreadTimelineYear;
   if ($('#spread-grid-label')) $('#spread-grid-label').textContent = `NATIONWIDE ${spreadGridSize}° GRID`;
@@ -441,7 +648,7 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
   if ($('#spread-hud-description')) {
     const timeDescription = timeDriven
       ? predicted
-        ? `The ${spreadTimelineYear} height is a resistance-weighted physics solution at ${spreadGridSize}° resolution. Climate controls establishment; R = 1/(climate × terrain) controls movement. R = 1 is the ideal baseline. This is not a calibrated forecast.`
+        ? `The ${spreadTimelineYear} height is a resistance-weighted physics solution at ${spreadGridSize}° resolution.${spreadWindEnabled ? ' NOAA 1991–2020 mean wind adds the observed upwind adult-flight response.' : ''} Climate controls establishment; R = 1/(climate × terrain) controls movement. R = 1 is the ideal baseline. This is not a calibrated forecast.`
         : `The ${spreadTimelineYear} height uses cumulative dated reports stabilized by population${spreadTimelineYear === spreadPresentYear ? `; observations are partial through ${spreadHistory.metadata?.lastObservedDate || 'the latest snapshot'}` : ''}.`
       : `${profile.description} This factor surface is static while the timeline moves.`;
     $('#spread-hud-description').textContent = `${timeDescription} Cells with 50% or less U.S. land are forced to zero.`;
@@ -479,6 +686,10 @@ function selectSpreadView(view) {
 
 function selectSpreadModel(modelId) {
   if (!spreadModel(modelId)) return;
+  if (modelId !== 'coupled' && spreadWindEnabled) {
+    spreadWindEnabled = false;
+    stopWindAnimation({ clear: true });
+  }
   selectedSpreadModelId = modelId;
   selectedSpreadCell = null;
   selectedSpreadSourceCell = null;
@@ -2209,14 +2420,19 @@ function switchSection(section) {
   else updateModelComparison();
   updateBenchmarkMap();
   if (section === 'methods' && benchmarkActive()) focusBenchmarkOverview();
-  if (section === 'spread') focusSpreadOverview();
-  else if (map && map.getProjection()?.type !== 'globe') {
-    map.setProjection({ type: 'globe' });
-    if (section === 'methods' && benchmarkActive()) {
-      focusBenchmarkOverview();
-      map.easeTo({ pitch: physicsViewEnabled ? 43 : 0, bearing: physicsViewEnabled ? -12 : 0, duration: 650 });
-    } else {
-      map.easeTo({ pitch: 0, bearing: 0, center: [-75.5, 40.7], zoom: 4.1, duration: 650 });
+  if (section === 'spread') {
+    focusSpreadOverview();
+    startWindAnimation();
+  } else {
+    stopWindAnimation({ clear: true });
+    if (map && map.getProjection()?.type !== 'globe') {
+      map.setProjection({ type: 'globe' });
+      if (section === 'methods' && benchmarkActive()) {
+        focusBenchmarkOverview();
+        map.easeTo({ pitch: physicsViewEnabled ? 43 : 0, bearing: physicsViewEnabled ? -12 : 0, duration: 650 });
+      } else {
+        map.easeTo({ pitch: 0, bearing: 0, center: [-75.5, 40.7], zoom: 4.1, duration: 650 });
+      }
     }
   }
   syncForecastSettingsUI();
@@ -2349,6 +2565,7 @@ function setupInteractions() {
   $$('.topbar-section').forEach((button) => button.addEventListener('click', () => switchSection(button.dataset.section)));
   $$('[data-spread-view]').forEach((button) => button.addEventListener('click', () => selectSpreadView(button.dataset.spreadView)));
   $$('[data-spread-display]').forEach((button) => button.addEventListener('click', () => selectSpreadDisplayMode(button.dataset.spreadDisplay)));
+  $('#spread-wind-toggle')?.addEventListener('click', () => toggleSpreadWind());
   $('#spread-grid-size')?.addEventListener('input', (event) => setSpreadGridSize(event.target.value));
   $('#spread-model-options')?.addEventListener('click', (event) => {
     const button = event.target.closest('[data-spread-model]');
@@ -2470,7 +2687,7 @@ function setupInteractions() {
     setLabMode(next);
     $(`#${next}-mode`)?.focus();
   });
-  document.addEventListener('visibilitychange', () => { startCorridorAnimation(); startPhysicsAnimation(); });
+  document.addEventListener('visibilitychange', () => { startCorridorAnimation(); startPhysicsAnimation(); startWindAnimation(); });
   $('#model-ranking')?.addEventListener('click', (event) => {
     const button = event.target.closest('[data-model-id]');
     if (button) selectDiffusionModel(button.dataset.modelId);
