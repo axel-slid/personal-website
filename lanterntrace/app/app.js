@@ -438,13 +438,15 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
 function focusSpreadOverview() {
   if (!map || !spreadActive()) return;
   const sidebarWidth = $('.spread-only .sidebar')?.getBoundingClientRect().width || 0;
-  map.setProjection({ type: 'mercator' });
-  map.fitBounds([[-125, 24], [-66, 50]], {
-    padding: { top: 34, right: 28, bottom: 118, left: sidebarWidth + 28 },
-    duration: 0,
-    maxZoom: 3.15,
+  map.setProjection({ type: 'globe' });
+  map.easeTo({
+    center: [-98, 38],
+    zoom: 1.85,
+    pitch: 0,
+    bearing: -8,
+    padding: { top: 20, right: 20, bottom: 102, left: sidebarWidth + 20 },
+    duration: 700,
   });
-  map.easeTo({ zoom: Math.max(1.6, map.getZoom() - .05), pitch: 34, bearing: -6, duration: 650 });
 }
 
 function selectSpreadView(view) {
@@ -1977,7 +1979,7 @@ function toggleSettingsPanel(force) {
 }
 
 function initMap() {
-  map = new maplibregl.Map({ container: 'map', style: 'https://tiles.openfreemap.org/styles/dark', center: [-75.5, 40.7], zoom: 4.1, maxZoom: 15, minZoom: 1.6, attributionControl: false, dragRotate: false });
+  map = new maplibregl.Map({ container: 'map', style: 'https://demotiles.maplibre.org/globe.json', center: [-98, 38], zoom: 1.85, maxZoom: 15, minZoom: .65, attributionControl: false, dragRotate: false });
   map.on('styleimagemissing', ({ id }) => {
     if (!id.startsWith('circle-') || map.hasImage(id)) return;
     const size = 32;
@@ -1998,8 +2000,9 @@ function initMap() {
     if (mapLayersAdded) return;
     mapLayersAdded = true;
     map.setProjection({ type: 'globe' });
-    map.jumpTo({ center: [-75.5, 40.7], zoom: 4.1 });
+    map.jumpTo({ center: [-98, 38], zoom: 1.85 });
     tintBaseMapDarkGreen();
+    configureGlobeSky();
     updateGlobeAtmosphere();
     addMapLayers();
     startCorridorAnimation();
@@ -2027,6 +2030,7 @@ function initMap() {
   });
   map.on('resize', updateGlobeAtmosphere);
   map.on('zoom', updateGlobeAtmosphere);
+  map.on('move', updateGlobeAtmosphere);
   map.on('zoomend', () => {
     if ((playing || isTimelineScrubbing) && map.getZoom() > timelineOverviewZoom) ensureTimelineOverview();
   });
@@ -2036,6 +2040,10 @@ function tintBaseMapDarkGreen() {
   const styleLayers = map.getStyle().layers || [];
   styleLayers.forEach((layer) => {
     const sourceLayer = layer['source-layer'] || '';
+    if (document.querySelector('.spread-only') && layer.id === 'geolines') {
+      map.setLayoutProperty(layer.id, 'visibility', 'none');
+      return;
+    }
     if (layer.type === 'background') {
       map.setPaintProperty(layer.id, 'background-color', '#04110b');
       return;
@@ -2058,9 +2066,26 @@ function tintBaseMapDarkGreen() {
       return;
     }
     if (layer.type === 'symbol') {
+      if (document.querySelector('.spread-only')) {
+        map.setLayoutProperty(layer.id, 'visibility', 'none');
+        return;
+      }
       if (map.getPaintProperty(layer.id, 'text-color') !== undefined) map.setPaintProperty(layer.id, 'text-color', '#769786');
       if (map.getPaintProperty(layer.id, 'text-halo-color') !== undefined) map.setPaintProperty(layer.id, 'text-halo-color', '#06110c');
     }
+  });
+}
+
+function configureGlobeSky() {
+  if (!map?.setSky) return;
+  map.setSky({
+    'sky-color': 'rgba(1, 3, 9, 0)',
+    'horizon-color': 'rgba(1, 3, 9, 0)',
+    'fog-color': 'rgba(1, 3, 9, 0)',
+    'sky-horizon-blend': 0,
+    'horizon-fog-blend': 0,
+    'fog-ground-blend': 0,
+    'atmosphere-blend': 0,
   });
 }
 
@@ -2070,11 +2095,17 @@ function updateGlobeAtmosphere() {
   const width = stage.clientWidth;
   const height = stage.clientHeight;
   const globeDiameter = (512 * (2 ** map.getZoom())) / Math.PI;
+  const padding = map.getPadding?.() || { top: 0, right: 0, bottom: 0, left: 0 };
+  const centerX = padding.left + (width - padding.left - padding.right) / 2;
+  const centerY = padding.top + (height - padding.top - padding.bottom) / 2;
   const contourFit = width / globeDiameter;
   const rimOpacity = stage.classList.contains('globe-mode') ? Math.max(0, Math.min(1, (contourFit - .98) / .08)) : 0;
   stage.style.setProperty('--globe-size', `${globeDiameter}px`);
-  stage.style.setProperty('--globe-left', `${(width - globeDiameter) / 2}px`);
-  stage.style.setProperty('--globe-top', `${(height - globeDiameter) / 2}px`);
+  stage.style.setProperty('--globe-left', `${centerX - globeDiameter / 2}px`);
+  stage.style.setProperty('--globe-top', `${centerY - globeDiameter / 2}px`);
+  stage.style.setProperty('--globe-center-x', `${centerX}px`);
+  stage.style.setProperty('--globe-center-y', `${centerY}px`);
+  stage.style.setProperty('--globe-radius', `${globeDiameter / 2}px`);
   stage.style.setProperty('--globe-rim-opacity', rimOpacity.toFixed(3));
   stage.classList.toggle('globe-rim-visible', rimOpacity > .01);
 }
@@ -2089,20 +2120,21 @@ function createStarfield() {
     [12, 91, 6, .74], [4, 59, 3, .9], [18, 49, 2, .8], [94, 57, 3, .78], [81, 45, 2, .72]
   ];
   let seed = 17;
-  for (let index = 0; index < 72; index += 1) {
+  for (let index = 0; index < 260; index += 1) {
     seed = (seed * 9301 + 49297) % 233280;
     const x = 3 + (seed / 233280) * 94;
     seed = (seed * 9301 + 49297) % 233280;
     const y = 3 + (seed / 233280) * 94;
-    stars.push([x, y, index % 9 === 0 ? 3 : 1.5, index % 4 === 0 ? .9 : .64]);
+    stars.push([x, y, index % 17 === 0 ? 2.7 : 1.35, index % 5 === 0 ? .92 : .68]);
   }
   stars.forEach(([x, y, size, opacity], index) => {
     const star = document.createElement('i');
     star.className = `star star-${index % 3}`;
     star.style.left = `${x}%`;
     star.style.top = `${y}%`;
-    star.style.width = `${size}px`;
-    star.style.height = `${size}px`;
+    const renderedSize = index < 25 ? Math.min(size, 3) : size;
+    star.style.width = `${renderedSize}px`;
+    star.style.height = `${renderedSize}px`;
     star.style.opacity = opacity;
     star.style.animationDelay = `${(index % 7) * .45}s`;
     container.appendChild(star);

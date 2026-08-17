@@ -1071,3 +1071,54 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
   .spread-display-toggle { right: 10px; }
   .spread-display-toggle button { min-width: 76px; padding-inline: 9px; }
 }
+
+/* True globe presentation with a masked deep-space galaxy behind Earth. */
+.spread-only .map-stage { background: #01030a; }
+.spread-only .map-stage.globe-mode::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  display: block;
+  background:
+    radial-gradient(ellipse at 79% 16%, rgba(73, 105, 177, .16), transparent 20%),
+    radial-gradient(ellipse at 67% 81%, rgba(115, 66, 145, .13), transparent 23%),
+    radial-gradient(ellipse at 27% 70%, rgba(35, 112, 122, .11), transparent 19%),
+    linear-gradient(127deg, transparent 31%, rgba(75, 99, 154, .07) 39%, rgba(189, 197, 226, .18) 48%, rgba(104, 68, 137, .085) 56%, transparent 66%);
+  filter: blur(25px) saturate(1.12);
+  opacity: .72;
+  pointer-events: none;
+  mask-image: radial-gradient(circle var(--globe-radius) at var(--globe-center-x) var(--globe-center-y), transparent 0 91%, rgba(0, 0, 0, .28) 100%, #000 114%);
+  -webkit-mask-image: radial-gradient(circle var(--globe-radius) at var(--globe-center-x) var(--globe-center-y), transparent 0 91%, rgba(0, 0, 0, .28) 100%, #000 114%);
+}
+.spread-only .map-stage.globe-mode::before {
+  position: absolute;
+  z-index: 2;
+  top: var(--globe-top);
+  left: var(--globe-left);
+  display: block;
+  width: var(--globe-size);
+  height: var(--globe-size);
+  border: 1px solid rgba(132, 229, 198, .18);
+  border-radius: 50%;
+  background: transparent;
+  filter: none;
+  mix-blend-mode: normal;
+  opacity: 1;
+  box-shadow: 0 0 3px rgba(151, 238, 218, .28), 0 0 12px rgba(75, 185, 164, .16), 0 0 28px rgba(75, 116, 184, .08), inset -18px -12px 40px rgba(0, 0, 0, .2);
+  content: '';
+  pointer-events: none;
+}
+.spread-only .starfield {
+  z-index: 2;
+  opacity: .92;
+  mix-blend-mode: screen;
+  mask-image: radial-gradient(circle var(--globe-radius) at var(--globe-center-x) var(--globe-center-y), transparent 0 93%, rgba(0, 0, 0, .25) 101%, #000 116%);
+  -webkit-mask-image: radial-gradient(circle var(--globe-radius) at var(--globe-center-x) var(--globe-center-y), transparent 0 93%, rgba(0, 0, 0, .25) 101%, #000 116%);
+}
+.spread-only .starfield::before,
+.spread-only .starfield::after { position: absolute; content: ''; pointer-events: none; }
+.spread-only .starfield::before { inset: -28% -12%; background: linear-gradient(128deg, transparent 36%, rgba(107, 133, 194, .08) 42%, rgba(222, 228, 244, .19) 48%, rgba(130, 83, 167, .085) 54%, transparent 62%); filter: blur(11px); opacity: .88; transform: rotate(-3deg); }
+.spread-only .starfield::after { inset: 0; background: radial-gradient(circle at 84% 23%, rgba(142, 177, 226, .14), transparent 7%), radial-gradient(circle at 25% 80%, rgba(140, 86, 175, .12), transparent 8%); filter: blur(10px); }
+.spread-only .starfield .star { background: #e8f4ff; filter: drop-shadow(0 0 3px rgba(151, 197, 255, .78)); }
+.spread-only .starfield .star-1 { background: #d8c8f1; filter: drop-shadow(0 0 3px rgba(168, 129, 219, .7)); }
+.spread-only .starfield .star-2 { background: #fff2c4; filter: drop-shadow(0 0 3px rgba(255, 220, 135, .68)); }
