@@ -48,17 +48,13 @@
         </section>
 
         <section class="sidebar-content" id="spread-panel">
-          <div class="panel-heading"><div><span class="eyebrow">REPORTS → FACTORS → SPREAD</span><h2>Understand the model</h2></div><span class="info-dot">i</span></div>
-          <p class="spread-intro">Use the same nationwide grid to separate what was reported, where the environment is suitable, and how alternative spread mechanisms move the front.</p>
-
+          <div class="spread-mode-heading"><span>MAP MODE</span><b>Choose what the grid shows</b></div>
           <div class="spread-view-tabs" role="group" aria-label="Nationwide grid view">
-            <button class="active" type="button" data-spread-view="signal" aria-pressed="true"><span>01</span><b>Adjusted fly signal</b><small>reports ÷ population</small></button>
-            <button type="button" data-spread-view="climate" aria-pressed="false"><span>02</span><b>Ideal climate</b><small>temperature + moisture</small></button>
-            <button type="button" data-spread-view="geography" aria-pressed="false"><span>03</span><b>Ideal geography</b><small>elevation + slope</small></button>
-            <button type="button" data-spread-view="scenario" aria-pressed="false"><span>04</span><b>Invasion physics</b><small>compare mechanisms</small></button>
+            <button class="active" type="button" data-spread-view="signal" aria-pressed="true"><span>●</span><b>Fly signal</b><small>population-adjusted reports</small></button>
+            <button type="button" data-spread-view="climate" aria-pressed="false"><span>☀</span><b>Climate</b><small>temperature + moisture</small></button>
+            <button type="button" data-spread-view="geography" aria-pressed="false"><span>⌁</span><b>Geography</b><small>elevation + slope</small></button>
+            <button type="button" data-spread-view="scenario" aria-pressed="false"><span>∿</span><b>Physics</b><small>30-year spread simulation</small></button>
           </div>
-
-          <div id="spread-view-explanation" class="spread-view-explanation" aria-live="polite"></div>
 
           <div class="spread-grid-size-control">
             <div><span>GRID CELL SIZE</span><b id="spread-grid-size-label">1°</b></div>
@@ -71,17 +67,6 @@
             <div class="spread-control-heading"><span>INVASION MECHANISM</span><b id="spread-model-group">LANTERNTRACE</b></div>
             <div id="spread-model-options" class="spread-model-options" role="group" aria-label="Spread model"></div>
           </div>
-
-          <div class="normalization-card">
-            <span>WHY NORMALIZE?</span>
-            <div><i>1</i><p><b>Count reports</b><small>Public sightings in each 1° cell</small></p></div>
-            <div><i>2</i><p><b>Stabilize by population</b><small>Reports per 100,000 with a national-rate prior</small></p></div>
-            <div><i>3</i><p><b>Extrapolate locally</b><small>Smooth neighboring cells to reduce reporting gaps</small></p></div>
-            <p class="normalization-warning">Height is a relative population-adjusted signal. Presence-only reports cannot estimate an absolute number of lanternflies.</p>
-          </div>
-
-          <div id="spread-benchmark" class="spread-benchmark" aria-label="Conventional and LanternTrace model comparison"></div>
-          <p class="small-note">Nationwide factor maps use 2024 Census county population estimates, WorldClim 2.1, 2025 Census land boundaries, and the frozen GBIF report snapshot. Model skill is reported only for the Northeast frozen first-report benchmark.</p>
         </section>
 
         <section class="sidebar-content hidden" id="methods-panel">
@@ -148,12 +133,6 @@
           <small id="physics-hud-state">Animated threshold sweep over the frozen relative-pressure surface.</small>
           <p>Diagnostic visualization of model score fields—not abundance, calibrated velocity, or a literal time forecast.</p>
         </section>
-        <section id="spread-hud" class="spread-hud hidden" aria-label="Nationwide grid legend">
-          <div class="spread-hud-head"><div><span id="spread-grid-label">NATIONWIDE 1° GRID</span><b id="spread-hud-title">Population-adjusted report signal</b></div><strong id="spread-hud-year">2025</strong></div>
-          <div class="spread-scale"><i></i><div><span>lower</span><span id="spread-scale-label">relative fly signal</span><span>higher</span></div></div>
-          <p id="spread-hud-description">Grid height shows a stabilized, population-adjusted report signal—not a literal insect count.</p>
-          <div id="spread-cell-detail" class="spread-cell-detail"><b>Select a grid cell</b><span>Click a column to inspect reports, population, climate, and terrain factors.</span></div>
-        </section>
         <section id="benchmark-status" class="benchmark-status hidden" aria-live="polite"></section>
         <section id="map-state" class="map-state" aria-live="polite"><b>Loading map</b><span>Preparing scientific layers…</span></section>
         <div id="export-status" class="export-status hidden" role="status" aria-live="polite"></div>
@@ -172,13 +151,13 @@
 
         <section id="spread-timeline-dock" class="spread-timeline-dock" aria-label="Observed and predicted spread timeline">
           <div class="spread-timeline-heading">
-            <div><span>INVASION TIMELINE</span><b id="spread-timeline-year">2026</b></div>
-            <strong id="spread-timeline-phase">PRESENT · PARTIAL OBSERVATIONS</strong>
+            <button id="spread-timeline-play" type="button" aria-label="Play 30-year physics simulation" aria-pressed="false"><i>▶</i><span>PLAY PHYSICS</span></button>
+            <div><div><span>YEAR</span><b id="spread-timeline-year">2026</b></div><strong id="spread-timeline-phase">PRESENT · PARTIAL OBSERVATIONS</strong></div>
           </div>
           <div class="spread-timeline-track">
-            <div class="spread-timeline-regions" aria-hidden="true"><span>OBSERVED</span><span>PREDICTED</span></div>
-            <input id="spread-timeline" type="range" min="2019" max="2035" value="2026" step="1" aria-label="Year from 2019 through present and predicted 2035" />
-            <div class="spread-timeline-ticks" aria-hidden="true"><span>2019</span><span>2022</span><span>2026<small>present</small></span><span>2030</span><span>2035</span></div>
+            <div class="spread-timeline-regions" aria-hidden="true"><span>OBSERVED</span><span>30-YEAR PHYSICS SIMULATION</span></div>
+            <input id="spread-timeline" type="range" min="2019" max="2056" value="2026" step="0.05" aria-label="Year from 2019 through present and a 30-year physics simulation to 2056" />
+            <div class="spread-timeline-ticks" aria-hidden="true"><span>2019</span><span>2026<small>present</small></span><span>2036<small>+10 yr</small></span><span>2046<small>+20 yr</small></span><span>2056<small>+30 yr</small></span></div>
           </div>
         </section>
 
@@ -193,6 +172,7 @@
     <script src="./generated/frozen-benchmark.js"></script>
     <script src="./generated/spread-explainer.js"></script>
     <script src="./generated/spread-history.js"></script>
+    <script src="./generated/spread-long-horizon.js"></script>
     <script src="./generated/spread-grid-pyramid.js"></script>
     <script src="./app.js"></script>
   </body>

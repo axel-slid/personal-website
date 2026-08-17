@@ -7,6 +7,7 @@ const modelBundle = window.LanternTraceModels || { metadata: {}, variants: [], t
 const benchmarkBundle = window.LanternTraceBenchmark || { metadata: {}, models: [], years: {} };
 const spreadBundle = window.LanternTraceSpread || { metadata: {}, models: [], cells: [] };
 const spreadHistory = window.LanternTraceSpreadHistory || { metadata: {}, signals: {}, rates: {}, reports: {} };
+const spreadLongHorizon = window.LanternTraceSpreadLongHorizon || { metadata: {}, models: {} };
 const spreadGridPyramid = window.LanternTraceSpreadGridPyramid || { metadata: {}, levels: {} };
 const embedMode = new URLSearchParams(window.location.search).get('embed');
 const physicsEmbedMode = embedMode === 'physics' || embedMode === 'hero';
@@ -28,8 +29,12 @@ let spreadView = 'signal';
 let selectedSpreadModelId = 'coupled';
 const spreadTimelineStartYear = 2019;
 const spreadPresentYear = spreadHistory.metadata?.presentYear || 2026;
-const spreadTimelineEndYear = Math.max(...(spreadBundle.metadata?.years || [2035]));
+const spreadTimelineEndYear = spreadLongHorizon.metadata?.endYear || 2056;
 let spreadTimelineYear = spreadPresentYear;
+let spreadSimulationPlaying = false;
+let spreadSimulationFrame;
+let spreadSimulationLastTime = 0;
+let spreadSimulationLastRender = 0;
 let selectedSpreadCell = null;
 let selectedSpreadSourceCell = null;
 let selectedSpreadValue = null;
@@ -187,9 +192,23 @@ function spreadCellValue(cell, sourceIndex = spreadCellIndices.get(`${cell?.r}:$
   if (spreadView === 'climate') return cell.climate || 0;
   if (spreadView === 'geography') return cell.geography || 0;
   if (spreadTimelineYear <= spreadPresentYear) {
-    return spreadHistory.signals?.[String(spreadTimelineYear)]?.[sourceIndex] ?? cell.signal ?? 0;
+    const observedYear = Math.max(spreadTimelineStartYear, Math.min(spreadPresentYear, Math.round(spreadTimelineYear)));
+    return spreadHistory.signals?.[String(observedYear)]?.[sourceIndex] ?? cell.signal ?? 0;
   }
-  return cell.models?.[selectedSpreadModelId]?.[spreadYearIndex()] || 0;
+  const frames = spreadLongHorizon.models?.[selectedSpreadModelId];
+  const years = spreadLongHorizon.metadata?.years || [];
+  if (!frames?.length || !years.length) return cell.models?.[selectedSpreadModelId]?.[spreadYearIndex()] || 0;
+  const firstYear = years[0];
+  const clampedYear = Math.max(firstYear, Math.min(spreadTimelineEndYear, spreadTimelineYear));
+  const lowerIndex = Math.max(0, Math.min(frames.length - 1, Math.floor(clampedYear) - firstYear));
+  const upperIndex = Math.min(frames.length - 1, lowerIndex + 1);
+  const blend = clampedYear - Math.floor(clampedYear);
+  let lowerValue = frames[lowerIndex]?.[sourceIndex] ?? 0;
+  const upperValue = frames[upperIndex]?.[sourceIndex] ?? lowerValue;
+  if (clampedYear < spreadPresentYear + 1) {
+    lowerValue = spreadHistory.signals?.[String(spreadPresentYear)]?.[sourceIndex] ?? lowerValue;
+  }
+  return lowerValue + (upperValue - lowerValue) * blend;
 }
 
 function spreadGridData() {
@@ -260,9 +279,6 @@ function renderSpreadBenchmark() {
 }
 
 function renderSpreadLab() {
-  const profile = spreadViewProfiles[spreadView] || spreadViewProfiles.signal;
-  const explanation = $('#spread-view-explanation');
-  if (explanation) explanation.innerHTML = `<span>${profile.kicker}</span><b>${profile.title}</b><p>${profile.description}</p>`;
   $$('[data-spread-view]').forEach((button) => {
     const active = button.dataset.spreadView === spreadView;
     button.classList.toggle('active', active);
@@ -277,7 +293,6 @@ function renderSpreadLab() {
   if ($('#spread-model-group')) $('#spread-model-group').textContent = selected?.group || 'MODEL';
   if ($('#spread-grid-size-label')) $('#spread-grid-size-label').textContent = `${spreadGridSize}°`;
   if ($('#spread-grid-size')) $('#spread-grid-size').value = spreadGridSizes.indexOf(spreadGridSize);
-  renderSpreadBenchmark();
 }
 
 function renderSpreadTimeline() {
@@ -291,15 +306,25 @@ function renderSpreadTimeline() {
   const dock = $('#spread-timeline-dock');
   dock?.style.setProperty('--spread-progress', `${progress * 100}%`);
   dock?.style.setProperty('--spread-observed-share', `${observedShare * 100}%`);
-  if ($('#spread-timeline-year')) $('#spread-timeline-year').textContent = spreadTimelineYear;
+  if ($('#spread-timeline-year')) $('#spread-timeline-year').textContent = spreadSimulationPlaying ? spreadTimelineYear.toFixed(1) : Math.round(spreadTimelineYear);
   const phase = spreadTimelinePhase();
-  const phaseLabel = phase === 'predicted'
+  const phaseLabel = spreadSimulationPlaying
+    ? `SIMULATING · ${spreadModel()?.name || 'MODEL'}`
+    : phase === 'predicted'
     ? `PREDICTED · ${spreadModel()?.name || 'MODEL'}`
     : phase === 'present'
       ? 'PRESENT · PARTIAL OBSERVATIONS'
       : 'OBSERVED · POPULATION-ADJUSTED';
   if ($('#spread-timeline-phase')) $('#spread-timeline-phase').textContent = phaseLabel;
   dock?.setAttribute('data-phase', phase);
+  dock?.classList.toggle('playing', spreadSimulationPlaying);
+  const playButton = $('#spread-timeline-play');
+  if (playButton) {
+    playButton.setAttribute('aria-pressed', String(spreadSimulationPlaying));
+    playButton.setAttribute('aria-label', spreadSimulationPlaying ? 'Pause physics simulation' : 'Play 30-year physics simulation');
+    playButton.querySelector('i').textContent = spreadSimulationPlaying ? 'Ⅱ' : '▶';
+    playButton.querySelector('span').textContent = spreadSimulationPlaying ? 'PAUSE' : spreadTimelineYear >= spreadTimelineEndYear ? 'REPLAY PHYSICS' : 'PLAY PHYSICS';
+  }
 }
 
 function renderSpreadCellDetail(cellId = selectedSpreadSourceCell) {
@@ -331,7 +356,7 @@ function renderSpreadCellDetail(cellId = selectedSpreadSourceCell) {
     <span>${spreadTimelineYear} ${valueLabel}: <b>${Math.round(value * 100)} / 100</b>. Stabilized observed rate: ${stabilizedRate.toFixed(1)} per 100k. Land share: ${Math.round((selectedSpreadLandFraction ?? 1) * 100)}%.</span>`;
 }
 
-function updateSpreadMap() {
+function updateSpreadMap({ timelineOnly = false } = {}) {
   if (!map?.getSource('lt-spread-source')) return;
   const visible = spreadActive();
   map.getSource('lt-spread-source').setData(spreadGridData());
@@ -365,15 +390,16 @@ function updateSpreadMap() {
     $('#spread-hud-description').textContent = `${timeDescription} Cells with 50% or less U.S. land are forced to zero.`;
   }
   renderSpreadCellDetail();
-  renderSpreadLab();
+  if (!timelineOnly) renderSpreadLab();
   renderSpreadTimeline();
 }
 
 function focusSpreadOverview() {
   if (!map || !spreadActive()) return;
+  const sidebarWidth = $('.spread-only .sidebar')?.getBoundingClientRect().width || 0;
   map.setProjection({ type: 'mercator' });
   map.fitBounds([[-125, 24], [-66, 50]], {
-    padding: { top: 42, right: 36, bottom: 118, left: 36 },
+    padding: { top: 34, right: 28, bottom: 118, left: sidebarWidth + 28 },
     duration: 0,
     maxZoom: 3.15,
   });
@@ -382,6 +408,7 @@ function focusSpreadOverview() {
 
 function selectSpreadView(view) {
   if (!spreadViewProfiles[view]) return;
+  if (spreadSimulationPlaying && view !== 'scenario' && view !== 'signal') stopSpreadSimulation();
   spreadView = view;
   selectedSpreadCell = null;
   selectedSpreadSourceCell = null;
@@ -400,15 +427,53 @@ function selectSpreadModel(modelId) {
   updateSpreadMap();
 }
 
-function setSpreadTimelineYear(year) {
+function setSpreadTimelineYear(year, { timelineOnly = true } = {}) {
   const nextYear = Math.max(spreadTimelineStartYear, Math.min(spreadTimelineEndYear, Number(year)));
   if (!Number.isFinite(nextYear)) return;
   spreadTimelineYear = nextYear;
-  selectedSpreadCell = null;
-  selectedSpreadSourceCell = null;
   selectedSpreadValue = null;
-  selectedSpreadLandFraction = null;
+  updateSpreadMap({ timelineOnly });
+}
+
+function stopSpreadSimulation() {
+  spreadSimulationPlaying = false;
+  spreadSimulationLastTime = 0;
+  spreadSimulationLastRender = 0;
+  cancelAnimationFrame(spreadSimulationFrame);
+  renderSpreadTimeline();
+}
+
+function runSpreadSimulation(timestamp) {
+  if (!spreadSimulationPlaying) return;
+  if (!spreadSimulationLastTime) spreadSimulationLastTime = timestamp;
+  const elapsed = timestamp - spreadSimulationLastTime;
+  spreadSimulationLastTime = timestamp;
+  spreadTimelineYear = Math.min(spreadTimelineEndYear, spreadTimelineYear + elapsed / 650);
+  const renderInterval = spreadGridSize <= .25 ? 70 : spreadGridSize <= .5 ? 50 : 32;
+  if (timestamp - spreadSimulationLastRender >= renderInterval || spreadTimelineYear >= spreadTimelineEndYear) {
+    spreadSimulationLastRender = timestamp;
+    selectedSpreadValue = null;
+    updateSpreadMap({ timelineOnly: true });
+  }
+  if (spreadTimelineYear >= spreadTimelineEndYear) {
+    stopSpreadSimulation();
+    return;
+  }
+  spreadSimulationFrame = requestAnimationFrame(runSpreadSimulation);
+}
+
+function toggleSpreadSimulation() {
+  if (spreadSimulationPlaying) {
+    stopSpreadSimulation();
+    return;
+  }
+  if (spreadTimelineYear >= spreadTimelineEndYear || spreadTimelineYear < spreadPresentYear) spreadTimelineYear = spreadPresentYear;
+  if (spreadView !== 'scenario') spreadView = 'scenario';
+  spreadSimulationPlaying = true;
+  spreadSimulationLastTime = 0;
+  spreadSimulationLastRender = 0;
   updateSpreadMap();
+  spreadSimulationFrame = requestAnimationFrame(runSpreadSimulation);
 }
 
 function setSpreadGridSize(sliderIndex) {
@@ -2129,6 +2194,8 @@ function setupInteractions() {
     const button = event.target.closest('[data-spread-model]');
     if (button) selectSpreadModel(button.dataset.spreadModel);
   });
+  $('#spread-timeline-play')?.addEventListener('click', toggleSpreadSimulation);
+  $('#spread-timeline')?.addEventListener('pointerdown', stopSpreadSimulation);
   $('#spread-timeline')?.addEventListener('input', (event) => {
     const year = event.target.value;
     cancelAnimationFrame(pendingSpreadTimelineFrame);
