@@ -34,6 +34,8 @@ let selectedSpreadModelId = 'coupled';
 let spreadWindEnabled = true;
 let windAnimationFrame;
 let windAnimationLastTime = 0;
+let windInteractionLastDraw = 0;
+let windInteractionOffset = 0;
 let windParticles = [];
 let windCanvasWidth = 0;
 let windCanvasHeight = 0;
@@ -141,6 +143,7 @@ const benchmarkExplainRegions = [
 let snapshotIndex = latestObservedSnapshotIndex;
 let activeSection = 'spread';
 let map;
+let globeAtmosphereFrame;
 let playing = false;
 let timer;
 let animationLastFrame = 0;
@@ -443,7 +446,7 @@ function resizeWindCanvas() {
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
   if (!width || !height) return null;
-  const density = Math.min(window.devicePixelRatio || 1, 2);
+  const density = Math.min(window.devicePixelRatio || 1, 1.35);
   if (width !== windCanvasWidth || height !== windCanvasHeight) {
     windCanvasWidth = width;
     windCanvasHeight = height;
@@ -514,7 +517,7 @@ function startWindAnimation() {
   }
   const canvasState = resizeWindCanvas();
   if (!canvasState) return;
-  const desiredParticles = Math.max(900, Math.min(2100, Math.round(canvasState.width * canvasState.height / 900)));
+  const desiredParticles = Math.max(750, Math.min(1500, Math.round(canvasState.width * canvasState.height / 1200)));
   while (windParticles.length < desiredParticles) windParticles.push(resetWindParticle());
   if (windParticles.length > desiredParticles) windParticles.length = desiredParticles;
 
@@ -526,6 +529,11 @@ function startWindAnimation() {
     const elapsed = windAnimationLastTime ? Math.min((timestamp - windAnimationLastTime) / 1000, .06) : .016;
     windAnimationLastTime = timestamp;
     const mapMoving = map.isMoving();
+    if (mapMoving && timestamp - windInteractionLastDraw < 32) {
+      windAnimationFrame = requestAnimationFrame(animate);
+      return;
+    }
+    if (mapMoving) windInteractionLastDraw = timestamp;
     if (mapMoving) {
       context.clearRect(0, 0, width, height);
     } else {
@@ -535,11 +543,14 @@ function startWindAnimation() {
       context.globalCompositeOperation = 'source-over';
     }
     const speedRange = windClimatology.metadata?.speedRange || [0, 6.5];
-    windParticles.forEach((particle) => {
+    const interactionStep = mapMoving ? 3 : 1;
+    const interactionOffset = mapMoving ? windInteractionOffset : 0;
+    for (let particleIndex = interactionOffset; particleIndex < windParticles.length; particleIndex += interactionStep) {
+      const particle = windParticles[particleIndex];
       const wind = sampleWind(particle.longitude, particle.latitude);
       if (!wind || particle.age >= particle.maxAge) {
         resetWindParticle(particle);
-        return;
+        continue;
       }
       const current = map.project([particle.longitude, particle.latitude]);
       const visualDegreesPerSecond = .62;
@@ -549,7 +560,7 @@ function startWindAnimation() {
       const next = map.project([particle.longitude, particle.latitude]);
       if (next.x < -30 || next.x > width + 30 || next.y < -30 || next.y > height + 30) {
         resetWindParticle(particle);
-        return;
+        continue;
       }
       const segmentStart = mapMoving ? current : particle.previous;
       if (segmentStart) {
@@ -567,7 +578,8 @@ function startWindAnimation() {
         context.stroke();
       }
       particle.previous = { x: next.x, y: next.y };
-    });
+    }
+    if (mapMoving) windInteractionOffset = (windInteractionOffset + 1) % interactionStep;
     windAnimationFrame = requestAnimationFrame(animate);
   };
   windAnimationFrame = requestAnimationFrame(animate);
@@ -2479,9 +2491,20 @@ function initMap() {
       state.innerHTML = '<b>Basemap unavailable</b><span>Check the network connection, then restart. Scientific data remain unchanged.</span>';
     }
   });
-  map.on('resize', updateGlobeAtmosphere);
-  map.on('zoom', updateGlobeAtmosphere);
-  map.on('move', updateGlobeAtmosphere);
+  const scheduleGlobeAtmosphereUpdate = () => {
+    if (globeAtmosphereFrame) return;
+    globeAtmosphereFrame = requestAnimationFrame(() => {
+      globeAtmosphereFrame = null;
+      updateGlobeAtmosphere();
+    });
+  };
+  map.on('resize', scheduleGlobeAtmosphereUpdate);
+  map.on('zoom', scheduleGlobeAtmosphereUpdate);
+  map.on('move', scheduleGlobeAtmosphereUpdate);
+  map.on('moveend', () => {
+    windParticles.forEach((particle) => { particle.previous = null; });
+    scheduleGlobeAtmosphereUpdate();
+  });
   map.on('zoomend', () => {
     if ((playing || isTimelineScrubbing) && map.getZoom() > timelineOverviewZoom) ensureTimelineOverview();
   });
