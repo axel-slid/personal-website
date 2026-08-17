@@ -32,20 +32,20 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .back-link { justify-self: start; font-size: .78rem; font-weight: 700; }
 .back-link span { margin-right: .35rem; color: var(--accent); }
 .nav-mark { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid var(--line); border-radius: 50%; font-family: var(--mono); font-size: .55rem; letter-spacing: .08em; }
-.nav-book { justify-self: end; padding: .52rem .78rem; border: 1px solid var(--line); border-radius: 999px; font-family: var(--mono); font-size: .58rem; text-transform: uppercase; letter-spacing: .06em; }
+.nav-book { justify-self: end; padding: .52rem .78rem; border: 1px solid var(--line); border-radius: 999px; font-family: var(--mono); font-size: .58rem; letter-spacing: .02em; }
 .nav-book:hover { color: var(--bg); border-color: var(--accent); background: var(--accent); }
 
 main, footer { width: min(100% - 3rem, var(--max)); margin-inline: auto; }
 
 .intro { display: grid; grid-template-columns: minmax(320px, .78fr) minmax(0, 1.22fr); gap: clamp(2.5rem, 7vw, 8rem); align-items: center; min-height: min(860px, calc(100svh - 67px)); padding: 3.5rem 0 5rem; }
-.intro-copy > p, .booking-heading > p, .photos-heading > p { margin: 0 0 1.3rem; color: var(--accent); font-family: var(--mono); font-size: .58rem; text-transform: uppercase; letter-spacing: .12em; }
+.intro-copy > p, .booking-heading > p, .equipment-heading > p, .photos-heading > p { margin: 0 0 1.3rem; color: var(--accent); font-family: var(--mono); font-size: .62rem; letter-spacing: .02em; }
 .intro h1 { margin: 0; font-size: clamp(5rem, 10.5vw, 10rem); font-weight: 600; letter-spacing: -.09em; line-height: .73; }
 .intro h1 span { display: block; }
-.intro-copy > a { display: inline-flex; gap: .6rem; align-items: center; margin-top: 3rem; padding-bottom: .35rem; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: .66rem; text-decoration: none; text-transform: uppercase; letter-spacing: .06em; }
+.intro-copy > a { display: inline-flex; gap: .6rem; align-items: center; margin-top: 3rem; padding-bottom: .35rem; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: .66rem; text-decoration: none; letter-spacing: .02em; }
 .intro-copy > a span { color: var(--accent); }
 .intro-photo { min-width: 0; }
 .intro-photo img { width: 100%; max-height: 720px; aspect-ratio: 4 / 5; object-fit: cover; object-position: center; }
-.intro-photo figcaption, .photo figcaption { margin-top: .65rem; color: var(--muted); font-family: var(--mono); font-size: .52rem; text-transform: uppercase; letter-spacing: .08em; }
+.intro-photo figcaption, .photo figcaption { margin-top: .65rem; color: var(--muted); font-family: var(--mono); font-size: .55rem; letter-spacing: .02em; }
 
 .booking { scroll-margin-top: 5rem; display: grid; grid-template-columns: minmax(280px, .72fr) minmax(0, 1.28fr); gap: clamp(3rem, 9vw, 10rem); padding: 8rem 0; border-top: 1px solid var(--line); }
 .booking-heading { position: sticky; top: 6.5rem; align-self: start; }
@@ -57,7 +57,7 @@ main, footer { width: min(100% - 3rem, var(--max)); margin-inline: auto; }
 form { display: grid; grid-template-columns: 1fr 1fr; gap: 1.15rem 1rem; }
 .field { display: grid; gap: .45rem; }
 .field-wide { grid-column: 1 / -1; }
-.field label { color: var(--muted); font-family: var(--mono); font-size: .54rem; text-transform: uppercase; letter-spacing: .08em; }
+.field label { color: var(--muted); font-family: var(--mono); font-size: .57rem; letter-spacing: .01em; }
 .field input, .field select, .field textarea { width: 100%; min-width: 0; padding: .82rem .1rem; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; color: var(--ink); background: transparent; outline: 0; }
 .field input:focus, .field select:focus, .field textarea:focus { border-bottom-color: var(--accent); }
 .field input::placeholder, .field textarea::placeholder { color: #6f6b65; }
@@ -69,6 +69,13 @@ form button { grid-column: 1 / -1; display: flex; align-items: center; justify-c
 form button:hover { background: var(--accent); }
 form button:disabled { cursor: wait; opacity: .65; }
 .form-note { margin: .8rem 0 0; color: var(--muted); font-family: var(--mono); font-size: .5rem; }
+
+.equipment { display: grid; grid-template-columns: minmax(280px, .72fr) minmax(0, 1.28fr); gap: clamp(3rem, 9vw, 10rem); padding: 7rem 0; border-top: 1px solid var(--line); }
+.equipment h2 { max-width: 450px; margin: 0; font-size: clamp(3rem, 5.5vw, 6rem); font-weight: 600; letter-spacing: -.07em; line-height: .9; }
+.equipment-list { margin: 0; padding: 0; border-top: 1px solid var(--line); list-style: none; }
+.equipment-list li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 1.5rem; align-items: baseline; padding: 1.35rem 0; border-bottom: 1px solid var(--line); }
+.equipment-list span { color: var(--muted); font-family: var(--mono); font-size: .58rem; }
+.equipment-list strong { font-size: clamp(1rem, 1.8vw, 1.35rem); font-weight: 600; }
 
 .photos { padding: 8rem 0; border-top: 1px solid var(--line); }
 .photos-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 3rem; }
@@ -94,6 +101,7 @@ footer a:hover { color: var(--ink); }
   .intro-photo img { max-height: none; aspect-ratio: 5 / 4; }
   .booking { grid-template-columns: 1fr; gap: 3rem; }
   .booking-heading { position: static; }
+  .equipment { grid-template-columns: 1fr; gap: 3rem; }
   .photo-grid { gap-block: 2.5rem; }
   footer { grid-template-columns: 1fr; gap: .65rem; }
 }
@@ -107,11 +115,12 @@ footer a:hover { color: var(--ink); }
   .intro-copy > a { margin-top: 2.25rem; }
   .intro-photo { margin-top: 0; }
   .intro-photo img { aspect-ratio: 4 / 5; }
-  .booking, .photos { padding: 5.5rem 0; }
-  .booking h2, .photos h2 { font-size: clamp(2.9rem, 14vw, 4rem); }
+  .booking, .equipment, .photos { padding: 5.5rem 0; }
+  .booking h2, .equipment h2, .photos h2 { font-size: clamp(2.9rem, 14vw, 4rem); }
   form { grid-template-columns: 1fr; }
   .field, .field-wide, form button { grid-column: 1; }
   .photos-heading { display: block; }
+  .equipment-list li { grid-template-columns: 1fr; gap: .4rem; }
   .photo-grid { grid-template-columns: 1fr; }
   .photo-tall { grid-row: auto; }
   .photo-wide img { aspect-ratio: 4 / 3; }
