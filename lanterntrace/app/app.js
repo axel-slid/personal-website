@@ -31,7 +31,7 @@ let physicsAnimationLast = 0;
 let spreadView = 'scenario';
 let spreadDisplayMode = 'mesh';
 let selectedSpreadModelId = 'coupled';
-let spreadWindEnabled = true;
+let spreadWindEnabled = false;
 let windAnimationFrame;
 let windAnimationLastTime = 0;
 let windInteractionLastDraw = 0;
@@ -144,6 +144,9 @@ let snapshotIndex = latestObservedSnapshotIndex;
 let activeSection = 'spread';
 let map;
 let globeAtmosphereFrame;
+let globeAtmosphereLastUpdate = 0;
+let spreadInteractionRestoreTimer;
+let spreadInteractionLod = false;
 let playing = false;
 let timer;
 let animationLastFrame = 0;
@@ -446,7 +449,7 @@ function resizeWindCanvas() {
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
   if (!width || !height) return null;
-  const density = Math.min(window.devicePixelRatio || 1, 1.35);
+  const density = 1;
   if (width !== windCanvasWidth || height !== windCanvasHeight) {
     windCanvasWidth = width;
     windCanvasHeight = height;
@@ -517,7 +520,7 @@ function startWindAnimation() {
   }
   const canvasState = resizeWindCanvas();
   if (!canvasState) return;
-  const desiredParticles = Math.max(750, Math.min(1500, Math.round(canvasState.width * canvasState.height / 1200)));
+  const desiredParticles = Math.max(650, Math.min(1100, Math.round(canvasState.width * canvasState.height / 1600)));
   while (windParticles.length < desiredParticles) windParticles.push(resetWindParticle());
   if (windParticles.length > desiredParticles) windParticles.length = desiredParticles;
 
@@ -529,7 +532,7 @@ function startWindAnimation() {
     const elapsed = windAnimationLastTime ? Math.min((timestamp - windAnimationLastTime) / 1000, .06) : .016;
     windAnimationLastTime = timestamp;
     const mapMoving = map.isMoving();
-    if (mapMoving && timestamp - windInteractionLastDraw < 32) {
+    if (mapMoving && timestamp - windInteractionLastDraw < 48) {
       windAnimationFrame = requestAnimationFrame(animate);
       return;
     }
@@ -543,7 +546,7 @@ function startWindAnimation() {
       context.globalCompositeOperation = 'source-over';
     }
     const speedRange = windClimatology.metadata?.speedRange || [0, 6.5];
-    const interactionStep = mapMoving ? 3 : 1;
+    const interactionStep = mapMoving ? 5 : 1;
     const interactionOffset = mapMoving ? windInteractionOffset : 0;
     for (let particleIndex = interactionOffset; particleIndex < windParticles.length; particleIndex += interactionStep) {
       const particle = windParticles[particleIndex];
@@ -2435,7 +2438,8 @@ function toggleSettingsPanel(force) {
 }
 
 function initMap() {
-  map = new maplibregl.Map({ container: 'map', style: 'https://demotiles.maplibre.org/globe.json', center: [-98, 38], zoom: 1.85, maxZoom: 15, minZoom: -.6, attributionControl: false, dragRotate: false });
+  map = new maplibregl.Map({ container: 'map', style: 'https://demotiles.maplibre.org/globe.json', center: [-98, 38], zoom: 1.85, maxZoom: 15, minZoom: -.6, attributionControl: false, dragRotate: false, fadeDuration: 0, crossSourceCollisions: false });
+  map.setPixelRatio?.(1);
   map.on('styleimagemissing', ({ id }) => {
     if (!id.startsWith('circle-') || map.hasImage(id)) return;
     const size = 32;
@@ -2493,17 +2497,37 @@ function initMap() {
   });
   const scheduleGlobeAtmosphereUpdate = () => {
     if (globeAtmosphereFrame) return;
-    globeAtmosphereFrame = requestAnimationFrame(() => {
+    const update = (timestamp) => {
+      if (map.isMoving() && timestamp - globeAtmosphereLastUpdate < 32) {
+        globeAtmosphereFrame = requestAnimationFrame(update);
+        return;
+      }
       globeAtmosphereFrame = null;
+      globeAtmosphereLastUpdate = timestamp;
       updateGlobeAtmosphere();
-    });
+    };
+    globeAtmosphereFrame = requestAnimationFrame(update);
+  };
+  const setInteractionLod = (active) => {
+    if (spreadInteractionLod === active) return;
+    spreadInteractionLod = active;
+    $('.map-stage')?.classList.toggle('camera-moving', active);
+    if (!spreadActive() || spreadDisplayMode !== 'mesh' || !map.getLayer('lt-spread-height')) return;
+    map.setLayoutProperty('lt-spread-height', 'visibility', active ? 'none' : 'visible');
+    if (map.getLayer('lt-spread-floor')) map.setLayoutProperty('lt-spread-floor', 'visibility', 'visible');
   };
   map.on('resize', scheduleGlobeAtmosphereUpdate);
   map.on('zoom', scheduleGlobeAtmosphereUpdate);
   map.on('move', scheduleGlobeAtmosphereUpdate);
+  map.on('movestart', () => {
+    clearTimeout(spreadInteractionRestoreTimer);
+    setInteractionLod(true);
+  });
   map.on('moveend', () => {
     windParticles.forEach((particle) => { particle.previous = null; });
     scheduleGlobeAtmosphereUpdate();
+    clearTimeout(spreadInteractionRestoreTimer);
+    spreadInteractionRestoreTimer = window.setTimeout(() => setInteractionLod(false), 70);
   });
   map.on('zoomend', () => {
     if ((playing || isTimelineScrubbing) && map.getZoom() > timelineOverviewZoom) ensureTimelineOverview();

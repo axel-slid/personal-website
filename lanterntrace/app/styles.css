@@ -3,6 +3,8 @@
 :root { --navy: #071326; --navy-2: #0a1d39; --panel: rgba(8, 28, 57, .91); --line: rgba(143, 182, 226, .2); --muted: #8ea5c3; --white: #f3f7fa; --cyan: #63e4e8; --coral: #ff766a; --violet: #9267ff; --orange: #f59b47; --lime: #b7f36e; }
 * { box-sizing: border-box; }
 html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: var(--navy); color: var(--white); font-family: Manrope, sans-serif; }
+.electron-titlebar { display: none; }
+.electron-shell .electron-titlebar { position: fixed; z-index: 50; top: 0; right: 120px; left: 0; display: block; height: 46px; background: linear-gradient(180deg, rgba(2, 18, 15, .22), transparent); -webkit-app-region: drag; }
 .spread-loader { position: fixed; z-index: 100; inset: 0; display: grid; place-content: center; justify-items: center; gap: 18px; background: radial-gradient(circle at 50% 45%, rgba(18, 72, 57, .64), transparent 32%), linear-gradient(145deg, #010908, #031b18 56%, #010609); opacity: 1; transition: opacity .8s cubic-bezier(.4, 0, .2, 1), visibility .8s; }
 .spread-loader[hidden] { display: none; }
 .spread-loader.departing { visibility: hidden; opacity: 0; pointer-events: none; }
