@@ -13,6 +13,7 @@ const spreadGridPyramid = window.LanternTraceSpreadGridPyramid || { metadata: {}
 const contextGeography = window.LanternTraceContextGeography || { metadata: {}, cities: [] };
 const spreadPhysicsFrameCache = new Map();
 const farmImpactCurveCache = new Map();
+const factorSurfaceCache = new Map();
 const globeTileWarmZoom = 3;
 const embedMode = new URLSearchParams(window.location.search).get('embed');
 const physicsEmbedMode = embedMode === 'physics' || embedMode === 'hero';
@@ -162,6 +163,7 @@ let corridorAnimationLast = 0;
 let usingReportPreview = false;
 let settingsReturnFocus = null;
 let activeReportPopup = null;
+let activeSpreadPopup = null;
 let mapLayersAdded = false;
 const timelineOverviewZoom = 4.75;
 
@@ -366,6 +368,91 @@ function spreadColorExpression() {
     return ['interpolate', ['linear'], ['get', 'value'], 0, '#123631', .22, '#276c58', .55, '#62d99f', .8, '#d6ec78', 1, '#ffba69'];
   }
   return ['interpolate', ['linear'], ['get', 'value'], 0, '#0d322e', .18, '#176f5b', .48, '#31b78b', .75, '#9be17f', 1, '#f0e972'];
+}
+
+function factorSurfaceRaster(factor) {
+  if (factorSurfaceCache.has(factor)) return factorSurfaceCache.get(factor);
+  const step = .25;
+  const level = spreadGridPyramid.levels?.[String(step)] || [];
+  if (!level.length) return null;
+  const west = Math.min(...level.map((record) => record[0]));
+  const east = Math.max(...level.map((record) => record[0])) + step;
+  const south = Math.min(...level.map((record) => record[1]));
+  const north = Math.max(...level.map((record) => record[1])) + step;
+  const width = Math.round((east - west) / step);
+  const height = Math.round((north - south) / step);
+  const values = new Float32Array(width * height);
+  const mask = new Uint8Array(width * height);
+  const landThreshold = spreadGridPyramid.metadata?.landThreshold ?? .5;
+
+  level.forEach((record) => {
+    const [cellWest, cellSouth, sourceIndex, landFraction, ...weightPairs] = record;
+    if (landFraction <= landThreshold) return;
+    let value = 0;
+    if (weightPairs.length) {
+      for (let index = 0; index < weightPairs.length; index += 2) {
+        value += (spreadBundle.cells[weightPairs[index]]?.[factor] || 0) * weightPairs[index + 1];
+      }
+    } else if (sourceIndex >= 0) {
+      value = spreadBundle.cells[sourceIndex]?.[factor] || 0;
+    }
+    const column = Math.round((cellWest - west) / step);
+    const row = Math.round((north - cellSouth - step) / step);
+    const offset = row * width + column;
+    values[offset] = Math.max(0, Math.min(1, value));
+    mask[offset] = 1;
+  });
+
+  const palettes = {
+    climate: [[15, 31, 65], [32, 99, 137], [40, 157, 143], [115, 206, 127], [226, 235, 115]],
+    geography: [[31, 27, 54], [51, 70, 91], [54, 111, 103], [102, 151, 105], [211, 199, 129]],
+  };
+  const palette = palettes[factor] || palettes.climate;
+  const colorAt = (value) => {
+    const position = Math.max(0, Math.min(1, value)) * (palette.length - 1);
+    const lower = Math.floor(position);
+    const upper = Math.min(palette.length - 1, lower + 1);
+    const blend = position - lower;
+    return palette[lower].map((channel, index) => Math.round(channel + (palette[upper][index] - channel) * blend));
+  };
+  const pixelCanvas = document.createElement('canvas');
+  pixelCanvas.width = width;
+  pixelCanvas.height = height;
+  const pixelContext = pixelCanvas.getContext('2d');
+  const image = pixelContext.createImageData(width, height);
+  for (let row = 0; row < height; row += 1) {
+    for (let column = 0; column < width; column += 1) {
+      const offset = row * width + column;
+      if (!mask[offset]) continue;
+      const left = values[offset - (column > 0 ? 1 : 0)];
+      const right = values[offset + (column < width - 1 ? 1 : 0)];
+      const above = values[offset - (row > 0 ? width : 0)];
+      const below = values[offset + (row < height - 1 ? width : 0)];
+      const relief = factor === 'geography' ? Math.max(-.16, Math.min(.16, (left - right + above - below) * .34)) : 0;
+      const color = colorAt(values[offset]);
+      const target = relief >= 0 ? 255 : 0;
+      const strength = Math.abs(relief);
+      const pixel = offset * 4;
+      image.data[pixel] = Math.round(color[0] + (target - color[0]) * strength);
+      image.data[pixel + 1] = Math.round(color[1] + (target - color[1]) * strength);
+      image.data[pixel + 2] = Math.round(color[2] + (target - color[2]) * strength);
+      image.data[pixel + 3] = factor === 'geography' ? 226 : 218;
+    }
+  }
+  pixelContext.putImageData(image, 0, 0);
+  const surfaceCanvas = document.createElement('canvas');
+  surfaceCanvas.width = width * 4;
+  surfaceCanvas.height = height * 4;
+  const surfaceContext = surfaceCanvas.getContext('2d');
+  surfaceContext.imageSmoothingEnabled = true;
+  surfaceContext.imageSmoothingQuality = 'high';
+  surfaceContext.drawImage(pixelCanvas, 0, 0, surfaceCanvas.width, surfaceCanvas.height);
+  const surface = {
+    url: surfaceCanvas.toDataURL('image/png'),
+    coordinates: [[west, north], [east, north], [east, south], [west, south]],
+  };
+  factorSurfaceCache.set(factor, surface);
+  return surface;
 }
 
 function windBracket(values, target, descending = false) {
@@ -735,12 +822,15 @@ function nationalSpreadExposure(year) {
 function renderFarmImpactFigure() {
   const chart = $('#farm-impact-chart');
   if (!chart) return;
-  // USDA NIFA project 1020284 reports $3.625B of vulnerable specialty-crop
-  // value in states with detections/establishment and more than $18B
-  // nationwide. This chart scales between those sourced exposure anchors; it
-  // is not a damage or loss forecast.
+  // USDA NIFA project 1020284 reports this vulnerable commodity mix in states
+  // with detections/establishment: $802M tree fruit, $113M grapes, $110M small
+  // fruit, and $2.6B ornamentals. Harper et al. (2019) gives low/high annual
+  // loss rates of 1/3%, 16.7/50%, 2.5/7.5%, and 6.7/20%, respectively.
+  // We apply the resulting weighted rates to model-linked exposed crop value.
   const detectedStateExposure = 3625;
   const nationalExposureCeiling = 18000;
+  const lowerLossRate = (802 * .01 + 113 * .167 + 110 * .025 + 2600 * .067) / detectedStateExposure;
+  const upperLossRate = (802 * .03 + 113 * .5 + 110 * .075 + 2600 * .2) / detectedStateExposure;
   const cacheKey = `${spreadGridSize}:${selectedSpreadModelId}:${spreadWindEnabled ? 'wind' : 'still'}`;
   let curve = farmImpactCurveCache.get(cacheKey);
   if (!curve) {
@@ -749,30 +839,41 @@ function renderFarmImpactFigure() {
     const baselineExposure = exposure[0];
     const spreadShare = exposure.map((value) => Math.max(0, Math.min(1, (value - baselineExposure) / Math.max(1 - baselineExposure, .001))));
     const exposedValue = spreadShare.map((share) => detectedStateExposure + share * (nationalExposureCeiling - detectedStateExposure));
-    curve = { years, exposedValue };
+    curve = {
+      years,
+      lowerLoss: exposedValue.map((value) => value * lowerLossRate),
+      upperLoss: exposedValue.map((value) => value * upperLossRate),
+    };
     farmImpactCurveCache.set(cacheKey, curve);
   }
-  const { years, exposedValue } = curve;
+  const { years, lowerLoss, upperLoss } = curve;
   const x = (year) => 2 + ((year - spreadTimelineStartYear) / (spreadTimelineEndYear - spreadTimelineStartYear)) * 240;
-  const y = (millions) => 54 - Math.max(0, Math.min(1, millions / nationalExposureCeiling)) * 48;
-  const exposurePoints = years.map((year, index) => [x(year), y(exposedValue[index])]);
+  const maximumLoss = nationalExposureCeiling * upperLossRate;
+  const y = (millions) => 54 - Math.max(0, Math.min(1, millions / maximumLoss)) * 48;
+  const lowerPoints = years.map((year, index) => [x(year), y(lowerLoss[index])]);
+  const upperPoints = years.map((year, index) => [x(year), y(upperLoss[index])]);
   const path = (points) => points.map(([px, py], index) => `${index ? 'L' : 'M'}${px.toFixed(2)} ${py.toFixed(2)}`).join(' ');
-  $('#farm-impact-exposure')?.setAttribute('d', path(exposurePoints));
+  $('#farm-impact-area')?.setAttribute('d', `${path(upperPoints)} ${path([...lowerPoints].reverse()).replace(/^M/, 'L')} Z`);
+  $('#farm-impact-lower')?.setAttribute('d', path(lowerPoints));
+  $('#farm-impact-upper')?.setAttribute('d', path(upperPoints));
   const lowerIndex = Math.max(0, Math.min(years.length - 1, Math.floor(spreadTimelineYear) - spreadTimelineStartYear));
   const upperIndex = Math.min(years.length - 1, lowerIndex + 1);
   const yearBlend = Math.max(0, Math.min(1, spreadTimelineYear - Math.floor(spreadTimelineYear)));
-  const currentExposure = exposedValue[lowerIndex] + (exposedValue[upperIndex] - exposedValue[lowerIndex]) * yearBlend;
+  const currentLower = lowerLoss[lowerIndex] + (lowerLoss[upperIndex] - lowerLoss[lowerIndex]) * yearBlend;
+  const currentUpper = upperLoss[lowerIndex] + (upperLoss[upperIndex] - upperLoss[lowerIndex]) * yearBlend;
   const markerX = x(spreadTimelineYear);
-  const markerY = y(currentExposure);
   const marker = $('#farm-impact-marker');
   marker?.setAttribute('x1', markerX);
   marker?.setAttribute('x2', markerX);
-  const dot = $('#farm-impact-dot');
-  dot?.setAttribute('cx', markerX);
-  dot?.setAttribute('cy', markerY);
-  const formatExposure = (millions) => `$${(millions / 1000).toFixed(2)}B`;
-  if ($('#farm-impact-value')) $('#farm-impact-value').textContent = `${formatExposure(currentExposure)} exposed`;
-  chart.setAttribute('aria-label', `Model-linked United States specialty-crop value exposure in ${spreadTimelineYear.toFixed(1)}: ${formatExposure(currentExposure)} of a sourced nationwide value exceeding $18 billion. This is not a loss forecast.`);
+  const lowerDot = $('#farm-impact-dot-lower');
+  lowerDot?.setAttribute('cx', markerX);
+  lowerDot?.setAttribute('cy', y(currentLower));
+  const upperDot = $('#farm-impact-dot-upper');
+  upperDot?.setAttribute('cx', markerX);
+  upperDot?.setAttribute('cy', y(currentUpper));
+  const formatLoss = (millions) => millions >= 1000 ? `$${(millions / 1000).toFixed(2)}B` : `$${millions.toFixed(1)}M`;
+  if ($('#farm-impact-value')) $('#farm-impact-value').textContent = `${formatLoss(currentLower)}–${formatLoss(currentUpper)} / year`;
+  chart.setAttribute('aria-label', `Scenario estimate of direct United States crop loss in ${spreadTimelineYear.toFixed(1)}: lower bound ${formatLoss(currentLower)} and upper bound ${formatLoss(currentUpper)} per year. The interval applies published commodity-specific loss rates to model-linked exposed crop value; it is not a calibrated economic forecast.`);
 }
 
 function renderSpreadDisplayToggle() {
@@ -788,16 +889,21 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
   const visible = spreadActive();
   const meshVisible = visible && spreadDisplayMode === 'mesh';
   const reportsVisible = visible && spreadDisplayMode === 'reports';
+  const climateSurfaceVisible = meshVisible && spreadView === 'climate';
+  const geographySurfaceVisible = meshVisible && spreadView === 'geography';
+  const voxelVisible = meshVisible && !climateSurfaceVisible && !geographySurfaceVisible;
   map.getSource('lt-spread-source').setData(spreadGridData());
   if (!timelineOnly) {
     if (map.getLayer('lt-spread-height')) {
-      map.setLayoutProperty('lt-spread-height', 'visibility', meshVisible ? 'visible' : 'none');
+      map.setLayoutProperty('lt-spread-height', 'visibility', voxelVisible ? 'visible' : 'none');
       map.setPaintProperty('lt-spread-height', 'fill-extrusion-color', spreadColorExpression());
     }
     if (map.getLayer('lt-spread-floor')) map.setPaintProperty('lt-spread-floor', 'fill-color', spreadColorExpression());
     ['lt-spread-floor', 'lt-spread-water', 'lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
-      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', meshVisible ? 'visible' : 'none');
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', voxelVisible ? 'visible' : 'none');
     });
+    if (map.getLayer('lt-climate-surface')) map.setLayoutProperty('lt-climate-surface', 'visibility', climateSurfaceVisible ? 'visible' : 'none');
+    if (map.getLayer('lt-geography-surface')) map.setLayoutProperty('lt-geography-surface', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
   }
   ['lt-spread-reports', 'lt-spread-report-hit'].forEach((id) => {
     if (!map.getLayer(id)) return;
@@ -2035,6 +2141,10 @@ function addMapLayers() {
   map.addSource('lt-physics-surface', { type: 'geojson', data: physicsSurfaceData() });
   map.addSource('lt-physics-vectors', { type: 'geojson', data: physicsVectorData() });
   map.addSource('lt-spread-source', { type: 'geojson', data: spreadGridData() });
+  const climateSurface = factorSurfaceRaster('climate');
+  const geographySurface = factorSurfaceRaster('geography');
+  if (climateSurface) map.addSource('lt-climate-surface', { type: 'image', ...climateSurface });
+  if (geographySurface) map.addSource('lt-geography-surface', { type: 'image', ...geographySurface });
   map.addSource('lt-us-states', { type: 'geojson', data: './generated/us-states.geojson' });
   map.addSource('lt-us-state-labels', { type: 'geojson', data: './generated/us-state-labels.geojson' });
   map.addSource('lt-us-cities', { type: 'geojson', data: cityContextData() });
@@ -2052,6 +2162,12 @@ function addMapLayers() {
     'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 2, 7, 6, 12, 10, 19],
     'heatmap-opacity': 0.42,
     'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(9, 41, 43, 0)', 0.12, 'rgba(20, 112, 102, .18)', 0.32, 'rgba(32, 169, 125, .34)', 0.58, 'rgba(81, 211, 148, .48)', 0.82, 'rgba(171, 237, 116, .58)', 1, 'rgba(210, 247, 151, .68)']
+  } });
+  if (climateSurface) map.addLayer({ id: 'lt-climate-surface', type: 'raster', source: 'lt-climate-surface', layout: { visibility: 'none' }, paint: {
+    'raster-opacity': .9, 'raster-resampling': 'linear', 'raster-fade-duration': 0
+  } });
+  if (geographySurface) map.addLayer({ id: 'lt-geography-surface', type: 'raster', source: 'lt-geography-surface', layout: { visibility: 'none' }, paint: {
+    'raster-opacity': .92, 'raster-resampling': 'linear', 'raster-fade-duration': 0
   } });
   map.addLayer({ id: 'lt-spread-floor', type: 'fill', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
     'fill-color': spreadColorExpression(), 'fill-opacity': .82, 'fill-antialias': false
@@ -2191,13 +2307,45 @@ function addMapLayers() {
 
   const selectSpreadFeature = (event) => {
     if (!spreadActive() || !event.features?.length) return;
-    selectedSpreadCell = event.features[0].properties.cell;
-    selectedSpreadSourceCell = event.features[0].properties.sourceCell;
-    selectedSpreadValue = Number(event.features[0].properties.value);
-    selectedSpreadLandFraction = Number(event.features[0].properties.landFraction);
-    selectedSpreadClimate = Number(event.features[0].properties.climate);
-    selectedSpreadGeography = Number(event.features[0].properties.geography);
+    const properties = event.features[0].properties;
+    selectedSpreadCell = properties.cell;
+    selectedSpreadSourceCell = properties.sourceCell;
+    selectedSpreadValue = Number(properties.value);
+    selectedSpreadLandFraction = Number(properties.landFraction);
+    selectedSpreadClimate = Number(properties.climate);
+    selectedSpreadGeography = Number(properties.geography);
     if (map.getLayer('lt-spread-selection')) map.setFilter('lt-spread-selection', ['==', ['get', 'cell'], selectedSpreadCell]);
+
+    // Liu (2020) observed 16.2–46.8 adults/m² on tree-of-heaven across six
+    // Pennsylvania sites. Scaling that host-surface range by model intensity
+    // gives an interpretable abundance bracket without pretending the entire
+    // geographic cell is uniformly occupied habitat.
+    const intensity = Math.max(0, Math.min(1, selectedSpreadValue));
+    const estimatedLow = Math.max(1, Math.round(intensity * 16.2 * 100));
+    const estimatedHigh = Math.max(estimatedLow, Math.round(intensity * 46.8 * 100));
+    const formatCount = (value) => new Intl.NumberFormat('en-US').format(value);
+    const popup = document.createElement('div');
+    popup.className = 'spread-voxel-popup';
+    const kicker = document.createElement('span');
+    kicker.className = 'spread-voxel-kicker';
+    kicker.textContent = `${spreadTimelineYear.toFixed(1)} · ${spreadGridSize}° CELL`;
+    const title = document.createElement('b');
+    title.textContent = `${Math.round(intensity * 100)}% intensity`;
+    const count = document.createElement('strong');
+    count.textContent = `~${formatCount(estimatedLow)}–${formatCount(estimatedHigh)}`;
+    const countLabel = document.createElement('em');
+    countLabel.textContent = 'estimated adults per 100 m² of host surface';
+    const stats = document.createElement('div');
+    stats.className = 'spread-voxel-stats';
+    stats.innerHTML = `<span><small>CLIMATE</small><b>${Math.round(selectedSpreadClimate * 100)}%</b></span><span><small>TERRAIN</small><b>${Math.round(selectedSpreadGeography * 100)}%</b></span>`;
+    const caveat = document.createElement('p');
+    caveat.textContent = 'Host-surface density equivalent, not a whole-cell census. The range scales published field densities by the model intensity.';
+    popup.append(kicker, title, count, countLabel, stats, caveat);
+    activeSpreadPopup?.remove();
+    activeSpreadPopup = new maplibregl.Popup({ closeButton: true, offset: 12, className: 'lt-popup voxel-map-popup', maxWidth: '320px' })
+      .setLngLat(event.lngLat)
+      .setDOMContent(popup)
+      .addTo(map);
   };
   map.on('click', 'lt-spread-height', selectSpreadFeature);
   map.on('click', 'lt-spread-water', selectSpreadFeature);
@@ -2572,10 +2720,15 @@ function initMap() {
     if (!spreadActive()) return;
     const meshMode = spreadDisplayMode === 'mesh';
     const reportsMode = spreadDisplayMode === 'reports';
-    if (map.getLayer('lt-spread-height')) map.setLayoutProperty('lt-spread-height', 'visibility', !active && meshMode ? 'visible' : 'none');
-    if (map.getLayer('lt-spread-floor')) map.setLayoutProperty('lt-spread-floor', 'visibility', meshMode ? 'visible' : 'none');
+    const climateSurfaceMode = meshMode && spreadView === 'climate';
+    const geographySurfaceMode = meshMode && spreadView === 'geography';
+    const voxelMode = meshMode && !climateSurfaceMode && !geographySurfaceMode;
+    if (map.getLayer('lt-climate-surface')) map.setLayoutProperty('lt-climate-surface', 'visibility', climateSurfaceMode ? 'visible' : 'none');
+    if (map.getLayer('lt-geography-surface')) map.setLayoutProperty('lt-geography-surface', 'visibility', geographySurfaceMode ? 'visible' : 'none');
+    if (map.getLayer('lt-spread-height')) map.setLayoutProperty('lt-spread-height', 'visibility', !active && voxelMode ? 'visible' : 'none');
+    if (map.getLayer('lt-spread-floor')) map.setLayoutProperty('lt-spread-floor', 'visibility', voxelMode ? 'visible' : 'none');
     ['lt-spread-water', 'lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
-      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', !active && meshMode ? 'visible' : 'none');
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', !active && voxelMode ? 'visible' : 'none');
     });
     ['lt-spread-reports', 'lt-spread-report-hit'].forEach((id) => {
       if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', reportsMode ? 'visible' : 'none');

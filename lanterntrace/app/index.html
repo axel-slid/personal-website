@@ -130,17 +130,20 @@
             <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M1.75 9s2.55-4.25 7.25-4.25S16.25 9 16.25 9 13.7 13.25 9 13.25 1.75 9 1.75 9Z" /><circle cx="9" cy="9" r="2.1" /></svg>
           </button>
         </div>
-        <figure class="farm-impact-figure" aria-label="United States specialty-crop value exposed to spotted lanternfly spread">
-          <span class="farm-impact-title">U.S. SPECIALTY-CROP VALUE EXPOSED</span>
-          <output id="farm-impact-value" title="USDA NIFA reports $3.625 billion in vulnerable specialty crops in detected or established states and more than $18 billion nationwide.">$3.63B exposed</output>
-          <svg id="farm-impact-chart" viewBox="0 0 244 66" role="img" aria-label="Model-linked United States specialty-crop value exposure from 2019 to 2056">
+        <figure class="farm-impact-figure" aria-label="Estimated annual United States crop-loss range under spotted lanternfly spread">
+          <span class="farm-impact-title">ESTIMATED ANNUAL U.S. CROP LOSS</span>
+          <output id="farm-impact-value" title="Scenario interval based on USDA NIFA vulnerable commodity values and low/high commodity-specific annual loss rates in Harper et al. (2019).">$203.8M–$608.8M / year</output>
+          <svg id="farm-impact-chart" viewBox="0 0 244 66" role="img" aria-label="Model-linked annual crop-loss scenario from 2019 to 2056">
             <path class="farm-impact-grid" d="M2 54H242M2 30H242M2 6H242" />
-            <path id="farm-impact-exposure" class="farm-impact-line worst" d="" />
+            <path id="farm-impact-area" class="farm-impact-area" d="" />
+            <path id="farm-impact-lower" class="farm-impact-line expected" d="" />
+            <path id="farm-impact-upper" class="farm-impact-line worst" d="" />
             <line id="farm-impact-marker" class="farm-impact-marker" x1="2" x2="2" y1="4" y2="56" />
-            <circle id="farm-impact-dot" class="farm-impact-dot" cx="2" cy="54" r="2.7" />
+            <circle id="farm-impact-dot-lower" class="farm-impact-dot lower" cx="2" cy="54" r="2.7" />
+            <circle id="farm-impact-dot-upper" class="farm-impact-dot upper" cx="2" cy="54" r="2.7" />
           </svg>
           <div class="farm-impact-axis" aria-hidden="true"><span>2019</span><span>2026</span><span>2056</span></div>
-          <span class="sr-only">The curve links model spread to sourced commodity-value exposure anchors: $3.625 billion in vulnerable specialty crops in states with spotted lanternfly detections or establishment and more than $18 billion nationwide. It is an exposure scenario, not a damage or loss forecast. <a href="https://training-portal.nifa.usda.gov/web/crisprojectpages/1020284.html">Source: USDA National Institute of Food and Agriculture project 1020284.</a></span>
+          <span class="sr-only">The lower and upper curves apply commodity-specific annual loss rates from Harper et al. 2019 to a USDA NIFA vulnerable-crop mix, then scale the exposed value with LanternTrace spread. This is a transparent scenario estimate, not a calibrated economic forecast. <a href="https://training-portal.nifa.usda.gov/web/crisprojectpages/1020284.html">USDA NIFA commodity-value source.</a> <a href="https://aese.psu.edu/research/centers/cecd/publications/economic-analyses-including-covid-19-analysis/economic-impact/spotted-lanternfly-2019.pdf/@@download/file/Spotted-Lanternfly-2019.pdf">Harper et al. crop-loss rates.</a></span>
         </figure>
         <header class="map-header">
           <button id="sidebar-restore" class="sidebar-restore" type="button" aria-label="Show species panel" aria-expanded="false">›</button>
