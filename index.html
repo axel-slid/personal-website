@@ -400,6 +400,22 @@
     </div>
   </dialog>
 
+  <dialog class="email-dialog" data-email-dialog aria-labelledby="email-dialog-title">
+    <div class="email-dialog-card">
+      <button class="email-dialog-close" type="button" data-email-close aria-label="Close email popup">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <i class="fa-regular fa-envelope email-dialog-icon" aria-hidden="true"></i>
+      <h2 id="email-dialog-title">Email Alex</h2>
+      <p class="email-dialog-address" data-email-value>dils@berkeley.edu</p>
+      <div class="email-dialog-actions">
+        <button type="button" data-email-copy>Copy email</button>
+        <a href="mailto:dils@berkeley.edu" data-email-compose>Compose message</a>
+      </div>
+      <p class="email-dialog-status" data-email-status aria-live="polite"></p>
+    </div>
+  </dialog>
+
   <script src="site.js"></script>
 </body>
 </html>
