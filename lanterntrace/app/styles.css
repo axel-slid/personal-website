@@ -897,11 +897,6 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 #scenario-lab-panel .model-score { display: none; }
 
 /* Focused national spread lab: this is the entire product surface. */
-.spread-only .reference-topbar { justify-content: flex-start; padding: 0 24px; }
-.spread-only-brand { display: flex; height: 100%; align-items: center; gap: 13px; }
-.spread-only-brand span { color: #e5f98a; font: 700 12px 'DM Mono', monospace; letter-spacing: .12em; }
-.spread-only-brand b { color: #effff7; font: 600 15px 'Barlow Condensed', sans-serif; letter-spacing: .07em; }
-.spread-only-brand small { padding-left: 13px; border-left: 1px solid rgba(127, 204, 171, .26); color: #719a88; font: 8px 'DM Mono', monospace; letter-spacing: .09em; }
 .spread-only .map-header,
 .spread-only #front-panel,
 .spread-only #evidence-panel,
