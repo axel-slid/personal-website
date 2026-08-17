@@ -119,7 +119,20 @@
             <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M1.75 9s2.55-4.25 7.25-4.25S16.25 9 16.25 9 13.7 13.25 9 13.25 1.75 9 1.75 9Z" /><circle cx="9" cy="9" r="2.1" /></svg>
           </button>
         </div>
-        <div id="wind-legend" class="wind-legend hidden" aria-hidden="true"><b>MEAN WIND</b><span><i></i>0–6.5 m/s</span><small>1991–2020 · NOAA</small></div>
+        <figure class="farm-impact-figure" aria-label="Published Pennsylvania agricultural loss scenarios from spotted lanternfly">
+          <figcaption><span>PA FARM-LOSS EXPOSURE · <i id="farm-impact-year">2026</i></span><b id="farm-impact-value">$0–$0M / year</b></figcaption>
+          <svg id="farm-impact-chart" viewBox="0 0 244 66" role="img" aria-label="Model-linked Pennsylvania agricultural loss exposure from 2019 to 2056">
+            <path class="farm-impact-grid" d="M2 54H242M2 30H242M2 6H242" />
+            <path id="farm-impact-area" class="farm-impact-area" d="" />
+            <path id="farm-impact-expected" class="farm-impact-line expected" d="" />
+            <path id="farm-impact-worst" class="farm-impact-line worst" d="" />
+            <line id="farm-impact-marker" class="farm-impact-marker" x1="2" x2="2" y1="4" y2="56" />
+            <circle id="farm-impact-dot" class="farm-impact-dot" cx="2" cy="54" r="2.7" />
+          </svg>
+          <div class="farm-impact-axis" aria-hidden="true"><span>2019</span><span>2026</span><span>2056</span></div>
+          <div class="farm-impact-key"><span><i></i>Expected benchmark</span><span><i></i>Worst-case benchmark</span></div>
+          <small>Model pressure × published PA statewide loss scenarios; illustrative exposure, not an economic forecast. <a href="https://aese.psu.edu/research/centers/cecd/publications/economic-impact/spotted-lanternfly-2019.pdf" target="_blank" rel="noreferrer">Penn State / Center for Rural PA ↗</a></small>
+        </figure>
         <header class="map-header">
           <button id="sidebar-restore" class="sidebar-restore" type="button" aria-label="Show species panel" aria-expanded="false">›</button>
           <div class="location-label"><span class="eyebrow">CURRENT VIEW</span><strong>NORTHEASTERN UNITED STATES</strong></div>

@@ -661,6 +661,77 @@ function renderSpreadTimeline() {
     playButton.querySelector('i').textContent = spreadSimulationPlaying ? 'Ⅱ' : '▶';
     playButton.querySelector('span').textContent = spreadSimulationPlaying ? 'PAUSE' : spreadTimelineYear >= spreadTimelineEndYear ? 'REPLAY PHYSICS' : 'PLAY PHYSICS';
   }
+  renderFarmImpactFigure();
+}
+
+function pointInPolygon(longitude, latitude, polygon) {
+  let inside = false;
+  for (let index = 0, previous = polygon.length - 1; index < polygon.length; previous = index++) {
+    const [x1, y1] = polygon[index];
+    const [x2, y2] = polygon[previous];
+    if ((y1 > latitude) !== (y2 > latitude)
+      && longitude < ((x2 - x1) * (latitude - y1)) / (y2 - y1) + x1) inside = !inside;
+  }
+  return inside;
+}
+
+function farmImpactExposure(year) {
+  const level = spreadGridPyramid.levels?.[String(spreadGridSize)] || [];
+  const pennsylvania = [[-80.52, 39.72], [-75.79, 39.72], [-75.13, 39.87], [-74.69, 40.60], [-74.72, 41.37], [-75.10, 41.99], [-79.76, 42.27], [-80.52, 42.00]];
+  const observedYear = Math.max(spreadTimelineStartYear, Math.min(spreadPresentYear, Math.round(year)));
+  let total = 0;
+  let count = 0;
+  level.forEach((record, index) => {
+    const [west, south, sourceIndex, landFraction, ...weightPairs] = record;
+    if (landFraction <= windMaskLandThreshold || !pointInPolygon(west + spreadGridSize / 2, south + spreadGridSize / 2, pennsylvania)) return;
+    let value = 0;
+    if (year > spreadPresentYear) {
+      value = spreadPhysicsValue(index, year);
+    } else {
+      for (let pairIndex = 0; pairIndex < weightPairs.length; pairIndex += 2) {
+        const cellIndex = weightPairs[pairIndex];
+        const signal = spreadHistory.signals?.[String(observedYear)]?.[cellIndex]
+          ?? spreadBundle.cells[cellIndex]?.signal
+          ?? 0;
+        value += signal * weightPairs[pairIndex + 1];
+      }
+      if (!weightPairs.length && sourceIndex >= 0) value = spreadHistory.signals?.[String(observedYear)]?.[sourceIndex] ?? 0;
+    }
+    total += Math.max(0, Math.min(1, value));
+    count += 1;
+  });
+  return count ? total / count : 0;
+}
+
+function renderFarmImpactFigure() {
+  const chart = $('#farm-impact-chart');
+  if (!chart) return;
+  const expectedBenchmark = 42.6;
+  const worstBenchmark = 99.1;
+  const years = Array.from({ length: spreadTimelineEndYear - spreadTimelineStartYear + 1 }, (_, index) => spreadTimelineStartYear + index);
+  const exposure = years.map((year) => farmImpactExposure(year));
+  const x = (year) => 2 + ((year - spreadTimelineStartYear) / (spreadTimelineEndYear - spreadTimelineStartYear)) * 240;
+  const y = (millions) => 54 - Math.max(0, Math.min(1, millions / worstBenchmark)) * 48;
+  const expectedPoints = years.map((year, index) => [x(year), y(exposure[index] * expectedBenchmark)]);
+  const worstPoints = years.map((year, index) => [x(year), y(exposure[index] * worstBenchmark)]);
+  const path = (points) => points.map(([px, py], index) => `${index ? 'L' : 'M'}${px.toFixed(2)} ${py.toFixed(2)}`).join(' ');
+  $('#farm-impact-expected')?.setAttribute('d', path(expectedPoints));
+  $('#farm-impact-worst')?.setAttribute('d', path(worstPoints));
+  $('#farm-impact-area')?.setAttribute('d', `${path(worstPoints)} ${[...expectedPoints].reverse().map(([px, py]) => `L${px.toFixed(2)} ${py.toFixed(2)}`).join(' ')} Z`);
+  const currentExposure = farmImpactExposure(spreadTimelineYear);
+  const currentExpected = currentExposure * expectedBenchmark;
+  const currentWorst = currentExposure * worstBenchmark;
+  const markerX = x(spreadTimelineYear);
+  const markerY = y(currentWorst);
+  const marker = $('#farm-impact-marker');
+  marker?.setAttribute('x1', markerX);
+  marker?.setAttribute('x2', markerX);
+  const dot = $('#farm-impact-dot');
+  dot?.setAttribute('cx', markerX);
+  dot?.setAttribute('cy', markerY);
+  if ($('#farm-impact-year')) $('#farm-impact-year').textContent = Number.isInteger(spreadTimelineYear) ? spreadTimelineYear : spreadTimelineYear.toFixed(1);
+  if ($('#farm-impact-value')) $('#farm-impact-value').textContent = `$${currentExpected.toFixed(1)}–$${currentWorst.toFixed(1)}M / year`;
+  chart.setAttribute('aria-label', `Illustrative Pennsylvania farm-loss exposure in ${spreadTimelineYear.toFixed(1)}: ${currentExpected.toFixed(1)} to ${currentWorst.toFixed(1)} million dollars per year`);
 }
 
 function renderSpreadDisplayToggle() {
