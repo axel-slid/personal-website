@@ -2440,7 +2440,7 @@ function initMap() {
     context.stroke();
     map.addImage(id, { width: size, height: size, data: context.getImageData(0, 0, size, size).data });
   });
-  map.on('load', () => {
+  map.on('style.load', () => {
     if (mapLayersAdded) return;
     mapLayersAdded = true;
     map.setProjection({ type: 'globe' });
@@ -2469,6 +2469,9 @@ function initMap() {
     }
     $('#map-state')?.classList.add('hidden');
   });
+  window.setTimeout(() => {
+    if (!mapLayersAdded && map) map.setStyle(darkStyle);
+  }, 7000);
   map.on('error', () => {
     const state = $('#map-state');
     if (!mapLayersAdded && state) {
