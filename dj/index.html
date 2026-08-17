@@ -137,31 +137,41 @@
       <div class="photos-heading">
         <h2 id="photos-title">Sets &amp; setups</h2>
       </div>
-      <div class="photo-grid">
-        <figure class="photo photo-wide">
-          <img src="photos/beach-set-mixing.webp" alt="Close view of Alex mixing at sunset above the ocean" loading="lazy" />
-          <figcaption>Beach set · mixing</figcaption>
-        </figure>
-        <figure class="photo photo-tall">
-          <img src="photos/beach-set-hero.webp" alt="Two DJs playing a sunset set above the Pacific Ocean" loading="lazy" />
-          <figcaption>Beach set · Pacific coast</figcaption>
-        </figure>
-        <figure class="photo">
-          <img src="photos/beach-set-sunset.webp" alt="Alex performing beside the ocean at sunset" loading="lazy" />
-          <figcaption>Pacific coast · sunset</figcaption>
-        </figure>
-        <figure class="photo photo-tall">
-          <img src="photos/open-top-set.webp" alt="Alex DJing from the back seat of an open-top vehicle" loading="lazy" />
-          <figcaption>Open-top set</figcaption>
-        </figure>
-        <figure class="photo photo-tall">
-          <img src="photos/indoor-controller-set.webp" alt="Alex mixing on a lit DJ controller at an indoor party" loading="lazy" />
-          <figcaption>House set</figcaption>
-        </figure>
-        <figure class="photo photo-full">
-          <img src="photos/house-party-crowd.webp" alt="Crowd gathered around the DJ booth at a house party" loading="lazy" />
-          <figcaption>House party</figcaption>
-        </figure>
+      <div class="photo-carousel" data-photo-carousel aria-label="DJ photo carousel" aria-roledescription="carousel" tabindex="0">
+        <div class="carousel-viewport">
+          <div class="carousel-track" data-carousel-track>
+            <figure class="carousel-slide" data-carousel-slide aria-hidden="false">
+              <img src="photos/beach-set-mixing.webp" alt="Close view of Alex mixing at sunset above the ocean" loading="lazy" />
+              <figcaption>Beach set · mixing</figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide aria-hidden="true">
+              <img src="photos/beach-set-hero.webp" alt="Two DJs playing a sunset set above the Pacific Ocean" loading="lazy" />
+              <figcaption>Beach set · Pacific coast</figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide aria-hidden="true">
+              <img src="photos/beach-set-sunset.webp" alt="Alex performing beside the ocean at sunset" loading="lazy" />
+              <figcaption>Pacific coast · sunset</figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide aria-hidden="true">
+              <img src="photos/open-top-set.webp" alt="Alex DJing from the back seat of an open-top vehicle" loading="lazy" />
+              <figcaption>Open-top set</figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide aria-hidden="true">
+              <img src="photos/indoor-controller-set.webp" alt="Alex mixing on a lit DJ controller at an indoor party" loading="lazy" />
+              <figcaption>House set</figcaption>
+            </figure>
+            <figure class="carousel-slide" data-carousel-slide aria-hidden="true">
+              <img src="photos/house-party-crowd.webp" alt="Crowd gathered around the DJ booth at a house party" loading="lazy" />
+              <figcaption>House party</figcaption>
+            </figure>
+          </div>
+        </div>
+        <div class="carousel-controls">
+          <button class="carousel-arrow" type="button" data-carousel-prev aria-label="Previous photo"><span aria-hidden="true">←</span></button>
+          <div class="carousel-dots" data-carousel-dots aria-label="Choose a photo"></div>
+          <p class="carousel-count" aria-live="polite"><span data-carousel-current>1</span> / 6</p>
+          <button class="carousel-arrow" type="button" data-carousel-next aria-label="Next photo"><span aria-hidden="true">→</span></button>
+        </div>
       </div>
     </section>
   </main>
