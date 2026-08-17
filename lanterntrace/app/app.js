@@ -9,6 +9,7 @@ const spreadBundle = window.LanternTraceSpread || { metadata: {}, models: [], ce
 const spreadHistory = window.LanternTraceSpreadHistory || { metadata: {}, signals: {}, rates: {}, reports: {} };
 const spreadLongHorizon = window.LanternTraceSpreadLongHorizon || { metadata: {}, models: {} };
 const spreadGridPyramid = window.LanternTraceSpreadGridPyramid || { metadata: {}, levels: {} };
+const spreadPhysicsFrameCache = new Map();
 const embedMode = new URLSearchParams(window.location.search).get('embed');
 const physicsEmbedMode = embedMode === 'physics' || embedMode === 'hero';
 const heroMapEmbedMode = embedMode === 'hero';
@@ -43,6 +44,8 @@ let selectedSpreadCell = null;
 let selectedSpreadSourceCell = null;
 let selectedSpreadValue = null;
 let selectedSpreadLandFraction = null;
+let selectedSpreadClimate = null;
+let selectedSpreadGeography = null;
 let spreadGridSize = .25;
 const spreadGridSizes = [.25, .5, .75, 1];
 const spreadCellIndices = new Map((spreadBundle.cells || []).map((cell, index) => [`${cell.r}:${cell.c}`, index]));
@@ -100,12 +103,19 @@ const spreadViewProfiles = {
     description: 'Low, gently changing terrain receives higher permeability. This isolates physical geography and does not include host plants or climate.',
   },
   scenario: {
-    kicker: 'FACTOR-ISOLATION SCENARIO',
-    title: 'Watch assumptions change the invasion pattern',
+    kicker: 'RESISTANCE-WEIGHTED PHYSICS',
+    title: 'Watch climate and terrain change the invasion front',
     hud: 'Invasion pressure scenario',
     scale: 'relative model pressure',
-    description: 'The selected mechanism evolves the adjusted 2025 signal. These national scenarios explain model behavior; they are not calibrated forecasts.',
+    description: 'The selected mechanism evolves the adjusted 2026 signal with literature-derived growth and spread values. It is a mechanism simulation, not a calibrated forecast.',
   },
+};
+const spreadModelProfiles = {
+  distance: { name: 'Distance diffusion', group: 'Conventional', mechanism: 'Distance-only spreading; no growth or environmental resistance.' },
+  fisher: { name: 'Fisher–KPP', group: 'Physics baseline', mechanism: 'Literature-derived diffusion and growth with every land cell at the ideal baseline.' },
+  climate: { name: 'Climate resistance', group: 'Factor physics', mechanism: 'Climate slows movement and proportionally lowers local establishment.' },
+  terrain: { name: 'Terrain resistance', group: 'Factor physics', mechanism: 'Elevation and slope permeability resist movement; growth remains at baseline.' },
+  coupled: { name: 'Climate + terrain', group: 'LanternTrace', mechanism: 'Climate controls establishment; climate and terrain jointly resist movement.' },
 };
 const benchmarkExplainRegions = [
   { id: 'great-lakes', name: 'Great Lakes + western NY', short: 'GREAT LAKES', bounds: [[-82, 41], [-76.5, 47]], contains: (longitude, latitude) => longitude < -76.5 && latitude >= 41 },
@@ -176,7 +186,8 @@ function spreadActive() {
 }
 
 function spreadModel(modelId = selectedSpreadModelId) {
-  return spreadBundle.models?.find((candidate) => candidate.id === modelId);
+  const source = spreadBundle.models?.find((candidate) => candidate.id === modelId);
+  return source ? { ...source, ...(spreadModelProfiles[modelId] || {}) } : source;
 }
 
 function spreadYearIndex(year = spreadTimelineYear) {
@@ -212,19 +223,33 @@ function spreadCellValue(cell, sourceIndex = spreadCellIndices.get(`${cell?.r}:$
     const upperValue = spreadHistory.signals?.[String(upperYear)]?.[sourceIndex] ?? lowerValue;
     return lowerValue + (upperValue - lowerValue) * blend;
   }
-  const frames = spreadLongHorizon.models?.[selectedSpreadModelId];
+  return 0;
+}
+
+function spreadPhysicsFrames(modelId = selectedSpreadModelId, levelKey = String(spreadGridSize)) {
+  const cacheKey = `${modelId}:${levelKey}`;
+  if (spreadPhysicsFrameCache.has(cacheKey)) return spreadPhysicsFrameCache.get(cacheKey);
+  const encoded = spreadLongHorizon.models?.[modelId]?.[levelKey];
+  if (!encoded?.data) return null;
+  const binary = atob(encoded.data);
+  const values = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) values[index] = binary.charCodeAt(index);
+  const decoded = { ...encoded, values };
+  spreadPhysicsFrameCache.set(cacheKey, decoded);
+  return decoded;
+}
+
+function spreadPhysicsValue(recordIndex, year = spreadTimelineYear) {
+  const frames = spreadPhysicsFrames();
   const years = spreadLongHorizon.metadata?.years || [];
-  if (!frames?.length || !years.length) return cell.models?.[selectedSpreadModelId]?.[spreadYearIndex()] || 0;
+  if (!frames || !years.length) return 0;
   const firstYear = years[0];
-  const clampedYear = Math.max(firstYear, Math.min(spreadTimelineEndYear, spreadTimelineYear));
-  const lowerIndex = Math.max(0, Math.min(frames.length - 1, Math.floor(clampedYear) - firstYear));
-  const upperIndex = Math.min(frames.length - 1, lowerIndex + 1);
+  const clampedYear = Math.max(firstYear, Math.min(spreadTimelineEndYear, Number(year)));
+  const lowerFrame = Math.max(0, Math.min(frames.frameCount - 1, Math.floor(clampedYear) - firstYear));
+  const upperFrame = Math.min(frames.frameCount - 1, lowerFrame + 1);
   const blend = clampedYear - Math.floor(clampedYear);
-  let lowerValue = frames[lowerIndex]?.[sourceIndex] ?? 0;
-  const upperValue = frames[upperIndex]?.[sourceIndex] ?? lowerValue;
-  if (clampedYear < spreadPresentYear + 1) {
-    lowerValue = spreadHistory.signals?.[String(spreadPresentYear)]?.[sourceIndex] ?? lowerValue;
-  }
+  const lowerValue = frames.values[lowerFrame * frames.count + recordIndex] / 255;
+  const upperValue = frames.values[upperFrame * frames.count + recordIndex] / 255;
   return lowerValue + (upperValue - lowerValue) * blend;
 }
 
@@ -232,56 +257,37 @@ function spreadGridData() {
   const displayStep = spreadGridSize;
   const level = spreadGridPyramid.levels?.[String(spreadGridSize)] || [];
   const timeDriven = spreadView === 'signal' || spreadView === 'scenario';
-  const predicted = spreadView === 'scenario' || spreadTimelineYear > spreadPresentYear;
-  const displayThreshold = timeDriven ? predicted ? .01 : .006 : .01;
+  const predicted = spreadTimelineYear > spreadPresentYear;
   const landThreshold = spreadGridPyramid.metadata?.landThreshold ?? .5;
   const samples = level.map((record, index) => {
     const [west, south, sourceIndex, landFraction, ...weightPairs] = record;
     if (landFraction <= landThreshold) return null;
     const cell = sourceIndex >= 0 ? spreadBundle.cells[sourceIndex] : null;
-    let value = 0;
+    let value = predicted && timeDriven ? spreadPhysicsValue(index) : 0;
+    let climateValue = 0;
+    let geographyValue = 0;
+    if (!(predicted && timeDriven)) {
+      for (let pairIndex = 0; pairIndex < weightPairs.length; pairIndex += 2) {
+        const weightedSourceIndex = weightPairs[pairIndex];
+        value += spreadCellValue(spreadBundle.cells[weightedSourceIndex], weightedSourceIndex) * weightPairs[pairIndex + 1];
+      }
+    }
     for (let pairIndex = 0; pairIndex < weightPairs.length; pairIndex += 2) {
       const weightedSourceIndex = weightPairs[pairIndex];
-      value += spreadCellValue(spreadBundle.cells[weightedSourceIndex], weightedSourceIndex) * weightPairs[pairIndex + 1];
+      const weight = weightPairs[pairIndex + 1];
+      climateValue += (spreadBundle.cells[weightedSourceIndex]?.climate || 0) * weight;
+      geographyValue += (spreadBundle.cells[weightedSourceIndex]?.geography || 0) * weight;
     }
     return {
       record, index, west, south, sourceIndex, landFraction, cell, value, rawValue: value,
+      climateValue, geographyValue,
       key: `${Math.round(west / displayStep)}:${Math.round(south / displayStep)}`,
     };
   }).filter(Boolean);
-  const sampleByKey = new Map(samples.map((sample) => [sample.key, sample]));
-  const neighborOffsets = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]];
-  // Display-only topology pass: close isolated one-cell holes, then taper weak
-  // unsupported perimeter cells so the modeled front does not read as a hard box.
-  if (timeDriven) {
-    samples.forEach((sample) => {
-      const column = Math.round(sample.west / displayStep);
-      const row = Math.round(sample.south / displayStep);
-      const neighbors = neighborOffsets
-        .map(([dx, dy]) => sampleByKey.get(`${column + dx}:${row + dy}`))
-        .filter(Boolean);
-      const activeNeighbors = neighbors.filter((neighbor) => neighbor.rawValue > displayThreshold);
-      if (sample.rawValue <= displayThreshold) {
-        const activeKeys = new Set(activeNeighbors.map((neighbor) => neighbor.key));
-        const horizontalBridge = activeKeys.has(`${column - 1}:${row}`) && activeKeys.has(`${column + 1}:${row}`);
-        const verticalBridge = activeKeys.has(`${column}:${row - 1}`) && activeKeys.has(`${column}:${row + 1}`);
-        if (activeNeighbors.length >= 3 && (horizontalBridge || verticalBridge)) {
-          sample.value = activeNeighbors.reduce((sum, neighbor) => sum + neighbor.rawValue, 0) / activeNeighbors.length * .82;
-        }
-        return;
-      }
-      const hasObservedEvidence = (sample.cell?.reports || 0) > 0;
-      if (!predicted || hasObservedEvidence || sample.rawValue >= .16) return;
-      if (activeNeighbors.length <= 1) sample.value = sample.rawValue * .2;
-      else if (activeNeighbors.length <= 3) sample.value = sample.rawValue * .44;
-      else if (activeNeighbors.length === 4) sample.value = sample.rawValue * .7;
-    });
-  }
-
   return {
     type: 'FeatureCollection',
-    features: samples.map(({ index, west, south, sourceIndex, landFraction, cell, value }) => {
-      if (value <= displayThreshold) return null;
+    features: samples.map(({ index, west, south, sourceIndex, landFraction, cell, value, climateValue, geographyValue }) => {
+      if (value <= 0) return null;
       const sourceCell = cell ? `${cell.r}:${cell.c}` : 'water';
       return geojsonFeature('Polygon', [[
         [west, south], [west + displayStep, south], [west + displayStep, south + displayStep], [west, south + displayStep], [west, south],
@@ -294,8 +300,8 @@ function spreadGridData() {
         population: cell?.population || 0,
         rate: cell?.rate || 0,
         signal: cell?.signal || 0,
-        climate: cell?.climate || 0,
-        geography: cell?.geography || 0,
+        climate: climateValue,
+        geography: geographyValue,
       });
     }).filter(Boolean),
   };
@@ -343,7 +349,10 @@ function renderSpreadLab() {
   $('#spread-scenario-controls')?.classList.toggle('hidden', spreadView !== 'scenario');
   const modelOptions = $('#spread-model-options');
   if (modelOptions) {
-    modelOptions.innerHTML = (spreadBundle.models || []).map((model) => `<button type="button" data-spread-model="${model.id}" class="${model.id === selectedSpreadModelId ? 'active' : ''}" aria-pressed="${model.id === selectedSpreadModelId}"><b>${model.name}</b><em>${model.group}</em><small>${model.mechanism}</small></button>`).join('');
+    modelOptions.innerHTML = (spreadBundle.models || []).map((sourceModel) => {
+      const model = spreadModel(sourceModel.id);
+      return `<button type="button" data-spread-model="${model.id}" class="${model.id === selectedSpreadModelId ? 'active' : ''}" aria-pressed="${model.id === selectedSpreadModelId}"><b>${model.name}</b><em>${model.group}</em><small>${model.mechanism}</small></button>`;
+    }).join('');
   }
   const selected = spreadModel();
   if ($('#spread-model-group')) $('#spread-model-group').textContent = selected?.group || 'MODEL';
@@ -397,35 +406,6 @@ function renderSpreadDisplayToggle() {
   });
 }
 
-function renderSpreadCellDetail(cellId = selectedSpreadSourceCell) {
-  const detail = $('#spread-cell-detail');
-  if (!detail) return;
-  if (cellId === 'water') {
-    detail.innerHTML = `<b>Water-majority grid cell</b><span>${Math.round((selectedSpreadLandFraction || 0) * 100)}% mapped U.S. land. The cell remains visible for spatial continuity, but its modeled value and height are enforced to <b>0</b>.</span>`;
-    return;
-  }
-  const cell = (spreadBundle.cells || []).find((candidate) => `${candidate.r}:${candidate.c}` === String(cellId));
-  if (!cell) {
-    detail.innerHTML = '<b>Select a grid cell</b><span>Click a column to inspect reports, population, climate, and terrain factors.</span>';
-    return;
-  }
-  const sourceIndex = spreadCellIndices.get(`${cell.r}:${cell.c}`);
-  const value = Number.isFinite(selectedSpreadValue) ? selectedSpreadValue : spreadCellValue(cell, sourceIndex);
-  const historicalReports = spreadHistory.reports?.[String(Math.min(spreadTimelineYear, spreadPresentYear))]?.[sourceIndex];
-  const historicalRate = spreadHistory.rates?.[String(Math.min(spreadTimelineYear, spreadPresentYear))]?.[sourceIndex];
-  const reportCount = historicalReports ?? cell.reports;
-  const stabilizedRate = historicalRate ?? cell.rate;
-  const valueLabel = spreadView === 'climate' || spreadView === 'geography'
-    ? spreadViewProfiles[spreadView].scale
-    : spreadTimelineYear > spreadPresentYear
-      ? `${spreadModel()?.name || 'model'} predicted pressure`
-      : 'population-adjusted observed signal';
-  const step = spreadBundle.metadata?.grid?.stepDegrees || 1;
-  detail.innerHTML = `<b>${(cell.s + step / 2).toFixed(1)}°N · ${Math.abs(cell.w + step / 2).toFixed(1)}°W</b>
-    <div class="spread-cell-stats"><span><strong>${reportCount.toLocaleString()}</strong><small>reports through ${Math.min(spreadTimelineYear, spreadPresentYear)}</small></span><span><strong>${cell.population >= 1_000_000 ? `${(cell.population / 1_000_000).toFixed(1)}m` : `${Math.round(cell.population / 1000)}k`}</strong><small>population</small></span><span><strong>${Math.round(cell.climate * 100)}</strong><small>climate</small></span><span><strong>${Math.round(cell.geography * 100)}</strong><small>terrain</small></span></div>
-    <span>${spreadTimelineYear} ${valueLabel}: <b>${Math.round(value * 100)} / 100</b>. Stabilized observed rate: ${stabilizedRate.toFixed(1)} per 100k. Land share: ${Math.round((selectedSpreadLandFraction ?? 1) * 100)}%.</span>`;
-}
-
 function updateSpreadMap({ timelineOnly = false } = {}) {
   if (!map?.getSource('lt-spread-source')) return;
   const visible = spreadActive();
@@ -461,12 +441,11 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
   if ($('#spread-hud-description')) {
     const timeDescription = timeDriven
       ? predicted
-        ? `The ${spreadTimelineYear} height is the selected factor-isolation model, initialized from observed evidence. It is not a calibrated forecast.`
+        ? `The ${spreadTimelineYear} height is a resistance-weighted physics solution at ${spreadGridSize}° resolution. Climate controls establishment; R = 1/(climate × terrain) controls movement. R = 1 is the ideal baseline. This is not a calibrated forecast.`
         : `The ${spreadTimelineYear} height uses cumulative dated reports stabilized by population${spreadTimelineYear === spreadPresentYear ? `; observations are partial through ${spreadHistory.metadata?.lastObservedDate || 'the latest snapshot'}` : ''}.`
       : `${profile.description} This factor surface is static while the timeline moves.`;
     $('#spread-hud-description').textContent = `${timeDescription} Cells with 50% or less U.S. land are forced to zero.`;
   }
-  renderSpreadCellDetail();
   if (!timelineOnly) renderSpreadLab();
   renderSpreadTimeline();
   renderSpreadDisplayToggle();
@@ -1744,8 +1723,9 @@ function addMapLayers() {
     selectedSpreadSourceCell = event.features[0].properties.sourceCell;
     selectedSpreadValue = Number(event.features[0].properties.value);
     selectedSpreadLandFraction = Number(event.features[0].properties.landFraction);
+    selectedSpreadClimate = Number(event.features[0].properties.climate);
+    selectedSpreadGeography = Number(event.features[0].properties.geography);
     if (map.getLayer('lt-spread-selection')) map.setFilter('lt-spread-selection', ['==', ['get', 'cell'], selectedSpreadCell]);
-    renderSpreadCellDetail();
   };
   map.on('click', 'lt-spread-height', selectSpreadFeature);
   map.on('click', 'lt-spread-water', selectSpreadFeature);

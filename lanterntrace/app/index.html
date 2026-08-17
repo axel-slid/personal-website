@@ -58,7 +58,7 @@
 
           <div class="spread-grid-size-control">
             <div><span>GRID CELL SIZE</span><b id="spread-grid-size-label">0.25°</b></div>
-            <input id="spread-grid-size" type="range" min="0" max="3" value="0" step="1" aria-label="Grid display cell size" />
+            <input id="spread-grid-size" type="range" min="0" max="3" value="0" step="1" aria-label="Physics grid cell size" />
             <div class="spread-grid-size-ticks" aria-hidden="true"><span>0.25°<small>finer</small></span><span>0.5°</span><span>0.75°</span><span>1°<small>coarser</small></span></div>
           </div>
 
@@ -112,8 +112,14 @@
           <small>NASA LRO surface</small>
         </aside>
         <div class="spread-display-toggle" role="group" aria-label="Map display">
-          <button class="active" type="button" data-spread-display="mesh" aria-pressed="true"><span>▦</span>Mesh</button>
-          <button type="button" data-spread-display="reports" aria-pressed="false"><span>●</span>Reports</button>
+          <button class="active" type="button" data-spread-display="mesh" aria-pressed="true">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><rect x="2.5" y="2.5" width="13" height="13" rx="1" /><path d="M2.5 7h13M2.5 11h13M7 2.5v13M11 2.5v13" /></svg>
+            Mesh
+          </button>
+          <button type="button" data-spread-display="reports" aria-pressed="false">
+            <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M1.75 9s2.55-4.25 7.25-4.25S16.25 9 16.25 9 13.7 13.25 9 13.25 1.75 9 1.75 9Z" /><circle cx="9" cy="9" r="2.1" /></svg>
+            Reports
+          </button>
         </div>
         <header class="map-header">
           <button id="sidebar-restore" class="sidebar-restore" type="button" aria-label="Show species panel" aria-expanded="false">›</button>
