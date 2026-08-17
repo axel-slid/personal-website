@@ -36,33 +36,75 @@
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <h1 id="hero-title">I play hip-hop, Bollywood, party, and house.</h1>
+        <p class="hero-eyebrow"><span class="live-dot" aria-hidden="true"></span> Berkeley, California · Open-format DJ</p>
+        <h1 id="hero-title">A set should feel like a story, not a shuffle.</h1>
+        <p class="hero-lede">Hip-hop, Bollywood, house, pop, and the right throwbacks—sequenced for the room, the hour, and the people in it.</p>
         <div class="hero-actions">
-          <a class="primary-button" href="mailto:dils@berkeley.edu?subject=DJ%20booking%20inquiry&amp;body=Event%20date%3A%0AEvent%20location%3A%0AEvent%20type%3A%0AApproximate%20guest%20count%3A">Book Alex <span aria-hidden="true">↗</span></a>
-          <a class="text-button" href="#playlists">Hear the selection <span aria-hidden="true">↓</span></a>
+          <a class="primary-button" href="mailto:dils@berkeley.edu?subject=DJ%20booking%20inquiry&amp;body=Event%20date%3A%0AEvent%20location%3A%0AEvent%20type%3A%0AApproximate%20guest%20count%3A">Book a set <span aria-hidden="true">↗</span></a>
+          <a class="text-button" href="#playlists">Open the crate <span aria-hidden="true">↓</span></a>
         </div>
+        <ul class="hero-genres" aria-label="Genres Alex plays">
+          <li>Hip-hop</li>
+          <li>Bollywood</li>
+          <li>House</li>
+          <li>Pop</li>
+        </ul>
       </div>
 
       <figure class="hero-app">
         <img src="photos/beach-set-hero.webp" alt="Two DJs performing a sunset set above the Pacific Ocean" />
-        <figcaption><span>Beach Set</span><span>Saved in Set Player</span></figcaption>
+        <div class="hero-set-card" aria-label="Featured set details">
+          <span>Featured set</span>
+          <strong>Summer Set</strong>
+          <small>109 tracks · 7 hr 01 min</small>
+        </div>
+        <figcaption><span>Pacific coast · sunset</span><span>Saved in Set Player</span></figcaption>
       </figure>
     </section>
 
     <section class="booking-strip" aria-label="Booking and contact">
       <div>
-        <span class="strip-label">Bookings</span>
-        <strong>Campus events, parties &amp; private events</strong>
+        <span class="strip-label">Good for</span>
+        <strong>Campus events · parties · private events</strong>
       </div>
       <div>
-        <span class="strip-label">Contact</span>
+        <span class="strip-label">Based in</span>
+        <strong>Berkeley, California</strong>
+      </div>
+      <div>
+        <span class="strip-label">Booking</span>
         <a href="mailto:dils@berkeley.edu?subject=DJ%20booking%20inquiry">dils@berkeley.edu</a>
       </div>
       <a class="strip-arrow" href="mailto:dils@berkeley.edu?subject=DJ%20booking%20inquiry&amp;body=Event%20date%3A%0AEvent%20location%3A%0AEvent%20type%3A%0AApproximate%20guest%20count%3A" aria-label="Start a booking email">↗</a>
     </section>
 
+    <section class="sound-profile" aria-labelledby="sound-title">
+      <div class="section-index">01 / How the set moves</div>
+      <div class="sound-heading">
+        <h2 id="sound-title">Start warm.<br />Build the room.<br /><em>Land together.</em></h2>
+        <p>I plan the arc, mark the moments, and leave enough space to follow the crowd. Every set starts with a direction—not a fixed script.</p>
+      </div>
+      <ol class="set-arc">
+        <li>
+          <span>01</span>
+          <strong>Open</strong>
+          <p>Melodic house, disco, and easy grooves that let the room arrive.</p>
+        </li>
+        <li>
+          <span>02</span>
+          <strong>Lift</strong>
+          <p>Pop, Bollywood, hip-hop, and familiar records with somewhere to go.</p>
+        </li>
+        <li>
+          <span>03</span>
+          <strong>Peak</strong>
+          <p>Club edits, house, and throwbacks chosen for the moment—not the genre label.</p>
+        </li>
+      </ol>
+    </section>
+
     <section class="set-player" aria-labelledby="set-player-title">
-      <div class="section-index">01 / Set Player</div>
+      <div class="section-index">02 / The memory layer</div>
       <div class="set-player-heading">
         <div class="set-player-title-row">
           <img src="../assets/project-icons/set-player.webp" alt="Set Player app icon" />
@@ -94,7 +136,7 @@
     </section>
 
     <section class="playlists" id="playlists" aria-labelledby="playlists-title">
-      <div class="section-index">02 / Curated playlists</div>
+      <div class="section-index">03 / Inside the crate</div>
       <div class="playlist-heading">
         <div>
           <p class="kicker">Current rotation</p>
@@ -148,6 +190,17 @@
           <span>Bounce</span>
           <span>Bollywood</span>
           <span>Beach Set</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="booking-cta" aria-labelledby="booking-title">
+      <p class="kicker">Booking</p>
+      <div>
+        <h2 id="booking-title">Have a date<br />and a room?</h2>
+        <div class="booking-cta-copy">
+          <p>Send the date, location, event type, and approximate guest count. I’ll reply with availability and the next steps.</p>
+          <a class="primary-button" href="mailto:dils@berkeley.edu?subject=DJ%20booking%20inquiry&amp;body=Event%20date%3A%0AEvent%20location%3A%0AEvent%20type%3A%0AApproximate%20guest%20count%3A">Start a booking <span aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>
