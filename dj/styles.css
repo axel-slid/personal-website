@@ -79,8 +79,6 @@ form button:disabled { cursor: wait; opacity: .65; }
 .photo-tall { grid-row: span 2; }
 .photo-tall img { aspect-ratio: 4 / 5; }
 .photo:not(.photo-wide):not(.photo-tall) img { aspect-ratio: 3 / 2; }
-.photo-final { grid-column: 1 / -1; width: 76%; margin-left: auto; }
-.photo-final img { aspect-ratio: 16 / 9; }
 
 footer { display: grid; grid-template-columns: 1fr auto auto; gap: 2rem; align-items: center; padding: 2rem 0 3rem; border-top: 1px solid var(--line); color: var(--muted); font-family: var(--mono); font-size: .56rem; }
 footer div { display: grid; }
@@ -116,8 +114,7 @@ footer a:hover { color: var(--ink); }
   .photos-heading { display: block; }
   .photo-grid { grid-template-columns: 1fr; }
   .photo-tall { grid-row: auto; }
-  .photo-final { grid-column: 1; width: 100%; }
-  .photo-wide img, .photo-final img { aspect-ratio: 4 / 3; }
+  .photo-wide img { aspect-ratio: 4 / 3; }
   .photo-tall img { aspect-ratio: 4 / 5; }
 }
 
