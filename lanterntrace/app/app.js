@@ -56,6 +56,12 @@ let selectedSpreadGeography = null;
 let spreadGridSize = .25;
 const spreadGridSizes = [.25, .5, .75, 1];
 const spreadCellIndices = new Map((spreadBundle.cells || []).map((cell, index) => [`${cell.r}:${cell.c}`, index]));
+const windMaskStep = .25;
+const windMaskLandThreshold = spreadGridPyramid.metadata?.landThreshold ?? .5;
+const windUsCells = new Set((spreadGridPyramid.levels?.['0.25'] || [])
+  .filter((record) => record[3] > windMaskLandThreshold)
+  .map((record) => `${Math.round(record[0] / windMaskStep)}:${Math.round(record[1] / windMaskStep)}`));
+const windUsOpacityCache = new Map();
 
 const layers = { heatmap: true, reports: true, front: true, interpolation: true, uncertainty: false, corridors: false, sites: false };
 const latestObservedSnapshotIndex = snapshots.reduce((latest, snapshot, index) => snapshot.isProjection ? latest : index, 0);
@@ -371,6 +377,53 @@ function sampleWind(longitude, latitude) {
   return { u, v, speed: Math.hypot(u, v) };
 }
 
+function windEdgeOpacity(longitude, latitude) {
+  const latitudes = windClimatology.latitudes || [];
+  const longitudes = windClimatology.longitudes || [];
+  if (latitudes.length < 2 || longitudes.length < 2) return 0;
+  const west = longitudes[0];
+  const east = longitudes.at(-1);
+  const north = latitudes[0];
+  const south = latitudes.at(-1);
+  const edgeDistance = Math.min(
+    (longitude - west) / 7,
+    (east - longitude) / 7,
+    (latitude - south) / 5,
+    (north - latitude) / 5,
+    1,
+  );
+  const clamped = Math.max(0, edgeDistance);
+  return clamped * clamped * (3 - 2 * clamped);
+}
+
+function windUsOpacity(longitude, latitude) {
+  const column = Math.floor((longitude + 1e-8) / windMaskStep);
+  const row = Math.floor((latitude + 1e-8) / windMaskStep);
+  const key = `${column}:${row}`;
+  if (!windUsCells.has(key)) return 0;
+  if (windUsOpacityCache.has(key)) return windUsOpacityCache.get(key);
+  const featherCells = 6;
+  let boundaryDistance = featherCells;
+  outer: for (let radius = 1; radius <= featherCells; radius += 1) {
+    for (let offset = -radius; offset <= radius; offset += 1) {
+      const neighbors = [
+        `${column + offset}:${row - radius}`,
+        `${column + offset}:${row + radius}`,
+        `${column - radius}:${row + offset}`,
+        `${column + radius}:${row + offset}`,
+      ];
+      if (neighbors.some((neighbor) => !windUsCells.has(neighbor))) {
+        boundaryDistance = radius - 1;
+        break outer;
+      }
+    }
+  }
+  const edge = Math.max(.08, Math.min(1, boundaryDistance / featherCells));
+  const opacity = edge * edge * (3 - 2 * edge);
+  windUsOpacityCache.set(key, opacity);
+  return opacity;
+}
+
 function resetWindParticle(particle = {}) {
   const latitudes = windClimatology.latitudes || [50, 25];
   const longitudes = windClimatology.longitudes || [-125, -66];
@@ -470,9 +523,9 @@ function startWindAnimation() {
     const { context, width, height } = state;
     const elapsed = windAnimationLastTime ? Math.min((timestamp - windAnimationLastTime) / 1000, .06) : .016;
     windAnimationLastTime = timestamp;
-    if (map.isMoving()) {
+    const mapMoving = map.isMoving();
+    if (mapMoving) {
       context.clearRect(0, 0, width, height);
-      windParticles.forEach((particle) => { particle.previous = null; });
     } else {
       context.globalCompositeOperation = 'destination-in';
       context.fillStyle = 'rgba(0, 0, 0, .955)';
@@ -496,15 +549,18 @@ function startWindAnimation() {
         resetWindParticle(particle);
         return;
       }
-      if (particle.previous) {
+      const segmentStart = mapMoving ? current : particle.previous;
+      if (segmentStart) {
         const strength = Math.max(0, Math.min(1, (wind.speed - speedRange[0]) / Math.max(speedRange[1] - speedRange[0], .1)));
+        const edgeOpacity = windEdgeOpacity(particle.longitude, particle.latitude)
+          * windUsOpacity(particle.longitude, particle.latitude);
         const red = Math.round(91 + 145 * strength);
         const green = Math.round(197 + 45 * strength);
         const blue = Math.round(202 - 27 * strength);
         context.beginPath();
-        context.moveTo(particle.previous.x, particle.previous.y);
+        context.moveTo(segmentStart.x, segmentStart.y);
         context.lineTo(next.x, next.y);
-        context.strokeStyle = `rgba(${red}, ${green}, ${blue}, ${.56 + strength * .4})`;
+        context.strokeStyle = `rgba(${red}, ${green}, ${blue}, ${(.56 + strength * .4) * edgeOpacity})`;
         context.lineWidth = 1.15 + strength * 2.15;
         context.stroke();
       }
@@ -625,7 +681,8 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
     map.setLayoutProperty('lt-spread-height', 'visibility', meshVisible ? 'visible' : 'none');
     map.setPaintProperty('lt-spread-height', 'fill-extrusion-color', spreadColorExpression());
   }
-  ['lt-spread-water', 'lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
+  if (map.getLayer('lt-spread-floor')) map.setPaintProperty('lt-spread-floor', 'fill-color', spreadColorExpression());
+  ['lt-spread-floor', 'lt-spread-water', 'lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
     if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', meshVisible ? 'visible' : 'none');
   });
   ['lt-spread-reports', 'lt-spread-report-hit'].forEach((id) => {
@@ -1825,8 +1882,11 @@ function addMapLayers() {
     'heatmap-opacity': 0.42,
     'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(9, 41, 43, 0)', 0.12, 'rgba(20, 112, 102, .18)', 0.32, 'rgba(32, 169, 125, .34)', 0.58, 'rgba(81, 211, 148, .48)', 0.82, 'rgba(171, 237, 116, .58)', 1, 'rgba(210, 247, 151, .68)']
   } });
+  map.addLayer({ id: 'lt-spread-floor', type: 'fill', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
+    'fill-color': spreadColorExpression(), 'fill-opacity': .82, 'fill-antialias': false
+  } });
   map.addLayer({ id: 'lt-spread-height', type: 'fill-extrusion', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
-    'fill-extrusion-base': 0,
+    'fill-extrusion-base': 80,
     'fill-extrusion-height': ['interpolate', ['linear'], ['get', 'value'], 0, 0, .08, 900, .25, 5500, .5, 19000, .75, 41000, 1, 76000],
     'fill-extrusion-color': spreadColorExpression(),
     'fill-extrusion-opacity': .78,
