@@ -65,12 +65,9 @@
 
           <div class="spread-grid-size-control">
             <div><span>GRID CELL SIZE</span><b id="spread-grid-size-label">1°</b></div>
-            <div class="spread-grid-size-options" role="group" aria-label="Grid display cell size">
-              <button class="active" type="button" data-spread-grid-size="1" aria-pressed="true">1°</button>
-              <button type="button" data-spread-grid-size="0.5" aria-pressed="false">0.5°</button>
-              <button type="button" data-spread-grid-size="0.25" aria-pressed="false">0.25°</button>
-            </div>
-            <small>Smaller cells subdivide the display; the underlying model remains a 1° surface.</small>
+            <input id="spread-grid-size" type="range" min="0" max="3" value="3" step="1" aria-label="Grid display cell size" />
+            <div class="spread-grid-size-ticks" aria-hidden="true"><span>0.25°<small>finer</small></span><span>0.5°</span><span>0.75°</span><span>1°<small>coarser</small></span></div>
+            <small>Preprocessed neighboring-cell interpolation for display only; source evidence and model calibration remain 1°.</small>
           </div>
 
           <div id="spread-scenario-controls" class="spread-scenario-controls hidden">
@@ -191,6 +188,7 @@
     <script src="./generated/model-results.js"></script>
     <script src="./generated/frozen-benchmark.js"></script>
     <script src="./generated/spread-explainer.js"></script>
+    <script src="./generated/spread-grid-pyramid.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>

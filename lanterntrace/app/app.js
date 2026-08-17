@@ -6,6 +6,7 @@ const previewObservationPoints = observationPoints.filter((_, index) => index % 
 const modelBundle = window.LanternTraceModels || { metadata: {}, variants: [], topFive: [], models: {} };
 const benchmarkBundle = window.LanternTraceBenchmark || { metadata: {}, models: [], years: {} };
 const spreadBundle = window.LanternTraceSpread || { metadata: {}, models: [], cells: [] };
+const spreadGridPyramid = window.LanternTraceSpreadGridPyramid || { metadata: {}, levels: {} };
 const embedMode = new URLSearchParams(window.location.search).get('embed');
 const physicsEmbedMode = embedMode === 'physics' || embedMode === 'hero';
 const heroMapEmbedMode = embedMode === 'hero';
@@ -26,7 +27,9 @@ let spreadView = 'signal';
 let selectedSpreadModelId = 'coupled';
 let spreadYear = 2030;
 let selectedSpreadCell = null;
+let selectedSpreadValue = null;
 let spreadGridSize = 1;
+const spreadGridSizes = [.25, .5, .75, 1];
 
 const layers = { heatmap: true, reports: true, front: true, interpolation: true, uncertainty: false, corridors: false, sites: false };
 const latestObservedSnapshotIndex = snapshots.reduce((latest, snapshot, index) => snapshot.isProjection ? latest : index, 0);
@@ -172,32 +175,30 @@ function spreadCellValue(cell) {
 }
 
 function spreadGridData() {
-  const sourceStep = spreadBundle.metadata?.grid?.stepDegrees || 1;
-  const subdivisions = Math.max(1, Math.round(sourceStep / spreadGridSize));
-  const displayStep = sourceStep / subdivisions;
+  const displayStep = spreadGridSize;
+  const level = spreadGridPyramid.levels?.[String(spreadGridSize)] || [];
   return {
     type: 'FeatureCollection',
-    features: (spreadBundle.cells || []).flatMap((cell) => {
-      const value = spreadCellValue(cell);
+    features: level.map((record, index) => {
+      const [west, south, sourceIndex, ...weightPairs] = record;
+      const cell = spreadBundle.cells[sourceIndex];
+      let value = 0;
+      for (let pairIndex = 0; pairIndex < weightPairs.length; pairIndex += 2) {
+        value += spreadCellValue(spreadBundle.cells[weightPairs[pairIndex]]) * weightPairs[pairIndex + 1];
+      }
       const sourceCell = `${cell.r}:${cell.c}`;
-      return Array.from({ length: subdivisions * subdivisions }, (_, index) => {
-        const subRow = Math.floor(index / subdivisions);
-        const subColumn = index % subdivisions;
-        const west = cell.w + subColumn * displayStep;
-        const south = cell.s + subRow * displayStep;
-        return geojsonFeature('Polygon', [[
-          [west, south], [west + displayStep, south], [west + displayStep, south + displayStep], [west, south + displayStep], [west, south],
-        ]], {
-          cell: `${sourceCell}:${subRow}:${subColumn}`,
-          sourceCell,
-          value,
-          reports: cell.reports,
-          population: cell.population,
-          rate: cell.rate,
-          signal: cell.signal,
-          climate: cell.climate,
-          geography: cell.geography,
-        });
+      return geojsonFeature('Polygon', [[
+        [west, south], [west + displayStep, south], [west + displayStep, south + displayStep], [west, south + displayStep], [west, south],
+      ]], {
+        cell: `${spreadGridSize}:${index}`,
+        sourceCell,
+        value,
+        reports: cell.reports,
+        population: cell.population,
+        rate: cell.rate,
+        signal: cell.signal,
+        climate: cell.climate,
+        geography: cell.geography,
       });
     }),
   };
@@ -255,11 +256,7 @@ function renderSpreadLab() {
   if ($('#spread-year')) $('#spread-year').value = spreadYear;
   if ($('#spread-year-label')) $('#spread-year-label').textContent = spreadYear;
   if ($('#spread-grid-size-label')) $('#spread-grid-size-label').textContent = `${spreadGridSize}°`;
-  $$('[data-spread-grid-size]').forEach((button) => {
-    const active = Number(button.dataset.spreadGridSize) === spreadGridSize;
-    button.classList.toggle('active', active);
-    button.setAttribute('aria-pressed', String(active));
-  });
+  if ($('#spread-grid-size')) $('#spread-grid-size').value = spreadGridSizes.indexOf(spreadGridSize);
   renderSpreadBenchmark();
 }
 
@@ -271,7 +268,7 @@ function renderSpreadCellDetail(cellId = selectedSpreadCell) {
     detail.innerHTML = '<b>Select a grid cell</b><span>Click a column to inspect reports, population, climate, and terrain factors.</span>';
     return;
   }
-  const value = spreadCellValue(cell);
+  const value = Number.isFinite(selectedSpreadValue) ? selectedSpreadValue : spreadCellValue(cell);
   const step = spreadBundle.metadata?.grid?.stepDegrees || 1;
   detail.innerHTML = `<b>${(cell.s + step / 2).toFixed(1)}°N · ${Math.abs(cell.w + step / 2).toFixed(1)}°W</b>
     <div class="spread-cell-stats"><span><strong>${cell.reports.toLocaleString()}</strong><small>reports</small></span><span><strong>${cell.population >= 1_000_000 ? `${(cell.population / 1_000_000).toFixed(1)}m` : `${Math.round(cell.population / 1000)}k`}</strong><small>population</small></span><span><strong>${Math.round(cell.climate * 100)}</strong><small>climate</small></span><span><strong>${Math.round(cell.geography * 100)}</strong><small>terrain</small></span></div>
@@ -317,6 +314,7 @@ function selectSpreadView(view) {
   if (!spreadViewProfiles[view]) return;
   spreadView = view;
   selectedSpreadCell = null;
+  selectedSpreadValue = null;
   updateSpreadMap();
 }
 
@@ -324,6 +322,7 @@ function selectSpreadModel(modelId) {
   if (!spreadModel(modelId)) return;
   selectedSpreadModelId = modelId;
   selectedSpreadCell = null;
+  selectedSpreadValue = null;
   updateSpreadMap();
 }
 
@@ -332,14 +331,16 @@ function setSpreadYear(year) {
   if (!years.includes(Number(year))) return;
   spreadYear = Number(year);
   selectedSpreadCell = null;
+  selectedSpreadValue = null;
   updateSpreadMap();
 }
 
-function setSpreadGridSize(size) {
-  const nextSize = Number(size);
-  if (![1, .5, .25].includes(nextSize) || nextSize === spreadGridSize) return;
+function setSpreadGridSize(sliderIndex) {
+  const nextSize = spreadGridSizes[Number(sliderIndex)];
+  if (!nextSize || nextSize === spreadGridSize) return;
   spreadGridSize = nextSize;
   selectedSpreadCell = null;
+  selectedSpreadValue = null;
   updateSpreadMap();
 }
 
@@ -1455,7 +1456,9 @@ function addMapLayers() {
   map.on('click', 'lt-spread-height', (event) => {
     if (!spreadActive() || !event.features?.length) return;
     selectedSpreadCell = event.features[0].properties.sourceCell;
-    updateSpreadMap();
+    selectedSpreadValue = Number(event.features[0].properties.value);
+    if (map.getLayer('lt-spread-selection')) map.setFilter('lt-spread-selection', ['==', ['get', 'sourceCell'], selectedSpreadCell]);
+    renderSpreadCellDetail();
   });
   map.on('mouseenter', 'lt-spread-height', () => {
     if (spreadActive()) map.getCanvas().style.cursor = 'pointer';
@@ -2034,7 +2037,7 @@ function setupInteractions() {
   $$('.section-tab').forEach((button) => button.addEventListener('click', () => switchSection(button.dataset.section)));
   $$('.topbar-section').forEach((button) => button.addEventListener('click', () => switchSection(button.dataset.section)));
   $$('[data-spread-view]').forEach((button) => button.addEventListener('click', () => selectSpreadView(button.dataset.spreadView)));
-  $$('[data-spread-grid-size]').forEach((button) => button.addEventListener('click', () => setSpreadGridSize(button.dataset.spreadGridSize)));
+  $('#spread-grid-size')?.addEventListener('input', (event) => setSpreadGridSize(event.target.value));
   $('#spread-model-options')?.addEventListener('click', (event) => {
     const button = event.target.closest('[data-spread-model]');
     if (button) selectSpreadModel(button.dataset.spreadModel);
