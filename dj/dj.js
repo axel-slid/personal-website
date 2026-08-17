@@ -49,8 +49,14 @@
 
     const showSlide = (index) => {
       activeIndex = (index + slides.length) % slides.length;
-      track.style.transform = `translate3d(-${activeIndex * 100}%, 0, 0)`;
       slides.forEach((slide, slideIndex) => {
+        const delta = (slideIndex - activeIndex + slides.length) % slides.length;
+        slide.classList.remove("active", "prev", "next", "far-prev", "far-next");
+        if (delta === 0) slide.classList.add("active");
+        else if (delta === 1) slide.classList.add("next");
+        else if (delta === slides.length - 1) slide.classList.add("prev");
+        else if (delta === 2) slide.classList.add("far-next");
+        else if (delta === slides.length - 2) slide.classList.add("far-prev");
         slide.setAttribute("aria-hidden", String(slideIndex !== activeIndex));
       });
       dots.forEach((dot, dotIndex) => {
@@ -58,6 +64,12 @@
       });
       if (current) current.textContent = String(activeIndex + 1);
     };
+
+    slides.forEach((slide, slideIndex) => {
+      slide.addEventListener("click", () => {
+        if (slideIndex !== activeIndex) showSlide(slideIndex);
+      });
+    });
 
     previous?.addEventListener("click", () => showSlide(activeIndex - 1));
     next?.addEventListener("click", () => showSlide(activeIndex + 1));

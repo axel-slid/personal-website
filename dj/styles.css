@@ -84,11 +84,17 @@ form button:disabled { cursor: wait; opacity: .65; }
 .photos-heading { display: flex; align-items: end; justify-content: space-between; margin-bottom: 3rem; }
 .photo-carousel { min-width: 0; outline: none; touch-action: pan-y; }
 .photo-carousel:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
-.carousel-viewport { overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
-.carousel-track { display: flex; transform: translate3d(0, 0, 0); transition: transform .55s cubic-bezier(.22,1,.36,1); }
-.carousel-slide { position: relative; flex: 0 0 100%; min-width: 0; }
-.carousel-slide img { width: 100%; height: clamp(420px, 62vw, 760px); object-fit: contain; background: #080808; }
-.carousel-slide figcaption { position: absolute; bottom: 1rem; left: 1rem; margin: 0; padding: .5rem .7rem; color: var(--ink); border: 1px solid rgba(255,255,255,.16); background: rgba(10,10,10,.72); backdrop-filter: blur(10px); font-family: var(--mono); font-size: .56rem; letter-spacing: .02em; }
+.carousel-viewport { position: relative; height: clamp(460px, 57vw, 740px); overflow: hidden; perspective: 1500px; }
+.carousel-track { position: relative; width: 100%; height: 100%; }
+.carousel-slide { position: absolute; z-index: 1; top: 0; left: 50%; width: min(72%, 900px); height: 100%; overflow: hidden; border: 1px solid rgba(255,255,255,.18); background: #080808; box-shadow: 0 28px 75px rgba(0,0,0,.46); opacity: 0; pointer-events: none; transform: translateX(-50%) scale(.68); transition: transform .65s cubic-bezier(.34,1.18,.64,1), opacity .45s cubic-bezier(.22,1,.36,1), filter .45s cubic-bezier(.22,1,.36,1); }
+.carousel-slide img { width: 100%; height: 100%; object-fit: contain; background: #080808; }
+.carousel-slide.active { z-index: 5; opacity: 1; pointer-events: auto; transform: translateX(-50%) translateZ(80px) scale(.94); filter: none; }
+.carousel-slide.prev { z-index: 4; opacity: .8; pointer-events: auto; transform: translateX(-112%) rotateY(12deg) scale(.79); filter: brightness(.52) saturate(.76); cursor: pointer; }
+.carousel-slide.next { z-index: 4; opacity: .8; pointer-events: auto; transform: translateX(12%) rotateY(-12deg) scale(.79); filter: brightness(.52) saturate(.76); cursor: pointer; }
+.carousel-slide.far-prev { z-index: 3; opacity: .2; transform: translateX(-154%) rotateY(19deg) scale(.62); filter: brightness(.34) saturate(.6); }
+.carousel-slide.far-next { z-index: 3; opacity: .2; transform: translateX(54%) rotateY(-19deg) scale(.62); filter: brightness(.34) saturate(.6); }
+.carousel-slide figcaption { position: absolute; bottom: 1rem; left: 1rem; margin: 0; padding: .5rem .7rem; color: var(--ink); border: 1px solid rgba(255,255,255,.16); background: rgba(10,10,10,.72); backdrop-filter: blur(10px); font-family: var(--mono); font-size: .56rem; letter-spacing: .02em; opacity: 0; transform: translateY(6px); transition: opacity .25s ease, transform .25s ease; }
+.carousel-slide.active figcaption { opacity: 1; transform: translateY(0); }
 .carousel-controls { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; gap: .8rem; align-items: center; margin-top: 1rem; }
 .carousel-arrow { display: grid; width: 42px; height: 42px; padding: 0; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--ink); background: transparent; cursor: pointer; }
 .carousel-arrow:hover { color: var(--bg); border-color: var(--accent); background: var(--accent); }
@@ -131,7 +137,12 @@ footer a:hover { color: var(--ink); }
   .field, .field-wide, form button { grid-column: 1; }
   .photos-heading { display: block; }
   .equipment-grid { grid-template-columns: 1fr; }
-  .carousel-slide img { height: min(125vw, 620px); }
+  .carousel-viewport { height: min(118vw, 620px); }
+  .carousel-slide { width: 80%; }
+  .carousel-slide.active { transform: translateX(-50%) scale(.94); }
+  .carousel-slide.prev { transform: translateX(-110%) scale(.78); }
+  .carousel-slide.next { transform: translateX(10%) scale(.78); }
+  .carousel-slide.far-prev, .carousel-slide.far-next { opacity: 0; }
   .carousel-controls { grid-template-columns: auto minmax(0, 1fr) auto; }
   .carousel-count { display: none; }
   .carousel-dots { justify-content: center; }
@@ -139,5 +150,5 @@ footer a:hover { color: var(--ink); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .carousel-track, .carousel-dot { transition: none; }
+  .carousel-slide, .carousel-slide figcaption, .carousel-dot { transition: none; }
 }
