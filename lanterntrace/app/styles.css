@@ -1122,3 +1122,56 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .spread-only .starfield .star { background: #e8f4ff; filter: drop-shadow(0 0 3px rgba(151, 197, 255, .78)); }
 .spread-only .starfield .star-1 { background: #d8c8f1; filter: drop-shadow(0 0 3px rgba(168, 129, 219, .7)); }
 .spread-only .starfield .star-2 { background: #fff2c4; filter: drop-shadow(0 0 3px rgba(255, 220, 135, .68)); }
+
+/* Far-zoom lunar easter egg, using NASA's LRO global color mosaic. */
+.moon-easter-egg {
+  position: absolute;
+  z-index: 5;
+  right: clamp(54px, 8vw, 128px);
+  bottom: 140px;
+  display: grid;
+  width: 230px;
+  justify-items: center;
+  opacity: var(--moon-progress, 0);
+  pointer-events: none;
+  transform: translate3d(0, var(--moon-offset, 150px), 0) scale(var(--moon-scale, .68));
+  transform-origin: 50% 100%;
+  transition: opacity .12s linear;
+  will-change: opacity, transform;
+}
+.moon-sphere {
+  width: 204px;
+  height: 204px;
+  border: 1px solid rgba(239, 244, 237, .38);
+  border-radius: 50%;
+  background-color: #85857f;
+  background-image:
+    radial-gradient(circle at 35% 27%, rgba(255, 255, 246, .2), transparent 35%),
+    radial-gradient(circle at 71% 73%, transparent 39%, rgba(0, 0, 0, .72) 83%),
+    url('https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_2k.jpg');
+  background-position: center, center, 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover, cover, auto 100%;
+  box-shadow: -12px 18px 36px rgba(0, 0, 0, .7), 0 0 18px rgba(205, 217, 232, .14);
+  filter: grayscale(.88) contrast(1.16) brightness(.83);
+  transform: rotate(-7deg);
+}
+.moon-easter-egg p {
+  margin: -9px 0 0;
+  padding: 8px 13px 7px;
+  border: 1px solid rgba(221, 236, 225, .28);
+  border-radius: 999px;
+  background: rgba(4, 18, 18, .9);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .42);
+  color: #edf8ef;
+  font: 700 11px 'DM Mono', monospace;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+.moon-easter-egg p span { color: #d8f47d; }
+.moon-easter-egg small { margin-top: 5px; color: rgba(190, 210, 203, .58); font: 7px 'DM Mono', monospace; letter-spacing: .08em; text-transform: uppercase; }
+
+@media (max-width: 720px) {
+  .moon-easter-egg { right: 24px; bottom: 126px; width: 176px; }
+  .moon-sphere { width: 158px; height: 158px; }
+}
