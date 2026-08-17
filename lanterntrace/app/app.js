@@ -231,20 +231,57 @@ function spreadCellValue(cell, sourceIndex = spreadCellIndices.get(`${cell?.r}:$
 function spreadGridData() {
   const displayStep = spreadGridSize;
   const level = spreadGridPyramid.levels?.[String(spreadGridSize)] || [];
-  const displayThreshold = spreadView === 'signal' || spreadView === 'scenario' ? .006 : .01;
+  const timeDriven = spreadView === 'signal' || spreadView === 'scenario';
+  const predicted = spreadView === 'scenario' || spreadTimelineYear > spreadPresentYear;
+  const displayThreshold = timeDriven ? predicted ? .01 : .006 : .01;
+  const landThreshold = spreadGridPyramid.metadata?.landThreshold ?? .5;
+  const samples = level.map((record, index) => {
+    const [west, south, sourceIndex, landFraction, ...weightPairs] = record;
+    if (landFraction <= landThreshold) return null;
+    const cell = sourceIndex >= 0 ? spreadBundle.cells[sourceIndex] : null;
+    let value = 0;
+    for (let pairIndex = 0; pairIndex < weightPairs.length; pairIndex += 2) {
+      const weightedSourceIndex = weightPairs[pairIndex];
+      value += spreadCellValue(spreadBundle.cells[weightedSourceIndex], weightedSourceIndex) * weightPairs[pairIndex + 1];
+    }
+    return {
+      record, index, west, south, sourceIndex, landFraction, cell, value, rawValue: value,
+      key: `${Math.round(west / displayStep)}:${Math.round(south / displayStep)}`,
+    };
+  }).filter(Boolean);
+  const sampleByKey = new Map(samples.map((sample) => [sample.key, sample]));
+  const neighborOffsets = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]];
+  // Display-only topology pass: close isolated one-cell holes, then taper weak
+  // unsupported perimeter cells so the modeled front does not read as a hard box.
+  if (timeDriven) {
+    samples.forEach((sample) => {
+      const column = Math.round(sample.west / displayStep);
+      const row = Math.round(sample.south / displayStep);
+      const neighbors = neighborOffsets
+        .map(([dx, dy]) => sampleByKey.get(`${column + dx}:${row + dy}`))
+        .filter(Boolean);
+      const activeNeighbors = neighbors.filter((neighbor) => neighbor.rawValue > displayThreshold);
+      if (sample.rawValue <= displayThreshold) {
+        const activeKeys = new Set(activeNeighbors.map((neighbor) => neighbor.key));
+        const horizontalBridge = activeKeys.has(`${column - 1}:${row}`) && activeKeys.has(`${column + 1}:${row}`);
+        const verticalBridge = activeKeys.has(`${column}:${row - 1}`) && activeKeys.has(`${column}:${row + 1}`);
+        if (activeNeighbors.length >= 3 && (horizontalBridge || verticalBridge)) {
+          sample.value = activeNeighbors.reduce((sum, neighbor) => sum + neighbor.rawValue, 0) / activeNeighbors.length * .82;
+        }
+        return;
+      }
+      const hasObservedEvidence = (sample.cell?.reports || 0) > 0;
+      if (!predicted || hasObservedEvidence || sample.rawValue >= .16) return;
+      if (activeNeighbors.length <= 1) sample.value = sample.rawValue * .2;
+      else if (activeNeighbors.length <= 3) sample.value = sample.rawValue * .44;
+      else if (activeNeighbors.length === 4) sample.value = sample.rawValue * .7;
+    });
+  }
+
   return {
     type: 'FeatureCollection',
-    features: level.map((record, index) => {
-      const [west, south, sourceIndex, landFraction, ...weightPairs] = record;
-      const cell = sourceIndex >= 0 ? spreadBundle.cells[sourceIndex] : null;
-      let value = 0;
-      if (landFraction > (spreadGridPyramid.metadata?.landThreshold ?? .5)) {
-        for (let pairIndex = 0; pairIndex < weightPairs.length; pairIndex += 2) {
-          const weightedSourceIndex = weightPairs[pairIndex];
-          value += spreadCellValue(spreadBundle.cells[weightedSourceIndex], weightedSourceIndex) * weightPairs[pairIndex + 1];
-        }
-      }
-      if (landFraction <= (spreadGridPyramid.metadata?.landThreshold ?? .5) || value <= displayThreshold) return null;
+    features: samples.map(({ index, west, south, sourceIndex, landFraction, cell, value }) => {
+      if (value <= displayThreshold) return null;
       const sourceCell = cell ? `${cell.r}:${cell.c}` : 'water';
       return geojsonFeature('Polygon', [[
         [west, south], [west + displayStep, south], [west + displayStep, south + displayStep], [west, south + displayStep], [west, south],
@@ -1608,8 +1645,8 @@ function addMapLayers() {
   } });
   map.addLayer({ id: 'lt-spread-grid', type: 'line', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
     'line-color': ['case', ['<=', ['get', 'landFraction'], .5], '#45677a', '#b4e8cf'],
-    'line-width': ['interpolate', ['linear'], ['zoom'], 2, .25, 5, .7],
-    'line-opacity': ['case', ['<=', ['get', 'landFraction'], .5], .2, .32]
+    'line-width': ['interpolate', ['linear'], ['zoom'], 2, .18, 5, .46],
+    'line-opacity': ['case', ['<=', ['get', 'landFraction'], .5], .12, .2]
   } });
   map.addLayer({ id: 'lt-spread-selection', type: 'line', source: 'lt-spread-source', filter: ['==', ['get', 'cell'], '__none__'], layout: { visibility: 'none' }, paint: {
     'line-color': '#ffffff', 'line-width': 2.5, 'line-opacity': 1
