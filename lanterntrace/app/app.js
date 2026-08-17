@@ -6,6 +6,7 @@ const previewObservationPoints = observationPoints.filter((_, index) => index % 
 const modelBundle = window.LanternTraceModels || { metadata: {}, variants: [], topFive: [], models: {} };
 const benchmarkBundle = window.LanternTraceBenchmark || { metadata: {}, models: [], years: {} };
 const spreadBundle = window.LanternTraceSpread || { metadata: {}, models: [], cells: [] };
+const spreadHistory = window.LanternTraceSpreadHistory || { metadata: {}, signals: {}, rates: {}, reports: {} };
 const spreadGridPyramid = window.LanternTraceSpreadGridPyramid || { metadata: {}, levels: {} };
 const embedMode = new URLSearchParams(window.location.search).get('embed');
 const physicsEmbedMode = embedMode === 'physics' || embedMode === 'hero';
@@ -25,13 +26,17 @@ let physicsAnimationFrame;
 let physicsAnimationLast = 0;
 let spreadView = 'signal';
 let selectedSpreadModelId = 'coupled';
-let spreadYear = 2030;
+const spreadTimelineStartYear = 2019;
+const spreadPresentYear = spreadHistory.metadata?.presentYear || 2026;
+const spreadTimelineEndYear = Math.max(...(spreadBundle.metadata?.years || [2035]));
+let spreadTimelineYear = spreadPresentYear;
 let selectedSpreadCell = null;
 let selectedSpreadSourceCell = null;
 let selectedSpreadValue = null;
 let selectedSpreadLandFraction = null;
 let spreadGridSize = 1;
 const spreadGridSizes = [.25, .5, .75, 1];
+const spreadCellIndices = new Map((spreadBundle.cells || []).map((cell, index) => [`${cell.r}:${cell.c}`, index]));
 
 const layers = { heatmap: true, reports: true, front: true, interpolation: true, uncertainty: false, corridors: false, sites: false };
 const latestObservedSnapshotIndex = snapshots.reduce((latest, snapshot, index) => snapshot.isProjection ? latest : index, 0);
@@ -107,6 +112,7 @@ let timer;
 let animationLastFrame = 0;
 let lastReportStep = -1;
 let pendingSliderFrame;
+let pendingSpreadTimelineFrame;
 let pendingSliderReportTimer;
 let lastSliderReportUpdate = 0;
 let isTimelineScrubbing = false;
@@ -164,16 +170,26 @@ function spreadModel(modelId = selectedSpreadModelId) {
   return spreadBundle.models?.find((candidate) => candidate.id === modelId);
 }
 
-function spreadYearIndex() {
+function spreadYearIndex(year = spreadTimelineYear) {
   const years = spreadBundle.metadata?.years || [];
-  return Math.max(0, years.indexOf(Number(spreadYear)));
+  const exactIndex = years.indexOf(Number(year));
+  if (exactIndex >= 0) return exactIndex;
+  return Math.max(0, Math.min(years.length - 1, Number(year) - Number(years[0] || year)));
 }
 
-function spreadCellValue(cell) {
+function spreadTimelinePhase() {
+  if (spreadTimelineYear < spreadPresentYear) return 'observed';
+  if (spreadTimelineYear === spreadPresentYear) return 'present';
+  return 'predicted';
+}
+
+function spreadCellValue(cell, sourceIndex = spreadCellIndices.get(`${cell?.r}:${cell?.c}`)) {
   if (spreadView === 'climate') return cell.climate || 0;
   if (spreadView === 'geography') return cell.geography || 0;
-  if (spreadView === 'scenario') return cell.models?.[selectedSpreadModelId]?.[spreadYearIndex()] || 0;
-  return cell.signal || 0;
+  if (spreadTimelineYear <= spreadPresentYear) {
+    return spreadHistory.signals?.[String(spreadTimelineYear)]?.[sourceIndex] ?? cell.signal ?? 0;
+  }
+  return cell.models?.[selectedSpreadModelId]?.[spreadYearIndex()] || 0;
 }
 
 function spreadGridData() {
@@ -187,7 +203,8 @@ function spreadGridData() {
       let value = 0;
       if (landFraction > (spreadGridPyramid.metadata?.landThreshold ?? .5)) {
         for (let pairIndex = 0; pairIndex < weightPairs.length; pairIndex += 2) {
-          value += spreadCellValue(spreadBundle.cells[weightPairs[pairIndex]]) * weightPairs[pairIndex + 1];
+          const weightedSourceIndex = weightPairs[pairIndex];
+          value += spreadCellValue(spreadBundle.cells[weightedSourceIndex], weightedSourceIndex) * weightPairs[pairIndex + 1];
         }
       }
       const sourceCell = cell ? `${cell.r}:${cell.c}` : 'water';
@@ -216,7 +233,7 @@ function spreadColorExpression() {
   if (spreadView === 'geography') {
     return ['interpolate', ['linear'], ['get', 'value'], 0, '#2b2142', .32, '#505b78', .65, '#4db38c', 1, '#d7ec86'];
   }
-  if (spreadView === 'scenario') {
+  if (spreadView === 'scenario' || (spreadView === 'signal' && spreadTimelineYear > spreadPresentYear)) {
     return ['interpolate', ['linear'], ['get', 'value'], 0, '#123631', .22, '#276c58', .55, '#62d99f', .8, '#d6ec78', 1, '#ffba69'];
   }
   return ['interpolate', ['linear'], ['get', 'value'], 0, '#0d322e', .18, '#176f5b', .48, '#31b78b', .75, '#9be17f', 1, '#f0e972'];
@@ -258,11 +275,31 @@ function renderSpreadLab() {
   }
   const selected = spreadModel();
   if ($('#spread-model-group')) $('#spread-model-group').textContent = selected?.group || 'MODEL';
-  if ($('#spread-year')) $('#spread-year').value = spreadYear;
-  if ($('#spread-year-label')) $('#spread-year-label').textContent = spreadYear;
   if ($('#spread-grid-size-label')) $('#spread-grid-size-label').textContent = `${spreadGridSize}°`;
   if ($('#spread-grid-size')) $('#spread-grid-size').value = spreadGridSizes.indexOf(spreadGridSize);
   renderSpreadBenchmark();
+}
+
+function renderSpreadTimeline() {
+  const timeline = $('#spread-timeline');
+  if (!timeline) return;
+  timeline.min = spreadTimelineStartYear;
+  timeline.max = spreadTimelineEndYear;
+  timeline.value = spreadTimelineYear;
+  const progress = (spreadTimelineYear - spreadTimelineStartYear) / (spreadTimelineEndYear - spreadTimelineStartYear);
+  const observedShare = (spreadPresentYear - spreadTimelineStartYear) / (spreadTimelineEndYear - spreadTimelineStartYear);
+  const dock = $('#spread-timeline-dock');
+  dock?.style.setProperty('--spread-progress', `${progress * 100}%`);
+  dock?.style.setProperty('--spread-observed-share', `${observedShare * 100}%`);
+  if ($('#spread-timeline-year')) $('#spread-timeline-year').textContent = spreadTimelineYear;
+  const phase = spreadTimelinePhase();
+  const phaseLabel = phase === 'predicted'
+    ? `PREDICTED · ${spreadModel()?.name || 'MODEL'}`
+    : phase === 'present'
+      ? 'PRESENT · PARTIAL OBSERVATIONS'
+      : 'OBSERVED · POPULATION-ADJUSTED';
+  if ($('#spread-timeline-phase')) $('#spread-timeline-phase').textContent = phaseLabel;
+  dock?.setAttribute('data-phase', phase);
 }
 
 function renderSpreadCellDetail(cellId = selectedSpreadSourceCell) {
@@ -277,11 +314,21 @@ function renderSpreadCellDetail(cellId = selectedSpreadSourceCell) {
     detail.innerHTML = '<b>Select a grid cell</b><span>Click a column to inspect reports, population, climate, and terrain factors.</span>';
     return;
   }
-  const value = Number.isFinite(selectedSpreadValue) ? selectedSpreadValue : spreadCellValue(cell);
+  const sourceIndex = spreadCellIndices.get(`${cell.r}:${cell.c}`);
+  const value = Number.isFinite(selectedSpreadValue) ? selectedSpreadValue : spreadCellValue(cell, sourceIndex);
+  const historicalReports = spreadHistory.reports?.[String(Math.min(spreadTimelineYear, spreadPresentYear))]?.[sourceIndex];
+  const historicalRate = spreadHistory.rates?.[String(Math.min(spreadTimelineYear, spreadPresentYear))]?.[sourceIndex];
+  const reportCount = historicalReports ?? cell.reports;
+  const stabilizedRate = historicalRate ?? cell.rate;
+  const valueLabel = spreadView === 'climate' || spreadView === 'geography'
+    ? spreadViewProfiles[spreadView].scale
+    : spreadTimelineYear > spreadPresentYear
+      ? `${spreadModel()?.name || 'model'} predicted pressure`
+      : 'population-adjusted observed signal';
   const step = spreadBundle.metadata?.grid?.stepDegrees || 1;
   detail.innerHTML = `<b>${(cell.s + step / 2).toFixed(1)}°N · ${Math.abs(cell.w + step / 2).toFixed(1)}°W</b>
-    <div class="spread-cell-stats"><span><strong>${cell.reports.toLocaleString()}</strong><small>reports</small></span><span><strong>${cell.population >= 1_000_000 ? `${(cell.population / 1_000_000).toFixed(1)}m` : `${Math.round(cell.population / 1000)}k`}</strong><small>population</small></span><span><strong>${Math.round(cell.climate * 100)}</strong><small>climate</small></span><span><strong>${Math.round(cell.geography * 100)}</strong><small>terrain</small></span></div>
-    <span>Current ${spreadView === 'scenario' ? `${spreadModel()?.name || 'model'} pressure` : spreadViewProfiles[spreadView].scale}: <b>${Math.round(value * 100)} / 100</b>. Stabilized report rate: ${cell.rate.toFixed(1)} per 100k. Land share: ${Math.round((selectedSpreadLandFraction ?? 1) * 100)}%.</span>`;
+    <div class="spread-cell-stats"><span><strong>${reportCount.toLocaleString()}</strong><small>reports through ${Math.min(spreadTimelineYear, spreadPresentYear)}</small></span><span><strong>${cell.population >= 1_000_000 ? `${(cell.population / 1_000_000).toFixed(1)}m` : `${Math.round(cell.population / 1000)}k`}</strong><small>population</small></span><span><strong>${Math.round(cell.climate * 100)}</strong><small>climate</small></span><span><strong>${Math.round(cell.geography * 100)}</strong><small>terrain</small></span></div>
+    <span>${spreadTimelineYear} ${valueLabel}: <b>${Math.round(value * 100)} / 100</b>. Stabilized observed rate: ${stabilizedRate.toFixed(1)} per 100k. Land share: ${Math.round((selectedSpreadLandFraction ?? 1) * 100)}%.</span>`;
 }
 
 function updateSpreadMap() {
@@ -299,20 +346,34 @@ function updateSpreadMap() {
   const hud = $('#spread-hud');
   hud?.classList.toggle('hidden', !visible);
   const profile = spreadViewProfiles[spreadView] || spreadViewProfiles.signal;
-  if ($('#spread-hud-title')) $('#spread-hud-title').textContent = spreadView === 'scenario' ? `${spreadModel()?.name || 'Model'} invasion pressure` : profile.hud;
-  if ($('#spread-hud-year')) $('#spread-hud-year').textContent = spreadView === 'scenario' ? spreadYear : '2025';
+  const timeDriven = spreadView === 'signal' || spreadView === 'scenario';
+  const predicted = spreadTimelineYear > spreadPresentYear;
+  if ($('#spread-hud-title')) $('#spread-hud-title').textContent = timeDriven
+    ? predicted ? `${spreadModel()?.name || 'Model'} predicted pressure` : 'Population-adjusted observed signal'
+    : profile.hud;
+  if ($('#spread-hud-year')) $('#spread-hud-year').textContent = spreadTimelineYear;
   if ($('#spread-grid-label')) $('#spread-grid-label').textContent = `NATIONWIDE ${spreadGridSize}° GRID`;
-  if ($('#spread-scale-label')) $('#spread-scale-label').textContent = profile.scale;
-  if ($('#spread-hud-description')) $('#spread-hud-description').textContent = `${profile.description} Cells with 50% or less U.S. land are forced to zero.`;
+  if ($('#spread-scale-label')) $('#spread-scale-label').textContent = timeDriven
+    ? predicted ? 'relative predicted pressure' : 'relative fly signal'
+    : profile.scale;
+  if ($('#spread-hud-description')) {
+    const timeDescription = timeDriven
+      ? predicted
+        ? `The ${spreadTimelineYear} height is the selected factor-isolation model, initialized from observed evidence. It is not a calibrated forecast.`
+        : `The ${spreadTimelineYear} height uses cumulative dated reports stabilized by population${spreadTimelineYear === spreadPresentYear ? `; observations are partial through ${spreadHistory.metadata?.lastObservedDate || 'the latest snapshot'}` : ''}.`
+      : `${profile.description} This factor surface is static while the timeline moves.`;
+    $('#spread-hud-description').textContent = `${timeDescription} Cells with 50% or less U.S. land are forced to zero.`;
+  }
   renderSpreadCellDetail();
   renderSpreadLab();
+  renderSpreadTimeline();
 }
 
 function focusSpreadOverview() {
   if (!map || !spreadActive()) return;
   map.setProjection({ type: 'mercator' });
   map.fitBounds([[-125, 24], [-66, 50]], {
-    padding: { top: 42, right: 36, bottom: 42, left: 36 },
+    padding: { top: 42, right: 36, bottom: 118, left: 36 },
     duration: 0,
     maxZoom: 3.15,
   });
@@ -339,10 +400,10 @@ function selectSpreadModel(modelId) {
   updateSpreadMap();
 }
 
-function setSpreadYear(year) {
-  const years = spreadBundle.metadata?.years || [];
-  if (!years.includes(Number(year))) return;
-  spreadYear = Number(year);
+function setSpreadTimelineYear(year) {
+  const nextYear = Math.max(spreadTimelineStartYear, Math.min(spreadTimelineEndYear, Number(year)));
+  if (!Number.isFinite(nextYear)) return;
+  spreadTimelineYear = nextYear;
   selectedSpreadCell = null;
   selectedSpreadSourceCell = null;
   selectedSpreadValue = null;
@@ -2068,7 +2129,11 @@ function setupInteractions() {
     const button = event.target.closest('[data-spread-model]');
     if (button) selectSpreadModel(button.dataset.spreadModel);
   });
-  $('#spread-year')?.addEventListener('input', (event) => setSpreadYear(event.target.value));
+  $('#spread-timeline')?.addEventListener('input', (event) => {
+    const year = event.target.value;
+    cancelAnimationFrame(pendingSpreadTimelineFrame);
+    pendingSpreadTimelineFrame = requestAnimationFrame(() => setSpreadTimelineYear(year));
+  });
   $$('button[data-layer]').forEach((button) => button.addEventListener('click', () => { const layer = button.dataset.layer; layers[layer] = !layers[layer]; setMapLayerVisibility(layer, layers[layer]); syncLayerControls(); if (layer === 'corridors') startCorridorAnimation(); }));
   $$('input[data-layer]').forEach((input) => input.addEventListener('change', () => { layers[input.dataset.layer] = input.checked; setMapLayerVisibility(input.dataset.layer, input.checked); syncLayerControls(); }));
   const timeline = $('#timeline');
@@ -2212,6 +2277,7 @@ document.addEventListener('DOMContentLoaded', () => {
   syncForecastSettingsUI();
   renderBenchmarkLab();
   renderSpreadLab();
+  renderSpreadTimeline();
   setLabMode('benchmark');
   createStarfield();
   initMap();

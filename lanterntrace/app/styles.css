@@ -399,11 +399,6 @@ html, body, .app-shell { background: #061719; }
 .spread-model-options button b { font: 700 11px 'Barlow Condensed', sans-serif; letter-spacing: .04em; text-transform: uppercase; }
 .spread-model-options button em { color: #85af9f; font: 700 7px 'DM Mono', monospace; font-style: normal; letter-spacing: .08em; }
 .spread-model-options button small { grid-column: 1 / -1; color: #6f9989; font-size: 8px; line-height: 1.35; }
-.spread-year-control { display: block; margin-top: 8px; padding: 8px 9px; border-radius: 8px; background: rgba(6, 29, 29, .7); }
-.spread-year-control > span { display: flex; justify-content: space-between; color: #9fc4b5; font-size: 10px; }
-.spread-year-control strong { color: #d5f986; font: 700 12px 'DM Mono', monospace; }
-.spread-year-control input { width: 100%; accent-color: #aeea76; }
-.spread-year-control small { display: block; color: #6d9988; font-size: 7px; }
 .normalization-card { margin-top: 11px; padding: 10px; border: 1px solid rgba(121, 240, 196, .14); border-radius: 10px; background: rgba(5, 27, 27, .48); }
 .normalization-card > span { color: #7ecbac; font: 700 8px 'DM Mono', monospace; letter-spacing: .1em; }
 .normalization-card > div { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 7px; align-items: center; margin-top: 7px; }
@@ -937,4 +932,70 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
   .topbar-section { flex-basis: 98px; min-width: 98px; font-size: 9px; }
   .spread-active .sidebar { width: min(360px, 88vw) !important; }
   .spread-hud { display: none; }
+}
+
+/* Bottom observed → predicted timeline for the national spread lab. */
+.spread-timeline-dock { display: none; }
+.spread-active .spread-timeline-dock {
+  --spread-observed-share: 43.75%;
+  --spread-progress: 43.75%;
+  position: absolute;
+  z-index: 7;
+  right: 18px;
+  bottom: 16px;
+  left: 18px;
+  display: grid;
+  grid-template-columns: 215px minmax(320px, 1fr);
+  gap: 20px;
+  align-items: center;
+  min-height: 82px;
+  padding: 10px 18px 9px;
+  border: 1px solid rgba(121, 240, 196, .28);
+  border-radius: 13px;
+  background: linear-gradient(110deg, rgba(3, 27, 24, .95), rgba(3, 22, 24, .9));
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .34);
+  backdrop-filter: blur(10px);
+}
+.spread-timeline-heading { display: flex; min-width: 0; flex-direction: column; gap: 4px; }
+.spread-timeline-heading > div { display: flex; align-items: baseline; gap: 10px; }
+.spread-timeline-heading span { color: #74bea0; font: 700 8px 'DM Mono', monospace; letter-spacing: .11em; }
+.spread-timeline-heading b { color: #edffd9; font: 700 24px 'Barlow Condensed', sans-serif; }
+.spread-timeline-heading > strong { overflow: hidden; color: #9ee3c1; font: 700 8px 'DM Mono', monospace; letter-spacing: .07em; text-overflow: ellipsis; white-space: nowrap; }
+.spread-timeline-dock[data-phase="predicted"] .spread-timeline-heading > strong { color: #edcd79; }
+.spread-timeline-track { position: relative; height: 55px; padding-top: 16px; }
+.spread-timeline-track::before,
+.spread-timeline-track::after { position: absolute; top: 26px; right: 0; left: 0; height: 5px; border-radius: 999px; content: ''; pointer-events: none; }
+.spread-timeline-track::before { background: linear-gradient(90deg, rgba(73, 202, 157, .48) 0 var(--spread-observed-share), rgba(225, 184, 91, .42) var(--spread-observed-share) 100%); }
+.spread-timeline-track::after { right: auto; width: var(--spread-progress); background: linear-gradient(90deg, #60d7a8 0 var(--spread-observed-share), #e8bd5f var(--spread-observed-share) 100%); box-shadow: 0 0 9px rgba(100, 221, 170, .22); }
+.spread-timeline-regions { position: absolute; top: 0; right: 0; left: 0; display: grid; grid-template-columns: var(--spread-observed-share) 1fr; color: #76ab95; font: 700 7px 'DM Mono', monospace; letter-spacing: .1em; }
+.spread-timeline-regions span:last-child { padding-left: 8px; border-left: 1px solid rgba(232, 195, 104, .48); color: #c9ad70; }
+.spread-timeline-track input { position: relative; z-index: 2; width: 100%; height: 25px; margin: 0; appearance: none; background: transparent; cursor: ew-resize; }
+.spread-timeline-track input::-webkit-slider-runnable-track { height: 5px; background: transparent; }
+.spread-timeline-track input::-webkit-slider-thumb { width: 17px; height: 17px; margin-top: -6px; appearance: none; border: 2px solid #efffd9; border-radius: 50%; background: #65d9a9; box-shadow: 0 0 0 4px rgba(101, 217, 169, .18), 0 2px 8px rgba(0, 0, 0, .45); }
+.spread-timeline-dock[data-phase="predicted"] input::-webkit-slider-thumb { background: #e8bd5f; box-shadow: 0 0 0 4px rgba(232, 189, 95, .18), 0 2px 8px rgba(0, 0, 0, .45); }
+.spread-timeline-track input::-moz-range-track { height: 5px; background: transparent; }
+.spread-timeline-track input::-moz-range-thumb { width: 14px; height: 14px; border: 2px solid #efffd9; border-radius: 50%; background: #65d9a9; }
+.spread-timeline-ticks { position: absolute; right: 0; bottom: 0; left: 0; height: 17px; color: #82ad9b; font: 700 7px 'DM Mono', monospace; }
+.spread-timeline-ticks span { position: absolute; transform: translateX(-50%); text-align: center; white-space: nowrap; }
+.spread-timeline-ticks span::before { position: absolute; top: -9px; left: 50%; width: 1px; height: 6px; background: rgba(116, 171, 148, .42); content: ''; }
+.spread-timeline-ticks span:nth-child(1) { left: 0; transform: none; }
+.spread-timeline-ticks span:nth-child(1)::before { left: 0; }
+.spread-timeline-ticks span:nth-child(2) { left: 18.75%; }
+.spread-timeline-ticks span:nth-child(3) { left: 43.75%; color: #d8f68c; }
+.spread-timeline-ticks span:nth-child(4) { left: 68.75%; color: #d1b777; }
+.spread-timeline-ticks span:nth-child(5) { right: 0; left: auto; transform: none; color: #d1b777; }
+.spread-timeline-ticks span:nth-child(5)::before { right: 0; left: auto; }
+.spread-timeline-ticks small { display: block; color: #78a28f; font-size: 6px; font-weight: 500; }
+.spread-active .map-attribution { bottom: 108px; }
+.spread-only.spread-active .spread-timeline-dock { left: 458px; }
+
+@media (max-width: 920px) {
+  .spread-active .spread-timeline-dock { grid-template-columns: 150px minmax(240px, 1fr); gap: 10px; right: 10px; bottom: 10px; left: 10px; padding-inline: 12px; }
+  .spread-only.spread-active .spread-timeline-dock { left: 450px; }
+  .spread-timeline-heading > strong { font-size: 7px; }
+  .spread-active .map-attribution { bottom: 102px; }
+}
+
+@media (max-width: 720px) {
+  .spread-only.spread-active .spread-timeline-dock { left: calc(min(360px, 88vw) + 10px); grid-template-columns: minmax(110px, 145px) minmax(210px, 1fr); }
 }

@@ -73,11 +73,6 @@
           <div id="spread-scenario-controls" class="spread-scenario-controls hidden">
             <div class="spread-control-heading"><span>INVASION MECHANISM</span><b id="spread-model-group">LANTERNTRACE</b></div>
             <div id="spread-model-options" class="spread-model-options" role="group" aria-label="Spread model"></div>
-            <label class="spread-year-control" for="spread-year">
-              <span><b>Scenario year</b><strong id="spread-year-label">2030</strong></span>
-              <input id="spread-year" type="range" min="2025" max="2035" value="2030" step="1" />
-              <small>Factor-isolation display—not a calibrated national forecast.</small>
-            </label>
           </div>
 
           <div class="normalization-card">
@@ -178,6 +173,18 @@
           <div class="timeline-track"><div class="timeline-progress" id="timeline-progress"></div><input id="timeline" type="range" min="0" max="83" value="83" step="1" aria-label="Front progression monthly timestep" /><div class="timeline-regions"><span>OBSERVED EVIDENCE <b>2019–2025</b></span></div><div class="timeline-ticks"></div></div>
         </section>
 
+        <section id="spread-timeline-dock" class="spread-timeline-dock" aria-label="Observed and predicted spread timeline">
+          <div class="spread-timeline-heading">
+            <div><span>INVASION TIMELINE</span><b id="spread-timeline-year">2026</b></div>
+            <strong id="spread-timeline-phase">PRESENT · PARTIAL OBSERVATIONS</strong>
+          </div>
+          <div class="spread-timeline-track">
+            <div class="spread-timeline-regions" aria-hidden="true"><span>OBSERVED</span><span>PREDICTED</span></div>
+            <input id="spread-timeline" type="range" min="2019" max="2035" value="2026" step="1" aria-label="Year from 2019 through present and predicted 2035" />
+            <div class="spread-timeline-ticks" aria-hidden="true"><span>2019</span><span>2022</span><span>2026<small>present</small></span><span>2030</span><span>2035</span></div>
+          </div>
+        </section>
+
         <div class="map-attribution">Occurrences © GBIF contributors · Basemap © OpenStreetMap contributors · OpenFreeMap</div>
       </section>
       </div>
@@ -188,6 +195,7 @@
     <script src="./generated/model-results.js"></script>
     <script src="./generated/frozen-benchmark.js"></script>
     <script src="./generated/spread-explainer.js"></script>
+    <script src="./generated/spread-history.js"></script>
     <script src="./generated/spread-grid-pyramid.js"></script>
     <script src="./app.js"></script>
   </body>
