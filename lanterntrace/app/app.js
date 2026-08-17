@@ -708,19 +708,27 @@ function farmImpactExposure(year) {
 function renderFarmImpactFigure() {
   const chart = $('#farm-impact-chart');
   if (!chart) return;
-  const expectedBenchmark = 42.6;
-  const worstBenchmark = 99.1;
+  // Harper et al. (2019), Penn State / Center for Rural Pennsylvania:
+  // direct annual agricultural losses were estimated at $13.1M–$29.6M in the
+  // 14-county quarantine zone and $42.6M–$99.1M for a statewide invasion.
+  const quarantineExpected = 13.1;
+  const quarantineWorst = 29.6;
+  const statewideExpected = 42.6;
+  const statewideWorst = 99.1;
   const cacheKey = `${spreadGridSize}:${selectedSpreadModelId}:${spreadWindEnabled ? 'wind' : 'still'}`;
   let curve = farmImpactCurveCache.get(cacheKey);
   if (!curve) {
     const years = Array.from({ length: spreadTimelineEndYear - spreadTimelineStartYear + 1 }, (_, index) => spreadTimelineStartYear + index);
     const exposure = years.map((year) => farmImpactExposure(year));
-    const cumulativeExpected = [0];
-    const cumulativeWorst = [0];
+    const baselineExposure = exposure[0];
+    const spreadShare = exposure.map((value) => Math.max(0, Math.min(1, (value - baselineExposure) / Math.max(1 - baselineExposure, .001))));
+    const annualExpected = spreadShare.map((share) => quarantineExpected + share * (statewideExpected - quarantineExpected));
+    const annualWorst = spreadShare.map((share) => quarantineWorst + share * (statewideWorst - quarantineWorst));
+    const cumulativeExpected = [annualExpected[0]];
+    const cumulativeWorst = [annualWorst[0]];
     for (let index = 1; index < years.length; index += 1) {
-      const annualizedExposure = (exposure[index - 1] + exposure[index]) / 2;
-      cumulativeExpected.push(cumulativeExpected[index - 1] + annualizedExposure * expectedBenchmark);
-      cumulativeWorst.push(cumulativeWorst[index - 1] + annualizedExposure * worstBenchmark);
+      cumulativeExpected.push(cumulativeExpected[index - 1] + annualExpected[index]);
+      cumulativeWorst.push(cumulativeWorst[index - 1] + annualWorst[index]);
     }
     curve = { years, cumulativeExpected, cumulativeWorst };
     farmImpactCurveCache.set(cacheKey, curve);
@@ -750,7 +758,7 @@ function renderFarmImpactFigure() {
   dot?.setAttribute('cy', markerY);
   const formatBurden = (millions) => millions >= 1000 ? `$${(millions / 1000).toFixed(2)}B` : `$${millions.toFixed(1)}M`;
   if ($('#farm-impact-value')) $('#farm-impact-value').textContent = `${formatBurden(currentExpected)}–${formatBurden(currentWorst)} cumulative`;
-  chart.setAttribute('aria-label', `Illustrative cumulative Pennsylvania farm-loss exposure through ${spreadTimelineYear.toFixed(1)}: ${formatBurden(currentExpected)} to ${formatBurden(currentWorst)}`);
+  chart.setAttribute('aria-label', `Cumulative Pennsylvania agricultural-loss estimate through ${spreadTimelineYear.toFixed(1)}: ${formatBurden(currentExpected)} to ${formatBurden(currentWorst)}. The 2019 baseline is the published 14-county estimate; subsequent values interpolate toward the published statewide scenarios using model spread.`);
 }
 
 function renderSpreadDisplayToggle() {
