@@ -380,6 +380,14 @@ html, body, .app-shell { background: #061719; }
 .spread-view-explanation span { display: block; color: #7fc9ab; font: 700 8px 'DM Mono', monospace; letter-spacing: .1em; }
 .spread-view-explanation b { display: block; margin-top: 3px; color: #effff6; font: 700 14px 'Barlow Condensed', sans-serif; text-transform: uppercase; }
 .spread-view-explanation p { margin: 3px 0 0; color: #91b8a8; font-size: 9px; line-height: 1.45; }
+.spread-grid-size-control { margin-top: 9px; padding: 9px 10px; border: 1px solid rgba(121, 240, 196, .14); border-radius: 9px; background: rgba(5, 28, 28, .55); }
+.spread-grid-size-control > div:first-child { display: flex; justify-content: space-between; align-items: center; color: #7ba797; font: 700 8px 'DM Mono', monospace; letter-spacing: .08em; }
+.spread-grid-size-control > div:first-child b { color: #d5f986; font-size: 10px; }
+.spread-grid-size-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 7px; }
+.spread-grid-size-options button { min-height: 28px; border: 1px solid rgba(121, 240, 196, .16); border-radius: 6px; background: rgba(2, 22, 21, .62); color: #85ad9d; font: 700 9px 'DM Mono', monospace; }
+.spread-grid-size-options button:hover { background: rgba(82, 190, 150, .12); }
+.spread-grid-size-options button.active { border-color: rgba(211, 255, 133, .6); background: rgba(123, 184, 87, .17); color: #efffd8; box-shadow: inset 0 -2px #cde97d; }
+.spread-grid-size-control > small { display: block; margin-top: 6px; color: #6d9988; font-size: 7px; line-height: 1.35; }
 .spread-scenario-controls { margin-top: 10px; }
 .spread-control-heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; color: #7ba797; font: 700 8px 'DM Mono', monospace; letter-spacing: .08em; }
 .spread-control-heading b { color: #d5f986; }

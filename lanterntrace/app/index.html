@@ -63,6 +63,16 @@
 
           <div id="spread-view-explanation" class="spread-view-explanation" aria-live="polite"></div>
 
+          <div class="spread-grid-size-control">
+            <div><span>GRID CELL SIZE</span><b id="spread-grid-size-label">1°</b></div>
+            <div class="spread-grid-size-options" role="group" aria-label="Grid display cell size">
+              <button class="active" type="button" data-spread-grid-size="1" aria-pressed="true">1°</button>
+              <button type="button" data-spread-grid-size="0.5" aria-pressed="false">0.5°</button>
+              <button type="button" data-spread-grid-size="0.25" aria-pressed="false">0.25°</button>
+            </div>
+            <small>Smaller cells subdivide the display; the underlying model remains a 1° surface.</small>
+          </div>
+
           <div id="spread-scenario-controls" class="spread-scenario-controls hidden">
             <div class="spread-control-heading"><span>INVASION MECHANISM</span><b id="spread-model-group">LANTERNTRACE</b></div>
             <div id="spread-model-options" class="spread-model-options" role="group" aria-label="Spread model"></div>
@@ -150,7 +160,7 @@
           <p>Diagnostic visualization of model score fields—not abundance, calibrated velocity, or a literal time forecast.</p>
         </section>
         <section id="spread-hud" class="spread-hud hidden" aria-label="Nationwide grid legend">
-          <div class="spread-hud-head"><div><span>NATIONWIDE 1° GRID</span><b id="spread-hud-title">Population-adjusted report signal</b></div><strong id="spread-hud-year">2025</strong></div>
+          <div class="spread-hud-head"><div><span id="spread-grid-label">NATIONWIDE 1° GRID</span><b id="spread-hud-title">Population-adjusted report signal</b></div><strong id="spread-hud-year">2025</strong></div>
           <div class="spread-scale"><i></i><div><span>lower</span><span id="spread-scale-label">relative fly signal</span><span>higher</span></div></div>
           <p id="spread-hud-description">Grid height shows a stabilized, population-adjusted report signal—not a literal insect count.</p>
           <div id="spread-cell-detail" class="spread-cell-detail"><b>Select a grid cell</b><span>Click a column to inspect reports, population, climate, and terrain factors.</span></div>

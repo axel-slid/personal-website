@@ -26,6 +26,7 @@ let spreadView = 'signal';
 let selectedSpreadModelId = 'coupled';
 let spreadYear = 2030;
 let selectedSpreadCell = null;
+let spreadGridSize = 1;
 
 const layers = { heatmap: true, reports: true, front: true, interpolation: true, uncertainty: false, corridors: false, sites: false };
 const latestObservedSnapshotIndex = snapshots.reduce((latest, snapshot, index) => snapshot.isProjection ? latest : index, 0);
@@ -171,22 +172,32 @@ function spreadCellValue(cell) {
 }
 
 function spreadGridData() {
-  const step = spreadBundle.metadata?.grid?.stepDegrees || 1;
+  const sourceStep = spreadBundle.metadata?.grid?.stepDegrees || 1;
+  const subdivisions = Math.max(1, Math.round(sourceStep / spreadGridSize));
+  const displayStep = sourceStep / subdivisions;
   return {
     type: 'FeatureCollection',
-    features: (spreadBundle.cells || []).map((cell) => {
+    features: (spreadBundle.cells || []).flatMap((cell) => {
       const value = spreadCellValue(cell);
-      return geojsonFeature('Polygon', [[
-        [cell.w, cell.s], [cell.w + step, cell.s], [cell.w + step, cell.s + step], [cell.w, cell.s + step], [cell.w, cell.s],
-      ]], {
-        cell: `${cell.r}:${cell.c}`,
-        value,
-        reports: cell.reports,
-        population: cell.population,
-        rate: cell.rate,
-        signal: cell.signal,
-        climate: cell.climate,
-        geography: cell.geography,
+      const sourceCell = `${cell.r}:${cell.c}`;
+      return Array.from({ length: subdivisions * subdivisions }, (_, index) => {
+        const subRow = Math.floor(index / subdivisions);
+        const subColumn = index % subdivisions;
+        const west = cell.w + subColumn * displayStep;
+        const south = cell.s + subRow * displayStep;
+        return geojsonFeature('Polygon', [[
+          [west, south], [west + displayStep, south], [west + displayStep, south + displayStep], [west, south + displayStep], [west, south],
+        ]], {
+          cell: `${sourceCell}:${subRow}:${subColumn}`,
+          sourceCell,
+          value,
+          reports: cell.reports,
+          population: cell.population,
+          rate: cell.rate,
+          signal: cell.signal,
+          climate: cell.climate,
+          geography: cell.geography,
+        });
       });
     }),
   };
@@ -243,6 +254,12 @@ function renderSpreadLab() {
   if ($('#spread-model-group')) $('#spread-model-group').textContent = selected?.group || 'MODEL';
   if ($('#spread-year')) $('#spread-year').value = spreadYear;
   if ($('#spread-year-label')) $('#spread-year-label').textContent = spreadYear;
+  if ($('#spread-grid-size-label')) $('#spread-grid-size-label').textContent = `${spreadGridSize}°`;
+  $$('[data-spread-grid-size]').forEach((button) => {
+    const active = Number(button.dataset.spreadGridSize) === spreadGridSize;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
   renderSpreadBenchmark();
 }
 
@@ -272,12 +289,13 @@ function updateSpreadMap() {
   ['lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
     if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
   });
-  if (map.getLayer('lt-spread-selection')) map.setFilter('lt-spread-selection', ['==', ['get', 'cell'], selectedSpreadCell || '__none__']);
+  if (map.getLayer('lt-spread-selection')) map.setFilter('lt-spread-selection', ['==', ['get', 'sourceCell'], selectedSpreadCell || '__none__']);
   const hud = $('#spread-hud');
   hud?.classList.toggle('hidden', !visible);
   const profile = spreadViewProfiles[spreadView] || spreadViewProfiles.signal;
   if ($('#spread-hud-title')) $('#spread-hud-title').textContent = spreadView === 'scenario' ? `${spreadModel()?.name || 'Model'} invasion pressure` : profile.hud;
   if ($('#spread-hud-year')) $('#spread-hud-year').textContent = spreadView === 'scenario' ? spreadYear : '2025';
+  if ($('#spread-grid-label')) $('#spread-grid-label').textContent = `NATIONWIDE ${spreadGridSize}° GRID`;
   if ($('#spread-scale-label')) $('#spread-scale-label').textContent = profile.scale;
   if ($('#spread-hud-description')) $('#spread-hud-description').textContent = profile.description;
   renderSpreadCellDetail();
@@ -313,6 +331,14 @@ function setSpreadYear(year) {
   const years = spreadBundle.metadata?.years || [];
   if (!years.includes(Number(year))) return;
   spreadYear = Number(year);
+  selectedSpreadCell = null;
+  updateSpreadMap();
+}
+
+function setSpreadGridSize(size) {
+  const nextSize = Number(size);
+  if (![1, .5, .25].includes(nextSize) || nextSize === spreadGridSize) return;
+  spreadGridSize = nextSize;
   selectedSpreadCell = null;
   updateSpreadMap();
 }
@@ -1428,7 +1454,7 @@ function addMapLayers() {
 
   map.on('click', 'lt-spread-height', (event) => {
     if (!spreadActive() || !event.features?.length) return;
-    selectedSpreadCell = event.features[0].properties.cell;
+    selectedSpreadCell = event.features[0].properties.sourceCell;
     updateSpreadMap();
   });
   map.on('mouseenter', 'lt-spread-height', () => {
@@ -2008,6 +2034,7 @@ function setupInteractions() {
   $$('.section-tab').forEach((button) => button.addEventListener('click', () => switchSection(button.dataset.section)));
   $$('.topbar-section').forEach((button) => button.addEventListener('click', () => switchSection(button.dataset.section)));
   $$('[data-spread-view]').forEach((button) => button.addEventListener('click', () => selectSpreadView(button.dataset.spreadView)));
+  $$('[data-spread-grid-size]').forEach((button) => button.addEventListener('click', () => setSpreadGridSize(button.dataset.spreadGridSize)));
   $('#spread-model-options')?.addEventListener('click', (event) => {
     const button = event.target.closest('[data-spread-model]');
     if (button) selectSpreadModel(button.dataset.spreadModel);
