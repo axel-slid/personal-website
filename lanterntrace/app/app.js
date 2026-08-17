@@ -27,7 +27,9 @@ let spreadView = 'signal';
 let selectedSpreadModelId = 'coupled';
 let spreadYear = 2030;
 let selectedSpreadCell = null;
+let selectedSpreadSourceCell = null;
 let selectedSpreadValue = null;
+let selectedSpreadLandFraction = null;
 let spreadGridSize = 1;
 const spreadGridSizes = [.25, .5, .75, 1];
 
@@ -180,25 +182,28 @@ function spreadGridData() {
   return {
     type: 'FeatureCollection',
     features: level.map((record, index) => {
-      const [west, south, sourceIndex, ...weightPairs] = record;
-      const cell = spreadBundle.cells[sourceIndex];
+      const [west, south, sourceIndex, landFraction, ...weightPairs] = record;
+      const cell = sourceIndex >= 0 ? spreadBundle.cells[sourceIndex] : null;
       let value = 0;
-      for (let pairIndex = 0; pairIndex < weightPairs.length; pairIndex += 2) {
-        value += spreadCellValue(spreadBundle.cells[weightPairs[pairIndex]]) * weightPairs[pairIndex + 1];
+      if (landFraction > (spreadGridPyramid.metadata?.landThreshold ?? .5)) {
+        for (let pairIndex = 0; pairIndex < weightPairs.length; pairIndex += 2) {
+          value += spreadCellValue(spreadBundle.cells[weightPairs[pairIndex]]) * weightPairs[pairIndex + 1];
+        }
       }
-      const sourceCell = `${cell.r}:${cell.c}`;
+      const sourceCell = cell ? `${cell.r}:${cell.c}` : 'water';
       return geojsonFeature('Polygon', [[
         [west, south], [west + displayStep, south], [west + displayStep, south + displayStep], [west, south + displayStep], [west, south],
       ]], {
         cell: `${spreadGridSize}:${index}`,
         sourceCell,
         value,
-        reports: cell.reports,
-        population: cell.population,
-        rate: cell.rate,
-        signal: cell.signal,
-        climate: cell.climate,
-        geography: cell.geography,
+        landFraction,
+        reports: cell?.reports || 0,
+        population: cell?.population || 0,
+        rate: cell?.rate || 0,
+        signal: cell?.signal || 0,
+        climate: cell?.climate || 0,
+        geography: cell?.geography || 0,
       });
     }),
   };
@@ -260,9 +265,13 @@ function renderSpreadLab() {
   renderSpreadBenchmark();
 }
 
-function renderSpreadCellDetail(cellId = selectedSpreadCell) {
+function renderSpreadCellDetail(cellId = selectedSpreadSourceCell) {
   const detail = $('#spread-cell-detail');
   if (!detail) return;
+  if (cellId === 'water') {
+    detail.innerHTML = `<b>Water-majority grid cell</b><span>${Math.round((selectedSpreadLandFraction || 0) * 100)}% mapped U.S. land. The cell remains visible for spatial continuity, but its modeled value and height are enforced to <b>0</b>.</span>`;
+    return;
+  }
   const cell = (spreadBundle.cells || []).find((candidate) => `${candidate.r}:${candidate.c}` === String(cellId));
   if (!cell) {
     detail.innerHTML = '<b>Select a grid cell</b><span>Click a column to inspect reports, population, climate, and terrain factors.</span>';
@@ -272,7 +281,7 @@ function renderSpreadCellDetail(cellId = selectedSpreadCell) {
   const step = spreadBundle.metadata?.grid?.stepDegrees || 1;
   detail.innerHTML = `<b>${(cell.s + step / 2).toFixed(1)}°N · ${Math.abs(cell.w + step / 2).toFixed(1)}°W</b>
     <div class="spread-cell-stats"><span><strong>${cell.reports.toLocaleString()}</strong><small>reports</small></span><span><strong>${cell.population >= 1_000_000 ? `${(cell.population / 1_000_000).toFixed(1)}m` : `${Math.round(cell.population / 1000)}k`}</strong><small>population</small></span><span><strong>${Math.round(cell.climate * 100)}</strong><small>climate</small></span><span><strong>${Math.round(cell.geography * 100)}</strong><small>terrain</small></span></div>
-    <span>Current ${spreadView === 'scenario' ? `${spreadModel()?.name || 'model'} pressure` : spreadViewProfiles[spreadView].scale}: <b>${Math.round(value * 100)} / 100</b>. Stabilized report rate: ${cell.rate.toFixed(1)} per 100k.</span>`;
+    <span>Current ${spreadView === 'scenario' ? `${spreadModel()?.name || 'model'} pressure` : spreadViewProfiles[spreadView].scale}: <b>${Math.round(value * 100)} / 100</b>. Stabilized report rate: ${cell.rate.toFixed(1)} per 100k. Land share: ${Math.round((selectedSpreadLandFraction ?? 1) * 100)}%.</span>`;
 }
 
 function updateSpreadMap() {
@@ -283,10 +292,10 @@ function updateSpreadMap() {
     map.setLayoutProperty('lt-spread-height', 'visibility', visible ? 'visible' : 'none');
     map.setPaintProperty('lt-spread-height', 'fill-extrusion-color', spreadColorExpression());
   }
-  ['lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
+  ['lt-spread-water', 'lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
     if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
   });
-  if (map.getLayer('lt-spread-selection')) map.setFilter('lt-spread-selection', ['==', ['get', 'sourceCell'], selectedSpreadCell || '__none__']);
+  if (map.getLayer('lt-spread-selection')) map.setFilter('lt-spread-selection', ['==', ['get', 'cell'], selectedSpreadCell || '__none__']);
   const hud = $('#spread-hud');
   hud?.classList.toggle('hidden', !visible);
   const profile = spreadViewProfiles[spreadView] || spreadViewProfiles.signal;
@@ -294,7 +303,7 @@ function updateSpreadMap() {
   if ($('#spread-hud-year')) $('#spread-hud-year').textContent = spreadView === 'scenario' ? spreadYear : '2025';
   if ($('#spread-grid-label')) $('#spread-grid-label').textContent = `NATIONWIDE ${spreadGridSize}° GRID`;
   if ($('#spread-scale-label')) $('#spread-scale-label').textContent = profile.scale;
-  if ($('#spread-hud-description')) $('#spread-hud-description').textContent = profile.description;
+  if ($('#spread-hud-description')) $('#spread-hud-description').textContent = `${profile.description} Cells with 50% or less U.S. land are forced to zero.`;
   renderSpreadCellDetail();
   renderSpreadLab();
 }
@@ -314,7 +323,9 @@ function selectSpreadView(view) {
   if (!spreadViewProfiles[view]) return;
   spreadView = view;
   selectedSpreadCell = null;
+  selectedSpreadSourceCell = null;
   selectedSpreadValue = null;
+  selectedSpreadLandFraction = null;
   updateSpreadMap();
 }
 
@@ -322,7 +333,9 @@ function selectSpreadModel(modelId) {
   if (!spreadModel(modelId)) return;
   selectedSpreadModelId = modelId;
   selectedSpreadCell = null;
+  selectedSpreadSourceCell = null;
   selectedSpreadValue = null;
+  selectedSpreadLandFraction = null;
   updateSpreadMap();
 }
 
@@ -331,7 +344,9 @@ function setSpreadYear(year) {
   if (!years.includes(Number(year))) return;
   spreadYear = Number(year);
   selectedSpreadCell = null;
+  selectedSpreadSourceCell = null;
   selectedSpreadValue = null;
+  selectedSpreadLandFraction = null;
   updateSpreadMap();
 }
 
@@ -340,7 +355,9 @@ function setSpreadGridSize(sliderIndex) {
   if (!nextSize || nextSize === spreadGridSize) return;
   spreadGridSize = nextSize;
   selectedSpreadCell = null;
+  selectedSpreadSourceCell = null;
   selectedSpreadValue = null;
+  selectedSpreadLandFraction = null;
   updateSpreadMap();
 }
 
@@ -1367,13 +1384,18 @@ function addMapLayers() {
   } });
   map.addLayer({ id: 'lt-spread-height', type: 'fill-extrusion', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
     'fill-extrusion-base': 0,
-    'fill-extrusion-height': ['interpolate', ['linear'], ['get', 'value'], 0, 120, .08, 900, .25, 5500, .5, 19000, .75, 41000, 1, 76000],
+    'fill-extrusion-height': ['interpolate', ['linear'], ['get', 'value'], 0, 0, .08, 900, .25, 5500, .5, 19000, .75, 41000, 1, 76000],
     'fill-extrusion-color': spreadColorExpression(),
     'fill-extrusion-opacity': .78,
     'fill-extrusion-vertical-gradient': true
   } });
+  map.addLayer({ id: 'lt-spread-water', type: 'fill', source: 'lt-spread-source', filter: ['<=', ['get', 'landFraction'], .5], layout: { visibility: 'none' }, paint: {
+    'fill-color': '#173b49', 'fill-opacity': .18
+  } });
   map.addLayer({ id: 'lt-spread-grid', type: 'line', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
-    'line-color': '#b4e8cf', 'line-width': ['interpolate', ['linear'], ['zoom'], 2, .25, 5, .7], 'line-opacity': .32
+    'line-color': ['case', ['<=', ['get', 'landFraction'], .5], '#45677a', '#b4e8cf'],
+    'line-width': ['interpolate', ['linear'], ['zoom'], 2, .25, 5, .7],
+    'line-opacity': ['case', ['<=', ['get', 'landFraction'], .5], .2, .32]
   } });
   map.addLayer({ id: 'lt-spread-selection', type: 'line', source: 'lt-spread-source', filter: ['==', ['get', 'cell'], '__none__'], layout: { visibility: 'none' }, paint: {
     'line-color': '#ffffff', 'line-width': 2.5, 'line-opacity': 1
@@ -1453,17 +1475,21 @@ function addMapLayers() {
   });
   map.on('mouseleave', 'lt-benchmark-explain-fill', () => { map.getCanvas().style.cursor = ''; });
 
-  map.on('click', 'lt-spread-height', (event) => {
+  const selectSpreadFeature = (event) => {
     if (!spreadActive() || !event.features?.length) return;
-    selectedSpreadCell = event.features[0].properties.sourceCell;
+    selectedSpreadCell = event.features[0].properties.cell;
+    selectedSpreadSourceCell = event.features[0].properties.sourceCell;
     selectedSpreadValue = Number(event.features[0].properties.value);
-    if (map.getLayer('lt-spread-selection')) map.setFilter('lt-spread-selection', ['==', ['get', 'sourceCell'], selectedSpreadCell]);
+    selectedSpreadLandFraction = Number(event.features[0].properties.landFraction);
+    if (map.getLayer('lt-spread-selection')) map.setFilter('lt-spread-selection', ['==', ['get', 'cell'], selectedSpreadCell]);
     renderSpreadCellDetail();
-  });
-  map.on('mouseenter', 'lt-spread-height', () => {
+  };
+  map.on('click', 'lt-spread-height', selectSpreadFeature);
+  map.on('click', 'lt-spread-water', selectSpreadFeature);
+  ['lt-spread-height', 'lt-spread-water'].forEach((layerId) => map.on('mouseenter', layerId, () => {
     if (spreadActive()) map.getCanvas().style.cursor = 'pointer';
-  });
-  map.on('mouseleave', 'lt-spread-height', () => { map.getCanvas().style.cursor = ''; });
+  }));
+  ['lt-spread-height', 'lt-spread-water'].forEach((layerId) => map.on('mouseleave', layerId, () => { map.getCanvas().style.cursor = ''; }));
 
   map.on('click', 'lt-report-hit', async (event) => {
     const feature = event.features[0];
