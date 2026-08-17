@@ -1979,7 +1979,7 @@ function toggleSettingsPanel(force) {
 }
 
 function initMap() {
-  map = new maplibregl.Map({ container: 'map', style: 'https://demotiles.maplibre.org/globe.json', center: [-98, 38], zoom: 1.85, maxZoom: 15, minZoom: .65, attributionControl: false, dragRotate: false });
+  map = new maplibregl.Map({ container: 'map', style: 'https://demotiles.maplibre.org/globe.json', center: [-98, 38], zoom: 1.85, maxZoom: 15, minZoom: -.6, attributionControl: false, dragRotate: false });
   map.on('styleimagemissing', ({ id }) => {
     if (!id.startsWith('circle-') || map.hasImage(id)) return;
     const size = 32;
@@ -2108,12 +2108,11 @@ function updateGlobeAtmosphere() {
   stage.style.setProperty('--globe-radius', `${globeDiameter / 2}px`);
   stage.style.setProperty('--globe-rim-opacity', rimOpacity.toFixed(3));
   stage.classList.toggle('globe-rim-visible', rimOpacity > .01);
-  const moonProgress = Math.max(0, Math.min(1, (.95 - map.getZoom()) / .3));
+  const moonProgress = Math.max(0, Math.min(1, (-.2 - map.getZoom()) / .4));
   const moon = $('#moon-easter-egg');
   stage.style.setProperty('--moon-progress', moonProgress.toFixed(3));
   stage.style.setProperty('--moon-offset', `${((1 - moonProgress) * 150).toFixed(1)}px`);
   stage.style.setProperty('--moon-scale', (.68 + moonProgress * .32).toFixed(3));
-  stage.style.setProperty('--earth-scale', (1 + moonProgress * .13).toFixed(3));
   stage.classList.toggle('moon-visible', moonProgress > .01);
   moon?.setAttribute('aria-hidden', String(moonProgress < .72));
 }
