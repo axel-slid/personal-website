@@ -5,6 +5,7 @@ const observationMetadata = observationBundle.metadata;
 const previewObservationPoints = observationPoints.filter((_, index) => index % 20 === 0);
 const modelBundle = window.LanternTraceModels || { metadata: {}, variants: [], topFive: [], models: {} };
 const benchmarkBundle = window.LanternTraceBenchmark || { metadata: {}, models: [], years: {} };
+const spreadBundle = window.LanternTraceSpread || { metadata: {}, models: [], cells: [] };
 const embedMode = new URLSearchParams(window.location.search).get('embed');
 const physicsEmbedMode = embedMode === 'physics' || embedMode === 'hero';
 const heroMapEmbedMode = embedMode === 'hero';
@@ -21,6 +22,10 @@ let physicsDisplayMode = 'height';
 let physicsPhase = .42;
 let physicsAnimationFrame;
 let physicsAnimationLast = 0;
+let spreadView = 'signal';
+let selectedSpreadModelId = 'coupled';
+let spreadYear = 2030;
+let selectedSpreadCell = null;
 
 const layers = { heatmap: true, reports: true, front: true, interpolation: true, uncertainty: false, corridors: false, sites: false };
 const latestObservedSnapshotIndex = snapshots.reduce((latest, snapshot, index) => snapshot.isProjection ? latest : index, 0);
@@ -52,6 +57,36 @@ const physicsProfiles = {
   full_mechanistic: { short: 'FULL MECHANISTIC', mechanism: 'climate, barriers, satellites, and transport', terms: 'D(x)∇u + r(x)u(1−u) + J + A' },
   og_rde: { short: 'OG-RDE · OURS', mechanism: 'observation-guided fusion of mechanistic fields', terms: 'f(front, habitat, Fisher–KPP, Climate RD)' }
 };
+const spreadViewProfiles = {
+  signal: {
+    kicker: 'POPULATION-CORRECTED EVIDENCE',
+    title: 'Where reports exceed reporting opportunity',
+    hud: 'Population-adjusted report signal',
+    scale: 'relative fly signal',
+    description: 'Grid height uses an empirical-Bayes report rate per 100,000 residents, then local smoothing. It is a relative signal—not an insect count.',
+  },
+  climate: {
+    kicker: 'CLIMATE SUITABILITY',
+    title: 'Where temperature and moisture favor establishment',
+    hud: 'Ideal climate',
+    scale: 'climate suitability',
+    description: 'A WorldClim-derived factor surface using annual and dry-quarter temperature, isothermality, and cold-quarter precipitation.',
+  },
+  geography: {
+    kicker: 'TERRAIN PERMEABILITY',
+    title: 'Where elevation and slope resist spread least',
+    hud: 'Ideal geography',
+    scale: 'terrain permeability',
+    description: 'Low, gently changing terrain receives higher permeability. This isolates physical geography and does not include host plants or climate.',
+  },
+  scenario: {
+    kicker: 'FACTOR-ISOLATION SCENARIO',
+    title: 'Watch assumptions change the invasion pattern',
+    hud: 'Invasion pressure scenario',
+    scale: 'relative model pressure',
+    description: 'The selected mechanism evolves the adjusted 2025 signal. These national scenarios explain model behavior; they are not calibrated forecasts.',
+  },
+};
 const benchmarkExplainRegions = [
   { id: 'great-lakes', name: 'Great Lakes + western NY', short: 'GREAT LAKES', bounds: [[-82, 41], [-76.5, 47]], contains: (longitude, latitude) => longitude < -76.5 && latitude >= 41 },
   { id: 'appalachia', name: 'Central Appalachia', short: 'APPALACHIA', bounds: [[-82, 37], [-76.5, 41]], contains: (longitude, latitude) => longitude < -76.5 && latitude < 41 },
@@ -59,7 +94,7 @@ const benchmarkExplainRegions = [
   { id: 'northeast', name: 'Northeast + New England', short: 'NORTHEAST', bounds: [[-76.5, 41], [-68, 47]], contains: (longitude, latitude) => longitude >= -76.5 && latitude >= 41 }
 ];
 let snapshotIndex = latestObservedSnapshotIndex;
-let activeSection = 'front';
+let activeSection = 'spread';
 let map;
 let playing = false;
 let timer;
@@ -113,6 +148,173 @@ const darkStyle = {
 
 function geojsonFeature(type, coordinates, properties = {}) {
   return { type: 'Feature', geometry: { type, coordinates }, properties };
+}
+
+function spreadActive() {
+  return activeSection === 'spread' && Boolean(spreadBundle.cells?.length);
+}
+
+function spreadModel(modelId = selectedSpreadModelId) {
+  return spreadBundle.models?.find((candidate) => candidate.id === modelId);
+}
+
+function spreadYearIndex() {
+  const years = spreadBundle.metadata?.years || [];
+  return Math.max(0, years.indexOf(Number(spreadYear)));
+}
+
+function spreadCellValue(cell) {
+  if (spreadView === 'climate') return cell.climate || 0;
+  if (spreadView === 'geography') return cell.geography || 0;
+  if (spreadView === 'scenario') return cell.models?.[selectedSpreadModelId]?.[spreadYearIndex()] || 0;
+  return cell.signal || 0;
+}
+
+function spreadGridData() {
+  const step = spreadBundle.metadata?.grid?.stepDegrees || 1;
+  return {
+    type: 'FeatureCollection',
+    features: (spreadBundle.cells || []).map((cell) => {
+      const value = spreadCellValue(cell);
+      return geojsonFeature('Polygon', [[
+        [cell.w, cell.s], [cell.w + step, cell.s], [cell.w + step, cell.s + step], [cell.w, cell.s + step], [cell.w, cell.s],
+      ]], {
+        cell: `${cell.r}:${cell.c}`,
+        value,
+        reports: cell.reports,
+        population: cell.population,
+        rate: cell.rate,
+        signal: cell.signal,
+        climate: cell.climate,
+        geography: cell.geography,
+      });
+    }),
+  };
+}
+
+function spreadColorExpression() {
+  if (spreadView === 'climate') {
+    return ['interpolate', ['linear'], ['get', 'value'], 0, '#162c4d', .3, '#237890', .62, '#54c998', 1, '#d9f27c'];
+  }
+  if (spreadView === 'geography') {
+    return ['interpolate', ['linear'], ['get', 'value'], 0, '#2b2142', .32, '#505b78', .65, '#4db38c', 1, '#d7ec86'];
+  }
+  if (spreadView === 'scenario') {
+    return ['interpolate', ['linear'], ['get', 'value'], 0, '#123631', .22, '#276c58', .55, '#62d99f', .8, '#d6ec78', 1, '#ffba69'];
+  }
+  return ['interpolate', ['linear'], ['get', 'value'], 0, '#0d322e', .18, '#176f5b', .48, '#31b78b', .75, '#9be17f', 1, '#f0e972'];
+}
+
+function renderSpreadBenchmark() {
+  const container = $('#spread-benchmark');
+  if (!container || !benchmarkBundle.models?.length) return;
+  const ids = ['og_rde', 'cook_2021_kernel', 'distance_kernel'];
+  const values = ids.map((id) => {
+    const model = benchmarkModel(id);
+    const annual = [2024, 2025].map((year) => model?.metrics?.[String(year)]?.averagePrecision || 0);
+    return { id, name: model?.name || id, score: annual.reduce((sum, value) => sum + value, 0) / annual.length };
+  });
+  const ours = values[0].score;
+  const cook = values[1].score;
+  const distance = values[2].score;
+  const lift = (baseline) => baseline > 0 ? Math.round((ours / baseline - 1) * 100) : 0;
+  container.innerHTML = `<div class="spread-benchmark-head"><span>FROZEN FIRST-REPORT TEST</span><b>2024–2025 AVG</b></div>
+    <h3>Conventional methods vs LanternTrace</h3>
+    ${values.map((item) => `<div class="spread-benchmark-row ${item.id === 'og_rde' ? 'ours' : ''}"><b>${item.name}${item.id === 'og_rde' ? ' · OURS' : ''}</b><i style="--score:${Math.round(item.score * 100)}%"></i><strong>${item.score.toFixed(3)}</strong></div>`).join('')}
+    <p class="spread-benchmark-result">OG-RDE raises average precision by <b>${lift(cook)}%</b> over the transferred Cook-2021 kernel and <b>${lift(distance)}%</b> over distance-only spread.</p>
+    <p class="spread-benchmark-caveat">Honest limit: the study-built covariate-only control averages ${(([2024, 2025].reduce((sum, year) => sum + (benchmarkModel('covariate_hazard')?.metrics?.[String(year)]?.averagePrecision || 0), 0)) / 2).toFixed(3)} AP, so physics does not beat every control. The advantage shown here is over conventional distance baselines.</p>`;
+}
+
+function renderSpreadLab() {
+  const profile = spreadViewProfiles[spreadView] || spreadViewProfiles.signal;
+  const explanation = $('#spread-view-explanation');
+  if (explanation) explanation.innerHTML = `<span>${profile.kicker}</span><b>${profile.title}</b><p>${profile.description}</p>`;
+  $$('[data-spread-view]').forEach((button) => {
+    const active = button.dataset.spreadView === spreadView;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  $('#spread-scenario-controls')?.classList.toggle('hidden', spreadView !== 'scenario');
+  const modelOptions = $('#spread-model-options');
+  if (modelOptions) {
+    modelOptions.innerHTML = (spreadBundle.models || []).map((model) => `<button type="button" data-spread-model="${model.id}" class="${model.id === selectedSpreadModelId ? 'active' : ''}" aria-pressed="${model.id === selectedSpreadModelId}"><b>${model.name}</b><em>${model.group}</em><small>${model.mechanism}</small></button>`).join('');
+  }
+  const selected = spreadModel();
+  if ($('#spread-model-group')) $('#spread-model-group').textContent = selected?.group || 'MODEL';
+  if ($('#spread-year')) $('#spread-year').value = spreadYear;
+  if ($('#spread-year-label')) $('#spread-year-label').textContent = spreadYear;
+  renderSpreadBenchmark();
+}
+
+function renderSpreadCellDetail(cellId = selectedSpreadCell) {
+  const detail = $('#spread-cell-detail');
+  if (!detail) return;
+  const cell = (spreadBundle.cells || []).find((candidate) => `${candidate.r}:${candidate.c}` === String(cellId));
+  if (!cell) {
+    detail.innerHTML = '<b>Select a grid cell</b><span>Click a column to inspect reports, population, climate, and terrain factors.</span>';
+    return;
+  }
+  const value = spreadCellValue(cell);
+  const step = spreadBundle.metadata?.grid?.stepDegrees || 1;
+  detail.innerHTML = `<b>${(cell.s + step / 2).toFixed(1)}°N · ${Math.abs(cell.w + step / 2).toFixed(1)}°W</b>
+    <div class="spread-cell-stats"><span><strong>${cell.reports.toLocaleString()}</strong><small>reports</small></span><span><strong>${cell.population >= 1_000_000 ? `${(cell.population / 1_000_000).toFixed(1)}m` : `${Math.round(cell.population / 1000)}k`}</strong><small>population</small></span><span><strong>${Math.round(cell.climate * 100)}</strong><small>climate</small></span><span><strong>${Math.round(cell.geography * 100)}</strong><small>terrain</small></span></div>
+    <span>Current ${spreadView === 'scenario' ? `${spreadModel()?.name || 'model'} pressure` : spreadViewProfiles[spreadView].scale}: <b>${Math.round(value * 100)} / 100</b>. Stabilized report rate: ${cell.rate.toFixed(1)} per 100k.</span>`;
+}
+
+function updateSpreadMap() {
+  if (!map?.getSource('lt-spread-source')) return;
+  const visible = spreadActive();
+  map.getSource('lt-spread-source').setData(spreadGridData());
+  if (map.getLayer('lt-spread-height')) {
+    map.setLayoutProperty('lt-spread-height', 'visibility', visible ? 'visible' : 'none');
+    map.setPaintProperty('lt-spread-height', 'fill-extrusion-color', spreadColorExpression());
+  }
+  ['lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
+    if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
+  });
+  if (map.getLayer('lt-spread-selection')) map.setFilter('lt-spread-selection', ['==', ['get', 'cell'], selectedSpreadCell || '__none__']);
+  const hud = $('#spread-hud');
+  hud?.classList.toggle('hidden', !visible);
+  const profile = spreadViewProfiles[spreadView] || spreadViewProfiles.signal;
+  if ($('#spread-hud-title')) $('#spread-hud-title').textContent = spreadView === 'scenario' ? `${spreadModel()?.name || 'Model'} invasion pressure` : profile.hud;
+  if ($('#spread-hud-year')) $('#spread-hud-year').textContent = spreadView === 'scenario' ? spreadYear : '2025';
+  if ($('#spread-scale-label')) $('#spread-scale-label').textContent = profile.scale;
+  if ($('#spread-hud-description')) $('#spread-hud-description').textContent = profile.description;
+  renderSpreadCellDetail();
+  renderSpreadLab();
+}
+
+function focusSpreadOverview() {
+  if (!map || !spreadActive()) return;
+  map.setProjection({ type: 'mercator' });
+  map.fitBounds([[-125, 24], [-66, 50]], {
+    padding: { top: 42, right: 36, bottom: 42, left: 36 },
+    duration: 0,
+    maxZoom: 3.15,
+  });
+  map.easeTo({ zoom: Math.max(1.6, map.getZoom() - .05), pitch: 34, bearing: -6, duration: 650 });
+}
+
+function selectSpreadView(view) {
+  if (!spreadViewProfiles[view]) return;
+  spreadView = view;
+  selectedSpreadCell = null;
+  updateSpreadMap();
+}
+
+function selectSpreadModel(modelId) {
+  if (!spreadModel(modelId)) return;
+  selectedSpreadModelId = modelId;
+  selectedSpreadCell = null;
+  updateSpreadMap();
+}
+
+function setSpreadYear(year) {
+  const years = spreadBundle.metadata?.years || [];
+  if (!years.includes(Number(year))) return;
+  spreadYear = Number(year);
+  selectedSpreadCell = null;
+  updateSpreadMap();
 }
 
 function pointAlongCorridor(line, progress) {
@@ -911,7 +1113,7 @@ function updateBenchmarkMap() {
     'lt-model-comparison-glow', 'lt-model-comparison-line', 'lt-corridor-glow', 'lt-corridors',
     'lt-corridor-arrows', 'lt-reports', 'lt-report-hit', 'lt-reports-preview', 'lt-sites'
   ];
-  if (visible) {
+  if (visible || spreadActive()) {
     normalLayerIds.forEach((id) => { if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', 'none'); });
   } else {
     Object.entries(layers).forEach(([layer, enabled]) => setMapLayerVisibility(layer, enabled));
@@ -921,6 +1123,7 @@ function updateBenchmarkMap() {
   if (status) status.classList.toggle('hidden', !visible);
   renderPhysicsHUD();
   if (physicsVisible) startPhysicsAnimation();
+  updateSpreadMap();
 }
 
 function renderBenchmarkLab() {
@@ -1119,6 +1322,7 @@ function addMapLayers() {
   map.addSource('lt-benchmark-truth', { type: 'geojson', data: benchmarkTruthData() });
   map.addSource('lt-physics-surface', { type: 'geojson', data: physicsSurfaceData() });
   map.addSource('lt-physics-vectors', { type: 'geojson', data: physicsVectorData() });
+  map.addSource('lt-spread-source', { type: 'geojson', data: spreadGridData() });
 
   map.addLayer({ id: 'lt-heatmap', type: 'heatmap', source: 'lt-reports', maxzoom: 6.5, filter: observationFilter, paint: {
     'heatmap-weight': ['interpolate', ['linear'], ['zoom'], 0, 0.5, 8, 1.4],
@@ -1133,6 +1337,19 @@ function addMapLayers() {
     'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 2, 7, 6, 12, 10, 19],
     'heatmap-opacity': 0.42,
     'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(9, 41, 43, 0)', 0.12, 'rgba(20, 112, 102, .18)', 0.32, 'rgba(32, 169, 125, .34)', 0.58, 'rgba(81, 211, 148, .48)', 0.82, 'rgba(171, 237, 116, .58)', 1, 'rgba(210, 247, 151, .68)']
+  } });
+  map.addLayer({ id: 'lt-spread-height', type: 'fill-extrusion', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
+    'fill-extrusion-base': 0,
+    'fill-extrusion-height': ['interpolate', ['linear'], ['get', 'value'], 0, 120, .08, 900, .25, 5500, .5, 19000, .75, 41000, 1, 76000],
+    'fill-extrusion-color': spreadColorExpression(),
+    'fill-extrusion-opacity': .78,
+    'fill-extrusion-vertical-gradient': true
+  } });
+  map.addLayer({ id: 'lt-spread-grid', type: 'line', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
+    'line-color': '#b4e8cf', 'line-width': ['interpolate', ['linear'], ['zoom'], 2, .25, 5, .7], 'line-opacity': .32
+  } });
+  map.addLayer({ id: 'lt-spread-selection', type: 'line', source: 'lt-spread-source', filter: ['==', ['get', 'cell'], '__none__'], layout: { visibility: 'none' }, paint: {
+    'line-color': '#ffffff', 'line-width': 2.5, 'line-opacity': 1
   } });
   map.addLayer({ id: 'lt-physics-field', type: 'fill', source: 'lt-physics-surface', layout: { visibility: 'none' }, paint: {
     'fill-color': '#286a62', 'fill-opacity': .82
@@ -1208,6 +1425,16 @@ function addMapLayers() {
     if (benchmarkExplainEnabled) map.getCanvas().style.cursor = 'crosshair';
   });
   map.on('mouseleave', 'lt-benchmark-explain-fill', () => { map.getCanvas().style.cursor = ''; });
+
+  map.on('click', 'lt-spread-height', (event) => {
+    if (!spreadActive() || !event.features?.length) return;
+    selectedSpreadCell = event.features[0].properties.cell;
+    updateSpreadMap();
+  });
+  map.on('mouseenter', 'lt-spread-height', () => {
+    if (spreadActive()) map.getCanvas().style.cursor = 'pointer';
+  });
+  map.on('mouseleave', 'lt-spread-height', () => { map.getCanvas().style.cursor = ''; });
 
   map.on('click', 'lt-report-hit', async (event) => {
     const feature = event.features[0];
@@ -1498,6 +1725,7 @@ function initMap() {
     updateSnapshot();
     renderBenchmarkLab();
     updateBenchmarkMap();
+    if (spreadActive()) focusSpreadOverview();
     if (physicsEmbedMode) {
       const grid = benchmarkBundle.metadata.grid;
       map.fitBounds([[grid.west, grid.south], [grid.east, grid.north]], { padding: 22, duration: 0, maxZoom: 5.2 });
@@ -1620,6 +1848,7 @@ function renderTimelineTicks() {
 }
 
 function switchSection(section) {
+  if (section === 'spread') stopPlayback();
   activeSection = section;
   $$('.section-tab').forEach((button) => button.classList.toggle('active', button.dataset.section === section));
   $$('.topbar-section').forEach((button) => {
@@ -1628,17 +1857,28 @@ function switchSection(section) {
     if (selected) button.setAttribute('aria-current', 'page');
     else button.removeAttribute('aria-current');
   });
-  ['front', 'evidence', 'actions', 'methods'].forEach((name) => $(`#${name}-panel`).classList.toggle('hidden', name !== section));
+  ['front', 'evidence', 'actions', 'spread', 'methods'].forEach((name) => $(`#${name}-panel`).classList.toggle('hidden', name !== section));
   $('.app-shell')?.classList.toggle('methods-active', section === 'methods');
-  const methodsWorkspace = section === 'methods';
-  $('.sidebar').style.width = methodsWorkspace ? (window.innerWidth <= 1180 ? '420px' : '440px') : '';
-  $('.timeline-dock').style.left = methodsWorkspace ? (window.innerWidth <= 1180 ? '420px' : '440px') : '';
-  $('.species-hero').style.display = methodsWorkspace ? 'none' : '';
+  $('.app-shell')?.classList.toggle('spread-active', section === 'spread');
+  const analysisWorkspace = section === 'methods' || section === 'spread';
+  $('.sidebar').style.width = analysisWorkspace ? (window.innerWidth <= 1180 ? '420px' : '440px') : '';
+  $('.timeline-dock').style.left = analysisWorkspace ? (window.innerWidth <= 1180 ? '420px' : '440px') : '';
+  $('.species-hero').style.display = analysisWorkspace ? 'none' : '';
   $('.app-shell')?.classList.toggle('benchmark-mode', benchmarkActive());
   if (map?.getSource('lt-front')) updateSnapshot();
   else updateModelComparison();
   updateBenchmarkMap();
   if (section === 'methods' && benchmarkActive()) focusBenchmarkOverview();
+  if (section === 'spread') focusSpreadOverview();
+  else if (map && map.getProjection()?.type !== 'globe') {
+    map.setProjection({ type: 'globe' });
+    if (section === 'methods' && benchmarkActive()) {
+      focusBenchmarkOverview();
+      map.easeTo({ pitch: physicsViewEnabled ? 43 : 0, bearing: physicsViewEnabled ? -12 : 0, duration: 650 });
+    } else {
+      map.easeTo({ pitch: 0, bearing: 0, center: [-75.5, 40.7], zoom: 4.1, duration: 650 });
+    }
+  }
   syncForecastSettingsUI();
 }
 
@@ -1767,6 +2007,12 @@ function setupInteractions() {
   $$('.menu-button, .collapse, #sidebar-restore').forEach((button) => button.addEventListener('click', toggleSidebar));
   $$('.section-tab').forEach((button) => button.addEventListener('click', () => switchSection(button.dataset.section)));
   $$('.topbar-section').forEach((button) => button.addEventListener('click', () => switchSection(button.dataset.section)));
+  $$('[data-spread-view]').forEach((button) => button.addEventListener('click', () => selectSpreadView(button.dataset.spreadView)));
+  $('#spread-model-options')?.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-spread-model]');
+    if (button) selectSpreadModel(button.dataset.spreadModel);
+  });
+  $('#spread-year')?.addEventListener('input', (event) => setSpreadYear(event.target.value));
   $$('button[data-layer]').forEach((button) => button.addEventListener('click', () => { const layer = button.dataset.layer; layers[layer] = !layers[layer]; setMapLayerVisibility(layer, layers[layer]); syncLayerControls(); if (layer === 'corridors') startCorridorAnimation(); }));
   $$('input[data-layer]').forEach((input) => input.addEventListener('change', () => { layers[input.dataset.layer] = input.checked; setMapLayerVisibility(input.dataset.layer, input.checked); syncLayerControls(); }));
   const timeline = $('#timeline');
@@ -1909,6 +2155,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (evidenceSource) evidenceSource.textContent = observationPoints.length ? `GBIF public-coordinate records · refreshed ${generated}` : 'Optional occurrence bundle missing; frozen benchmark remains available';
   syncForecastSettingsUI();
   renderBenchmarkLab();
+  renderSpreadLab();
   setLabMode('benchmark');
   createStarfield();
   initMap();

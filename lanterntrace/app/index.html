@@ -9,14 +9,9 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main class="app-shell">
+    <main class="app-shell spread-active spread-only">
       <header class="reference-topbar">
-        <nav class="topbar-sections no-drag" aria-label="Explore sections">
-          <button class="topbar-section active" data-section="front">Species<br />Explorer</button>
-          <button class="topbar-section" data-section="evidence">Threats<br />&amp; Risks</button>
-          <button class="topbar-section" data-section="actions">Priorities<br />&amp; Protections</button>
-          <button class="topbar-section" data-section="methods">Diffusion<br />Models</button>
-        </nav>
+        <div class="spread-only-brand"><span>LANTERNTRACE</span><b>NATIONAL SPREAD LAB</b><small>REPORTS · ENVIRONMENT · INVASION PHYSICS</small></div>
       </header>
       <div class="app-body">
       <aside class="sidebar">
@@ -28,7 +23,7 @@
           <div class="species-title"><h1>SPOTTED<br />LANTERNFLY</h1></div>
         </section>
 
-        <section class="sidebar-content" id="front-panel">
+        <section class="sidebar-content hidden" id="front-panel">
           <div class="panel-heading"><div><span class="eyebrow">SPECIES &amp; SIGNALS</span><h2>Spotted lanternfly</h2></div><span class="info-dot">i</span></div>
           <div class="layer-row"><button class="switch on" data-layer="heatmap" aria-label="Toggle observation heatmap" aria-pressed="true"><span></span></button><div><b>OBSERVATION HEATMAP</b><small>report density &amp; signal intensity</small></div><span class="layer-color heat"></span></div>
           <div class="layer-row"><button class="switch on" data-layer="reports" aria-label="Toggle public occurrence points" aria-pressed="true"><span></span></button><div><b>PUBLIC OCCURRENCES</b><small>zoom in to inspect individual reports</small></div><span class="layer-color cyan"></span></div>
@@ -53,6 +48,41 @@
           <div class="action-card"><span class="action-number">02</span><div><b>Stress-test corridor hypotheses</b><small>compare Transport RD with simpler alternatives</small></div><span class="arrow">↗</span></div>
           <div class="action-card"><span class="action-number">03</span><div><b>Plan independent sampling</b><small>record effort and non-detections for prospective validation</small></div><span class="arrow">↗</span></div>
           <p class="small-note">Illustrative research prompts only. They are not quarantine, treatment, inspection, or agency recommendations.</p>
+        </section>
+
+        <section class="sidebar-content" id="spread-panel">
+          <div class="panel-heading"><div><span class="eyebrow">REPORTS → FACTORS → SPREAD</span><h2>Understand the model</h2></div><span class="info-dot">i</span></div>
+          <p class="spread-intro">Use the same nationwide grid to separate what was reported, where the environment is suitable, and how alternative spread mechanisms move the front.</p>
+
+          <div class="spread-view-tabs" role="group" aria-label="Nationwide grid view">
+            <button class="active" type="button" data-spread-view="signal" aria-pressed="true"><span>01</span><b>Adjusted fly signal</b><small>reports ÷ population</small></button>
+            <button type="button" data-spread-view="climate" aria-pressed="false"><span>02</span><b>Ideal climate</b><small>temperature + moisture</small></button>
+            <button type="button" data-spread-view="geography" aria-pressed="false"><span>03</span><b>Ideal geography</b><small>elevation + slope</small></button>
+            <button type="button" data-spread-view="scenario" aria-pressed="false"><span>04</span><b>Invasion physics</b><small>compare mechanisms</small></button>
+          </div>
+
+          <div id="spread-view-explanation" class="spread-view-explanation" aria-live="polite"></div>
+
+          <div id="spread-scenario-controls" class="spread-scenario-controls hidden">
+            <div class="spread-control-heading"><span>INVASION MECHANISM</span><b id="spread-model-group">LANTERNTRACE</b></div>
+            <div id="spread-model-options" class="spread-model-options" role="group" aria-label="Spread model"></div>
+            <label class="spread-year-control" for="spread-year">
+              <span><b>Scenario year</b><strong id="spread-year-label">2030</strong></span>
+              <input id="spread-year" type="range" min="2025" max="2035" value="2030" step="1" />
+              <small>Factor-isolation display—not a calibrated national forecast.</small>
+            </label>
+          </div>
+
+          <div class="normalization-card">
+            <span>WHY NORMALIZE?</span>
+            <div><i>1</i><p><b>Count reports</b><small>Public sightings in each 1° cell</small></p></div>
+            <div><i>2</i><p><b>Stabilize by population</b><small>Reports per 100,000 with a national-rate prior</small></p></div>
+            <div><i>3</i><p><b>Extrapolate locally</b><small>Smooth neighboring cells to reduce reporting gaps</small></p></div>
+            <p class="normalization-warning">Height is a relative population-adjusted signal. Presence-only reports cannot estimate an absolute number of lanternflies.</p>
+          </div>
+
+          <div id="spread-benchmark" class="spread-benchmark" aria-label="Conventional and LanternTrace model comparison"></div>
+          <p class="small-note">Nationwide factor maps use 2024 Census county population estimates, WorldClim 2.1, 2025 Census land boundaries, and the frozen GBIF report snapshot. Model skill is reported only for the Northeast frozen first-report benchmark.</p>
         </section>
 
         <section class="sidebar-content hidden" id="methods-panel">
@@ -119,6 +149,12 @@
           <small id="physics-hud-state">Animated threshold sweep over the frozen relative-pressure surface.</small>
           <p>Diagnostic visualization of model score fields—not abundance, calibrated velocity, or a literal time forecast.</p>
         </section>
+        <section id="spread-hud" class="spread-hud hidden" aria-label="Nationwide grid legend">
+          <div class="spread-hud-head"><div><span>NATIONWIDE 1° GRID</span><b id="spread-hud-title">Population-adjusted report signal</b></div><strong id="spread-hud-year">2025</strong></div>
+          <div class="spread-scale"><i></i><div><span>lower</span><span id="spread-scale-label">relative fly signal</span><span>higher</span></div></div>
+          <p id="spread-hud-description">Grid height shows a stabilized, population-adjusted report signal—not a literal insect count.</p>
+          <div id="spread-cell-detail" class="spread-cell-detail"><b>Select a grid cell</b><span>Click a column to inspect reports, population, climate, and terrain factors.</span></div>
+        </section>
         <section id="benchmark-status" class="benchmark-status hidden" aria-live="polite"></section>
         <section id="map-state" class="map-state" aria-live="polite"><b>Loading map</b><span>Preparing scientific layers…</span></section>
         <div id="export-status" class="export-status hidden" role="status" aria-live="polite"></div>
@@ -144,6 +180,7 @@
     <script src="./generated/observations.js"></script>
     <script src="./generated/model-results.js"></script>
     <script src="./generated/frozen-benchmark.js"></script>
+    <script src="./generated/spread-explainer.js"></script>
     <script src="./app.js"></script>
   </body>
 </html>
