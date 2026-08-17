@@ -916,7 +916,7 @@ function selectSpreadDisplayMode(mode) {
   if (mode === 'reports') stopSpreadSimulation();
   spreadDisplayMode = mode;
   if (mode === 'mesh') activeReportPopup?.remove();
-  updateSpreadMap({ timelineOnly: true });
+  updateSpreadMap();
 }
 
 function setSpreadTimelineYear(year, { timelineOnly = true } = {}) {
