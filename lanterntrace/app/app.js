@@ -27,10 +27,10 @@ let physicsDisplayMode = 'height';
 let physicsPhase = .42;
 let physicsAnimationFrame;
 let physicsAnimationLast = 0;
-let spreadView = 'signal';
+let spreadView = 'scenario';
 let spreadDisplayMode = 'mesh';
 let selectedSpreadModelId = 'coupled';
-let spreadWindEnabled = false;
+let spreadWindEnabled = true;
 let windAnimationFrame;
 let windAnimationLastTime = 0;
 let windParticles = [];
@@ -459,7 +459,7 @@ function startWindAnimation() {
   }
   const canvasState = resizeWindCanvas();
   if (!canvasState) return;
-  const desiredParticles = Math.max(420, Math.min(980, Math.round(canvasState.width * canvasState.height / 2100)));
+  const desiredParticles = Math.max(900, Math.min(2100, Math.round(canvasState.width * canvasState.height / 900)));
   while (windParticles.length < desiredParticles) windParticles.push(resetWindParticle());
   if (windParticles.length > desiredParticles) windParticles.length = desiredParticles;
 
@@ -475,7 +475,7 @@ function startWindAnimation() {
       windParticles.forEach((particle) => { particle.previous = null; });
     } else {
       context.globalCompositeOperation = 'destination-in';
-      context.fillStyle = 'rgba(0, 0, 0, .92)';
+      context.fillStyle = 'rgba(0, 0, 0, .955)';
       context.fillRect(0, 0, width, height);
       context.globalCompositeOperation = 'source-over';
     }
@@ -487,7 +487,7 @@ function startWindAnimation() {
         return;
       }
       const current = map.project([particle.longitude, particle.latitude]);
-      const visualDegreesPerSecond = .18;
+      const visualDegreesPerSecond = .62;
       particle.longitude += wind.u * visualDegreesPerSecond * elapsed / Math.max(Math.cos(particle.latitude * Math.PI / 180), .45);
       particle.latitude += wind.v * visualDegreesPerSecond * elapsed;
       particle.age += 1;
@@ -504,8 +504,8 @@ function startWindAnimation() {
         context.beginPath();
         context.moveTo(particle.previous.x, particle.previous.y);
         context.lineTo(next.x, next.y);
-        context.strokeStyle = `rgba(${red}, ${green}, ${blue}, ${.25 + strength * .58})`;
-        context.lineWidth = .55 + strength * 1.35;
+        context.strokeStyle = `rgba(${red}, ${green}, ${blue}, ${.56 + strength * .4})`;
+        context.lineWidth = 1.15 + strength * 2.15;
         context.stroke();
       }
       particle.previous = { x: next.x, y: next.y };
@@ -521,6 +521,7 @@ function toggleSpreadWind(force) {
   spreadWindEnabled = nextEnabled;
   if (spreadWindEnabled) selectedSpreadModelId = 'coupled';
   $('#spread-wind-toggle')?.setAttribute('aria-pressed', String(spreadWindEnabled));
+  $('#spread-wind-toggle')?.classList.toggle('active', spreadWindEnabled);
   updateSpreadMap();
   startWindAnimation();
 }
@@ -564,6 +565,7 @@ function renderSpreadLab() {
   if ($('#spread-grid-size-label')) $('#spread-grid-size-label').textContent = `${spreadGridSize}°`;
   if ($('#spread-grid-size')) $('#spread-grid-size').value = spreadGridSizes.indexOf(spreadGridSize);
   $('#spread-wind-toggle')?.setAttribute('aria-pressed', String(spreadWindEnabled));
+  $('#spread-wind-toggle')?.classList.toggle('active', spreadWindEnabled);
 }
 
 function renderSpreadTimeline() {
@@ -2240,7 +2242,10 @@ function initMap() {
     updateSnapshot();
     renderBenchmarkLab();
     updateBenchmarkMap();
-    if (spreadActive()) focusSpreadOverview();
+    if (spreadActive()) {
+      focusSpreadOverview();
+      startWindAnimation();
+    }
     if (physicsEmbedMode) {
       const grid = benchmarkBundle.metadata.grid;
       map.fitBounds([[grid.west, grid.south], [grid.east, grid.north]], { padding: 22, duration: 0, maxZoom: 5.2 });

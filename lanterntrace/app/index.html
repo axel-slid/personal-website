@@ -49,10 +49,10 @@
 
         <section class="sidebar-content" id="spread-panel">
           <div class="spread-view-tabs" role="group" aria-label="Nationwide grid view">
-            <button class="active" type="button" data-spread-view="signal" aria-pressed="true"><span>●</span><b>Fly signal</b><small>population-adjusted reports</small></button>
+            <button id="spread-wind-toggle" class="spread-wind-toggle active" type="button" aria-pressed="true"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5h11.5c2.3 0 3.4-3.1 1.3-4.2-1.4-.8-2.8.1-3.1 1.4M3 12h15.5c2.8 0 3.4 4 .7 4.8-1.8.5-3.2-.7-3.4-2.1M3 15.5h7.5" /></svg></span><b>Wind</b><small>1991–2020 mean vectors</small></button>
             <button type="button" data-spread-view="climate" aria-pressed="false"><span>☀</span><b>Climate</b><small>temperature + moisture</small></button>
             <button type="button" data-spread-view="geography" aria-pressed="false"><span>⌁</span><b>Geography</b><small>elevation + slope</small></button>
-            <button type="button" data-spread-view="scenario" aria-pressed="false"><span>∿</span><b>Physics</b><small>30-year spread simulation</small></button>
+            <button class="active" type="button" data-spread-view="scenario" aria-pressed="true"><span>∿</span><b>Physics</b><small>30-year spread simulation</small></button>
           </div>
 
           <div class="spread-grid-size-control">
@@ -60,12 +60,6 @@
             <input id="spread-grid-size" type="range" min="0" max="3" value="0" step="1" aria-label="Physics grid cell size" />
             <div class="spread-grid-size-ticks" aria-hidden="true"><span>0.25°<small>finer</small></span><span>0.5°</span><span>0.75°</span><span>1°<small>coarser</small></span></div>
           </div>
-
-          <button id="spread-wind-toggle" class="spread-wind-toggle" type="button" aria-pressed="false">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5h11.5c2.3 0 3.4-3.1 1.3-4.2-1.4-.8-2.8.1-3.1 1.4M3 12h15.5c2.8 0 3.4 4 .7 4.8-1.8.5-3.2-.7-3.4-2.1M3 15.5h7.5" /></svg>
-            <span><b>Average winds</b><small>1991–2020 NOAA · wind-aware physics</small></span>
-            <i aria-hidden="true"></i>
-          </button>
 
           <div id="spread-scenario-controls" class="spread-scenario-controls hidden">
             <div class="spread-control-heading"><span>INVASION MECHANISM</span><b id="spread-model-group">LANTERNTRACE</b></div>

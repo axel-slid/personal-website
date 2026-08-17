@@ -1011,18 +1011,10 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .spread-only .spread-view-tabs button:nth-child(4) > span { color: #d5ed75; }
 .spread-only .spread-view-tabs button:nth-child(4).active::after { background: #d5ed75; }
 .spread-only .spread-grid-size-control { margin-top: 14px; padding: 13px; border-radius: 12px; }
-.spread-wind-toggle { display: grid; width: 100%; min-height: 58px; margin-top: 10px; padding: 9px 11px; grid-template-columns: 27px minmax(0, 1fr) 28px; gap: 8px; align-items: center; border: 1px solid rgba(121, 240, 196, .17); border-radius: 11px; background: rgba(3, 25, 23, .66); color: #89b4a3; text-align: left; }
-.spread-wind-toggle:hover { border-color: rgba(121, 240, 196, .36); background: rgba(12, 47, 40, .72); }
-.spread-wind-toggle[aria-pressed="true"] { border-color: rgba(133, 218, 244, .58); background: linear-gradient(135deg, rgba(45, 126, 142, .22), rgba(7, 45, 39, .76)); color: #e8fff7; box-shadow: inset 0 0 0 1px rgba(133, 218, 244, .08); }
-.spread-wind-toggle svg { width: 25px; height: 25px; fill: none; stroke: #79c9d8; stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
-.spread-wind-toggle > span { min-width: 0; }
-.spread-wind-toggle b, .spread-wind-toggle small { display: block; }
-.spread-wind-toggle b { color: inherit; font: 700 12px 'Barlow Condensed', sans-serif; letter-spacing: .05em; text-transform: uppercase; }
-.spread-wind-toggle small { margin-top: 2px; overflow: hidden; color: #6f9a8a; font: 500 7px 'DM Mono', monospace; text-overflow: ellipsis; white-space: nowrap; }
-.spread-wind-toggle > i { position: relative; display: block; width: 27px; height: 15px; border: 1px solid rgba(116, 176, 154, .48); border-radius: 999px; background: rgba(2, 17, 15, .74); }
-.spread-wind-toggle > i::after { position: absolute; top: 2px; left: 2px; width: 9px; height: 9px; border-radius: 50%; background: #729b8c; content: ''; transition: transform .18s ease, background .18s ease; }
-.spread-wind-toggle[aria-pressed="true"] > i { border-color: rgba(145, 230, 245, .68); background: rgba(67, 151, 166, .32); }
-.spread-wind-toggle[aria-pressed="true"] > i::after { background: #a7f0f0; transform: translateX(12px); box-shadow: 0 0 7px rgba(135, 224, 238, .62); }
+.spread-only .spread-view-tabs .spread-wind-toggle > span { color: #78d7e6; }
+.spread-only .spread-view-tabs .spread-wind-toggle > span svg { width: 25px; height: 25px; fill: none; stroke: currentColor; stroke-width: 1.55; stroke-linecap: round; stroke-linejoin: round; }
+.spread-only .spread-view-tabs .spread-wind-toggle.active { border-color: rgba(126, 224, 240, .82); background: linear-gradient(145deg, rgba(52, 151, 170, .3), rgba(8, 43, 42, .86)); }
+.spread-only .spread-view-tabs .spread-wind-toggle.active::after { opacity: 1; background: #7bdcea; }
 .spread-only .spread-scenario-controls { margin-top: 15px; }
 .spread-only .spread-model-options button { min-height: 52px; padding: 9px 11px; }
 .spread-only .spread-model-options button b { font-size: 12px; }
@@ -1086,7 +1078,7 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 
 /* Apple Weather-style animated climatological wind overlay. */
 .wind-canvas { position: absolute; z-index: 5; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity .28s ease; mix-blend-mode: screen; }
-.wind-canvas.active { opacity: .92; }
+.wind-canvas.active { opacity: 1; filter: drop-shadow(0 0 2px rgba(153, 246, 232, .32)); }
 .wind-legend { position: absolute; z-index: 8; top: 70px; right: 18px; display: grid; width: 118px; gap: 3px; padding: 8px 9px; border-radius: 8px; background: rgba(2, 21, 21, .78); color: #8fb9aa; backdrop-filter: blur(8px); pointer-events: none; }
 .wind-legend.hidden { display: none; }
 .wind-legend b { color: #dffcf1; font: 700 7px 'DM Mono', monospace; letter-spacing: .1em; }
