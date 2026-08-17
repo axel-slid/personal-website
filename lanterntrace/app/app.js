@@ -10,6 +10,7 @@ const spreadHistory = window.LanternTraceSpreadHistory || { metadata: {}, signal
 const windClimatology = window.LanternTraceWindClimatology || { metadata: {}, latitudes: [], longitudes: [], u: [], v: [] };
 const spreadLongHorizon = window.LanternTraceSpreadLongHorizon || { metadata: {}, models: {} };
 const spreadGridPyramid = window.LanternTraceSpreadGridPyramid || { metadata: {}, levels: {} };
+const contextGeography = window.LanternTraceContextGeography || { metadata: {}, cities: [] };
 const spreadPhysicsFrameCache = new Map();
 const farmImpactCurveCache = new Map();
 const globeTileWarmZoom = 3;
@@ -201,6 +202,15 @@ const darkStyle = {
 
 function geojsonFeature(type, coordinates, properties = {}) {
   return { type: 'Feature', geometry: { type, coordinates }, properties };
+}
+
+function cityContextData() {
+  return {
+    type: 'FeatureCollection',
+    features: (contextGeography.cities || []).map(([longitude, latitude, name, rank]) => (
+      geojsonFeature('Point', [longitude, latitude], { name, rank })
+    )),
+  };
 }
 
 function spreadActive() {
@@ -695,26 +705,14 @@ function renderSpreadTimeline() {
   renderFarmImpactFigure();
 }
 
-function pointInPolygon(longitude, latitude, polygon) {
-  let inside = false;
-  for (let index = 0, previous = polygon.length - 1; index < polygon.length; previous = index++) {
-    const [x1, y1] = polygon[index];
-    const [x2, y2] = polygon[previous];
-    if ((y1 > latitude) !== (y2 > latitude)
-      && longitude < ((x2 - x1) * (latitude - y1)) / (y2 - y1) + x1) inside = !inside;
-  }
-  return inside;
-}
-
-function farmImpactExposure(year) {
+function nationalSpreadExposure(year) {
   const level = spreadGridPyramid.levels?.[String(spreadGridSize)] || [];
-  const pennsylvania = [[-80.52, 39.72], [-75.79, 39.72], [-75.13, 39.87], [-74.69, 40.60], [-74.72, 41.37], [-75.10, 41.99], [-79.76, 42.27], [-80.52, 42.00]];
   const observedYear = Math.max(spreadTimelineStartYear, Math.min(spreadPresentYear, Math.round(year)));
   let total = 0;
   let count = 0;
   level.forEach((record, index) => {
     const [west, south, sourceIndex, landFraction, ...weightPairs] = record;
-    if (landFraction <= windMaskLandThreshold || !pointInPolygon(west + spreadGridSize / 2, south + spreadGridSize / 2, pennsylvania)) return;
+    if (landFraction <= windMaskLandThreshold) return;
     let value = 0;
     if (year > spreadPresentYear) {
       value = spreadPhysicsValue(index, year);
@@ -737,57 +735,44 @@ function farmImpactExposure(year) {
 function renderFarmImpactFigure() {
   const chart = $('#farm-impact-chart');
   if (!chart) return;
-  // Harper et al. (2019), Penn State / Center for Rural Pennsylvania:
-  // direct annual agricultural losses were estimated at $13.1M–$29.6M in the
-  // 14-county quarantine zone and $42.6M–$99.1M for a statewide invasion.
-  const quarantineExpected = 13.1;
-  const quarantineWorst = 29.6;
-  const statewideExpected = 42.6;
-  const statewideWorst = 99.1;
+  // USDA NIFA project 1020284 reports $3.625B of vulnerable specialty-crop
+  // value in states with detections/establishment and more than $18B
+  // nationwide. This chart scales between those sourced exposure anchors; it
+  // is not a damage or loss forecast.
+  const detectedStateExposure = 3625;
+  const nationalExposureCeiling = 18000;
   const cacheKey = `${spreadGridSize}:${selectedSpreadModelId}:${spreadWindEnabled ? 'wind' : 'still'}`;
   let curve = farmImpactCurveCache.get(cacheKey);
   if (!curve) {
     const years = Array.from({ length: spreadTimelineEndYear - spreadTimelineStartYear + 1 }, (_, index) => spreadTimelineStartYear + index);
-    const exposure = years.map((year) => farmImpactExposure(year));
+    const exposure = years.map((year) => nationalSpreadExposure(year));
     const baselineExposure = exposure[0];
     const spreadShare = exposure.map((value) => Math.max(0, Math.min(1, (value - baselineExposure) / Math.max(1 - baselineExposure, .001))));
-    const annualExpected = spreadShare.map((share) => quarantineExpected + share * (statewideExpected - quarantineExpected));
-    const annualWorst = spreadShare.map((share) => quarantineWorst + share * (statewideWorst - quarantineWorst));
-    const cumulativeExpected = [annualExpected[0]];
-    const cumulativeWorst = [annualWorst[0]];
-    for (let index = 1; index < years.length; index += 1) {
-      cumulativeExpected.push(cumulativeExpected[index - 1] + annualExpected[index]);
-      cumulativeWorst.push(cumulativeWorst[index - 1] + annualWorst[index]);
-    }
-    curve = { years, cumulativeExpected, cumulativeWorst };
+    const exposedValue = spreadShare.map((share) => detectedStateExposure + share * (nationalExposureCeiling - detectedStateExposure));
+    curve = { years, exposedValue };
     farmImpactCurveCache.set(cacheKey, curve);
   }
-  const { years, cumulativeExpected, cumulativeWorst } = curve;
+  const { years, exposedValue } = curve;
   const x = (year) => 2 + ((year - spreadTimelineStartYear) / (spreadTimelineEndYear - spreadTimelineStartYear)) * 240;
-  const chartMaximum = Math.max(cumulativeWorst.at(-1), 1);
-  const y = (millions) => 54 - Math.max(0, Math.min(1, millions / chartMaximum)) * 48;
-  const expectedPoints = years.map((year, index) => [x(year), y(cumulativeExpected[index])]);
-  const worstPoints = years.map((year, index) => [x(year), y(cumulativeWorst[index])]);
+  const y = (millions) => 54 - Math.max(0, Math.min(1, millions / nationalExposureCeiling)) * 48;
+  const exposurePoints = years.map((year, index) => [x(year), y(exposedValue[index])]);
   const path = (points) => points.map(([px, py], index) => `${index ? 'L' : 'M'}${px.toFixed(2)} ${py.toFixed(2)}`).join(' ');
-  $('#farm-impact-expected')?.setAttribute('d', path(expectedPoints));
-  $('#farm-impact-worst')?.setAttribute('d', path(worstPoints));
-  $('#farm-impact-area')?.setAttribute('d', `${path(worstPoints)} ${[...expectedPoints].reverse().map(([px, py]) => `L${px.toFixed(2)} ${py.toFixed(2)}`).join(' ')} Z`);
+  $('#farm-impact-exposure')?.setAttribute('d', path(exposurePoints));
   const lowerIndex = Math.max(0, Math.min(years.length - 1, Math.floor(spreadTimelineYear) - spreadTimelineStartYear));
   const upperIndex = Math.min(years.length - 1, lowerIndex + 1);
   const yearBlend = Math.max(0, Math.min(1, spreadTimelineYear - Math.floor(spreadTimelineYear)));
-  const currentExpected = cumulativeExpected[lowerIndex] + (cumulativeExpected[upperIndex] - cumulativeExpected[lowerIndex]) * yearBlend;
-  const currentWorst = cumulativeWorst[lowerIndex] + (cumulativeWorst[upperIndex] - cumulativeWorst[lowerIndex]) * yearBlend;
+  const currentExposure = exposedValue[lowerIndex] + (exposedValue[upperIndex] - exposedValue[lowerIndex]) * yearBlend;
   const markerX = x(spreadTimelineYear);
-  const markerY = y(currentWorst);
+  const markerY = y(currentExposure);
   const marker = $('#farm-impact-marker');
   marker?.setAttribute('x1', markerX);
   marker?.setAttribute('x2', markerX);
   const dot = $('#farm-impact-dot');
   dot?.setAttribute('cx', markerX);
   dot?.setAttribute('cy', markerY);
-  const formatBurden = (millions) => millions >= 1000 ? `$${(millions / 1000).toFixed(2)}B` : `$${millions.toFixed(1)}M`;
-  if ($('#farm-impact-value')) $('#farm-impact-value').textContent = `${formatBurden(currentExpected)}–${formatBurden(currentWorst)} cumulative`;
-  chart.setAttribute('aria-label', `Cumulative Pennsylvania agricultural-loss estimate through ${spreadTimelineYear.toFixed(1)}: ${formatBurden(currentExpected)} to ${formatBurden(currentWorst)}. The 2019 baseline is the published 14-county estimate; subsequent values interpolate toward the published statewide scenarios using model spread.`);
+  const formatExposure = (millions) => `$${(millions / 1000).toFixed(2)}B`;
+  if ($('#farm-impact-value')) $('#farm-impact-value').textContent = `${formatExposure(currentExposure)} exposed`;
+  chart.setAttribute('aria-label', `Model-linked United States specialty-crop value exposure in ${spreadTimelineYear.toFixed(1)}: ${formatExposure(currentExposure)} of a sourced nationwide value exceeding $18 billion. This is not a loss forecast.`);
 }
 
 function renderSpreadDisplayToggle() {
@@ -2050,6 +2035,8 @@ function addMapLayers() {
   map.addSource('lt-physics-surface', { type: 'geojson', data: physicsSurfaceData() });
   map.addSource('lt-physics-vectors', { type: 'geojson', data: physicsVectorData() });
   map.addSource('lt-spread-source', { type: 'geojson', data: spreadGridData() });
+  map.addSource('lt-us-states', { type: 'geojson', data: './generated/us-states.geojson' });
+  map.addSource('lt-us-cities', { type: 'geojson', data: cityContextData() });
 
   map.addLayer({ id: 'lt-heatmap', type: 'heatmap', source: 'lt-reports', maxzoom: 6.5, filter: observationFilter, paint: {
     'heatmap-weight': ['interpolate', ['linear'], ['zoom'], 0, 0.5, 8, 1.4],
@@ -2163,6 +2150,34 @@ function addMapLayers() {
     'circle-opacity': .01
   } });
   map.addLayer({ id: 'lt-sites', type: 'circle', source: 'lt-sites', paint: { 'circle-color': '#c8ff79', 'circle-radius': 6, 'circle-stroke-color': '#e8ffd2', 'circle-stroke-width': 1.5, 'circle-opacity': 0.9 } });
+  map.addLayer({ id: 'lt-state-boundaries', type: 'line', source: 'lt-us-states', minzoom: 2.45, paint: {
+    'line-color': '#9bc9b3',
+    'line-width': ['interpolate', ['linear'], ['zoom'], 2.45, .45, 5, .8, 8, 1.35],
+    'line-opacity': ['interpolate', ['linear'], ['zoom'], 2.45, .24, 4, .46, 7, .68]
+  } });
+  map.addLayer({ id: 'lt-state-labels', type: 'symbol', source: 'lt-us-states', minzoom: 3.05, maxzoom: 6.8, layout: {
+    'text-field': ['get', 'STUSPS'], 'text-font': ['Open Sans Semibold'],
+    'text-size': ['interpolate', ['linear'], ['zoom'], 3.05, 8, 5, 10.5, 6.8, 12],
+    'text-letter-spacing': .12, 'text-allow-overlap': false, 'text-ignore-placement': false
+  }, paint: {
+    'text-color': '#b7d8c8', 'text-opacity': .78,
+    'text-halo-color': '#071b15', 'text-halo-width': 1.25, 'text-halo-blur': .25
+  } });
+  map.addLayer({ id: 'lt-city-points', type: 'circle', source: 'lt-us-cities', minzoom: 3.7, layout: {
+    'circle-sort-key': ['get', 'rank']
+  }, paint: {
+    'circle-color': '#e8f4d0', 'circle-radius': ['interpolate', ['linear'], ['zoom'], 3.7, 1.4, 7, 2.25],
+    'circle-opacity': .82, 'circle-stroke-color': '#193d30', 'circle-stroke-width': .7
+  } });
+  map.addLayer({ id: 'lt-city-labels', type: 'symbol', source: 'lt-us-cities', minzoom: 3.7, layout: {
+    'text-field': ['get', 'name'], 'text-font': ['Open Sans Semibold'],
+    'text-size': ['interpolate', ['linear'], ['zoom'], 3.7, 9, 6, 11, 9, 13],
+    'text-offset': [0, 1], 'text-anchor': 'top', 'text-max-width': 9,
+    'text-allow-overlap': false, 'text-ignore-placement': false, 'symbol-sort-key': ['get', 'rank']
+  }, paint: {
+    'text-color': '#e1f1e8', 'text-opacity': .86,
+    'text-halo-color': '#061b14', 'text-halo-width': 1.4, 'text-halo-blur': .3
+  } });
 
   map.on('click', 'lt-benchmark-explain-fill', (event) => {
     if (!benchmarkExplainEnabled || !event.features?.length) return;
