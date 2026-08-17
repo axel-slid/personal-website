@@ -26,6 +26,7 @@ let physicsPhase = .42;
 let physicsAnimationFrame;
 let physicsAnimationLast = 0;
 let spreadView = 'signal';
+let spreadDisplayMode = 'mesh';
 let selectedSpreadModelId = 'coupled';
 const spreadTimelineStartYear = 2019;
 const spreadPresentYear = spreadHistory.metadata?.presentYear || 2026;
@@ -127,6 +128,7 @@ let corridorAnimationFrame;
 let corridorAnimationLast = 0;
 let usingReportPreview = false;
 let settingsReturnFocus = null;
+let activeReportPopup = null;
 let mapLayersAdded = false;
 const timelineOverviewZoom = 4.75;
 
@@ -188,6 +190,14 @@ function spreadTimelinePhase() {
   if (spreadTimelineYear < spreadPresentYear) return 'observed';
   if (spreadTimelineYear === spreadPresentYear) return 'present';
   return 'predicted';
+}
+
+function spreadReportCutoff() {
+  const observedYear = Math.min(spreadPresentYear, Math.floor(spreadTimelineYear));
+  if (observedYear >= spreadPresentYear && spreadHistory.metadata?.lastObservedDate) {
+    return Date.parse(`${spreadHistory.metadata.lastObservedDate}T23:59:59Z`);
+  }
+  return Date.UTC(observedYear + 1, 0, 1) - 1;
 }
 
 function spreadCellValue(cell, sourceIndex = spreadCellIndices.get(`${cell?.r}:${cell?.c}`)) {
@@ -342,6 +352,14 @@ function renderSpreadTimeline() {
   }
 }
 
+function renderSpreadDisplayToggle() {
+  $$('[data-spread-display]').forEach((button) => {
+    const active = button.dataset.spreadDisplay === spreadDisplayMode;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+}
+
 function renderSpreadCellDetail(cellId = selectedSpreadSourceCell) {
   const detail = $('#spread-cell-detail');
   if (!detail) return;
@@ -374,13 +392,20 @@ function renderSpreadCellDetail(cellId = selectedSpreadSourceCell) {
 function updateSpreadMap({ timelineOnly = false } = {}) {
   if (!map?.getSource('lt-spread-source')) return;
   const visible = spreadActive();
+  const meshVisible = visible && spreadDisplayMode === 'mesh';
+  const reportsVisible = visible && spreadDisplayMode === 'reports';
   map.getSource('lt-spread-source').setData(spreadGridData());
   if (map.getLayer('lt-spread-height')) {
-    map.setLayoutProperty('lt-spread-height', 'visibility', visible ? 'visible' : 'none');
+    map.setLayoutProperty('lt-spread-height', 'visibility', meshVisible ? 'visible' : 'none');
     map.setPaintProperty('lt-spread-height', 'fill-extrusion-color', spreadColorExpression());
   }
   ['lt-spread-water', 'lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
-    if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', visible ? 'visible' : 'none');
+    if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', meshVisible ? 'visible' : 'none');
+  });
+  ['lt-spread-reports', 'lt-spread-report-hit'].forEach((id) => {
+    if (!map.getLayer(id)) return;
+    map.setFilter(id, ['<=', ['get', 'observedAt'], spreadReportCutoff()]);
+    map.setLayoutProperty(id, 'visibility', reportsVisible ? 'visible' : 'none');
   });
   if (map.getLayer('lt-spread-selection')) map.setFilter('lt-spread-selection', ['==', ['get', 'cell'], selectedSpreadCell || '__none__']);
   const hud = $('#spread-hud');
@@ -407,6 +432,7 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
   renderSpreadCellDetail();
   if (!timelineOnly) renderSpreadLab();
   renderSpreadTimeline();
+  renderSpreadDisplayToggle();
 }
 
 function focusSpreadOverview() {
@@ -425,6 +451,7 @@ function selectSpreadView(view) {
   if (!spreadViewProfiles[view]) return;
   if (spreadSimulationPlaying && view !== 'scenario' && view !== 'signal') stopSpreadSimulation();
   spreadView = view;
+  spreadDisplayMode = 'mesh';
   selectedSpreadCell = null;
   selectedSpreadSourceCell = null;
   selectedSpreadValue = null;
@@ -440,6 +467,14 @@ function selectSpreadModel(modelId) {
   selectedSpreadValue = null;
   selectedSpreadLandFraction = null;
   updateSpreadMap();
+}
+
+function selectSpreadDisplayMode(mode) {
+  if (!['mesh', 'reports'].includes(mode) || mode === spreadDisplayMode) return;
+  if (mode === 'reports') stopSpreadSimulation();
+  spreadDisplayMode = mode;
+  if (mode === 'mesh') activeReportPopup?.remove();
+  updateSpreadMap({ timelineOnly: true });
 }
 
 function setSpreadTimelineYear(year, { timelineOnly = true } = {}) {
@@ -519,6 +554,7 @@ function toggleSpreadSimulation() {
   }
   if (spreadTimelineYear >= spreadTimelineEndYear || spreadTimelineYear < spreadPresentYear) spreadTimelineYear = spreadPresentYear;
   if (spreadView !== 'scenario') spreadView = 'scenario';
+  spreadDisplayMode = 'mesh';
   spreadSimulationPlaying = true;
   spreadSimulationLastTime = 0;
   spreadSimulationLastRender = 0;
@@ -1331,7 +1367,7 @@ function updateBenchmarkMap() {
     'lt-heatmap', 'lt-heatmap-preview', 'lt-uncertainty-fill', 'lt-uncertainty-line',
     'lt-interpolation-fill', 'lt-interpolation-line', 'lt-front-fill', 'lt-front-line', 'lt-front-glow',
     'lt-model-comparison-glow', 'lt-model-comparison-line', 'lt-corridor-glow', 'lt-corridors',
-    'lt-corridor-arrows', 'lt-reports', 'lt-report-hit', 'lt-reports-preview', 'lt-sites'
+    'lt-corridor-arrows', 'lt-reports', 'lt-report-hit', 'lt-reports-preview', 'lt-spread-reports', 'lt-spread-report-hit', 'lt-sites'
   ];
   if (visible || spreadActive()) {
     normalLayerIds.forEach((id) => { if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', 'none'); });
@@ -1640,6 +1676,18 @@ function addMapLayers() {
   map.addLayer({ id: 'lt-reports', type: 'circle', source: 'lt-reports', minzoom: 5.5, filter: observationFilter, paint: { 'circle-color': '#74d7ad', 'circle-radius': ['interpolate', ['linear'], ['zoom'], 5.5, 1.5, 8, 2.6, 11, 4.4], 'circle-stroke-color': '#bdebd2', 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 5.5, 0.35, 9, 0.7], 'circle-opacity': ['interpolate', ['linear'], ['zoom'], 5.5, 0.48, 9, 0.72, 11, 0.84] } });
   map.addLayer({ id: 'lt-report-hit', type: 'circle', source: 'lt-reports', minzoom: 5.5, filter: observationFilter, paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 5.5, 6, 8, 8, 11, 11], 'circle-opacity': 0.01, 'circle-color': '#ffffff' } });
   map.addLayer({ id: 'lt-reports-preview', type: 'circle', source: 'lt-reports-preview', filter: observationFilter, layout: { visibility: 'none' }, paint: { 'circle-color': '#9be7c5', 'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 0.65, 4.75, 1.2, 8, 3, 11, 4.8], 'circle-stroke-color': '#d0f4e1', 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, 0, 4.75, 0.25, 8, 0.55], 'circle-opacity': ['interpolate', ['linear'], ['zoom'], 2, 0.34, 4.75, 0.62, 8, 0.8] } });
+  map.addLayer({ id: 'lt-spread-reports', type: 'circle', source: 'lt-reports', filter: observationFilter, layout: { visibility: 'none' }, paint: {
+    'circle-color': '#d8f47d',
+    'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 1.15, 4, 1.75, 6, 2.8, 9, 4.6],
+    'circle-stroke-color': '#f0ffd0',
+    'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, .15, 6, .5, 9, .9],
+    'circle-opacity': ['interpolate', ['linear'], ['zoom'], 2, .5, 5, .72, 9, .9]
+  } });
+  map.addLayer({ id: 'lt-spread-report-hit', type: 'circle', source: 'lt-reports', filter: observationFilter, layout: { visibility: 'none' }, paint: {
+    'circle-color': '#ffffff',
+    'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 5, 5, 7, 9, 11],
+    'circle-opacity': .01
+  } });
   map.addLayer({ id: 'lt-sites', type: 'circle', source: 'lt-sites', paint: { 'circle-color': '#c8ff79', 'circle-radius': 6, 'circle-stroke-color': '#e8ffd2', 'circle-stroke-width': 1.5, 'circle-opacity': 0.9 } });
 
   map.on('click', 'lt-benchmark-explain-fill', (event) => {
@@ -1667,7 +1715,8 @@ function addMapLayers() {
   }));
   ['lt-spread-height', 'lt-spread-water'].forEach((layerId) => map.on('mouseleave', layerId, () => { map.getCanvas().style.cursor = ''; }));
 
-  map.on('click', 'lt-report-hit', async (event) => {
+  const openReportPopup = async (event) => {
+    if (!event.features?.length) return;
     const feature = event.features[0];
     const properties = feature.properties;
     const popup = document.createElement('div');
@@ -1721,7 +1770,8 @@ function addMapLayers() {
       actions.append(originalLink);
     }
     popup.append(actions);
-    new maplibregl.Popup({ closeButton: true, offset: 12, className: 'lt-popup', maxWidth: '410px' }).setLngLat(feature.geometry.coordinates).setDOMContent(popup).addTo(map);
+    activeReportPopup?.remove();
+    activeReportPopup = new maplibregl.Popup({ closeButton: true, offset: 12, className: 'lt-popup', maxWidth: '410px' }).setLngLat(feature.geometry.coordinates).setDOMContent(popup).addTo(map);
 
     try {
       const response = await fetch(`https://api.gbif.org/v1/occurrence/${properties.key}`);
@@ -1754,9 +1804,12 @@ function addMapLayers() {
       mediaFrame.className = 'report-media empty';
       mediaFrame.textContent = 'Image unavailable. Open the source report to view its media.';
     }
+  };
+  ['lt-report-hit', 'lt-spread-report-hit'].forEach((layerId) => {
+    map.on('click', layerId, openReportPopup);
+    map.on('mouseenter', layerId, () => { map.getCanvas().style.cursor = 'pointer'; });
+    map.on('mouseleave', layerId, () => { map.getCanvas().style.cursor = ''; });
   });
-  map.on('mouseenter', 'lt-report-hit', () => { map.getCanvas().style.cursor = 'pointer'; });
-  map.on('mouseleave', 'lt-report-hit', () => { map.getCanvas().style.cursor = ''; });
 }
 
 function setMapLayerVisibility(layer, visible) {
@@ -2239,6 +2292,7 @@ function setupInteractions() {
   $$('.section-tab').forEach((button) => button.addEventListener('click', () => switchSection(button.dataset.section)));
   $$('.topbar-section').forEach((button) => button.addEventListener('click', () => switchSection(button.dataset.section)));
   $$('[data-spread-view]').forEach((button) => button.addEventListener('click', () => selectSpreadView(button.dataset.spreadView)));
+  $$('[data-spread-display]').forEach((button) => button.addEventListener('click', () => selectSpreadDisplayMode(button.dataset.spreadDisplay)));
   $('#spread-grid-size')?.addEventListener('input', (event) => setSpreadGridSize(event.target.value));
   $('#spread-model-options')?.addEventListener('click', (event) => {
     const button = event.target.closest('[data-spread-model]');

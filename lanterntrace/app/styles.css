@@ -1058,3 +1058,16 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 
 /* Electron traffic-light safe area, without restoring an application header. */
 .electron-shell .spread-only #spread-panel { padding-top: 54px; }
+
+/* Top-right mesh / occurrence-report switch. */
+.spread-display-toggle { position: absolute; z-index: 8; top: 18px; right: 18px; display: flex; gap: 3px; padding: 4px; border: 1px solid rgba(121, 240, 196, .25); border-radius: 11px; background: rgba(3, 25, 22, .9); box-shadow: 0 10px 28px rgba(0, 0, 0, .28); backdrop-filter: blur(9px); }
+.spread-display-toggle button { display: flex; min-width: 91px; height: 34px; padding: 0 12px; align-items: center; justify-content: center; gap: 7px; border: 0; border-radius: 7px; background: transparent; color: #769f8f; font: 700 9px 'DM Mono', monospace; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; }
+.spread-display-toggle button:hover { color: #c9e5d8; background: rgba(121, 240, 196, .07); }
+.spread-display-toggle button.active { background: rgba(89, 196, 151, .18); color: #e9fff2; box-shadow: inset 0 0 0 1px rgba(126, 237, 190, .3); }
+.spread-display-toggle button[data-spread-display="reports"].active { background: rgba(216, 244, 125, .15); color: #e8f99d; box-shadow: inset 0 0 0 1px rgba(216, 244, 125, .36); }
+.spread-display-toggle span { font-size: 14px; line-height: 1; }
+
+@media (max-width: 720px) {
+  .spread-display-toggle { right: 10px; }
+  .spread-display-toggle button { min-width: 76px; padding-inline: 9px; }
+}
