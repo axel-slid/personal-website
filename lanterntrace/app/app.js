@@ -32,14 +32,17 @@ const spreadPresentYear = spreadHistory.metadata?.presentYear || 2026;
 const spreadTimelineEndYear = spreadLongHorizon.metadata?.endYear || 2056;
 let spreadTimelineYear = spreadPresentYear;
 let spreadSimulationPlaying = false;
+let spreadTimelineScrubbing = false;
 let spreadSimulationFrame;
 let spreadSimulationLastTime = 0;
 let spreadSimulationLastRender = 0;
+let spreadTimelineScrubTimer;
+let spreadTimelineLastScrubRender = 0;
 let selectedSpreadCell = null;
 let selectedSpreadSourceCell = null;
 let selectedSpreadValue = null;
 let selectedSpreadLandFraction = null;
-let spreadGridSize = 1;
+let spreadGridSize = .25;
 const spreadGridSizes = [.25, .5, .75, 1];
 const spreadCellIndices = new Map((spreadBundle.cells || []).map((cell, index) => [`${cell.r}:${cell.c}`, index]));
 
@@ -117,7 +120,6 @@ let timer;
 let animationLastFrame = 0;
 let lastReportStep = -1;
 let pendingSliderFrame;
-let pendingSpreadTimelineFrame;
 let pendingSliderReportTimer;
 let lastSliderReportUpdate = 0;
 let isTimelineScrubbing = false;
@@ -192,8 +194,13 @@ function spreadCellValue(cell, sourceIndex = spreadCellIndices.get(`${cell?.r}:$
   if (spreadView === 'climate') return cell.climate || 0;
   if (spreadView === 'geography') return cell.geography || 0;
   if (spreadTimelineYear <= spreadPresentYear) {
-    const observedYear = Math.max(spreadTimelineStartYear, Math.min(spreadPresentYear, Math.round(spreadTimelineYear)));
-    return spreadHistory.signals?.[String(observedYear)]?.[sourceIndex] ?? cell.signal ?? 0;
+    const observedYear = Math.max(spreadTimelineStartYear, Math.min(spreadPresentYear, spreadTimelineYear));
+    const lowerYear = Math.floor(observedYear);
+    const upperYear = Math.min(spreadPresentYear, Math.ceil(observedYear));
+    const blend = observedYear - lowerYear;
+    const lowerValue = spreadHistory.signals?.[String(lowerYear)]?.[sourceIndex] ?? cell.signal ?? 0;
+    const upperValue = spreadHistory.signals?.[String(upperYear)]?.[sourceIndex] ?? lowerValue;
+    return lowerValue + (upperValue - lowerValue) * blend;
   }
   const frames = spreadLongHorizon.models?.[selectedSpreadModelId];
   const years = spreadLongHorizon.metadata?.years || [];
@@ -306,7 +313,12 @@ function renderSpreadTimeline() {
   const dock = $('#spread-timeline-dock');
   dock?.style.setProperty('--spread-progress', `${progress * 100}%`);
   dock?.style.setProperty('--spread-observed-share', `${observedShare * 100}%`);
-  if ($('#spread-timeline-year')) $('#spread-timeline-year').textContent = spreadSimulationPlaying ? spreadTimelineYear.toFixed(1) : Math.round(spreadTimelineYear);
+  if ($('#spread-timeline-year')) {
+    const roundedYear = Math.round(spreadTimelineYear * 10) / 10;
+    $('#spread-timeline-year').textContent = spreadSimulationPlaying || spreadTimelineScrubbing || !Number.isInteger(roundedYear)
+      ? roundedYear.toFixed(1)
+      : roundedYear;
+  }
   const phase = spreadTimelinePhase();
   const phaseLabel = spreadSimulationPlaying
     ? `SIMULATING · ${spreadModel()?.name || 'MODEL'}`
@@ -318,6 +330,7 @@ function renderSpreadTimeline() {
   if ($('#spread-timeline-phase')) $('#spread-timeline-phase').textContent = phaseLabel;
   dock?.setAttribute('data-phase', phase);
   dock?.classList.toggle('playing', spreadSimulationPlaying);
+  dock?.classList.toggle('scrubbing', spreadTimelineScrubbing);
   const playButton = $('#spread-timeline-play');
   if (playButton) {
     playButton.setAttribute('aria-pressed', String(spreadSimulationPlaying));
@@ -433,6 +446,41 @@ function setSpreadTimelineYear(year, { timelineOnly = true } = {}) {
   spreadTimelineYear = nextYear;
   selectedSpreadValue = null;
   updateSpreadMap({ timelineOnly });
+}
+
+function beginSpreadTimelineScrub() {
+  stopSpreadSimulation();
+  spreadTimelineScrubbing = true;
+  spreadTimelineLastScrubRender = 0;
+  clearTimeout(spreadTimelineScrubTimer);
+  renderSpreadTimeline();
+}
+
+function scrubSpreadTimeline(year) {
+  if (!spreadTimelineScrubbing) beginSpreadTimelineScrub();
+  const nextYear = Math.max(spreadTimelineStartYear, Math.min(spreadTimelineEndYear, Number(year)));
+  if (!Number.isFinite(nextYear)) return;
+  spreadTimelineYear = nextYear;
+  selectedSpreadValue = null;
+  renderSpreadTimeline();
+  const now = performance.now();
+  const interval = spreadGridSize <= .25 ? 110 : spreadGridSize <= .5 ? 80 : 48;
+  const render = () => {
+    spreadTimelineLastScrubRender = performance.now();
+    updateSpreadMap({ timelineOnly: true });
+  };
+  clearTimeout(spreadTimelineScrubTimer);
+  if (now - spreadTimelineLastScrubRender >= interval) render();
+  else spreadTimelineScrubTimer = window.setTimeout(render, interval - (now - spreadTimelineLastScrubRender));
+}
+
+function finishSpreadTimelineScrub(year) {
+  clearTimeout(spreadTimelineScrubTimer);
+  const nextYear = Math.max(spreadTimelineStartYear, Math.min(spreadTimelineEndYear, Number(year)));
+  if (Number.isFinite(nextYear)) spreadTimelineYear = nextYear;
+  spreadTimelineScrubbing = false;
+  selectedSpreadValue = null;
+  updateSpreadMap({ timelineOnly: true });
 }
 
 function stopSpreadSimulation() {
@@ -2195,12 +2243,10 @@ function setupInteractions() {
     if (button) selectSpreadModel(button.dataset.spreadModel);
   });
   $('#spread-timeline-play')?.addEventListener('click', toggleSpreadSimulation);
-  $('#spread-timeline')?.addEventListener('pointerdown', stopSpreadSimulation);
-  $('#spread-timeline')?.addEventListener('input', (event) => {
-    const year = event.target.value;
-    cancelAnimationFrame(pendingSpreadTimelineFrame);
-    pendingSpreadTimelineFrame = requestAnimationFrame(() => setSpreadTimelineYear(year));
-  });
+  $('#spread-timeline')?.addEventListener('pointerdown', beginSpreadTimelineScrub);
+  $('#spread-timeline')?.addEventListener('input', (event) => scrubSpreadTimeline(event.target.value));
+  $('#spread-timeline')?.addEventListener('change', (event) => finishSpreadTimelineScrub(event.target.value));
+  $('#spread-timeline')?.addEventListener('pointercancel', (event) => finishSpreadTimelineScrub(event.target.value));
   $$('button[data-layer]').forEach((button) => button.addEventListener('click', () => { const layer = button.dataset.layer; layers[layer] = !layers[layer]; setMapLayerVisibility(layer, layers[layer]); syncLayerControls(); if (layer === 'corridors') startCorridorAnimation(); }));
   $$('input[data-layer]').forEach((input) => input.addEventListener('change', () => { layers[input.dataset.layer] = input.checked; setMapLayerVisibility(input.dataset.layer, input.checked); syncLayerControls(); }));
   const timeline = $('#timeline');
@@ -2324,6 +2370,7 @@ function setupInteractions() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  document.documentElement.classList.toggle('electron-shell', navigator.userAgent.includes('Electron'));
   if (physicsEmbedMode) {
     document.documentElement.classList.add('physics-embed');
     if (heroMapEmbedMode) document.documentElement.classList.add('hero-map-embed');
