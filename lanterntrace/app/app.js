@@ -975,7 +975,6 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
     if (map.getLayer('lt-climate-surface')) map.setPaintProperty('lt-climate-surface', 'raster-opacity', geographySurfaceVisible ? .62 : .9);
     if (map.getLayer('lt-geography-surface')) map.setLayoutProperty('lt-geography-surface', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
     if (map.getLayer('lt-geography-surface')) map.setPaintProperty('lt-geography-surface', 'raster-opacity', climateSurfaceVisible ? .5 : .78);
-    if (map.getLayer('lt-geography-imagery')) map.setLayoutProperty('lt-geography-imagery', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
     if (map.getLayer('lt-terrain-hillshade')) map.setLayoutProperty('lt-terrain-hillshade', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
     if (map.getLayer('lt-geography-contours')) map.setLayoutProperty('lt-geography-contours', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
     if (map.getSource('lt-terrain-dem')) map.setTerrain(geographySurfaceVisible ? { source: 'lt-terrain-dem', exaggeration: 3.8 } : null);
@@ -2246,12 +2245,6 @@ function addMapLayers() {
     url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json',
     tileSize: 256,
   });
-  map.addSource('lt-geography-imagery', {
-    type: 'raster',
-    tiles: ['https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}'],
-    tileSize: 256,
-    attribution: 'U.S. Geological Survey, The National Map',
-  });
   map.addSource('lt-geography-contours', { type: 'geojson', data: geographyContourData() });
   map.addSource('lt-us-states', { type: 'geojson', data: './generated/us-states.geojson' });
   map.addSource('lt-us-state-labels', { type: 'geojson', data: './generated/us-state-labels.geojson' });
@@ -2270,14 +2263,6 @@ function addMapLayers() {
     'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 2, 7, 6, 12, 10, 19],
     'heatmap-opacity': 0.42,
     'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(9, 41, 43, 0)', 0.12, 'rgba(20, 112, 102, .18)', 0.32, 'rgba(32, 169, 125, .34)', 0.58, 'rgba(81, 211, 148, .48)', 0.82, 'rgba(171, 237, 116, .58)', 1, 'rgba(210, 247, 151, .68)']
-  } });
-  map.addLayer({ id: 'lt-geography-imagery', type: 'raster', source: 'lt-geography-imagery', layout: { visibility: 'none' }, paint: {
-    'raster-opacity': .52,
-    'raster-saturation': -.42,
-    'raster-contrast': .3,
-    'raster-brightness-min': .02,
-    'raster-brightness-max': .5,
-    'raster-fade-duration': 0,
   } });
   if (climateSurface) map.addLayer({ id: 'lt-climate-surface', type: 'raster', source: 'lt-climate-surface', layout: { visibility: 'none' }, paint: {
     'raster-opacity': .9, 'raster-resampling': 'linear', 'raster-fade-duration': 0
@@ -2853,7 +2838,6 @@ function initMap() {
     const voxelMode = meshMode && !climateSurfaceMode && !geographySurfaceMode;
     if (map.getLayer('lt-climate-surface')) map.setLayoutProperty('lt-climate-surface', 'visibility', climateSurfaceMode ? 'visible' : 'none');
     if (map.getLayer('lt-geography-surface')) map.setLayoutProperty('lt-geography-surface', 'visibility', geographySurfaceMode ? 'visible' : 'none');
-    if (map.getLayer('lt-geography-imagery')) map.setLayoutProperty('lt-geography-imagery', 'visibility', geographySurfaceMode ? 'visible' : 'none');
     if (map.getLayer('lt-terrain-hillshade')) map.setLayoutProperty('lt-terrain-hillshade', 'visibility', geographySurfaceMode ? 'visible' : 'none');
     if (map.getLayer('lt-geography-contours')) map.setLayoutProperty('lt-geography-contours', 'visibility', geographySurfaceMode ? 'visible' : 'none');
     if (map.getLayer('lt-spread-height')) map.setLayoutProperty('lt-spread-height', 'visibility', !active && voxelMode ? 'visible' : 'none');
