@@ -33,6 +33,8 @@ let physicsAnimationFrame;
 let physicsAnimationLast = 0;
 let spreadView = 'scenario';
 let spreadDisplayMode = 'mesh';
+let spreadClimateEnabled = false;
+let spreadGeographyEnabled = false;
 let selectedSpreadModelId = 'coupled';
 let spreadWindEnabled = false;
 let windAnimationFrame;
@@ -732,11 +734,15 @@ function renderSpreadBenchmark() {
 
 function renderSpreadLab() {
   $$('[data-spread-view]').forEach((button) => {
-    const active = button.dataset.spreadView === spreadView;
+    const active = button.dataset.spreadView === 'climate'
+      ? spreadClimateEnabled
+      : button.dataset.spreadView === 'geography'
+        ? spreadGeographyEnabled
+        : button.dataset.spreadView === spreadView && !spreadClimateEnabled && !spreadGeographyEnabled;
     button.classList.toggle('active', active);
     button.setAttribute('aria-pressed', String(active));
   });
-  $('#spread-scenario-controls')?.classList.toggle('hidden', spreadView !== 'scenario');
+  $('#spread-scenario-controls')?.classList.toggle('hidden', spreadView !== 'scenario' || spreadClimateEnabled || spreadGeographyEnabled);
   const modelOptions = $('#spread-model-options');
   if (modelOptions) {
     modelOptions.innerHTML = (spreadBundle.models || []).map((sourceModel) => {
@@ -889,8 +895,8 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
   const visible = spreadActive();
   const meshVisible = visible && spreadDisplayMode === 'mesh';
   const reportsVisible = visible && spreadDisplayMode === 'reports';
-  const climateSurfaceVisible = meshVisible && spreadView === 'climate';
-  const geographySurfaceVisible = meshVisible && spreadView === 'geography';
+  const climateSurfaceVisible = meshVisible && spreadClimateEnabled;
+  const geographySurfaceVisible = meshVisible && spreadGeographyEnabled;
   const voxelVisible = meshVisible && !climateSurfaceVisible && !geographySurfaceVisible;
   map.getSource('lt-spread-source').setData(spreadGridData());
   if (!timelineOnly) {
@@ -904,6 +910,8 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
     });
     if (map.getLayer('lt-climate-surface')) map.setLayoutProperty('lt-climate-surface', 'visibility', climateSurfaceVisible ? 'visible' : 'none');
     if (map.getLayer('lt-geography-surface')) map.setLayoutProperty('lt-geography-surface', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
+    if (map.getLayer('lt-terrain-hillshade')) map.setLayoutProperty('lt-terrain-hillshade', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
+    if (map.getSource('lt-terrain-dem')) map.setTerrain(geographySurfaceVisible ? { source: 'lt-terrain-dem', exaggeration: 1.55 } : null);
   }
   ['lt-spread-reports', 'lt-spread-report-hit'].forEach((id) => {
     if (!map.getLayer(id)) return;
@@ -1007,14 +1015,27 @@ function runSpreadOpeningSequence() {
 
 function selectSpreadView(view) {
   if (!spreadViewProfiles[view]) return;
-  if (spreadSimulationPlaying && view !== 'scenario' && view !== 'signal') stopSpreadSimulation();
-  spreadView = view;
+  if (view === 'climate' || view === 'geography') {
+    if (spreadSimulationPlaying) stopSpreadSimulation();
+    if (view === 'climate') spreadClimateEnabled = !spreadClimateEnabled;
+    if (view === 'geography') spreadGeographyEnabled = !spreadGeographyEnabled;
+    if (spreadClimateEnabled || spreadGeographyEnabled) {
+      spreadView = spreadGeographyEnabled ? 'geography' : 'climate';
+    } else {
+      spreadView = 'scenario';
+    }
+  } else {
+    spreadView = view;
+    spreadClimateEnabled = false;
+    spreadGeographyEnabled = false;
+  }
   spreadDisplayMode = 'mesh';
   selectedSpreadCell = null;
   selectedSpreadSourceCell = null;
   selectedSpreadValue = null;
   selectedSpreadLandFraction = null;
   updateSpreadMap();
+  map?.easeTo({ pitch: spreadGeographyEnabled ? 42 : 12, duration: 620, essential: true });
 }
 
 function selectSpreadModel(modelId) {
@@ -1116,6 +1137,8 @@ function toggleSpreadSimulation() {
   }
   if (spreadTimelineYear >= spreadTimelineEndYear || spreadTimelineYear < spreadPresentYear) spreadTimelineYear = spreadPresentYear;
   if (spreadView !== 'scenario') spreadView = 'scenario';
+  spreadClimateEnabled = false;
+  spreadGeographyEnabled = false;
   spreadDisplayMode = 'mesh';
   spreadSimulationPlaying = true;
   spreadSimulationLastTime = 0;
@@ -2145,6 +2168,11 @@ function addMapLayers() {
   const geographySurface = factorSurfaceRaster('geography');
   if (climateSurface) map.addSource('lt-climate-surface', { type: 'image', ...climateSurface });
   if (geographySurface) map.addSource('lt-geography-surface', { type: 'image', ...geographySurface });
+  map.addSource('lt-terrain-dem', {
+    type: 'raster-dem',
+    url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json',
+    tileSize: 256,
+  });
   map.addSource('lt-us-states', { type: 'geojson', data: './generated/us-states.geojson' });
   map.addSource('lt-us-state-labels', { type: 'geojson', data: './generated/us-state-labels.geojson' });
   map.addSource('lt-us-cities', { type: 'geojson', data: cityContextData() });
@@ -2167,7 +2195,14 @@ function addMapLayers() {
     'raster-opacity': .9, 'raster-resampling': 'linear', 'raster-fade-duration': 0
   } });
   if (geographySurface) map.addLayer({ id: 'lt-geography-surface', type: 'raster', source: 'lt-geography-surface', layout: { visibility: 'none' }, paint: {
-    'raster-opacity': .92, 'raster-resampling': 'linear', 'raster-fade-duration': 0
+    'raster-opacity': .38, 'raster-resampling': 'linear', 'raster-fade-duration': 0
+  } });
+  map.addLayer({ id: 'lt-terrain-hillshade', type: 'hillshade', source: 'lt-terrain-dem', layout: { visibility: 'none' }, paint: {
+    'hillshade-exaggeration': .62,
+    'hillshade-shadow-color': '#071410',
+    'hillshade-highlight-color': '#d8f1c4',
+    'hillshade-accent-color': '#315f51',
+    'hillshade-illumination-direction': 318,
   } });
   map.addLayer({ id: 'lt-spread-floor', type: 'fill', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
     'fill-color': spreadColorExpression(), 'fill-opacity': .82, 'fill-antialias': false
@@ -2720,11 +2755,12 @@ function initMap() {
     if (!spreadActive()) return;
     const meshMode = spreadDisplayMode === 'mesh';
     const reportsMode = spreadDisplayMode === 'reports';
-    const climateSurfaceMode = meshMode && spreadView === 'climate';
-    const geographySurfaceMode = meshMode && spreadView === 'geography';
+    const climateSurfaceMode = meshMode && spreadClimateEnabled;
+    const geographySurfaceMode = meshMode && spreadGeographyEnabled;
     const voxelMode = meshMode && !climateSurfaceMode && !geographySurfaceMode;
     if (map.getLayer('lt-climate-surface')) map.setLayoutProperty('lt-climate-surface', 'visibility', climateSurfaceMode ? 'visible' : 'none');
     if (map.getLayer('lt-geography-surface')) map.setLayoutProperty('lt-geography-surface', 'visibility', geographySurfaceMode ? 'visible' : 'none');
+    if (map.getLayer('lt-terrain-hillshade')) map.setLayoutProperty('lt-terrain-hillshade', 'visibility', geographySurfaceMode ? 'visible' : 'none');
     if (map.getLayer('lt-spread-height')) map.setLayoutProperty('lt-spread-height', 'visibility', !active && voxelMode ? 'visible' : 'none');
     if (map.getLayer('lt-spread-floor')) map.setLayoutProperty('lt-spread-floor', 'visibility', voxelMode ? 'visible' : 'none');
     ['lt-spread-water', 'lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
