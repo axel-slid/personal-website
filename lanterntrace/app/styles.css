@@ -1123,6 +1123,34 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .spread-only .starfield .star-1 { background: #d8c8f1; filter: drop-shadow(0 0 3px rgba(168, 129, 219, .7)); }
 .spread-only .starfield .star-2 { background: #fff2c4; filter: drop-shadow(0 0 3px rgba(255, 220, 135, .68)); }
 
+/* At easter-egg zooms MapLibre exposes its internal globe shells. Cover only that
+   range with NASA's solid full-disk Earth, aligned to the live globe contour. */
+.earth-easter-egg {
+  position: absolute;
+  z-index: 4;
+  top: var(--globe-top, 0);
+  left: var(--globe-left, 0);
+  width: var(--globe-size, 0);
+  height: var(--globe-size, 0);
+  overflow: hidden;
+  border: 1px solid rgba(142, 220, 238, .3);
+  border-radius: 50%;
+  background-color: #010305;
+  background-image:
+    radial-gradient(circle at 31% 22%, rgba(211, 237, 255, .12), transparent 34%),
+    radial-gradient(circle at 74% 78%, transparent 42%, rgba(0, 0, 0, .68) 91%),
+    url('https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia18/pia18033/PIA18033.jpg/jcr:content/renditions/cq5dam.web.1280.1280.jpeg');
+  background-position: center, center, center;
+  background-repeat: no-repeat;
+  background-size: cover, cover, 126% 126%;
+  box-shadow: 0 0 5px rgba(159, 232, 242, .3), 0 0 20px rgba(69, 142, 192, .17), inset -8px -9px 20px rgba(0, 0, 0, .42);
+  opacity: var(--moon-progress, 0);
+  pointer-events: none;
+  transform: scale(var(--earth-scale, 1));
+  transition: opacity .1s linear, transform .1s linear;
+  will-change: opacity, transform;
+}
+
 /* Far-zoom lunar easter egg, using NASA's LRO global color mosaic. */
 .moon-easter-egg {
   position: absolute;
