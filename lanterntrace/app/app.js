@@ -11,6 +11,7 @@ const windClimatology = window.LanternTraceWindClimatology || { metadata: {}, la
 const spreadLongHorizon = window.LanternTraceSpreadLongHorizon || { metadata: {}, models: {} };
 const spreadGridPyramid = window.LanternTraceSpreadGridPyramid || { metadata: {}, levels: {} };
 const spreadPhysicsFrameCache = new Map();
+const farmImpactCurveCache = new Map();
 const embedMode = new URLSearchParams(window.location.search).get('embed');
 const physicsEmbedMode = embedMode === 'physics' || embedMode === 'hero';
 const heroMapEmbedMode = embedMode === 'hero';
@@ -45,6 +46,7 @@ let spreadTimelineScrubbing = false;
 let spreadSimulationFrame;
 let spreadSimulationLastTime = 0;
 let spreadSimulationLastRender = 0;
+let spreadIntroFrame;
 let spreadTimelineScrubTimer;
 let spreadTimelineLastScrubRender = 0;
 let selectedSpreadCell = null;
@@ -708,15 +710,22 @@ function renderFarmImpactFigure() {
   if (!chart) return;
   const expectedBenchmark = 42.6;
   const worstBenchmark = 99.1;
-  const years = Array.from({ length: spreadTimelineEndYear - spreadTimelineStartYear + 1 }, (_, index) => spreadTimelineStartYear + index);
-  const exposure = years.map((year) => farmImpactExposure(year));
-  const cumulativeExpected = [0];
-  const cumulativeWorst = [0];
-  for (let index = 1; index < years.length; index += 1) {
-    const annualizedExposure = (exposure[index - 1] + exposure[index]) / 2;
-    cumulativeExpected.push(cumulativeExpected[index - 1] + annualizedExposure * expectedBenchmark);
-    cumulativeWorst.push(cumulativeWorst[index - 1] + annualizedExposure * worstBenchmark);
+  const cacheKey = `${spreadGridSize}:${selectedSpreadModelId}:${spreadWindEnabled ? 'wind' : 'still'}`;
+  let curve = farmImpactCurveCache.get(cacheKey);
+  if (!curve) {
+    const years = Array.from({ length: spreadTimelineEndYear - spreadTimelineStartYear + 1 }, (_, index) => spreadTimelineStartYear + index);
+    const exposure = years.map((year) => farmImpactExposure(year));
+    const cumulativeExpected = [0];
+    const cumulativeWorst = [0];
+    for (let index = 1; index < years.length; index += 1) {
+      const annualizedExposure = (exposure[index - 1] + exposure[index]) / 2;
+      cumulativeExpected.push(cumulativeExpected[index - 1] + annualizedExposure * expectedBenchmark);
+      cumulativeWorst.push(cumulativeWorst[index - 1] + annualizedExposure * worstBenchmark);
+    }
+    curve = { years, cumulativeExpected, cumulativeWorst };
+    farmImpactCurveCache.set(cacheKey, curve);
   }
+  const { years, cumulativeExpected, cumulativeWorst } = curve;
   const x = (year) => 2 + ((year - spreadTimelineStartYear) / (spreadTimelineEndYear - spreadTimelineStartYear)) * 240;
   const chartMaximum = Math.max(cumulativeWorst.at(-1), 1);
   const y = (millions) => 54 - Math.max(0, Math.min(1, millions / chartMaximum)) * 48;
@@ -758,14 +767,16 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
   const meshVisible = visible && spreadDisplayMode === 'mesh';
   const reportsVisible = visible && spreadDisplayMode === 'reports';
   map.getSource('lt-spread-source').setData(spreadGridData());
-  if (map.getLayer('lt-spread-height')) {
-    map.setLayoutProperty('lt-spread-height', 'visibility', meshVisible ? 'visible' : 'none');
-    map.setPaintProperty('lt-spread-height', 'fill-extrusion-color', spreadColorExpression());
+  if (!timelineOnly) {
+    if (map.getLayer('lt-spread-height')) {
+      map.setLayoutProperty('lt-spread-height', 'visibility', meshVisible ? 'visible' : 'none');
+      map.setPaintProperty('lt-spread-height', 'fill-extrusion-color', spreadColorExpression());
+    }
+    if (map.getLayer('lt-spread-floor')) map.setPaintProperty('lt-spread-floor', 'fill-color', spreadColorExpression());
+    ['lt-spread-floor', 'lt-spread-water', 'lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', meshVisible ? 'visible' : 'none');
+    });
   }
-  if (map.getLayer('lt-spread-floor')) map.setPaintProperty('lt-spread-floor', 'fill-color', spreadColorExpression());
-  ['lt-spread-floor', 'lt-spread-water', 'lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
-    if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', meshVisible ? 'visible' : 'none');
-  });
   ['lt-spread-reports', 'lt-spread-report-hit'].forEach((id) => {
     if (!map.getLayer(id)) return;
     map.setFilter(id, ['<=', ['get', 'observedAt'], spreadReportCutoff()]);
@@ -810,6 +821,60 @@ function focusSpreadOverview() {
     padding: { top: 20, right: 20, bottom: 102, left: sidebarWidth + 20 },
     duration: 700,
   });
+}
+
+function runSpreadOpeningSequence() {
+  const loader = $('#spread-loader');
+  if (physicsEmbedMode || !map || !spreadActive()) {
+    if (loader) loader.hidden = true;
+    return;
+  }
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  spreadTimelineYear = spreadTimelineStartYear;
+  updateSpreadMap({ timelineOnly: true });
+  const sidebarWidth = $('.spread-only .sidebar')?.getBoundingClientRect().width || 0;
+  map.stop();
+  map.jumpTo({
+    center: [-108, 39], zoom: reducedMotion ? 1.85 : .55, pitch: 0, bearing: -12,
+    padding: { top: 20, right: 20, bottom: 102, left: sidebarWidth + 20 },
+  });
+  loader?.classList.add('ready');
+  window.setTimeout(() => {
+    loader?.classList.add('departing');
+    if (reducedMotion) {
+      spreadTimelineYear = spreadPresentYear;
+      focusSpreadOverview();
+      updateSpreadMap({ timelineOnly: true });
+      return;
+    }
+    map.easeTo({
+      center: [-77.3, 40.7], zoom: 3.15, pitch: 18, bearing: -9,
+      padding: { top: 24, right: 28, bottom: 106, left: sidebarWidth + 22 },
+      duration: 3600,
+      easing: (value) => 1 - Math.pow(1 - value, 4),
+      essential: true,
+    });
+    const start = performance.now();
+    let lastRender = 0;
+    const duration = 3900;
+    const grow = (timestamp) => {
+      const progress = Math.min(1, (timestamp - start) / duration);
+      const eased = progress * progress * (3 - 2 * progress);
+      spreadTimelineYear = spreadTimelineStartYear + (spreadPresentYear - spreadTimelineStartYear) * eased;
+      if (timestamp - lastRender >= 48 || progress >= 1) {
+        lastRender = timestamp;
+        updateSpreadMap({ timelineOnly: true });
+      } else {
+        renderSpreadTimeline();
+      }
+      if (progress < 1) spreadIntroFrame = requestAnimationFrame(grow);
+      else {
+        spreadTimelineYear = spreadPresentYear;
+        updateSpreadMap({ timelineOnly: true });
+      }
+    };
+    spreadIntroFrame = requestAnimationFrame(grow);
+  }, reducedMotion ? 80 : 520);
 }
 
 function selectSpreadView(view) {
@@ -2384,7 +2449,8 @@ function initMap() {
     renderBenchmarkLab();
     updateBenchmarkMap();
     if (spreadActive()) {
-      focusSpreadOverview();
+      if (physicsEmbedMode) focusSpreadOverview();
+      else runSpreadOpeningSequence();
       startWindAnimation();
     }
     if (physicsEmbedMode) {
@@ -2856,6 +2922,7 @@ document.addEventListener('DOMContentLoaded', () => {
     benchmarkComparisonEnabled = false;
     physicsViewEnabled = true;
     physicsDisplayMode = 'height';
+    $('#spread-loader')?.setAttribute('hidden', '');
   }
   const count = observationPoints.length.toLocaleString();
   const generated = observationMetadata.generatedAt ? new Date(observationMetadata.generatedAt).toLocaleDateString() : 'unavailable';

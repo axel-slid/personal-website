@@ -3,6 +3,19 @@
 :root { --navy: #071326; --navy-2: #0a1d39; --panel: rgba(8, 28, 57, .91); --line: rgba(143, 182, 226, .2); --muted: #8ea5c3; --white: #f3f7fa; --cyan: #63e4e8; --coral: #ff766a; --violet: #9267ff; --orange: #f59b47; --lime: #b7f36e; }
 * { box-sizing: border-box; }
 html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: var(--navy); color: var(--white); font-family: Manrope, sans-serif; }
+.spread-loader { position: fixed; z-index: 100; inset: 0; display: grid; place-content: center; justify-items: center; gap: 18px; background: radial-gradient(circle at 50% 45%, rgba(18, 72, 57, .64), transparent 32%), linear-gradient(145deg, #010908, #031b18 56%, #010609); opacity: 1; transition: opacity .8s cubic-bezier(.4, 0, .2, 1), visibility .8s; }
+.spread-loader[hidden] { display: none; }
+.spread-loader.departing { visibility: hidden; opacity: 0; pointer-events: none; }
+.spread-loader-insect { position: relative; width: min(520px, 72vw); aspect-ratio: 1.55; filter: drop-shadow(0 0 26px rgba(107, 232, 182, .2)); animation: loader-breathe 2.1s ease-in-out infinite; }
+.spread-loader-insect > img, .spread-loader-insect > div, .spread-loader-insect > div img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.spread-loader-insect > img { filter: grayscale(1) brightness(.28) sepia(.25) hue-rotate(90deg); opacity: .7; }
+.spread-loader-insect > div { overflow: hidden; clip-path: inset(100% 0 0); animation: loader-fill 3s cubic-bezier(.33, .7, .3, 1) infinite; filter: saturate(1.15) brightness(1.06); }
+.spread-loader.ready .spread-loader-insect > div { clip-path: inset(0); animation: none; transition: clip-path .45s ease-out; }
+.spread-loader span { color: #9cd9bf; font: 700 9px 'DM Mono', monospace; letter-spacing: .2em; animation: loader-text 1.5s ease-in-out infinite; }
+@keyframes loader-fill { 0% { clip-path: inset(100% 0 0); } 72%, 100% { clip-path: inset(8% 0 0); } }
+@keyframes loader-breathe { 0%, 100% { transform: scale(.985); } 50% { transform: scale(1.015); } }
+@keyframes loader-text { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .spread-loader-insect, .spread-loader-insect > div, .spread-loader span { animation: none; } }
 button, input { font: inherit; }
 button { color: inherit; cursor: pointer; }
 .app-shell { display: flex; flex-direction: column; height: 100vh; width: 100vw; background: #071326; }
@@ -892,7 +905,11 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .physics-embed .physics-hud { left: 16px; bottom: 18px; width: min(420px, calc(100% - 32px)); }
 .physics-embed .map-attribution { right: 12px; bottom: 8px; }
 .physics-embed .map-state { top: 18px; }
-.hero-map-embed .physics-hud { display: none !important; }
+.hero-map-embed .physics-hud,
+.hero-map-embed .farm-impact-figure,
+.hero-map-embed .timeline-dock,
+.hero-map-embed .spread-timeline-dock,
+.hero-map-embed .spread-loader { display: none !important; }
 #scenario-lab-panel .model-rank { justify-content: center; }
 #scenario-lab-panel .model-score { display: none; }
 
@@ -1087,7 +1104,7 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .wind-legend small { color: #668f80; font: 500 6px 'DM Mono', monospace; }
 
 /* Published farm-loss scenarios, deliberately separate from model output. */
-.farm-impact-figure { position: absolute; z-index: 12; bottom: 112px; left: 18px; width: 390px; margin: 0; padding: 0 6px 2px; border: 0; background: transparent; color: #a7cbbb; filter: drop-shadow(0 3px 5px rgba(0, 0, 0, .72)); }
+.farm-impact-figure { position: absolute; z-index: 12; bottom: 112px; left: 18px; width: 342px; margin: 0; padding: 0 6px 2px; border: 0; background: transparent; color: #a7cbbb; filter: drop-shadow(0 3px 5px rgba(0, 0, 0, .72)); }
 .farm-impact-figure output { display: block; margin: 0 0 2px; color: #f3ffd8; font: 700 24px 'Barlow Condensed', sans-serif; letter-spacing: .02em; }
 .farm-impact-figure svg { display: block; width: 100%; height: 132px; overflow: visible; }
 .farm-impact-grid { fill: none; stroke: rgba(132, 185, 161, .14); stroke-width: .7; }
@@ -1101,7 +1118,7 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .spread-only #spread-panel { height: calc(100% - 232px); max-height: calc(100% - 232px); margin-bottom: 232px; flex: 0 0 calc(100% - 232px); overflow-y: auto; }
 
 @media (max-width: 920px) {
-  .farm-impact-figure { left: 12px; width: 330px; }
+  .farm-impact-figure { left: 12px; width: 306px; }
 }
 
 @media (max-width: 720px) {
