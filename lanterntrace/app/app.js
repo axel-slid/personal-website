@@ -909,9 +909,11 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
       if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', voxelVisible ? 'visible' : 'none');
     });
     if (map.getLayer('lt-climate-surface')) map.setLayoutProperty('lt-climate-surface', 'visibility', climateSurfaceVisible ? 'visible' : 'none');
+    if (map.getLayer('lt-climate-surface')) map.setPaintProperty('lt-climate-surface', 'raster-opacity', geographySurfaceVisible ? .7 : .9);
     if (map.getLayer('lt-geography-surface')) map.setLayoutProperty('lt-geography-surface', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
+    if (map.getLayer('lt-geography-imagery')) map.setLayoutProperty('lt-geography-imagery', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
     if (map.getLayer('lt-terrain-hillshade')) map.setLayoutProperty('lt-terrain-hillshade', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
-    if (map.getSource('lt-terrain-dem')) map.setTerrain(geographySurfaceVisible ? { source: 'lt-terrain-dem', exaggeration: 1.55 } : null);
+    if (map.getSource('lt-terrain-dem')) map.setTerrain(geographySurfaceVisible ? { source: 'lt-terrain-dem', exaggeration: 3.8 } : null);
   }
   ['lt-spread-reports', 'lt-spread-report-hit'].forEach((id) => {
     if (!map.getLayer(id)) return;
@@ -1035,7 +1037,13 @@ function selectSpreadView(view) {
   selectedSpreadValue = null;
   selectedSpreadLandFraction = null;
   updateSpreadMap();
-  map?.easeTo({ pitch: spreadGeographyEnabled ? 42 : 12, duration: 620, essential: true });
+  map?.easeTo({
+    pitch: spreadGeographyEnabled ? 56 : 12,
+    bearing: spreadGeographyEnabled ? -8 : 0,
+    zoom: spreadGeographyEnabled ? Math.max(map.getZoom(), 4.05) : map.getZoom(),
+    duration: 820,
+    essential: true,
+  });
 }
 
 function selectSpreadModel(modelId) {
@@ -2173,6 +2181,12 @@ function addMapLayers() {
     url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json',
     tileSize: 256,
   });
+  map.addSource('lt-geography-imagery', {
+    type: 'raster',
+    tiles: ['https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}'],
+    tileSize: 256,
+    attribution: 'U.S. Geological Survey, The National Map',
+  });
   map.addSource('lt-us-states', { type: 'geojson', data: './generated/us-states.geojson' });
   map.addSource('lt-us-state-labels', { type: 'geojson', data: './generated/us-state-labels.geojson' });
   map.addSource('lt-us-cities', { type: 'geojson', data: cityContextData() });
@@ -2191,17 +2205,25 @@ function addMapLayers() {
     'heatmap-opacity': 0.42,
     'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(9, 41, 43, 0)', 0.12, 'rgba(20, 112, 102, .18)', 0.32, 'rgba(32, 169, 125, .34)', 0.58, 'rgba(81, 211, 148, .48)', 0.82, 'rgba(171, 237, 116, .58)', 1, 'rgba(210, 247, 151, .68)']
   } });
+  map.addLayer({ id: 'lt-geography-imagery', type: 'raster', source: 'lt-geography-imagery', layout: { visibility: 'none' }, paint: {
+    'raster-opacity': .68,
+    'raster-saturation': -.18,
+    'raster-contrast': .22,
+    'raster-brightness-min': .02,
+    'raster-brightness-max': .62,
+    'raster-fade-duration': 0,
+  } });
   if (climateSurface) map.addLayer({ id: 'lt-climate-surface', type: 'raster', source: 'lt-climate-surface', layout: { visibility: 'none' }, paint: {
     'raster-opacity': .9, 'raster-resampling': 'linear', 'raster-fade-duration': 0
   } });
   if (geographySurface) map.addLayer({ id: 'lt-geography-surface', type: 'raster', source: 'lt-geography-surface', layout: { visibility: 'none' }, paint: {
-    'raster-opacity': .38, 'raster-resampling': 'linear', 'raster-fade-duration': 0
+    'raster-opacity': .16, 'raster-resampling': 'linear', 'raster-fade-duration': 0
   } });
   map.addLayer({ id: 'lt-terrain-hillshade', type: 'hillshade', source: 'lt-terrain-dem', layout: { visibility: 'none' }, paint: {
-    'hillshade-exaggeration': .62,
-    'hillshade-shadow-color': '#071410',
-    'hillshade-highlight-color': '#d8f1c4',
-    'hillshade-accent-color': '#315f51',
+    'hillshade-exaggeration': .88,
+    'hillshade-shadow-color': '#020805',
+    'hillshade-highlight-color': '#efffd4',
+    'hillshade-accent-color': '#244d3e',
     'hillshade-illumination-direction': 318,
   } });
   map.addLayer({ id: 'lt-spread-floor', type: 'fill', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
@@ -2760,6 +2782,7 @@ function initMap() {
     const voxelMode = meshMode && !climateSurfaceMode && !geographySurfaceMode;
     if (map.getLayer('lt-climate-surface')) map.setLayoutProperty('lt-climate-surface', 'visibility', climateSurfaceMode ? 'visible' : 'none');
     if (map.getLayer('lt-geography-surface')) map.setLayoutProperty('lt-geography-surface', 'visibility', geographySurfaceMode ? 'visible' : 'none');
+    if (map.getLayer('lt-geography-imagery')) map.setLayoutProperty('lt-geography-imagery', 'visibility', geographySurfaceMode ? 'visible' : 'none');
     if (map.getLayer('lt-terrain-hillshade')) map.setLayoutProperty('lt-terrain-hillshade', 'visibility', geographySurfaceMode ? 'visible' : 'none');
     if (map.getLayer('lt-spread-height')) map.setLayoutProperty('lt-spread-height', 'visibility', !active && voxelMode ? 'visible' : 'none');
     if (map.getLayer('lt-spread-floor')) map.setLayoutProperty('lt-spread-floor', 'visibility', voxelMode ? 'visible' : 'none');
