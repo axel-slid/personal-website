@@ -2036,6 +2036,7 @@ function addMapLayers() {
   map.addSource('lt-physics-vectors', { type: 'geojson', data: physicsVectorData() });
   map.addSource('lt-spread-source', { type: 'geojson', data: spreadGridData() });
   map.addSource('lt-us-states', { type: 'geojson', data: './generated/us-states.geojson' });
+  map.addSource('lt-us-state-labels', { type: 'geojson', data: './generated/us-state-labels.geojson' });
   map.addSource('lt-us-cities', { type: 'geojson', data: cityContextData() });
 
   map.addLayer({ id: 'lt-heatmap', type: 'heatmap', source: 'lt-reports', maxzoom: 6.5, filter: observationFilter, paint: {
@@ -2155,7 +2156,7 @@ function addMapLayers() {
     'line-width': ['interpolate', ['linear'], ['zoom'], 2.45, .45, 5, .8, 8, 1.35],
     'line-opacity': ['interpolate', ['linear'], ['zoom'], 2.45, .24, 4, .46, 7, .68]
   } });
-  map.addLayer({ id: 'lt-state-labels', type: 'symbol', source: 'lt-us-states', minzoom: 3.05, maxzoom: 6.8, layout: {
+  map.addLayer({ id: 'lt-state-labels', type: 'symbol', source: 'lt-us-state-labels', minzoom: 3.05, maxzoom: 6.8, layout: {
     'text-field': ['get', 'STUSPS'], 'text-font': ['Open Sans Semibold'],
     'text-size': ['interpolate', ['linear'], ['zoom'], 3.05, 8, 5, 10.5, 6.8, 12],
     'text-letter-spacing': .12, 'text-allow-overlap': false, 'text-ignore-placement': false
