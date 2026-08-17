@@ -72,6 +72,7 @@
         <a href="#projects">Side Projects</a>
         <a href="#education">Education</a>
         <a href="#experience">Experience</a>
+        <a href="#misc">Misc.</a>
         <a href="resume.pdf" target="_blank" rel="noreferrer">CV</a>
       </nav>
     </div>
@@ -323,12 +324,62 @@
         </div>
       </section>
 
+      <section id="misc" class="page-section">
+        <h2>Misc.</h2>
+        <p class="misc-intro">
+          <button class="research-tools-link" type="button" data-research-tools-open aria-haspopup="dialog">
+            Research Software Tools <span aria-hidden="true">&rarr;</span>
+          </button>
+        </p>
+      </section>
+
       <footer>
         <span>© <span id="year">2026</span> Alex Dils.</span>
         <a href="#about-me">Back to top ↑</a>
       </footer>
     </main>
   </div>
+
+  <dialog class="research-tools-dialog" data-research-tools-dialog aria-labelledby="research-tools-title">
+    <div class="research-tools-modal">
+      <div class="research-tools-header">
+        <div>
+          <p class="research-tools-eyebrow">Research use only</p>
+          <h2 id="research-tools-title">Research Software Tools</h2>
+          <p>Paste a command into Terminal to download and install the selected tool.</p>
+        </div>
+        <button class="research-tools-close" type="button" data-research-tools-close aria-label="Close research software tools">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="research-tool-list">
+        <article class="research-tool-card">
+          <div class="research-tool-copy">
+            <h3>CT-PET Viewer</h3>
+            <p>Inspect co-registered CT, PET, and segmentation volumes in a local review workstation.</p>
+          </div>
+          <div class="research-install-command">
+            <code>curl -fsSL https://alex-dils.com/ct-pet-viewer/install.sh | bash</code>
+            <button type="button" data-copy-command aria-label="Copy CT-PET Viewer install command">Copy</button>
+          </div>
+        </article>
+
+        <article class="research-tool-card">
+          <div class="research-tool-copy">
+            <h3>CT-PET Inference AI</h3>
+            <p>Run local AI inference and compare generated PET masks alongside the source imaging.</p>
+          </div>
+          <div class="research-install-command">
+            <code>curl -fsSL https://alex-dils.com/ct-pet-inference/install.sh | bash</code>
+            <button type="button" data-copy-command aria-label="Copy CT-PET Inference AI install command">Copy</button>
+          </div>
+        </article>
+      </div>
+
+      <p class="research-tools-note">For research use only. These tools are not cleared for clinical diagnosis.</p>
+    </div>
+  </dialog>
 
   <script src="site.js"></script>
 </body>

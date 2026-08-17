@@ -77,4 +77,71 @@
       }
     });
   }
+
+  const researchToolsDialog = document.querySelector("[data-research-tools-dialog]");
+  const researchToolsOpeners = [...document.querySelectorAll("[data-research-tools-open]")];
+  const researchToolsClose = document.querySelector("[data-research-tools-close]");
+  let researchToolsReturnFocus = null;
+
+  const closeResearchTools = () => {
+    if (researchToolsDialog?.open) researchToolsDialog.close();
+  };
+
+  if (researchToolsDialog) {
+    researchToolsOpeners.forEach((opener) => {
+      opener.addEventListener("click", () => {
+        researchToolsReturnFocus = opener;
+        researchToolsDialog.showModal();
+        document.body.classList.add("modal-open");
+        researchToolsClose?.focus();
+      });
+    });
+
+    researchToolsClose?.addEventListener("click", closeResearchTools);
+
+    researchToolsDialog.addEventListener("click", (event) => {
+      if (event.target === researchToolsDialog) closeResearchTools();
+    });
+
+    researchToolsDialog.addEventListener("close", () => {
+      document.body.classList.remove("modal-open");
+      researchToolsReturnFocus?.focus();
+      researchToolsReturnFocus = null;
+    });
+  }
+
+  const copyText = async (value) => {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+      return;
+    }
+
+    const textArea = document.createElement("textarea");
+    textArea.value = value;
+    textArea.setAttribute("readonly", "");
+    textArea.style.position = "fixed";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand("copy");
+    textArea.remove();
+  };
+
+  document.querySelectorAll("[data-copy-command]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const command = button.closest(".research-install-command")?.querySelector("code")?.textContent?.trim();
+      if (!command) return;
+
+      try {
+        await copyText(command);
+        button.textContent = "Copied";
+      } catch (_) {
+        button.textContent = "Select";
+      }
+
+      window.setTimeout(() => {
+        button.textContent = "Copy";
+      }, 1600);
+    });
+  });
 })();
