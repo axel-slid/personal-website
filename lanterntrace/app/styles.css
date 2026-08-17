@@ -1172,6 +1172,20 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .spread-only .starfield .star-1 { background: #d8c8f1; filter: drop-shadow(0 0 3px rgba(168, 129, 219, .7)); }
 .spread-only .starfield .star-2 { background: #fff2c4; filter: drop-shadow(0 0 3px rgba(255, 220, 135, .68)); }
 
+/* Keep camera interaction on the compositor: expensive glass, blend and glow
+   effects return immediately after the drag/zoom ends. */
+.spread-only .map-stage #map { contain: strict; }
+.spread-only .map-stage.camera-moving.globe-mode::after { filter: none; }
+.spread-only .map-stage.camera-moving .starfield { mix-blend-mode: normal; }
+.spread-only .map-stage.camera-moving .starfield::before,
+.spread-only .map-stage.camera-moving .starfield::after,
+.spread-only .map-stage.camera-moving .starfield .star { filter: none; }
+.spread-only .map-stage.camera-moving .spread-timeline-dock,
+.spread-only .map-stage.camera-moving .spread-display-toggle,
+.spread-only .map-stage.camera-moving .spread-hud,
+.spread-only .map-stage.camera-moving .wind-legend { backdrop-filter: none; -webkit-backdrop-filter: none; }
+.spread-only .map-stage.camera-moving .farm-impact-figure { filter: none; }
+
 /* Far-zoom lunar easter egg, using NASA's LRO global color mosaic. */
 .moon-easter-egg {
   position: absolute;

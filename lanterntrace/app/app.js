@@ -12,6 +12,8 @@ const spreadLongHorizon = window.LanternTraceSpreadLongHorizon || { metadata: {}
 const spreadGridPyramid = window.LanternTraceSpreadGridPyramid || { metadata: {}, levels: {} };
 const spreadPhysicsFrameCache = new Map();
 const farmImpactCurveCache = new Map();
+const interactionGridSize = 1;
+const globeTileWarmZoom = 3;
 const embedMode = new URLSearchParams(window.location.search).get('embed');
 const physicsEmbedMode = embedMode === 'physics' || embedMode === 'hero';
 const heroMapEmbedMode = embedMode === 'hero';
@@ -247,8 +249,7 @@ function spreadCellValue(cell, sourceIndex = spreadCellIndices.get(`${cell?.r}:$
   return 0;
 }
 
-function spreadPhysicsFrames(modelId = selectedSpreadModelId, levelKey = String(spreadGridSize)) {
-  const windAware = spreadWindEnabled && modelId === 'coupled';
+function decodedSpreadPhysicsFrames(modelId, levelKey, windAware = false) {
   const cacheKey = `${modelId}:${levelKey}:${windAware ? 'wind' : 'still'}`;
   if (spreadPhysicsFrameCache.has(cacheKey)) return spreadPhysicsFrameCache.get(cacheKey);
   const encoded = windAware
@@ -263,8 +264,22 @@ function spreadPhysicsFrames(modelId = selectedSpreadModelId, levelKey = String(
   return decoded;
 }
 
-function spreadPhysicsValue(recordIndex, year = spreadTimelineYear) {
-  const frames = spreadPhysicsFrames();
+function spreadPhysicsFrames(modelId = selectedSpreadModelId, levelKey = String(spreadGridSize)) {
+  return decodedSpreadPhysicsFrames(modelId, levelKey, spreadWindEnabled && modelId === 'coupled');
+}
+
+function preloadScientificState() {
+  const levels = spreadGridPyramid.metadata?.sizes || spreadGridSizes;
+  Object.keys(spreadLongHorizon.models || {}).forEach((modelId) => {
+    levels.forEach((level) => decodedSpreadPhysicsFrames(modelId, String(level), false));
+  });
+  Object.keys(spreadLongHorizon.windModels || {}).forEach((modelId) => {
+    levels.forEach((level) => decodedSpreadPhysicsFrames(modelId, String(level), true));
+  });
+}
+
+function spreadPhysicsValue(recordIndex, year = spreadTimelineYear, levelKey = String(spreadGridSize)) {
+  const frames = spreadPhysicsFrames(selectedSpreadModelId, levelKey);
   const years = spreadLongHorizon.metadata?.years || [];
   if (!frames || !years.length) return 0;
   const firstYear = years[0];
@@ -277,9 +292,10 @@ function spreadPhysicsValue(recordIndex, year = spreadTimelineYear) {
   return lowerValue + (upperValue - lowerValue) * blend;
 }
 
-function spreadGridData() {
-  const displayStep = spreadGridSize;
-  const level = spreadGridPyramid.levels?.[String(spreadGridSize)] || [];
+function spreadGridData(targetGridSize = spreadGridSize) {
+  const displayStep = targetGridSize;
+  const levelKey = String(targetGridSize);
+  const level = spreadGridPyramid.levels?.[levelKey] || [];
   const timeDriven = spreadView === 'signal' || spreadView === 'scenario';
   const predicted = spreadTimelineYear > spreadPresentYear;
   const landThreshold = spreadGridPyramid.metadata?.landThreshold ?? .5;
@@ -287,7 +303,7 @@ function spreadGridData() {
     const [west, south, sourceIndex, landFraction, ...weightPairs] = record;
     if (landFraction <= landThreshold) return null;
     const cell = sourceIndex >= 0 ? spreadBundle.cells[sourceIndex] : null;
-    let value = predicted && timeDriven ? spreadPhysicsValue(index) : 0;
+    let value = predicted && timeDriven ? spreadPhysicsValue(index, spreadTimelineYear, levelKey) : 0;
     let climateValue = 0;
     let geographyValue = 0;
     if (!(predicted && timeDriven)) {
@@ -316,7 +332,7 @@ function spreadGridData() {
       return geojsonFeature('Polygon', [[
         [west, south], [west + displayStep, south], [west + displayStep, south + displayStep], [west, south + displayStep], [west, south],
       ]], {
-        cell: `${spreadGridSize}:${index}`,
+        cell: `${targetGridSize}:${index}`,
         sourceCell,
         value,
         landFraction,
@@ -789,22 +805,32 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
   const visible = spreadActive();
   const meshVisible = visible && spreadDisplayMode === 'mesh';
   const reportsVisible = visible && spreadDisplayMode === 'reports';
-  map.getSource('lt-spread-source').setData(spreadGridData());
+  const detailedData = spreadGridData();
+  map.getSource('lt-spread-source').setData(detailedData);
+  map.getSource('lt-spread-interaction-source')?.setData(
+    spreadGridSize === interactionGridSize ? detailedData : spreadGridData(interactionGridSize),
+  );
   if (!timelineOnly) {
     if (map.getLayer('lt-spread-height')) {
       map.setLayoutProperty('lt-spread-height', 'visibility', meshVisible ? 'visible' : 'none');
       map.setPaintProperty('lt-spread-height', 'fill-extrusion-color', spreadColorExpression());
     }
     if (map.getLayer('lt-spread-floor')) map.setPaintProperty('lt-spread-floor', 'fill-color', spreadColorExpression());
+    if (map.getLayer('lt-spread-interaction-floor')) map.setPaintProperty('lt-spread-interaction-floor', 'fill-color', spreadColorExpression());
     ['lt-spread-floor', 'lt-spread-water', 'lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
       if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', meshVisible ? 'visible' : 'none');
     });
+    if (map.getLayer('lt-spread-interaction-floor')) map.setLayoutProperty('lt-spread-interaction-floor', 'visibility', 'none');
   }
   ['lt-spread-reports', 'lt-spread-report-hit'].forEach((id) => {
     if (!map.getLayer(id)) return;
     map.setFilter(id, ['<=', ['get', 'observedAt'], spreadReportCutoff()]);
     map.setLayoutProperty(id, 'visibility', reportsVisible ? 'visible' : 'none');
   });
+  if (map.getLayer('lt-spread-reports-preview')) {
+    map.setFilter('lt-spread-reports-preview', ['<=', ['get', 'observedAt'], spreadReportCutoff()]);
+    map.setLayoutProperty('lt-spread-reports-preview', 'visibility', 'none');
+  }
   if (map.getLayer('lt-spread-selection')) map.setFilter('lt-spread-selection', ['==', ['get', 'cell'], selectedSpreadCell || '__none__']);
   const hud = $('#spread-hud');
   hud?.classList.toggle('hidden', !visible);
@@ -2036,6 +2062,7 @@ function addMapLayers() {
   map.addSource('lt-physics-surface', { type: 'geojson', data: physicsSurfaceData() });
   map.addSource('lt-physics-vectors', { type: 'geojson', data: physicsVectorData() });
   map.addSource('lt-spread-source', { type: 'geojson', data: spreadGridData() });
+  map.addSource('lt-spread-interaction-source', { type: 'geojson', data: spreadGridData(interactionGridSize) });
 
   map.addLayer({ id: 'lt-heatmap', type: 'heatmap', source: 'lt-reports', maxzoom: 6.5, filter: observationFilter, paint: {
     'heatmap-weight': ['interpolate', ['linear'], ['zoom'], 0, 0.5, 8, 1.4],
@@ -2053,6 +2080,9 @@ function addMapLayers() {
   } });
   map.addLayer({ id: 'lt-spread-floor', type: 'fill', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
     'fill-color': spreadColorExpression(), 'fill-opacity': .82, 'fill-antialias': false
+  } });
+  map.addLayer({ id: 'lt-spread-interaction-floor', type: 'fill', source: 'lt-spread-interaction-source', layout: { visibility: 'none' }, paint: {
+    'fill-color': spreadColorExpression(), 'fill-opacity': .8, 'fill-antialias': false
   } });
   map.addLayer({ id: 'lt-spread-height', type: 'fill-extrusion', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
     'fill-extrusion-base': 80,
@@ -2137,6 +2167,13 @@ function addMapLayers() {
   map.addLayer({ id: 'lt-report-hit', type: 'circle', source: 'lt-reports', minzoom: 5.5, filter: observationFilter, paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 5.5, 6, 8, 8, 11, 11], 'circle-opacity': 0.01, 'circle-color': '#ffffff' } });
   map.addLayer({ id: 'lt-reports-preview', type: 'circle', source: 'lt-reports-preview', filter: observationFilter, layout: { visibility: 'none' }, paint: { 'circle-color': '#9be7c5', 'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 0.65, 4.75, 1.2, 8, 3, 11, 4.8], 'circle-stroke-color': '#d0f4e1', 'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, 0, 4.75, 0.25, 8, 0.55], 'circle-opacity': ['interpolate', ['linear'], ['zoom'], 2, 0.34, 4.75, 0.62, 8, 0.8] } });
   map.addLayer({ id: 'lt-spread-reports', type: 'circle', source: 'lt-reports', filter: observationFilter, layout: { visibility: 'none' }, paint: {
+    'circle-color': '#d8f47d',
+    'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 1.15, 4, 1.75, 6, 2.8, 9, 4.6],
+    'circle-stroke-color': '#f0ffd0',
+    'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 2, .15, 6, .5, 9, .9],
+    'circle-opacity': ['interpolate', ['linear'], ['zoom'], 2, .5, 5, .72, 9, .9]
+  } });
+  map.addLayer({ id: 'lt-spread-reports-preview', type: 'circle', source: 'lt-reports-preview', filter: observationFilter, layout: { visibility: 'none' }, paint: {
     'circle-color': '#d8f47d',
     'circle-radius': ['interpolate', ['linear'], ['zoom'], 2, 1.15, 4, 1.75, 6, 2.8, 9, 4.6],
     'circle-stroke-color': '#f0ffd0',
@@ -2437,8 +2474,25 @@ function toggleSettingsPanel(force) {
   }
 }
 
+async function prewarmGlobeTiles() {
+  const requests = [];
+  for (let zoom = 0; zoom <= globeTileWarmZoom; zoom += 1) {
+    const side = 2 ** zoom;
+    for (let x = 0; x < side; x += 1) {
+      for (let y = 0; y < side; y += 1) {
+        requests.push(fetch(`https://demotiles.maplibre.org/tiles/${zoom}/${x}/${y}.pbf`, { cache: 'force-cache' }).catch(() => null));
+      }
+    }
+  }
+  await Promise.all(requests);
+}
+
 function initMap() {
-  map = new maplibregl.Map({ container: 'map', style: 'https://demotiles.maplibre.org/globe.json', center: [-98, 38], zoom: 1.85, maxZoom: 15, minZoom: -.6, attributionControl: false, dragRotate: false, fadeDuration: 0, crossSourceCollisions: false });
+  map = new maplibregl.Map({
+    container: 'map', style: 'https://demotiles.maplibre.org/globe.json', center: [-98, 38], zoom: 1.85,
+    maxZoom: 15, minZoom: -.6, attributionControl: false, dragRotate: false, fadeDuration: 0,
+    crossSourceCollisions: false, maxTileCacheSize: 256, refreshExpiredTiles: false,
+  });
   map.setPixelRatio?.(1);
   map.on('styleimagemissing', ({ id }) => {
     if (!id.startsWith('circle-') || map.hasImage(id)) return;
@@ -2472,18 +2526,28 @@ function initMap() {
     updateSnapshot();
     renderBenchmarkLab();
     updateBenchmarkMap();
-    if (spreadActive()) {
-      if (physicsEmbedMode) focusSpreadOverview();
-      else runSpreadOpeningSequence();
-      startWindAnimation();
+    const beginInteractiveExperience = () => {
+      if (spreadActive()) {
+        if (physicsEmbedMode) focusSpreadOverview();
+        else runSpreadOpeningSequence();
+        startWindAnimation();
+      }
+      if (physicsEmbedMode) {
+        const grid = benchmarkBundle.metadata.grid;
+        map.fitBounds([[grid.west, grid.south], [grid.east, grid.north]], { padding: 22, duration: 0, maxZoom: 5.2 });
+        map.jumpTo({ pitch: 43, bearing: -8 });
+        startPhysicsAnimation();
+      }
+      $('#map-state')?.classList.add('hidden');
+    };
+    if (spreadActive() && !physicsEmbedMode) {
+      const mapReady = map.loaded() && !map.isMoving()
+        ? Promise.resolve()
+        : new Promise((resolve) => map.once('idle', resolve));
+      Promise.all([mapReady, prewarmGlobeTiles()]).then(beginInteractiveExperience);
+    } else {
+      beginInteractiveExperience();
     }
-    if (physicsEmbedMode) {
-      const grid = benchmarkBundle.metadata.grid;
-      map.fitBounds([[grid.west, grid.south], [grid.east, grid.north]], { padding: 22, duration: 0, maxZoom: 5.2 });
-      map.jumpTo({ pitch: 43, bearing: -8 });
-      startPhysicsAnimation();
-    }
-    $('#map-state')?.classList.add('hidden');
   });
   window.setTimeout(() => {
     if (!mapLayersAdded && map) map.setStyle(darkStyle);
@@ -2512,13 +2576,23 @@ function initMap() {
     if (spreadInteractionLod === active) return;
     spreadInteractionLod = active;
     $('.map-stage')?.classList.toggle('camera-moving', active);
-    if (!spreadActive() || spreadDisplayMode !== 'mesh' || !map.getLayer('lt-spread-height')) return;
-    map.setLayoutProperty('lt-spread-height', 'visibility', active ? 'none' : 'visible');
-    if (map.getLayer('lt-spread-floor')) map.setLayoutProperty('lt-spread-floor', 'visibility', 'visible');
+    if (!spreadActive()) return;
+    const meshMode = spreadDisplayMode === 'mesh';
+    const reportsMode = spreadDisplayMode === 'reports';
+    ['lt-spread-height', 'lt-spread-floor', 'lt-spread-water', 'lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', !active && meshMode ? 'visible' : 'none');
+    });
+    if (map.getLayer('lt-spread-interaction-floor')) {
+      map.setLayoutProperty('lt-spread-interaction-floor', 'visibility', active && meshMode ? 'visible' : 'none');
+    }
+    ['lt-spread-reports', 'lt-spread-report-hit'].forEach((id) => {
+      if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', !active && reportsMode ? 'visible' : 'none');
+    });
+    if (map.getLayer('lt-spread-reports-preview')) {
+      map.setLayoutProperty('lt-spread-reports-preview', 'visibility', active && reportsMode ? 'visible' : 'none');
+    }
   };
   map.on('resize', scheduleGlobeAtmosphereUpdate);
-  map.on('zoom', scheduleGlobeAtmosphereUpdate);
-  map.on('move', scheduleGlobeAtmosphereUpdate);
   map.on('movestart', () => {
     clearTimeout(spreadInteractionRestoreTimer);
     setInteractionLod(true);
@@ -2994,6 +3068,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderSpreadTimeline();
   setLabMode('benchmark');
   createStarfield();
+  preloadScientificState();
   initMap();
   setupInteractions();
 });
