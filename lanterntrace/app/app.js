@@ -978,8 +978,9 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
     });
     if (map.getLayer('lt-climate-surface')) map.setLayoutProperty('lt-climate-surface', 'visibility', climateSurfaceVisible ? 'visible' : 'none');
     if (map.getLayer('lt-climate-surface')) map.setPaintProperty('lt-climate-surface', 'raster-opacity', geographySurfaceVisible ? .62 : .9);
+    if (map.getLayer('lt-topographic-base')) map.setLayoutProperty('lt-topographic-base', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
     if (map.getLayer('lt-geography-surface')) map.setLayoutProperty('lt-geography-surface', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
-    if (map.getLayer('lt-geography-surface')) map.setPaintProperty('lt-geography-surface', 'raster-opacity', climateSurfaceVisible ? .5 : .78);
+    if (map.getLayer('lt-geography-surface')) map.setPaintProperty('lt-geography-surface', 'raster-opacity', climateSurfaceVisible ? .42 : .58);
     if (map.getLayer('lt-terrain-hillshade')) map.setLayoutProperty('lt-terrain-hillshade', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
     if (map.getLayer('lt-geography-contours')) map.setLayoutProperty('lt-geography-contours', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
     if (map.getSource('lt-terrain-dem')) map.setTerrain(geographySurfaceVisible ? { source: 'lt-terrain-dem', exaggeration: 3.8 } : null);
@@ -2250,6 +2251,17 @@ function addMapLayers() {
     url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json',
     tileSize: 256,
   });
+  map.addSource('lt-topographic-base', {
+    type: 'raster',
+    tiles: [
+      'https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+      'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
+      'https://c.tile.opentopomap.org/{z}/{x}/{y}.png',
+    ],
+    tileSize: 256,
+    maxzoom: 17,
+    attribution: 'Map data © OpenStreetMap contributors, SRTM · Map style © OpenTopoMap (CC-BY-SA)',
+  });
   map.addSource('lt-geography-contours', { type: 'geojson', data: geographyContourData() });
   map.addSource('lt-us-states', { type: 'geojson', data: './generated/us-states.geojson' });
   map.addSource('lt-us-state-labels', { type: 'geojson', data: './generated/us-state-labels.geojson' });
@@ -2272,8 +2284,16 @@ function addMapLayers() {
   if (climateSurface) map.addLayer({ id: 'lt-climate-surface', type: 'raster', source: 'lt-climate-surface', layout: { visibility: 'none' }, paint: {
     'raster-opacity': .9, 'raster-resampling': 'linear', 'raster-fade-duration': 0
   } });
+  map.addLayer({ id: 'lt-topographic-base', type: 'raster', source: 'lt-topographic-base', layout: { visibility: 'none' }, paint: {
+    'raster-opacity': .78,
+    'raster-brightness-min': .03,
+    'raster-brightness-max': .44,
+    'raster-contrast': .28,
+    'raster-saturation': -.38,
+    'raster-fade-duration': 120,
+  } });
   if (geographySurface) map.addLayer({ id: 'lt-geography-surface', type: 'raster', source: 'lt-geography-surface', layout: { visibility: 'none' }, paint: {
-    'raster-opacity': .78, 'raster-resampling': 'linear', 'raster-fade-duration': 0
+    'raster-opacity': .58, 'raster-resampling': 'linear', 'raster-fade-duration': 0
   } });
   map.addLayer({ id: 'lt-terrain-hillshade', type: 'hillshade', source: 'lt-terrain-dem', layout: { visibility: 'none' }, paint: {
     'hillshade-exaggeration': .94,
@@ -2846,6 +2866,7 @@ function initMap() {
     const geographySurfaceMode = meshMode && spreadGeographyEnabled;
     const voxelMode = meshMode && !climateSurfaceMode && !geographySurfaceMode;
     if (map.getLayer('lt-climate-surface')) map.setLayoutProperty('lt-climate-surface', 'visibility', climateSurfaceMode ? 'visible' : 'none');
+    if (map.getLayer('lt-topographic-base')) map.setLayoutProperty('lt-topographic-base', 'visibility', geographySurfaceMode ? 'visible' : 'none');
     if (map.getLayer('lt-geography-surface')) map.setLayoutProperty('lt-geography-surface', 'visibility', geographySurfaceMode ? 'visible' : 'none');
     if (map.getLayer('lt-terrain-hillshade')) map.setLayoutProperty('lt-terrain-hillshade', 'visibility', geographySurfaceMode ? 'visible' : 'none');
     if (map.getLayer('lt-geography-contours')) map.setLayoutProperty('lt-geography-contours', 'visibility', geographySurfaceMode ? 'visible' : 'none');
