@@ -1,5 +1,5 @@
 (() => {
-  const film = document.getElementById("openleafDigitalTwin");
+  const film = document.getElementById("openleafProductFilm");
   const command = document.getElementById("installCommand");
   const copyButton = document.getElementById("copyInstall");
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");

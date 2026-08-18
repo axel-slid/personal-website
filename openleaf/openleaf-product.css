@@ -16,7 +16,7 @@ body {
   min-width: 320px;
   min-height: 100%;
   margin: 0;
-  background: #071522;
+  background: #11131d;
 }
 
 body {
@@ -37,51 +37,35 @@ button {
   outline-offset: 4px;
 }
 
-.digital-twin,
-.digital-twin video,
+.product-film,
+.product-film video,
 .video-wash {
   position: fixed;
   inset: 0;
 }
 
-.digital-twin {
+.product-film {
   z-index: 0;
   overflow: hidden;
-  background: #071522;
+  background: #11131d;
 }
 
-.digital-twin video {
+.product-film video {
   z-index: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
-  filter: saturate(1.38) brightness(1.12) contrast(1.08);
-  transform: scale(1.01);
-}
-
-.digital-twin::after {
-  position: absolute;
-  z-index: 1;
-  inset: -12%;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 18% 24%, rgba(38, 163, 255, 0.34), transparent 38%),
-    radial-gradient(circle at 82% 25%, rgba(137, 104, 255, 0.3), transparent 36%),
-    radial-gradient(circle at 74% 78%, rgba(36, 229, 190, 0.25), transparent 34%),
-    radial-gradient(circle at 28% 82%, rgba(82, 122, 255, 0.22), transparent 34%);
-  mix-blend-mode: screen;
-  opacity: .82;
-  animation: openleaf-glow 12s ease-in-out infinite alternate;
-  content: "";
+  filter: saturate(1.08) brightness(.98) contrast(1.02);
+  transform: scale(1.005);
 }
 
 .video-wash {
   z-index: 1;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 48% 34% at 50% 48%, rgba(5, 13, 23, 0.28), rgba(5, 13, 23, 0.06) 72%, transparent 100%),
-    linear-gradient(180deg, rgba(5, 13, 23, 0.08), transparent 24%, transparent 72%, rgba(5, 13, 23, 0.26));
+    radial-gradient(ellipse 42% 32% at 50% 49%, rgba(6, 8, 15, 0.16), transparent 78%),
+    linear-gradient(180deg, rgba(6, 8, 15, 0.08), transparent 22%, transparent 74%, rgba(6, 8, 15, 0.2));
 }
 
 main {
@@ -99,11 +83,11 @@ main {
 }
 
 .hero-panel {
-  width: min(900px, 100%);
+  width: min(820px, 100%);
   padding: clamp(38px, 5vw, 62px) clamp(24px, 5vw, 56px) clamp(28px, 4vw, 46px);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: clamp(24px, 3vw, 34px);
-  background: rgba(7, 15, 27, 0.44);
+  background: rgba(8, 11, 20, 0.64);
   box-shadow: 0 32px 100px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(18px) saturate(1.28);
   -webkit-backdrop-filter: blur(18px) saturate(1.28);
@@ -182,12 +166,6 @@ code {
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes openleaf-glow {
-  0% { transform: translate3d(-2.5%, -1.5%, 0) scale(1); filter: hue-rotate(-8deg); }
-  50% { transform: translate3d(2%, 1%, 0) scale(1.06); filter: hue-rotate(7deg); }
-  100% { transform: translate3d(-1%, 2.5%, 0) scale(1.03); filter: hue-rotate(15deg); }
-}
-
 @media (max-width: 620px) {
   .hero-panel {
     padding: 34px 18px 24px;
@@ -216,7 +194,7 @@ code {
     padding: 0 10px;
   }
 
-  .digital-twin video {
+  .product-film video {
     object-position: 58% center;
   }
 }
@@ -228,10 +206,5 @@ code {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-
-  .digital-twin::after {
-    animation: none !important;
-    opacity: .64;
   }
 }
