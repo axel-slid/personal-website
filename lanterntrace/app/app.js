@@ -485,7 +485,9 @@ function geographyContourData() {
     values[offset] = value;
     mask[offset] = 1;
   });
-  const thresholds = [.2, .35, .5, .65, .8];
+  // Closely spaced resistance isolines make this read like a topographic
+  // surface while the color beneath them remains the primary heatmap value.
+  const thresholds = [.1, .2, .3, .4, .5, .6, .7, .8, .9];
   const segments = thresholds.map(() => []);
   const coordinate = (row, column) => [west + (column + .5) * step, north - (row + .5) * step];
   const crossing = (first, second, threshold) => (first < threshold && second >= threshold) || (first >= threshold && second < threshold);
@@ -516,7 +518,10 @@ function geographyContourData() {
   }
   return {
     type: 'FeatureCollection',
-    features: thresholds.map((threshold, index) => geojsonFeature('MultiLineString', segments[index], { threshold })),
+    features: thresholds.map((threshold, index) => geojsonFeature('MultiLineString', segments[index], {
+      threshold,
+      major: Math.round(threshold * 10) % 2 === 0,
+    })),
   };
 }
 
@@ -2271,16 +2276,20 @@ function addMapLayers() {
     'raster-opacity': .78, 'raster-resampling': 'linear', 'raster-fade-duration': 0
   } });
   map.addLayer({ id: 'lt-terrain-hillshade', type: 'hillshade', source: 'lt-terrain-dem', layout: { visibility: 'none' }, paint: {
-    'hillshade-exaggeration': .88,
-    'hillshade-shadow-color': '#020805',
-    'hillshade-highlight-color': '#efffd4',
-    'hillshade-accent-color': '#244d3e',
+    'hillshade-exaggeration': .94,
+    'hillshade-shadow-color': '#110b26',
+    'hillshade-highlight-color': '#ffd79a',
+    'hillshade-accent-color': '#6b347c',
     'hillshade-illumination-direction': 318,
   } });
   map.addLayer({ id: 'lt-geography-contours', type: 'line', source: 'lt-geography-contours', layout: { visibility: 'none' }, paint: {
-    'line-color': ['interpolate', ['linear'], ['get', 'threshold'], .2, '#bca9ee', .5, '#ffd2a6', .8, '#fff1c8'],
-    'line-width': ['interpolate', ['linear'], ['zoom'], 3, .45, 6, 1.05, 9, 1.6],
-    'line-opacity': ['interpolate', ['linear'], ['zoom'], 3, .38, 6, .68],
+    'line-color': ['interpolate', ['linear'], ['get', 'threshold'], .1, '#c8b7f4', .5, '#ffd09a', .9, '#fff0c2'],
+    'line-width': ['case', ['get', 'major'],
+      ['interpolate', ['linear'], ['zoom'], 3, .7, 6, 1.25, 9, 1.75],
+      ['interpolate', ['linear'], ['zoom'], 3, .34, 6, .66, 9, 1.05]],
+    'line-opacity': ['case', ['get', 'major'],
+      ['interpolate', ['linear'], ['zoom'], 3, .56, 6, .82],
+      ['interpolate', ['linear'], ['zoom'], 3, .3, 6, .58]],
   } });
   map.addLayer({ id: 'lt-spread-floor', type: 'fill', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
     'fill-color': spreadColorExpression(), 'fill-opacity': .82, 'fill-antialias': false
