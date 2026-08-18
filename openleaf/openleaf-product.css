@@ -114,7 +114,7 @@ main {
 h1 {
   margin: 0;
   font-size: clamp(64px, 12vw, 108px);
-  font-weight: 320;
+  font-weight: 400;
   letter-spacing: -0.075em;
   line-height: .92;
   text-shadow: 0 8px 38px rgba(0, 0, 0, 0.78);
