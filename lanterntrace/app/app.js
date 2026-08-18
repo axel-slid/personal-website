@@ -11,6 +11,8 @@ const windClimatology = window.LanternTraceWindClimatology || { metadata: {}, la
 const spreadLongHorizon = window.LanternTraceSpreadLongHorizon || { metadata: {}, models: {} };
 const spreadGridPyramid = window.LanternTraceSpreadGridPyramid || { metadata: {}, levels: {} };
 const contextGeography = window.LanternTraceContextGeography || { metadata: {}, cities: [] };
+const hostVegetation = window.LanternTraceHostVegetation || { metadata: {}, values: [] };
+const hostVegetationByCell = new Map((hostVegetation.values || []).map(([west, south, value]) => [`${west}:${south}`, value]));
 const spreadPhysicsFrameCache = new Map();
 const farmImpactCurveCache = new Map();
 const factorSurfaceCache = new Map();
@@ -34,7 +36,7 @@ let physicsAnimationLast = 0;
 let spreadView = 'scenario';
 let spreadDisplayMode = 'mesh';
 let spreadClimateEnabled = false;
-let spreadGeographyEnabled = false;
+let spreadVegetationEnabled = false;
 let selectedSpreadModelId = 'coupled';
 let spreadWindEnabled = false;
 let windAnimationFrame;
@@ -61,7 +63,7 @@ let selectedSpreadSourceCell = null;
 let selectedSpreadValue = null;
 let selectedSpreadLandFraction = null;
 let selectedSpreadClimate = null;
-let selectedSpreadGeography = null;
+let selectedSpreadVegetation = null;
 let spreadGridSize = .25;
 const spreadGridSizes = [.25, .5, .75, 1];
 const spreadCellIndices = new Map((spreadBundle.cells || []).map((cell, index) => [`${cell.r}:${cell.c}`, index]));
@@ -117,12 +119,12 @@ const spreadViewProfiles = {
     scale: 'climate suitability',
     description: 'A WorldClim-derived factor surface using annual and dry-quarter temperature, isothermality, and cold-quarter precipitation.',
   },
-  geography: {
-    kicker: 'TERRAIN PERMEABILITY',
-    title: 'Where elevation and slope resist spread least',
-    hud: 'Ideal geography',
-    scale: 'terrain permeability',
-    description: 'Low, gently changing terrain receives higher permeability. This isolates physical geography and does not include host plants or climate.',
+  vegetation: {
+    kicker: 'HOST VEGETATION',
+    title: 'Where lanternfly food plants are reported',
+    hud: 'Lanternfly host vegetation',
+    scale: 'relative host availability',
+    description: 'A smoothed GBIF occurrence proxy emphasizing tree-of-heaven, grapes, black walnut, red and silver maple, and willows. It shows likely host availability—not vegetation biomass.',
   },
   scenario: {
     kicker: 'RESISTANCE-WEIGHTED PHYSICS',
@@ -249,7 +251,7 @@ function spreadReportCutoff() {
 
 function spreadCellValue(cell, sourceIndex = spreadCellIndices.get(`${cell?.r}:${cell?.c}`)) {
   if (spreadView === 'climate') return cell.climate || 0;
-  if (spreadView === 'geography') return cell.geography || 0;
+  if (spreadView === 'vegetation') return hostVegetationByCell.get(`${cell?.w}:${cell?.s}`) || 0;
   if (spreadTimelineYear <= spreadPresentYear) {
     const observedYear = Math.max(spreadTimelineStartYear, Math.min(spreadPresentYear, spreadTimelineYear));
     const lowerYear = Math.floor(observedYear);
@@ -317,7 +319,7 @@ function spreadGridData() {
     const cell = sourceIndex >= 0 ? spreadBundle.cells[sourceIndex] : null;
     let value = predicted && timeDriven ? spreadPhysicsValue(index) : 0;
     let climateValue = 0;
-    let geographyValue = 0;
+    let vegetationValue = 0;
     if (!(predicted && timeDriven)) {
       for (let pairIndex = 0; pairIndex < weightPairs.length; pairIndex += 2) {
         const weightedSourceIndex = weightPairs[pairIndex];
@@ -328,17 +330,18 @@ function spreadGridData() {
       const weightedSourceIndex = weightPairs[pairIndex];
       const weight = weightPairs[pairIndex + 1];
       climateValue += (spreadBundle.cells[weightedSourceIndex]?.climate || 0) * weight;
-      geographyValue += (spreadBundle.cells[weightedSourceIndex]?.geography || 0) * weight;
+      const weightedCell = spreadBundle.cells[weightedSourceIndex];
+      vegetationValue += (hostVegetationByCell.get(`${weightedCell?.w}:${weightedCell?.s}`) || 0) * weight;
     }
     return {
       record, index, west, south, sourceIndex, landFraction, cell, value, rawValue: value,
-      climateValue, geographyValue,
+      climateValue, vegetationValue,
       key: `${Math.round(west / displayStep)}:${Math.round(south / displayStep)}`,
     };
   }).filter(Boolean);
   return {
     type: 'FeatureCollection',
-    features: samples.map(({ index, west, south, sourceIndex, landFraction, cell, value, climateValue, geographyValue }) => {
+    features: samples.map(({ index, west, south, sourceIndex, landFraction, cell, value, climateValue, vegetationValue }) => {
       if (value <= 0) return null;
       const sourceCell = cell ? `${cell.r}:${cell.c}` : 'water';
       return geojsonFeature('Polygon', [[
@@ -353,7 +356,7 @@ function spreadGridData() {
         rate: cell?.rate || 0,
         signal: cell?.signal || 0,
         climate: climateValue,
-        geography: geographyValue,
+        vegetation: vegetationValue,
       });
     }).filter(Boolean),
   };
@@ -363,13 +366,19 @@ function spreadColorExpression() {
   if (spreadView === 'climate') {
     return ['interpolate', ['linear'], ['get', 'value'], 0, '#162c4d', .3, '#237890', .62, '#54c998', 1, '#d9f27c'];
   }
-  if (spreadView === 'geography') {
-    return ['interpolate', ['linear'], ['get', 'value'], 0, '#2b2142', .32, '#505b78', .65, '#4db38c', 1, '#d7ec86'];
+  if (spreadView === 'vegetation') {
+    return ['interpolate', ['linear'], ['get', 'value'], 0, '#102d24', .28, '#236a43', .58, '#5caa52', .82, '#b6dc68', 1, '#f0ee86'];
   }
   if (spreadView === 'scenario' || (spreadView === 'signal' && spreadTimelineYear > spreadPresentYear)) {
     return ['interpolate', ['linear'], ['get', 'value'], 0, '#123631', .22, '#276c58', .55, '#62d99f', .8, '#d6ec78', 1, '#ffba69'];
   }
   return ['interpolate', ['linear'], ['get', 'value'], 0, '#0d322e', .18, '#176f5b', .48, '#31b78b', .75, '#9be17f', 1, '#f0e972'];
+}
+
+function spreadFactorValue(cell, factor) {
+  if (!cell) return 0;
+  if (factor === 'vegetation') return hostVegetationByCell.get(`${cell.w}:${cell.s}`) || 0;
+  return cell[factor] || 0;
 }
 
 function factorSurfaceRaster(factor) {
@@ -393,10 +402,10 @@ function factorSurfaceRaster(factor) {
     let value = 0;
     if (weightPairs.length) {
       for (let index = 0; index < weightPairs.length; index += 2) {
-        value += (spreadBundle.cells[weightPairs[index]]?.[factor] || 0) * weightPairs[index + 1];
+        value += spreadFactorValue(spreadBundle.cells[weightPairs[index]], factor) * weightPairs[index + 1];
       }
     } else if (sourceIndex >= 0) {
-      value = spreadBundle.cells[sourceIndex]?.[factor] || 0;
+      value = spreadFactorValue(spreadBundle.cells[sourceIndex], factor);
     }
     const column = Math.round((cellWest - west) / step);
     const row = Math.round((north - cellSouth - step) / step);
@@ -407,7 +416,7 @@ function factorSurfaceRaster(factor) {
 
   const palettes = {
     climate: [[15, 31, 65], [32, 99, 137], [40, 157, 143], [115, 206, 127], [226, 235, 115]],
-    geography: [[28, 20, 72], [68, 38, 126], [133, 58, 145], [211, 83, 112], [249, 180, 83]],
+    vegetation: [[7, 34, 25], [16, 76, 46], [42, 126, 65], [112, 181, 79], [214, 232, 105]],
   };
   const palette = palettes[factor] || palettes.climate;
   const colorAt = (value) => {
@@ -426,19 +435,12 @@ function factorSurfaceRaster(factor) {
     for (let column = 0; column < width; column += 1) {
       const offset = row * width + column;
       if (!mask[offset]) continue;
-      const left = values[offset - (column > 0 ? 1 : 0)];
-      const right = values[offset + (column < width - 1 ? 1 : 0)];
-      const above = values[offset - (row > 0 ? width : 0)];
-      const below = values[offset + (row < height - 1 ? width : 0)];
-      const relief = factor === 'geography' ? Math.max(-.16, Math.min(.16, (left - right + above - below) * .34)) : 0;
       const color = colorAt(values[offset]);
-      const target = relief >= 0 ? 255 : 0;
-      const strength = Math.abs(relief);
       const pixel = offset * 4;
-      image.data[pixel] = Math.round(color[0] + (target - color[0]) * strength);
-      image.data[pixel + 1] = Math.round(color[1] + (target - color[1]) * strength);
-      image.data[pixel + 2] = Math.round(color[2] + (target - color[2]) * strength);
-      image.data[pixel + 3] = factor === 'geography' ? 226 : 218;
+      image.data[pixel] = color[0];
+      image.data[pixel + 1] = color[1];
+      image.data[pixel + 2] = color[2];
+      image.data[pixel + 3] = 218;
     }
   }
   pixelContext.putImageData(image, 0, 0);
@@ -455,74 +457,6 @@ function factorSurfaceRaster(factor) {
   };
   factorSurfaceCache.set(factor, surface);
   return surface;
-}
-
-function geographyContourData() {
-  const step = .25;
-  const level = spreadGridPyramid.levels?.[String(step)] || [];
-  if (!level.length) return { type: 'FeatureCollection', features: [] };
-  const west = Math.min(...level.map((record) => record[0]));
-  const east = Math.max(...level.map((record) => record[0])) + step;
-  const south = Math.min(...level.map((record) => record[1]));
-  const north = Math.max(...level.map((record) => record[1])) + step;
-  const width = Math.round((east - west) / step);
-  const height = Math.round((north - south) / step);
-  const values = new Float32Array(width * height);
-  const mask = new Uint8Array(width * height);
-  const landThreshold = spreadGridPyramid.metadata?.landThreshold ?? .5;
-  level.forEach((record) => {
-    const [cellWest, cellSouth, sourceIndex, landFraction, ...weightPairs] = record;
-    if (landFraction <= landThreshold) return;
-    let value = 0;
-    if (weightPairs.length) {
-      for (let index = 0; index < weightPairs.length; index += 2) {
-        value += (spreadBundle.cells[weightPairs[index]]?.geography || 0) * weightPairs[index + 1];
-      }
-    } else if (sourceIndex >= 0) value = spreadBundle.cells[sourceIndex]?.geography || 0;
-    const column = Math.round((cellWest - west) / step);
-    const row = Math.round((north - cellSouth - step) / step);
-    const offset = row * width + column;
-    values[offset] = value;
-    mask[offset] = 1;
-  });
-  // Closely spaced resistance isolines make this read like a topographic
-  // surface while the color beneath them remains the primary heatmap value.
-  const thresholds = [.1, .2, .3, .4, .5, .6, .7, .8, .9];
-  const segments = thresholds.map(() => []);
-  const coordinate = (row, column) => [west + (column + .5) * step, north - (row + .5) * step];
-  const crossing = (first, second, threshold) => (first < threshold && second >= threshold) || (first >= threshold && second < threshold);
-  for (let row = 0; row < height - 1; row += 1) {
-    for (let column = 0; column < width - 1; column += 1) {
-      const offsets = [row * width + column, row * width + column + 1, (row + 1) * width + column + 1, (row + 1) * width + column];
-      if (!offsets.every((offset) => mask[offset])) continue;
-      const corners = offsets.map((offset, index) => ({
-        value: values[offset],
-        point: coordinate(row + (index > 1 ? 1 : 0), column + (index === 1 || index === 2 ? 1 : 0)),
-      }));
-      const edges = [[0, 1], [1, 2], [2, 3], [3, 0]];
-      thresholds.forEach((threshold, thresholdIndex) => {
-        const points = edges.filter(([a, b]) => crossing(corners[a].value, corners[b].value, threshold)).map(([a, b]) => {
-          const start = corners[a];
-          const end = corners[b];
-          const delta = end.value - start.value;
-          const blend = Math.max(0, Math.min(1, Math.abs(delta) < 1e-6 ? .5 : (threshold - start.value) / delta));
-          return [start.point[0] + (end.point[0] - start.point[0]) * blend, start.point[1] + (end.point[1] - start.point[1]) * blend];
-        });
-        if (points.length === 2) segments[thresholdIndex].push(points);
-        if (points.length === 4) {
-          segments[thresholdIndex].push([points[0], points[1]]);
-          segments[thresholdIndex].push([points[2], points[3]]);
-        }
-      });
-    }
-  }
-  return {
-    type: 'FeatureCollection',
-    features: thresholds.map((threshold, index) => geojsonFeature('MultiLineString', segments[index], {
-      threshold,
-      major: Math.round(threshold * 10) % 2 === 0,
-    })),
-  };
 }
 
 function windBracket(values, target, descending = false) {
@@ -804,13 +738,13 @@ function renderSpreadLab() {
   $$('[data-spread-view]').forEach((button) => {
     const active = button.dataset.spreadView === 'climate'
       ? spreadClimateEnabled
-      : button.dataset.spreadView === 'geography'
-        ? spreadGeographyEnabled
-        : button.dataset.spreadView === spreadView && !spreadClimateEnabled && !spreadGeographyEnabled;
+      : button.dataset.spreadView === 'vegetation'
+        ? spreadVegetationEnabled
+        : button.dataset.spreadView === spreadView && !spreadClimateEnabled && !spreadVegetationEnabled;
     button.classList.toggle('active', active);
     button.setAttribute('aria-pressed', String(active));
   });
-  $('#spread-scenario-controls')?.classList.toggle('hidden', spreadView !== 'scenario' || spreadClimateEnabled || spreadGeographyEnabled);
+  $('#spread-scenario-controls')?.classList.toggle('hidden', spreadView !== 'scenario' || spreadClimateEnabled || spreadVegetationEnabled);
   const modelOptions = $('#spread-model-options');
   if (modelOptions) {
     modelOptions.innerHTML = (spreadBundle.models || []).map((sourceModel) => {
@@ -964,8 +898,8 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
   const meshVisible = visible && spreadDisplayMode === 'mesh';
   const reportsVisible = visible && spreadDisplayMode === 'reports';
   const climateSurfaceVisible = meshVisible && spreadClimateEnabled;
-  const geographySurfaceVisible = meshVisible && spreadGeographyEnabled;
-  const voxelVisible = meshVisible && !climateSurfaceVisible && !geographySurfaceVisible;
+  const vegetationSurfaceVisible = meshVisible && spreadVegetationEnabled;
+  const voxelVisible = meshVisible && !climateSurfaceVisible && !vegetationSurfaceVisible;
   map.getSource('lt-spread-source').setData(spreadGridData());
   if (!timelineOnly) {
     if (map.getLayer('lt-spread-height')) {
@@ -977,13 +911,9 @@ function updateSpreadMap({ timelineOnly = false } = {}) {
       if (map.getLayer(id)) map.setLayoutProperty(id, 'visibility', voxelVisible ? 'visible' : 'none');
     });
     if (map.getLayer('lt-climate-surface')) map.setLayoutProperty('lt-climate-surface', 'visibility', climateSurfaceVisible ? 'visible' : 'none');
-    if (map.getLayer('lt-climate-surface')) map.setPaintProperty('lt-climate-surface', 'raster-opacity', geographySurfaceVisible ? .62 : .9);
-    if (map.getLayer('lt-topographic-base')) map.setLayoutProperty('lt-topographic-base', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
-    if (map.getLayer('lt-geography-surface')) map.setLayoutProperty('lt-geography-surface', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
-    if (map.getLayer('lt-geography-surface')) map.setPaintProperty('lt-geography-surface', 'raster-opacity', climateSurfaceVisible ? .42 : .58);
-    if (map.getLayer('lt-terrain-hillshade')) map.setLayoutProperty('lt-terrain-hillshade', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
-    if (map.getLayer('lt-geography-contours')) map.setLayoutProperty('lt-geography-contours', 'visibility', geographySurfaceVisible ? 'visible' : 'none');
-    if (map.getSource('lt-terrain-dem')) map.setTerrain(geographySurfaceVisible ? { source: 'lt-terrain-dem', exaggeration: 3.8 } : null);
+    if (map.getLayer('lt-climate-surface')) map.setPaintProperty('lt-climate-surface', 'raster-opacity', vegetationSurfaceVisible ? .6 : .9);
+    if (map.getLayer('lt-vegetation-surface')) map.setLayoutProperty('lt-vegetation-surface', 'visibility', vegetationSurfaceVisible ? 'visible' : 'none');
+    if (map.getLayer('lt-vegetation-surface')) map.setPaintProperty('lt-vegetation-surface', 'raster-opacity', climateSurfaceVisible ? .58 : .88);
   }
   ['lt-spread-reports', 'lt-spread-report-hit'].forEach((id) => {
     if (!map.getLayer(id)) return;
@@ -1087,19 +1017,19 @@ function runSpreadOpeningSequence() {
 
 function selectSpreadView(view) {
   if (!spreadViewProfiles[view]) return;
-  if (view === 'climate' || view === 'geography') {
+  if (view === 'climate' || view === 'vegetation') {
     if (spreadSimulationPlaying) stopSpreadSimulation();
     if (view === 'climate') spreadClimateEnabled = !spreadClimateEnabled;
-    if (view === 'geography') spreadGeographyEnabled = !spreadGeographyEnabled;
-    if (spreadClimateEnabled || spreadGeographyEnabled) {
-      spreadView = spreadGeographyEnabled ? 'geography' : 'climate';
+    if (view === 'vegetation') spreadVegetationEnabled = !spreadVegetationEnabled;
+    if (spreadClimateEnabled || spreadVegetationEnabled) {
+      spreadView = spreadVegetationEnabled ? 'vegetation' : 'climate';
     } else {
       spreadView = 'scenario';
     }
   } else {
     spreadView = view;
     spreadClimateEnabled = false;
-    spreadGeographyEnabled = false;
+    spreadVegetationEnabled = false;
   }
   spreadDisplayMode = 'mesh';
   selectedSpreadCell = null;
@@ -1108,10 +1038,9 @@ function selectSpreadView(view) {
   selectedSpreadLandFraction = null;
   updateSpreadMap();
   map?.easeTo({
-    pitch: spreadGeographyEnabled ? 56 : 12,
-    bearing: spreadGeographyEnabled ? -8 : 0,
-    zoom: spreadGeographyEnabled ? Math.max(map.getZoom(), 4.05) : map.getZoom(),
-    duration: 820,
+    pitch: 12,
+    bearing: 0,
+    duration: 420,
     essential: true,
   });
 }
@@ -1216,7 +1145,7 @@ function toggleSpreadSimulation() {
   if (spreadTimelineYear >= spreadTimelineEndYear || spreadTimelineYear < spreadPresentYear) spreadTimelineYear = spreadPresentYear;
   if (spreadView !== 'scenario') spreadView = 'scenario';
   spreadClimateEnabled = false;
-  spreadGeographyEnabled = false;
+  spreadVegetationEnabled = false;
   spreadDisplayMode = 'mesh';
   spreadSimulationPlaying = true;
   spreadSimulationLastTime = 0;
@@ -2243,26 +2172,9 @@ function addMapLayers() {
   map.addSource('lt-physics-vectors', { type: 'geojson', data: physicsVectorData() });
   map.addSource('lt-spread-source', { type: 'geojson', data: spreadGridData() });
   const climateSurface = factorSurfaceRaster('climate');
-  const geographySurface = factorSurfaceRaster('geography');
+  const vegetationSurface = factorSurfaceRaster('vegetation');
   if (climateSurface) map.addSource('lt-climate-surface', { type: 'image', ...climateSurface });
-  if (geographySurface) map.addSource('lt-geography-surface', { type: 'image', ...geographySurface });
-  map.addSource('lt-terrain-dem', {
-    type: 'raster-dem',
-    url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json',
-    tileSize: 256,
-  });
-  map.addSource('lt-topographic-base', {
-    type: 'raster',
-    tiles: [
-      'https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
-      'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
-      'https://c.tile.opentopomap.org/{z}/{x}/{y}.png',
-    ],
-    tileSize: 256,
-    maxzoom: 17,
-    attribution: 'Map data © OpenStreetMap contributors, SRTM · Map style © OpenTopoMap (CC-BY-SA)',
-  });
-  map.addSource('lt-geography-contours', { type: 'geojson', data: geographyContourData() });
+  if (vegetationSurface) map.addSource('lt-vegetation-surface', { type: 'image', ...vegetationSurface });
   map.addSource('lt-us-states', { type: 'geojson', data: './generated/us-states.geojson' });
   map.addSource('lt-us-state-labels', { type: 'geojson', data: './generated/us-state-labels.geojson' });
   map.addSource('lt-us-cities', { type: 'geojson', data: cityContextData() });
@@ -2284,32 +2196,8 @@ function addMapLayers() {
   if (climateSurface) map.addLayer({ id: 'lt-climate-surface', type: 'raster', source: 'lt-climate-surface', layout: { visibility: 'none' }, paint: {
     'raster-opacity': .9, 'raster-resampling': 'linear', 'raster-fade-duration': 0
   } });
-  map.addLayer({ id: 'lt-topographic-base', type: 'raster', source: 'lt-topographic-base', layout: { visibility: 'none' }, paint: {
-    'raster-opacity': .78,
-    'raster-brightness-min': .03,
-    'raster-brightness-max': .44,
-    'raster-contrast': .28,
-    'raster-saturation': -.38,
-    'raster-fade-duration': 120,
-  } });
-  if (geographySurface) map.addLayer({ id: 'lt-geography-surface', type: 'raster', source: 'lt-geography-surface', layout: { visibility: 'none' }, paint: {
-    'raster-opacity': .58, 'raster-resampling': 'linear', 'raster-fade-duration': 0
-  } });
-  map.addLayer({ id: 'lt-terrain-hillshade', type: 'hillshade', source: 'lt-terrain-dem', layout: { visibility: 'none' }, paint: {
-    'hillshade-exaggeration': .94,
-    'hillshade-shadow-color': '#110b26',
-    'hillshade-highlight-color': '#ffd79a',
-    'hillshade-accent-color': '#6b347c',
-    'hillshade-illumination-direction': 318,
-  } });
-  map.addLayer({ id: 'lt-geography-contours', type: 'line', source: 'lt-geography-contours', layout: { visibility: 'none' }, paint: {
-    'line-color': ['interpolate', ['linear'], ['get', 'threshold'], .1, '#c8b7f4', .5, '#ffd09a', .9, '#fff0c2'],
-    'line-width': ['case', ['get', 'major'],
-      ['interpolate', ['linear'], ['zoom'], 3, .7, 6, 1.25, 9, 1.75],
-      ['interpolate', ['linear'], ['zoom'], 3, .34, 6, .66, 9, 1.05]],
-    'line-opacity': ['case', ['get', 'major'],
-      ['interpolate', ['linear'], ['zoom'], 3, .56, 6, .82],
-      ['interpolate', ['linear'], ['zoom'], 3, .3, 6, .58]],
+  if (vegetationSurface) map.addLayer({ id: 'lt-vegetation-surface', type: 'raster', source: 'lt-vegetation-surface', layout: { visibility: 'none' }, paint: {
+    'raster-opacity': .88, 'raster-resampling': 'linear', 'raster-fade-duration': 0
   } });
   map.addLayer({ id: 'lt-spread-floor', type: 'fill', source: 'lt-spread-source', layout: { visibility: 'none' }, paint: {
     'fill-color': spreadColorExpression(), 'fill-opacity': .82, 'fill-antialias': false
@@ -2455,7 +2343,7 @@ function addMapLayers() {
     selectedSpreadValue = Number(properties.value);
     selectedSpreadLandFraction = Number(properties.landFraction);
     selectedSpreadClimate = Number(properties.climate);
-    selectedSpreadGeography = Number(properties.geography);
+    selectedSpreadVegetation = Number(properties.vegetation);
     if (map.getLayer('lt-spread-selection')) map.setFilter('lt-spread-selection', ['==', ['get', 'cell'], selectedSpreadCell]);
 
     // Liu (2020) observed 16.2–46.8 adults/m² on tree-of-heaven across six
@@ -2479,7 +2367,7 @@ function addMapLayers() {
     countLabel.textContent = 'estimated adults per 100 m² of host surface';
     const stats = document.createElement('div');
     stats.className = 'spread-voxel-stats';
-    stats.innerHTML = `<span><small>CLIMATE</small><b>${Math.round(selectedSpreadClimate * 100)}%</b></span><span><small>TERRAIN</small><b>${Math.round(selectedSpreadGeography * 100)}%</b></span>`;
+    stats.innerHTML = `<span><small>CLIMATE</small><b>${Math.round(selectedSpreadClimate * 100)}%</b></span><span><small>HOST PLANTS</small><b>${Math.round(selectedSpreadVegetation * 100)}%</b></span>`;
     const caveat = document.createElement('p');
     caveat.textContent = 'Host-surface density equivalent, not a whole-cell census. The range scales published field densities by the model intensity.';
     popup.append(kicker, title, count, countLabel, stats, caveat);
@@ -2863,13 +2751,10 @@ function initMap() {
     const meshMode = spreadDisplayMode === 'mesh';
     const reportsMode = spreadDisplayMode === 'reports';
     const climateSurfaceMode = meshMode && spreadClimateEnabled;
-    const geographySurfaceMode = meshMode && spreadGeographyEnabled;
-    const voxelMode = meshMode && !climateSurfaceMode && !geographySurfaceMode;
+    const vegetationSurfaceMode = meshMode && spreadVegetationEnabled;
+    const voxelMode = meshMode && !climateSurfaceMode && !vegetationSurfaceMode;
     if (map.getLayer('lt-climate-surface')) map.setLayoutProperty('lt-climate-surface', 'visibility', climateSurfaceMode ? 'visible' : 'none');
-    if (map.getLayer('lt-topographic-base')) map.setLayoutProperty('lt-topographic-base', 'visibility', geographySurfaceMode ? 'visible' : 'none');
-    if (map.getLayer('lt-geography-surface')) map.setLayoutProperty('lt-geography-surface', 'visibility', geographySurfaceMode ? 'visible' : 'none');
-    if (map.getLayer('lt-terrain-hillshade')) map.setLayoutProperty('lt-terrain-hillshade', 'visibility', geographySurfaceMode ? 'visible' : 'none');
-    if (map.getLayer('lt-geography-contours')) map.setLayoutProperty('lt-geography-contours', 'visibility', geographySurfaceMode ? 'visible' : 'none');
+    if (map.getLayer('lt-vegetation-surface')) map.setLayoutProperty('lt-vegetation-surface', 'visibility', vegetationSurfaceMode ? 'visible' : 'none');
     if (map.getLayer('lt-spread-height')) map.setLayoutProperty('lt-spread-height', 'visibility', !active && voxelMode ? 'visible' : 'none');
     if (map.getLayer('lt-spread-floor')) map.setLayoutProperty('lt-spread-floor', 'visibility', voxelMode ? 'visible' : 'none');
     ['lt-spread-water', 'lt-spread-grid', 'lt-spread-selection'].forEach((id) => {
