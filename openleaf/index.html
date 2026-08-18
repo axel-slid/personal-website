@@ -10,42 +10,47 @@
   <meta property="og:description" content="Your complete local research workspace.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.alex-dils.com/openleaf/">
-  <meta property="og:image" content="https://www.alex-dils.com/openleaf/openleaf-product-showcase-poster.jpg">
+  <meta property="og:image" content="https://www.alex-dils.com/openleaf/social-preview.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Openleaf">
   <meta name="twitter:description" content="Your complete local research workspace.">
-  <meta name="twitter:image" content="https://www.alex-dils.com/openleaf/openleaf-product-showcase-poster.jpg">
-  <meta name="theme-color" content="#11131d">
+  <meta name="twitter:image" content="https://www.alex-dils.com/openleaf/social-preview.png">
+  <meta name="theme-color" content="#07111f">
   <link rel="icon" href="icon.png" type="image/png">
   <link rel="apple-touch-icon" href="icon.png">
-  <link rel="preload" href="openleaf-product-showcase-poster.jpg?v=20260817-showcase-v15" as="image" fetchpriority="high">
-  <link rel="stylesheet" href="openleaf-product.css?v=20260817-showcase-v15">
+  <link rel="preload" href="motion/openleaf-digital-twin-poster.png?v=20260817-bscode-film-v16" as="image" fetchpriority="high">
+  <link rel="stylesheet" href="openleaf-product.css?v=20260817-bscode-film-v16">
 </head>
 <body>
-  <div class="product-film" aria-hidden="true">
+  <figure class="preview" aria-hidden="true">
     <video
-      id="openleafProductFilm"
+      id="openleaf-film"
       autoplay
       muted
       loop
       playsinline
       preload="auto"
       disablepictureinpicture
-      poster="openleaf-product-showcase-poster.jpg?v=20260817-showcase-v15"
+      poster="motion/openleaf-digital-twin-poster.png?v=20260817-bscode-film-v16"
+      tabindex="-1"
     >
-      <source src="openleaf-product-showcase.mp4?v=20260817-showcase-v15" type="video/mp4">
+      <source src="motion/openleaf-digital-twin-alpha.mov?v=20260817-bscode-film-v16" type='video/mp4; codecs="hvc1"'>
+      <source src="motion/openleaf-digital-twin.webm?v=20260817-bscode-film-v16" type="video/webm">
+      <source src="motion/openleaf-digital-twin.mp4?v=20260817-bscode-film-v16" type="video/mp4">
     </video>
-  </div>
-  <div class="video-wash" aria-hidden="true"></div>
+  </figure>
 
   <main>
-    <section class="hero-panel">
+    <section class="hero">
       <h1>Openleaf</h1>
       <p class="product-blurb">An agent-native desktop studio for writing LaTeX, editing visually, compiling live PDFs, and working with coding agents locally or over SSH.</p>
-      <div class="install-command" id="install">
-        <span class="prompt" aria-hidden="true">$</span>
-        <code id="installCommand">curl -fsSL https://alex-dils.com/openleaf/install.sh | bash</code>
-        <button id="copyInstall" type="button" aria-label="Copy the Openleaf install command">Copy</button>
+      <div class="install" id="install">
+        <p class="install-label">Paste this into Terminal</p>
+        <div class="install-command">
+          <span class="prompt" aria-hidden="true">$</span>
+          <code id="installCommand">curl -fsSL https://alex-dils.com/openleaf/install.sh | bash</code>
+          <button id="copyInstall" type="button" aria-label="Copy the Openleaf install command">Copy</button>
+        </div>
       </div>
     </section>
   </main>
