@@ -9,7 +9,7 @@
     <link rel="apple-touch-icon" href="../apple-touch-icon.png?v=20260817-fly" />
     <script src="./embed-mode.js"></script>
     <link rel="stylesheet" href="./vendor/maplibre-gl.css" />
-    <link rel="stylesheet" href="./styles.css?v=20260817-host-vegetation" />
+    <link rel="stylesheet" href="./styles.css?v=20260817-eco-rd" />
   </head>
   <body>
     <div class="electron-titlebar" aria-hidden="true"></div>
@@ -88,13 +88,13 @@
             <div class="benchmark-summary"><span>PRE-2024 COEFFICIENT FREEZE</span><b>FIRST-REPORT REPLAY</b><small>2024–2025 · annual state updates · no target-year refitting</small></div>
             <div class="benchmark-year" role="group" aria-label="Frozen evaluation year"><button type="button" data-benchmark-year="2024">2024</button><button class="active" type="button" data-benchmark-year="2025">2025</button></div>
             <button id="physics-view-inline" class="compare-models-inline physics-view-inline" type="button" aria-pressed="false"><span class="compare-icon">∿</span><span><b>Physics field view</b><small>Animated pressure surface + local gradient vectors</small></span><em>OFF</em></button>
-            <button id="explain-benchmark-inline" class="compare-models-inline explain-result-inline active" type="button" aria-pressed="true"><span class="compare-icon">Δ</span><span><b>Explain past literature → ours</b><small>Cook-2021 → OG-RDE (OURS) · regional changes + physics trace</small></span><em>ON</em></button>
+            <button id="explain-benchmark-inline" class="compare-models-inline explain-result-inline active" type="button" aria-pressed="true"><span class="compare-icon">Δ</span><span><b>Explain past literature → ours</b><small>Cook-2021 → Eco-RD (OURS) · regional changes + physics trace</small></span><em>ON</em></button>
             <button id="compare-benchmark-inline" class="compare-models-inline" type="button" aria-pressed="false"><span class="compare-icon">≋</span><span><b>Compare top-5% allocations</b><small>OG-RDE, covariate, Transport RD, and Cook-2021</small></span><em>OFF</em></button>
             <div id="benchmark-explanation" class="benchmark-explanation" aria-live="polite"></div>
             <div id="benchmark-ranking" class="model-ranking benchmark-ranking" aria-label="Frozen first-report model comparisons"></div>
             <div id="benchmark-detail" class="model-detail"></div>
             <div class="map-key" aria-label="Frozen evaluation map legend"><span><i class="risk"></i>relative rank</span><span><i class="allocation"></i>top 5%</span><span><i class="truth"></i>first reports</span></div>
-            <a class="paper-link" href="./output/pdf/lanterntrace-frontier-forecasting.pdf" target="_blank" rel="noopener">Read the 11-page methods paper ↗</a>
+            <a class="paper-link" href="./output/pdf/lanterntrace-frontier-forecasting.pdf" target="_blank" rel="noopener">Read the methods paper ↗</a>
             <p class="small-note">AP and R@5% evaluate first reports among previously unreported cells. Scores are relative rankings, not occupancy probabilities. This replay is post-hoc and not independent field validation.</p>
           </div>
           <div id="scenario-lab-panel" class="hidden" role="tabpanel" aria-labelledby="scenario-mode">
@@ -164,7 +164,7 @@
 
         <section id="model-comparison-legend" class="model-comparison-legend hidden" aria-label="Compared diffusion models"></section>
         <section id="physics-hud" class="physics-hud hidden" aria-label="Physics field controls">
-          <div class="physics-hud-head"><div><span>MODEL-DERIVED PHYSICS FIELD</span><b id="physics-hud-model">OG-RDE · OURS</b></div><button id="physics-play" type="button" aria-label="Pause physics growth sweep">Ⅱ</button></div>
+          <div class="physics-hud-head"><div><span>MODEL-DERIVED PHYSICS FIELD</span><b id="physics-hud-model">ECO-RD · OURS</b></div><button id="physics-play" type="button" aria-label="Pause physics growth sweep">Ⅱ</button></div>
           <div id="physics-model-options" class="physics-model-options" role="group" aria-label="Physics model surface"></div>
           <div class="physics-display-options" role="group" aria-label="Physics surface display"><button type="button" class="active" data-physics-display="height" aria-pressed="true">3D SURFACE</button><button type="button" data-physics-display="field" aria-pressed="false">2D FIELD</button></div>
           <div class="physics-key"><span><i class="physics-low"></i>lower pressure</span><span><i class="physics-high"></i>higher pressure</span><span><i class="physics-front"></i>growth front</span><span><i class="physics-vector">↗</i>local gradient</span></div>
@@ -207,14 +207,14 @@
     <script src="./data.js"></script>
     <script src="./generated/observations.js"></script>
     <script src="./generated/model-results.js"></script>
-    <script src="./generated/frozen-benchmark.js"></script>
+    <script src="./generated/frozen-benchmark.js?v=20260817-eco-rd"></script>
     <script src="./generated/spread-explainer.js"></script>
     <script src="./generated/spread-history.js"></script>
     <script src="./generated/wind-climatology.js"></script>
-    <script src="./generated/spread-long-horizon.js"></script>
+    <script src="./generated/spread-long-horizon.js?v=20260817-eco-rd"></script>
     <script src="./generated/spread-grid-pyramid.js"></script>
     <script src="./generated/context-geography.js"></script>
-    <script src="./generated/host-vegetation.js"></script>
-    <script src="./app.js?v=20260817-host-vegetation"></script>
+    <script src="./generated/host-vegetation.js?v=20260817-eco-rd"></script>
+    <script src="./app.js?v=20260817-eco-rd"></script>
   </body>
 </html>

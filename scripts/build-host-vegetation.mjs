@@ -11,12 +11,12 @@ const bounds = { west: -125, east: -66, south: 24, north: 50, step: 1 };
 const width = (bounds.east - bounds.west) / bounds.step;
 const height = (bounds.north - bounds.south) / bounds.step;
 const taxa = [
-  { name: 'Tree-of-heaven', scientificName: 'Ailanthus altissima', taxonKey: 3190653, weight: 2, limit: 2400 },
-  { name: 'Grapes', scientificName: 'Vitis', taxonKey: 7467468, weight: 1.4, limit: 1500 },
-  { name: 'Black walnut', scientificName: 'Juglans nigra', taxonKey: 3054357, weight: 1, limit: 1500 },
-  { name: 'Red maple', scientificName: 'Acer rubrum', taxonKey: 3189883, weight: .8, limit: 1200 },
-  { name: 'Silver maple', scientificName: 'Acer saccharinum', taxonKey: 3189837, weight: .8, limit: 1200 },
-  { name: 'Willows', scientificName: 'Salix', taxonKey: 3039576, weight: .8, limit: 1500 },
+  { name: 'Tree-of-heaven', scientificName: 'Ailanthus altissima', taxonKey: 3190653, weight: 72.5, limit: 2400 },
+  { name: 'Grapes', scientificName: 'Vitis', taxonKey: 7467468, weight: 63.9, limit: 1500 },
+  { name: 'Black walnut', scientificName: 'Juglans nigra', taxonKey: 3054357, weight: 62.9, limit: 1500 },
+  { name: 'Red maple', scientificName: 'Acer rubrum', taxonKey: 3189883, weight: 22.2, limit: 1200 },
+  { name: 'Silver maple', scientificName: 'Acer saccharinum', taxonKey: 3189837, weight: 58.0, limit: 1200 },
+  { name: 'Willows', scientificName: 'Salix', taxonKey: 3039576, weight: 47.0, limit: 1500 },
 ];
 
 async function fetchTaxon(taxon) {
@@ -117,8 +117,9 @@ const bundle = {
     generatedAt: new Date().toISOString().slice(0, 10),
     source: 'GBIF public-coordinate occurrence search',
     sourceUrl: 'https://www.gbif.org/',
-    method: 'Each host taxon is gridded at 1 degree, Gaussian-smoothed, log-scaled, normalized at its U.S. land-cell 98th percentile, then combined with display emphasis weights.',
-    caveat: 'Occurrence density is a host-availability proxy, not vegetation biomass or complete host coverage. Weights are visualization emphasis values, not measured feeding coefficients.',
+    method: 'Each host taxon is gridded at 1 degree, Gaussian-smoothed, log-scaled, normalized at its U.S. land-cell 98th percentile, then combined using published mean first-instar survival days.',
+    weightSource: 'Nixon et al. 2020, Environmental Entomology 49:1270–1281, doi:10.1093/ee/nvaa126.',
+    caveat: 'Occurrence density is a host-availability proxy, not vegetation biomass or complete host coverage. Survival-day weights summarize one controlled host experiment and are not causal field coefficients.',
     taxa: taxa.map((taxon, index) => ({
       name: taxon.name,
       scientificName: taxon.scientificName,

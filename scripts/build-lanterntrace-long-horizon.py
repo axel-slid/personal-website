@@ -23,14 +23,20 @@ SOURCE_PATH = ROOT / "lanterntrace/app/generated/spread-explainer.js"
 HISTORY_PATH = ROOT / "lanterntrace/app/generated/spread-history.js"
 PYRAMID_PATH = ROOT / "lanterntrace/app/generated/spread-grid-pyramid.js"
 WIND_PATH = ROOT / "lanterntrace/app/generated/wind-climatology.js"
+HOST_PATH = ROOT / "lanterntrace/app/generated/host-vegetation.js"
 OUTPUT_PATH = ROOT / "lanterntrace/app/generated/spread-long-horizon.js"
 START_YEAR = 2026
 END_YEAR = 2056
 
-# Biological values.  No fitted UI/scenario coefficients remain.
-ANNUAL_GROWTH_RATE = 1.5  # yr^-1; Ladin et al. (2023), best-recall scenario
-NATURAL_FRONT_SPEED_KM_YR = 25.0  # Ruzzier et al. (2025)
-DIFFUSION_KM2_YR = NATURAL_FRONT_SPEED_KM_YR**2 / (4 * ANNUAL_GROWTH_RATE)
+# Eco-RD values selected on 2019-2023 first-report targets only. The 0.28
+# monthly grid coefficient corresponds to 336 km^2/yr on the solver's 20 km
+# reference stencil; 0.24/month corresponds to 2.88/yr.
+ANNUAL_GROWTH_RATE = 2.88
+DIFFUSION_KM2_YR = 336.0
+NATURAL_FRONT_SPEED_KM_YR = 2 * math.sqrt(DIFFUSION_KM2_YR * ANNUAL_GROWTH_RATE)
+CLIMATE_POWER = 1.6
+HOST_POWER = 1.0
+MINIMUM_CONDUCTIVITY = 0.08
 KM_PER_DEGREE_LATITUDE = 111.195  # mean spherical-Earth conversion
 
 # Wind response. Myrick & Baker (2019) measured a 10.7-degree mean heading
@@ -213,7 +219,7 @@ def evolve_level(
     size: float,
     initial: np.ndarray,
     climate: np.ndarray,
-    geography: np.ndarray,
+    host: np.ndarray,
     model_id: str,
     years: int,
     wind_u: np.ndarray | None = None,
@@ -230,11 +236,12 @@ def evolve_level(
         permeability = climate
         growth = ANNUAL_GROWTH_RATE * climate
     elif model_id == "terrain":
-        permeability = geography
-        growth = np.full(len(records), ANNUAL_GROWTH_RATE)
+        permeability = host
+        growth = ANNUAL_GROWTH_RATE * host
     elif model_id == "coupled":
-        permeability = climate * geography
-        growth = ANNUAL_GROWTH_RATE * climate
+        suitability = np.sqrt(np.power(host, HOST_POWER) * np.power(climate, CLIMATE_POWER))
+        permeability = MINIMUM_CONDUCTIVITY + (1 - MINIMUM_CONDUCTIVITY) * suitability
+        growth = ANNUAL_GROWTH_RATE * suitability
     else:
         raise ValueError(model_id)
 
@@ -267,9 +274,12 @@ def main() -> None:
     history = load_js(HISTORY_PATH, "window.LanternTraceSpreadHistory = ")
     pyramid = load_js(PYRAMID_PATH, "window.LanternTraceSpreadGridPyramid = ")
     wind = load_js(WIND_PATH, "window.LanternTraceWindClimatology = ")
+    host_bundle = load_js(HOST_PATH, "window.LanternTraceHostVegetation = ")
     source_signal = np.asarray(history["signals"][str(START_YEAR)], dtype=float)
     source_climate = np.asarray([cell["climate"] for cell in spread["cells"]], dtype=float)
-    source_geography = np.asarray([cell["geography"] for cell in spread["cells"]], dtype=float)
+    host_by_cell = {(float(west), float(south)): float(value) for west, south, value in host_bundle["values"]}
+    source_host = np.asarray([host_by_cell.get((float(cell["w"]), float(cell["s"])), 0.0)
+                              for cell in spread["cells"]], dtype=float)
     years = list(range(START_YEAR, END_YEAR + 1))
     model_ids = ("distance", "fisher", "climate", "terrain", "coupled")
     encoded_models: dict[str, dict[str, dict]] = {model_id: {} for model_id in model_ids}
@@ -280,7 +290,7 @@ def main() -> None:
         size = float(level_key)
         initial = np.asarray([interpolated_input(record, source_signal) for record in records])
         climate = np.asarray([interpolated_input(record, source_climate) for record in records])
-        geography = np.asarray([interpolated_input(record, source_geography) for record in records])
+        host = np.asarray([interpolated_input(record, source_host) for record in records])
         wind_vectors = [
             bilinear_wind(wind, record[0] + size / 2, record[1] + size / 2)
             for record in records
@@ -295,7 +305,7 @@ def main() -> None:
             "approxNorthSouthKm": round(size * KM_PER_DEGREE_LATITUDE, 1),
         }
         for model_id in model_ids:
-            frames = evolve_level(records, size, initial, climate, geography, model_id, len(years))
+            frames = evolve_level(records, size, initial, climate, host, model_id, len(years))
             encoded_models[model_id][level_key] = {
                 "count": len(records),
                 "frameCount": len(years),
@@ -304,7 +314,7 @@ def main() -> None:
             }
             print(f"{model_id:8s} {level_key:>4s} deg: {land_nodes:5d} land physics nodes")
         wind_frames = evolve_level(
-            records, size, initial, climate, geography, "coupled", len(years), wind_u, wind_v
+            records, size, initial, climate, host, "coupled", len(years), wind_u, wind_v
         )
         wind_models["coupled"][level_key] = {
             "count": len(records),
@@ -321,14 +331,19 @@ def main() -> None:
             "endYear": END_YEAR,
             "horizonYears": END_YEAR - START_YEAR,
             "state": "dimensionless relative establishment pressure in [0,1]",
-            "equation": "du/dt = div(D P(x) grad u) - div(v_w(x) u) + r C(x) u (1-u)",
+            "equation": "du/dt = div(D P(C,V) grad u) - div(v_w(x) u) + r S(C,V) u (1-u)",
             "solver": "one-year operator splitting: exact logistic reaction, backward-Euler finite-volume diffusion, then conservative donor-cell wind response",
             "boundary": "no flux at water-majority cells and the national domain edge",
-            "resistance": "H=C*G; cell resistance R=1/H (R=1 is the ideal baseline, H=0 is closed); edge permeability is the harmonic mean of adjacent H values",
+            "resistance": "S=sqrt(V^1.0 C^1.6); P=0.08+0.92S; cell resistance R=1/P; edge permeability is the harmonic mean of adjacent P values",
             "parameters": {
                 "annualGrowthRatePerYear": ANNUAL_GROWTH_RATE,
                 "naturalFrontSpeedKmPerYear": NATURAL_FRONT_SPEED_KM_YR,
                 "diffusionKm2PerYear": round(DIFFUSION_KM2_YR, 6),
+                "fittedMonthlyDiffusionCoefficient": 0.28,
+                "fittedMonthlyGrowthRate": 0.24,
+                "hostPower": HOST_POWER,
+                "climatePower": CLIMATE_POWER,
+                "minimumConductivity": MINIMUM_CONDUCTIVITY,
                 "timeStepYears": 1,
                 "windHeadingOffsetDegrees": WIND_HEADING_OFFSET_DEGREES,
                 "windTrackOffsetDegrees": WIND_TRACK_OFFSET_DEGREES,
@@ -337,15 +352,16 @@ def main() -> None:
                 "windFlightReferenceMetersPerSecond": WIND_FLIGHT_REFERENCE_MS,
             },
             "citations": {
-                "growthAndAnnualStep": "Ladin et al. 2023, Scientific Reports 13:1098, doi:10.1038/s41598-022-25989-3",
-                "naturalSpreadAndResistance": "Ruzzier et al. 2025, NeoBiota 103:267-298, doi:10.3897/neobiota.103.154246",
+                "fittedPhysics": "Eco-RD grid search on 2019-2023 first-report targets; research/results/eco_rd_tuning.csv",
+                "publishedResistanceComparator": "Ruzzier et al. 2025, NeoBiota 103:267-298, doi:10.3897/neobiota.103.154246",
                 "climateVariables": "Wakie et al. 2020, Journal of Economic Entomology 113:306-314, doi:10.1093/jee/toz259",
+                "hostWeights": "Nixon et al. 2020, Environmental Entomology 49:1270-1281, doi:10.1093/ee/nvaa126",
                 "windClimatology": "NOAA PSL NCEP/DOE Reanalysis II 1991-2020 mean 10 m u/v winds; Kanamitsu et al. 2002, BAMS 83:1631-1643, doi:10.1175/BAMS-83-11-1631",
                 "windResponse": "Myrick & Baker 2019, Journal of Insect Behavior 32:11-23, doi:10.1007/s10905-019-09708-x; Wolfin et al. 2020, Journal of Insect Behavior 33:425-439, doi:10.1007/s10905-020-09754-w",
             },
             "resolution": resolution,
             "wind": "Optional wind-aware solve uses the NOAA 1991-2020 annual mean vector direction and observed upwind adult flight. It is a climatological mechanism comparison, not live weather or a calibrated long-range wind forecast.",
-            "caveat": "Mechanism simulation of relative pressure, not abundance, occupancy probability, or a validated national forecast. Human-assisted jumps are excluded because the literature does not identify a transferable continuous jump coefficient for this state variable.",
+            "caveat": "Mechanism simulation of relative pressure, not abundance, occupancy probability, or a validated national forecast. Eco-RD parameters were selected retrospectively before the 2024-2025 replay; the host occurrence proxy is not vegetation biomass. Human-assisted jumps are excluded because the literature does not identify a transferable continuous jump coefficient for this state variable.",
         },
         "models": encoded_models,
         "windModels": wind_models,
