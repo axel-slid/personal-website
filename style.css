@@ -174,14 +174,14 @@ h1, h2, h3, p, figure { margin-top: 0; }
 .publication-authors { color: var(--muted); font-size: .86rem; }
 .publication-note { display: block; margin-top: .2rem; font-size: .78rem; font-style: italic; }
 
-.project-list { display: flex; flex-direction: column; gap: 1.5rem; margin: 1rem 0 1.5rem; }
-.project-item { display: grid; grid-template-columns: 1fr; gap: 1rem; align-items: center; }
+.project-list { display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1rem 0 1.5rem; }
+.project-item { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: .9rem; align-items: start; padding: 1rem; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 .project-logo { display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
 .project-logo img { width: 100%; height: 128px; object-fit: cover; }
-.project-logo.project-icon { min-height: 112px; padding: 0; overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.project-logo.project-icon { min-height: 84px; padding: 0; overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
 .project-logo.project-icon img { width: 84px; height: 84px; border-radius: 18px; object-fit: contain; }
 .project-logo.project-icon.lanterntrace-icon { background: transparent; }
-.project-logo.project-icon.lanterntrace-icon img { width: 132px; height: 84px; border-radius: 0; }
+.project-logo.project-icon.lanterntrace-icon img { width: 92px; height: 84px; border-radius: 0; }
 .project-body h3 { margin: 0 0 .45rem; font-size: 1rem; line-height: 1.35; }
 .project-body h3 a { color: var(--link); }
 .project-tags { margin: .2rem 0 .45rem; }
@@ -329,8 +329,8 @@ footer a:hover { text-decoration: underline; }
   .publication-card { grid-template-columns: 185px minmax(0, 1fr); column-gap: 1.05rem; }
   .publication-thumb { justify-content: flex-start; }
   .publication-thumb img { max-width: none; height: 112px; }
-  .project-item { grid-template-columns: 170px minmax(0, 1fr); column-gap: 1.35rem; }
-  .project-logo img { height: 112px; }
+  .project-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .project-item { grid-template-columns: 106px minmax(0, 1fr); }
   .timeline-row { grid-template-columns: 1fr auto; align-items: baseline; column-gap: 1rem; }
 }
 
