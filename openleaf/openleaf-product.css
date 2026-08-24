@@ -23,7 +23,7 @@ body {
 
 body {
   min-height: 100svh;
-  overflow: hidden;
+  overflow-x: hidden;
   color: var(--text);
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
@@ -43,6 +43,10 @@ body::after {
 button {
   color: inherit;
   font: inherit;
+}
+
+a {
+  color: inherit;
 }
 
 :focus-visible {
@@ -87,30 +91,66 @@ main {
   width: min(760px, calc(100% - 32px));
   margin: 0 auto;
   flex-direction: column;
-  justify-content: center;
   padding: 32px 0 34px;
   text-align: center;
 }
 
 .hero {
-  padding: 52px 32px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 28px;
-  background: rgba(7, 17, 31, 0.58);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  margin: auto 0;
+  padding: 78px 0 52px;
 }
 
 h1 {
   margin: 0;
-  font-size: clamp(64px, 12vw, 108px);
-  font-weight: 400;
-  letter-spacing: -0.075em;
-  line-height: .92;
+  font-size: clamp(56px, 12vw, 92px);
+  font-weight: 650;
+  letter-spacing: -.065em;
+  line-height: .95;
   text-shadow: 0 8px 38px rgba(0, 0, 0, 0.78);
 }
 
+.github {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 7px;
+  margin-top: 22px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(12, 22, 39, .68);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, .2);
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+.github:hover {
+  border-color: #52627b;
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.github svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.intro {
+  max-width: 540px;
+  margin: 24px auto 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
 .install {
-  margin-top: 34px;
+  margin-top: 38px;
   text-align: left;
 }
 
@@ -168,18 +208,35 @@ code {
   transform: translateY(-1px);
 }
 
+.hint {
+  margin: 11px 0 0;
+  color: #6f7a8c;
+  font-size: 11px;
+  text-align: center;
+}
+
+footer {
+  color: #6f7a8c;
+  font-size: 11px;
+  text-align: center;
+}
+
+footer a {
+  color: var(--muted);
+  text-underline-offset: 3px;
+}
+
 @media (max-width: 560px) {
   main {
     padding-top: 20px;
   }
 
   .hero {
-    padding: 42px 18px 34px;
-    border-radius: 22px;
+    padding-top: 72px;
   }
 
   h1 {
-    font-size: clamp(62px, 23vw, 92px);
+    font-size: clamp(56px, 23vw, 88px);
   }
 
   code {

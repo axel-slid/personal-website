@@ -19,7 +19,7 @@
   <link rel="icon" href="icon.png" type="image/png">
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="preload" href="motion/openleaf-product-showcase-hq-poster.png?v=20260823-professional-film-v25" as="image" fetchpriority="high">
-  <link rel="stylesheet" href="openleaf-product.css?v=20260823-professional-film-v25">
+  <link rel="stylesheet" href="openleaf-product.css?v=20260823-bscode-layout-v26">
 </head>
 <body>
   <figure class="preview" aria-hidden="true">
@@ -41,6 +41,13 @@
   <main>
     <section class="hero">
       <h1>Openleaf</h1>
+      <a class="github" href="https://github.com/axel-slid/openleaf" target="_blank" rel="noreferrer" aria-label="Openleaf source code on GitHub">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-1.9c-3.14.68-3.8-1.34-3.8-1.34-.52-1.3-1.26-1.65-1.26-1.65-1.02-.7.08-.68.08-.68 1.13.08 1.73 1.16 1.73 1.16 1 .1 2.63.9 3.28.55.1-.73.4-1.23.72-1.51-2.5-.29-5.14-1.25-5.14-5.57 0-1.23.44-2.24 1.16-3.03-.12-.29-.5-1.44.11-2.99 0 0 .95-.3 3.1 1.16A10.8 10.8 0 0 1 12 5.91c.96 0 1.92.13 2.82.38 2.15-1.46 3.1-1.16 3.1-1.16.61 1.55.23 2.7.11 2.99.72.79 1.16 1.8 1.16 3.03 0 4.33-2.64 5.28-5.15 5.56.41.35.77 1.04.77 2.1v3.12c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"></path>
+        </svg>
+        <span>Open source on GitHub</span>
+      </a>
+      <p class="intro">Write LaTeX, compile live PDFs, and work with coding agents in one complete local research workspace.</p>
       <div class="install" id="install">
         <p class="install-label">Paste this into Terminal</p>
         <div class="install-command">
@@ -48,8 +55,13 @@
           <code id="installCommand">curl -fsSL https://alex-dils.com/openleaf/install.sh | bash</code>
           <button id="copyInstall" type="button" aria-label="Copy the Openleaf install command">Copy</button>
         </div>
+        <p class="hint">macOS · Apple Silicon · v0.2.1</p>
       </div>
     </section>
+
+    <footer>
+      Free and open source · <a href="https://github.com/axel-slid/openleaf" target="_blank" rel="noreferrer">View the code on GitHub</a>
+    </footer>
   </main>
 
   <script src="openleaf-product.js"></script>
