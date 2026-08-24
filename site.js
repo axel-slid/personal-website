@@ -118,61 +118,25 @@
     textArea.remove();
   };
 
-  const emailDialog = document.querySelector("[data-email-dialog]");
-  const emailClose = document.querySelector("[data-email-close]");
-  const emailValue = document.querySelector("[data-email-value]");
-  const emailCompose = document.querySelector("[data-email-compose]");
   const emailCopy = document.querySelector("[data-email-copy]");
-  const emailStatus = document.querySelector("[data-email-status]");
-  let emailReturnFocus = null;
-  let currentEmail = "";
+  emailCopy?.addEventListener("click", async () => {
+    const email = emailCopy.dataset.emailValue;
+    if (!email) return;
 
-  const closeEmailDialog = () => {
-    if (emailDialog?.open) emailDialog.close();
-  };
+    const icon = emailCopy.querySelector("i");
+    try {
+      await copyText(email);
+      icon?.classList.replace("fa-copy", "fa-check");
+      emailCopy.setAttribute("aria-label", "Email copied");
+    } catch (_) {
+      emailCopy.setAttribute("aria-label", `Select ${email} to copy it`);
+    }
 
-  if (emailDialog) {
-    document.addEventListener("click", (event) => {
-      const link = event.target.closest("[data-email]");
-      if (!link) return;
-      event.preventDefault();
-
-      const user = link.getAttribute("data-email-user");
-      const domain = link.getAttribute("data-email-domain");
-      if (!user || !domain) return;
-
-      currentEmail = `${user}@${domain}`;
-      if (emailValue) emailValue.textContent = currentEmail;
-      if (emailCompose) emailCompose.href = `mailto:${currentEmail}`;
-      if (emailStatus) emailStatus.textContent = "";
-      emailReturnFocus = link;
-      emailDialog.showModal();
-      document.body.classList.add("modal-open");
-      emailClose?.focus();
-    });
-
-    emailClose?.addEventListener("click", closeEmailDialog);
-
-    emailDialog.addEventListener("click", (event) => {
-      if (event.target === emailDialog) closeEmailDialog();
-    });
-
-    emailDialog.addEventListener("close", () => {
-      document.body.classList.remove("modal-open");
-      emailReturnFocus?.focus();
-      emailReturnFocus = null;
-    });
-
-    emailCopy?.addEventListener("click", async () => {
-      if (!currentEmail) return;
-      try {
-        await copyText(currentEmail);
-        if (emailStatus) emailStatus.textContent = "Email copied.";
-      } catch (_) {
-        if (emailStatus) emailStatus.textContent = "Select the address above to copy it.";
-      }
-    });
-  }
+    window.setTimeout(() => {
+      icon?.classList.replace("fa-check", "fa-copy");
+      emailCopy.setAttribute("aria-label", `Copy ${email}`);
+    }, 1600);
+  });
 
   document.querySelectorAll("[data-copy-command]").forEach((button) => {
     button.addEventListener("click", async () => {
