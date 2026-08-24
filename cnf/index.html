@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Physics-guided synthetic longitudinal imaging for cutaneous neurofibroma burden estimation.">
+  <meta name="keywords" content="NF1, cutaneous neurofibroma, synthetic data, morphoelastic growth, burden estimation, medical digital twin">
+  <meta property="og:title" content="Physics-Guided Synthetic cNF Progression">
+  <meta property="og:description" content="Mechanistic growth and generative AI improve image-based cNF burden estimation.">
+  <meta property="og:image" content="https://www.alex-dils.com/cnf/assets/synthetic/simulated-longitudinal-sequence.png">
+  <meta property="og:url" content="https://www.alex-dils.com/cnf/">
+  <meta property="og:type" content="website">
+  <title>Physics-Guided Synthetic cNF Progression</title>
+
+  <link rel="canonical" href="https://www.alex-dils.com/cnf/">
+
+  <link rel="icon" href="assets/brand/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+</head>
+
+<body>
+  <section class="hero publication-header" id="top">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <p class="project-meta">Canary CREST &middot; Stanford Medicine &middot; 2026</p>
+            <h1 class="title is-2 publication-title">
+              Physics-Guided Synthetic cNF Progression<br class="is-hidden-mobile">
+              Improves Image-Based Burden Estimation
+            </h1>
+            <p class="subtitle is-5 publication-subtitle">
+              Volume is all you need
+            </p>
+
+            <details class="credit-disclosure">
+              <summary>
+                <span class="credit-summary-title">Authors &amp; affiliations</span>
+                <span class="credit-summary-meta">25 authors &middot; 20 affiliations</span>
+              </summary>
+              <div class="credit-content">
+            <div class="publication-authors author-list">
+              <span class="author-block">Christoph Sad&eacute;e<sup>1,*</sup>,</span>
+              <span class="author-block">Alex Dils<sup>1,2,*</sup>,</span>
+              <span class="author-block">Krish Sangani<sup>2</sup>,</span>
+              <span class="author-block">Lillian Rubino<sup>1</sup>,</span>
+              <span class="author-block">Alexander Ferenchick<sup>1,3</sup>,</span>
+              <span class="author-block">Varun Wadhwa<sup>4</sup>,</span>
+              <span class="author-block">Anushka Poddar<sup>5</sup>,</span>
+              <span class="author-block">Tobenna Onyemeh<sup>6</sup>,</span>
+              <span class="author-block">Zimuzo Onah<sup>7</sup>,</span>
+              <span class="author-block">Dhruv Sharma<sup>4</sup>,</span>
+              <span class="author-block">Jackson Bae<sup>8</sup>,</span>
+              <span class="author-block">Max Van Puyvelde<sup>1</sup>,</span>
+              <span class="author-block">Carlos Romo<sup>9</sup>,</span>
+              <span class="author-block">Melinda Jen<sup>10</sup>,</span>
+              <span class="author-block">Nkiru Onodugo<sup>11</sup>,</span>
+              <span class="author-block">Ayesha Akinkugbe<sup>12,13</sup>,</span>
+              <span class="author-block">Qinmei Xu<sup>1</sup>,</span>
+              <span class="author-block">Qingtao Kong<sup>14</sup>,</span>
+              <span class="author-block">Rui Yang<sup>15</sup>,</span>
+              <span class="author-block">Aisha Sokunbi<sup>16</sup>,</span>
+              <span class="author-block">Shaoxiong Yao<sup>17</sup>,</span>
+              <span class="author-block">Haomiao Huang<sup>18</sup>,</span>
+              <span class="author-block">Ifeoma Okoye<sup>6,11,19</sup>,</span>
+              <span class="author-block">Olivier Gevaert<sup>1,**</sup>,</span>
+              <span class="author-block">Kavita Sarin<sup>20,**</sup></span>
+            </div>
+
+            <ol class="affiliation-list">
+              <li>Division of Computational Medicine, Department of Medicine, Stanford University</li>
+              <li>University of California, Berkeley</li>
+              <li>University of Pennsylvania</li>
+              <li>University of California, Davis</li>
+              <li>University of Maryland, College Park</li>
+              <li>University of Nigeria, Nsukka, Center for Excellence for Clinical Trials</li>
+              <li>University of Nigeria Teaching Hospital Ituku-Ozalla</li>
+              <li>University of California, Los Angeles</li>
+              <li>Johns Hopkins School of Medicine</li>
+              <li>Children&rsquo;s Hospital of Philadelphia, Dermatology Section</li>
+              <li>University of Nigeria Teaching Hospital</li>
+              <li>University of Lagos</li>
+              <li>Lagos University Teaching Hospital</li>
+              <li>Department of Dermatology, Jinling Hospital, Affiliated Hospital of the Medical School of Nanjing University, Nanjing, China</li>
+              <li>Department of Dermatology, Second Affiliated Hospital of Nanjing Medical University, Nanjing, China</li>
+              <li>University of Benin Teaching Hospital</li>
+              <li>Siebel School of Computing and Data Science, University of Illinois Urbana-Champaign</li>
+              <li>Matter Venture Partners</li>
+              <li>University of Nigeria, Nsukka</li>
+              <li>Department of Dermatology, Stanford University School of Medicine</li>
+            </ol>
+            <p class="author-note"><sup>*</sup> Co-first authors; <sup>**</sup> Co-senior authors.</p>
+              </div>
+            </details>
+
+            <div class="publication-links">
+              <span class="link-block"><a href="assets/docs/canary-crest-poster.pdf" class="external-link button is-normal is-rounded is-dark"><span class="icon"><i class="fas fa-image" aria-hidden="true"></i></span><span>Poster</span></a></span>
+              <span class="link-block"><a href="assets/docs/cnf-longitudinal-imaging-manuscript.pdf" class="external-link button is-normal is-rounded is-dark"><span class="icon"><i class="fas fa-file-alt" aria-hidden="true"></i></span><span>Paper</span></a></span>
+              <span class="link-block"><a href="https://github.com/axel-slid/synthetic_neurofibroma" class="external-link button is-normal is-rounded is-dark"><span class="icon"><i class="fab fa-github" aria-hidden="true"></i></span><span>Code</span></a></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <div class="publication-banner">
+          <div class="banner-frame">
+            <img src="assets/synthetic/fitzpatrick_depthpro_surface_rotation.gif"
+                 alt="Depth Pro reconstructing rotating 3D skin surfaces from single Fitzpatrick images">
+          </div>
+        </div>
+        <h2 class="subtitle has-text-centered">
+          Fine-tuned Depth Pro reconstructs 3D skin surfaces from single images.
+        </h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="abstract" data-spy>
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified paper-copy">
+            <p>
+              Neurofibromatosis type 1 (NF1) is a tumor-predisposition syndrome, and the cutaneous
+              neurofibromas (cNFs) that appear on the skin are its most visible sign. Following these
+              lesions over time is clinically meaningful, yet the usual tools - visual inspection,
+              manual counts, calipers, and flat photographs - describe how a lesion <em>looks</em>
+              rather than how much tissue is actually there.
+            </p>
+            <p>
+              We connect that measurement problem to the missing time dimension. A morphoelastic
+              finite-element model proposes how a lesion grows in three dimensions, and a
+              geometry-conditioned FLUX.2 Klein adapter renders the simulated geometry as a realistic
+              longitudinal image. Synthetic augmentation then improves burden estimation on held-out
+              real images, increasing R&sup2; from 0.775 to 0.849.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="volume" data-spy>
+    <div class="container is-max-desktop">
+      <div class="has-text-centered">
+        <h2 class="title is-3">Why volume?</h2>
+      </div>
+      <div class="content has-text-justified paper-copy">
+        <p>
+          cNFs are peripheral nerve-sheath tumors that grow within the skin itself, and a single person
+          carrying NF1 can host hundreds or even thousands of them. The complication, for anyone hoping
+          to measure them cleanly, is that they stubbornly refuse to be the same shape. They run along a
+          whole morphological gradient: from nascent lesions barely lifted off normal skin, to flat
+          ones that spread sideways without rising, to sessile ones planted broadly on the surface, to
+          globular ones bulging outward, all the way to pedunculated ones dangling from a narrow stalk
+          like fruit on a branch.
+        </p>
+      </div>
+      <figure class="slide-figure">
+        <img src="assets/scope-crops/cnf-volume-page-02-crop.jpg"
+             alt="cNF morphology classes from nascent through pedunculated">
+        <figcaption>cNF morphology classes, from nascent through pedunculated, with matched clinical photographs.</figcaption>
+      </figure>
+      <div class="content has-text-justified paper-copy">
+        <p>
+          This variety is precisely what makes recent efforts in AI-driven cNF assessment so valuable
+          and yet, on their own, incomplete. Detection and segmentation can answer where the lesions are
+          and how many there are, but they stop short of the final step: total burden.
+        </p>
+        <p>
+          Clinically visible burden is a tangled product of count, footprint, protrusion, and morphology,
+          and no one of those four ever stands in for the others. Two lesions can share an identical
+          segmentation footprint while carrying very different amounts of tissue, one lying flat and the
+          other bulging outward. Volume becomes the natural quantity to report because it folds together
+          what the clinician can already see with what the 2D segmentations were hiding all along.
+        </p>
+        <p>
+          Volume is the measurement dermatology AI has been missing for cNF. It offers a lower-cost,
+          faster way to quantify burden and a more precise way to follow disease over time. The need is
+          also acute in research: cNF treatment trials still lack standardized outcome measures for
+          objective changes in lesion size and appearance.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="method" data-spy>
+    <div class="container is-max-desktop">
+      <div class="has-text-centered">
+        <p class="section-kicker">Method</p>
+        <h2 class="title is-3">A physics-to-image pipeline</h2>
+      </div>
+
+      <div class="content has-text-justified paper-copy">
+        <p>
+          A flat photograph gives us appearance, but progression requires geometry and time. The method
+          therefore separates the problem in two. Physics supplies the shape a lesion should take as it
+          grows; generative AI supplies the color, texture, and boundary detail that make the simulated
+          state look like skin. The journey from one ordinary image to a longitudinal sequence runs
+          through four steps.
+        </p>
+      </div>
+
+      <figure class="slide-figure">
+        <img src="assets/synthetic/physics-ai-pipeline.png"
+             alt="Mechanistic modeling, AI rendering, reader-study evaluation, and volume-regression evaluation">
+        <figcaption>Geometry is simulated first, then rendered as a realistic longitudinal image.</figcaption>
+      </figure>
+
+      <div class="columns is-multiline method-summary">
+        <div class="column is-half">
+          <div class="method-step">
+            <span class="step-pill">Step 1 &middot; Encode</span>
+            <h3 class="subhead">Recover lesion geometry</h3>
+            <p class="copy">Depth Pro and surface normals describe how each lesion protrudes from the surrounding skin.</p>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div class="method-step">
+            <span class="step-pill">Step 2 &middot; Simulate</span>
+            <h3 class="subhead">Grow the lesion in 3D</h3>
+            <p class="copy">A morphoelastic finite-element model expands one lesion through layered skin tissue.</p>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div class="method-step">
+            <span class="step-pill">Step 3 &middot; Render</span>
+            <h3 class="subhead">Turn geometry into skin images</h3>
+            <p class="copy">A cNF-specific FLUX.2 Klein adapter renders each simulated geometry as a photorealistic frame.</p>
+          </div>
+        </div>
+        <div class="column is-half">
+          <div class="method-step">
+            <span class="step-pill">Step 4 &middot; Evaluate</span>
+            <h3 class="subhead">Test on real held-out images</h3>
+            <p class="copy">Reader studies assess realism, while matched ConvNeXt models test whether synthetic growth improves burden regression.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="synthetic" data-spy>
+    <div class="container is-max-desktop">
+      <div class="has-text-centered">
+        <p class="section-kicker">Synthetic Data</p>
+        <h2 class="title is-3">The longitudinal-data bottleneck</h2>
+      </div>
+
+      <div class="content has-text-justified paper-copy">
+        <p>
+          The pipeline sounds clean on paper: recover geometry, simulate growth, render the result.
+          What makes the problem difficult is the missing ground truth. Public cNF datasets are almost
+          entirely cross-sectional, and directly observing meaningful progression can require years or
+          decades. A model cannot learn a time course from images that never contain one.
+        </p>
+        <p>
+          The way out is to manufacture the supervision ourselves. Depth and surface normals encode the
+          protruding lesion. A layered finite-element skin model grows that lesion through a sequence of
+          controlled states. FLUX.2 then converts each state back into a clinical-looking photograph
+          while preserving the surrounding skin. What the generator hands us is exactly what ordinary
+          photographs almost never can: paired images and geometry at multiple known growth states.
+        </p>
+        <p>
+          This is not synthetic data for its own sake. It is a controlled sandbox for building burden
+          estimators, treatment-response tools, and medical-digital-twin infrastructure before scarce
+          longitudinal patient data are available. Real patient imaging remains the standard for final
+          calibration and validation.
+        </p>
+      </div>
+
+      <figure class="slide-figure">
+        <img src="assets/synthetic/simulated-longitudinal-sequence.png"
+             alt="An original cNF image followed by four simulated growth stages and a simulated scar">
+        <figcaption>One observed image becomes four simulated growth states and a post-operative scar.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="data" data-spy>
+    <div class="container is-max-desktop">
+      <div class="has-text-centered">
+        <p class="section-kicker">Data</p>
+        <h2 class="title is-3">Built from public images</h2>
+      </div>
+
+      <div class="columns is-centered dataset-row">
+        <div class="column is-one-third">
+          <div class="data-card has-text-centered">
+            <p class="data-number">279</p>
+            <p class="data-label">cNF images</p>
+          </div>
+        </div>
+        <div class="column is-one-third">
+          <div class="data-card has-text-centered">
+            <p class="data-number">42,305</p>
+            <p class="data-label">lesion annotations</p>
+          </div>
+        </div>
+        <div class="column is-one-third">
+          <div class="data-card has-text-centered">
+            <p class="data-number">279</p>
+            <p class="data-label">generated sequences</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content has-text-centered paper-copy">
+        <p>The image split was 229 / 25 / 25 for training, validation, and testing. Scar modeling used 11 images with 359 annotations.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="results" data-spy>
+    <div class="container is-max-desktop">
+      <div class="has-text-centered">
+        <p class="section-kicker">Results</p>
+        <h2 class="title is-3">What the synthetic data actually showed</h2>
+      </div>
+
+      <div class="content has-text-justified paper-copy">
+        <p>
+          The central question is whether the simulated growth states actually help on images the model
+          has never seen. To isolate that effect, both training arms used the same architecture and the
+          same 60 real images. The augmented arm received one additional ingredient: 240 physics-guided
+          synthetic growth states.
+        </p>
+      </div>
+
+      <figure class="slide-figure results-frame">
+        <img src="assets/synthetic/burden-regression-results.png"
+             alt="Predicted versus target burden for real-only and real-plus-synthetic models">
+        <figcaption>Three-seed ensemble evaluated on 40 held-out real images.</figcaption>
+      </figure>
+
+      <div class="columns is-centered result-metrics">
+        <div class="column is-one-third">
+          <div class="data-card has-text-centered">
+            <p class="data-number">0.775 &rarr; 0.849</p>
+            <p class="data-label">R&sup2;</p>
+          </div>
+        </div>
+        <div class="column is-one-third">
+          <div class="data-card has-text-centered">
+            <p class="data-number">18.1%</p>
+            <p class="data-label">lower log RMSE</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content has-text-justified paper-copy">
+        <p>
+          The real-only arm used 60 training images. The augmented arm used the same 60 images plus
+          240 simulated growth states. On 40 held-out real images, RMSE fell from 1.179 to 0.965.
+        </p>
+      </div>
+
+      <div class="has-text-centered secondary-result">
+        <h3 class="title is-4">Fine-tuning also improved depth models</h3>
+      </div>
+      <figure class="slide-figure">
+        <img src="assets/synthetic/depth-model-results.png"
+             alt="Depth-model RMSE before and after fine-tuning across four models">
+        <figcaption>Average RMSE fell from 47.30 cm to 12.83 cm, a 72.9% reduction.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="limits" data-spy>
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-four-fifths">
+          <div class="has-text-centered">
+            <p class="section-kicker">Limits</p>
+            <h2 class="title is-3">Promising, not clinically validated</h2>
+          </div>
+          <div class="content limitation-box">
+            <ul>
+              <li>Real 3D and longitudinal cNF images are still needed to validate the simulations.</li>
+              <li>The mechanistic model simplifies lesion biology and currently grows one lesion at a time.</li>
+              <li>The bootstrap intervals for the burden gain include no improvement, so the result remains uncertain.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="resources" data-spy>
+    <div class="container is-max-desktop has-text-centered">
+      <p class="section-kicker">Resources</p>
+      <h2 class="title is-3">Poster, paper, and code</h2>
+      <div class="publication-links">
+        <span class="link-block"><a href="assets/docs/canary-crest-poster.pdf" class="external-link button is-normal is-rounded is-dark"><span class="icon"><i class="fas fa-image" aria-hidden="true"></i></span><span>View poster</span></a></span>
+        <span class="link-block"><a href="assets/docs/cnf-longitudinal-imaging-manuscript.pdf" class="external-link button is-normal is-rounded is-dark"><span class="icon"><i class="fas fa-file-alt" aria-hidden="true"></i></span><span>Read paper</span></a></span>
+        <span class="link-block"><a href="https://github.com/axel-slid/synthetic_neurofibroma" class="external-link button is-normal is-rounded is-dark"><span class="icon"><i class="fab fa-github" aria-hidden="true"></i></span><span>View code</span></a></span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="content has-text-centered">
+      <p><strong>cNF longitudinal imaging</strong> &middot; Canary CREST &middot; Stanford Medicine</p>
+      <p class="is-size-7">Research use only. Not clinically validated.</p>
+    </div>
+  </footer>
+</body>
+</html>

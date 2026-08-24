@@ -4,6 +4,7 @@
   "outputDirectory": ".",
   "cleanUrls": true,
   "rewrites": [
+    { "source": "/cnf", "destination": "/cnf/index.html" },
     { "source": "/set-player", "destination": "/set-player/index.html" },
     { "source": "/bscode", "destination": "/bscode/index.html" },
     { "source": "/openleaf", "destination": "/openleaf/index.html" },
