@@ -40,8 +40,9 @@ h1 em { color: #80877d; font-style: normal; font-weight: 500; }
 .primary-button strong, .primary-button small { display: block; text-align: left; }
 .primary-button strong { font-size: 13px; }
 .primary-button small { margin-top: 2px; color: #62685f; font-family: var(--mono); font-size: 8px; }
-.text-link { display: inline-flex; align-items: center; gap: 16px; color: #c1c6bd; border-bottom: 1px solid #4d534b; padding-bottom: 5px; font-family: var(--mono); font-size: 9px; }
+.text-link { display: inline-flex; align-items: center; gap: 8px; color: #c1c6bd; border-bottom: 1px solid #4d534b; padding-bottom: 5px; font-family: var(--mono); font-size: 9px; }
 .text-link:hover { color: var(--pink); border-color: var(--pink); }
+.github-logo { width: 15px; height: 15px; flex: none; fill: currentColor; }
 .hero-screenshot { max-width: 1200px; margin: 74px auto 0; overflow: hidden; border: 0; border-radius: 20px; background: #0c0d0b; box-shadow: 0 45px 120px rgba(0,0,0,.52); animation: heroScreenIn .7s .15s ease-out both; }
 .hero-screenshot img { width: calc(100% + 24px); max-width: none; margin: -12px; border: 0; border-radius: 0; }
 @keyframes heroScreenIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
