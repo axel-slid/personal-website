@@ -169,12 +169,15 @@ h1, h2, h3, p, figure { margin-top: 0; }
 .publication-body h3 { margin: 0 0 .5rem; font-size: .98rem; line-height: 1.3; }
 .publication-body h3 a { color: var(--link); }
 .publication-body p { margin: .35rem 0 0; line-height: 1.42; }
-.publication-keywords, .publication-links, .project-tags, .project-links { display: flex; flex-wrap: wrap; gap: .25rem; margin: .45rem 0; }
-.publication-keywords span, .project-tags span { display: inline-block; padding: .08rem .45rem; border-radius: 999px; background: var(--tag-one-bg); color: var(--tag-one-ink); font-size: .68rem; line-height: 1.45; }
-.publication-keywords span:nth-child(2n), .project-tags span:nth-child(2n) { background: var(--tag-two-bg); color: var(--tag-two-ink); }
-.publication-keywords span:nth-child(3n), .project-tags span:nth-child(3n) { background: var(--tag-three-bg); color: var(--tag-three-ink); }
-.publication-links a { display: inline-block; padding: .08rem .5rem; border-radius: 999px; background: var(--surface-muted); color: var(--pill-ink); font-size: .72rem; line-height: 1.45; text-decoration: none; }
-.publication-links a:hover { color: var(--link); text-decoration: underline; }
+.publication-links, .project-tags, .project-links { display: flex; flex-wrap: wrap; gap: .25rem; margin: .45rem 0; }
+.project-tags span { display: inline-block; padding: .08rem .45rem; border-radius: 999px; background: var(--tag-one-bg); color: var(--tag-one-ink); font-size: .68rem; line-height: 1.45; }
+.project-tags span:nth-child(2n) { background: var(--tag-two-bg); color: var(--tag-two-ink); }
+.project-tags span:nth-child(3n) { background: var(--tag-three-bg); color: var(--tag-three-ink); }
+.publication-links { gap: .35rem .75rem; }
+.publication-links a { color: var(--tag-one-ink); font-size: .76rem; font-weight: 700; line-height: 1.45; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+.publication-links a:nth-child(2n) { color: var(--tag-two-ink); }
+.publication-links a:nth-child(3n) { color: var(--tag-three-ink); }
+.publication-links a:hover { color: var(--link); text-decoration-thickness: 2px; }
 .publication-venue { font-size: .86rem; font-style: italic; }
 .publication-authors { color: var(--muted); font-size: .86rem; }
 .publication-note { display: block; margin-top: .2rem; font-size: .78rem; font-style: italic; }
