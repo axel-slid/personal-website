@@ -1097,22 +1097,6 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 /* Electron traffic-light safe area, without restoring an application header. */
 .electron-shell .spread-only #spread-panel { padding-top: 54px; }
 
-/* Top-right mesh / occurrence-report switch. */
-.spread-display-toggle { position: absolute; z-index: 8; top: 18px; right: 18px; display: flex; gap: 3px; padding: 4px; border: 1px solid rgba(121, 240, 196, .25); border-radius: 11px; background: rgba(3, 25, 22, .9); box-shadow: 0 10px 28px rgba(0, 0, 0, .28); backdrop-filter: blur(9px); }
-.spread-display-toggle button { display: grid; width: 42px; min-width: 42px; height: 36px; padding: 0; place-items: center; border: 0; border-radius: 7px; background: transparent; color: #769f8f; cursor: pointer; }
-.spread-display-toggle button:hover { color: #c9e5d8; background: rgba(121, 240, 196, .07); }
-.spread-display-toggle button.active { background: rgba(89, 196, 151, .18); color: #e9fff2; box-shadow: inset 0 0 0 1px rgba(126, 237, 190, .3); }
-.spread-display-toggle button[data-spread-display="reports"].active { background: rgba(216, 244, 125, .15); color: #e8f99d; box-shadow: inset 0 0 0 1px rgba(216, 244, 125, .36); }
-.spread-display-toggle svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
-.spread-display-toggle button[data-spread-display="mesh"] svg { stroke-width: 1.15; }
-.spread-display-toggle button.active svg { filter: drop-shadow(0 0 4px rgba(140, 245, 194, .35)); }
-.spread-display-toggle button[data-spread-display="reports"].active svg { filter: drop-shadow(0 0 4px rgba(216, 244, 125, .34)); }
-
-@media (max-width: 720px) {
-  .spread-display-toggle { right: 10px; }
-  .spread-display-toggle button { width: 39px; min-width: 39px; }
-}
-
 /* Apple Weather-style animated climatological wind overlay. */
 .wind-canvas { position: absolute; z-index: 5; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity .28s ease; mix-blend-mode: screen; }
 .wind-canvas.active { opacity: 1; filter: drop-shadow(0 0 2px rgba(153, 246, 232, .32)); }
@@ -1194,7 +1178,6 @@ button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid 
 .spread-only .map-stage.camera-moving .starfield::after,
 .spread-only .map-stage.camera-moving .starfield .star { filter: none; }
 .spread-only .map-stage.camera-moving .spread-timeline-dock,
-.spread-only .map-stage.camera-moving .spread-display-toggle,
 .spread-only .map-stage.camera-moving .spread-hud,
 .spread-only .map-stage.camera-moving .wind-legend { backdrop-filter: none; -webkit-backdrop-filter: none; }
 .spread-only .map-stage.camera-moving .farm-impact-figure { filter: none; }
