@@ -25,7 +25,8 @@ for (const file of requiredFiles) {
 }
 
 for (const requiredDownload of [
-  "CT-PET-Review-Workstation-1.1.0-macOS-arm64.dmg",
+  "https://github.com/axel-slid/ct-pet-review-workstation",
+  "CT-PET-Review-Workstation-1.1.2-arm64.dmg",
   "CT-PET-Review-Workstation-1.1.0-Windows-x64.exe",
   "curl -fsSL https://alex-dils.com/ct-pet-viewer/install.sh | bash",
   "curl.exe -fsSL https://alex-dils.com/ct-pet-viewer/install.ps1 | powershell -NoProfile -ExecutionPolicy Bypass -Command -",
