@@ -5,7 +5,7 @@ import {dirname,resolve} from 'node:path';
 const cwd=dirname(fileURLToPath(import.meta.url));
 const output=resolve(cwd,'../../openleaf/demo');
 mkdirSync(output,{recursive:true});
-for (const [id,frame] of [['Papers',35],['Python',270],['Slides',200]]) {
+for (const [id,frame] of [['Papers',35],['Python',175],['Slides',150]]) {
  const name=id.toLowerCase()+'-remotion';
  execFileSync(resolve(cwd,'node_modules/.bin/remotion'),['render','src/index.jsx',id,resolve(output,name+'.mp4'),'--codec=h264','--crf=21','--pixel-format=yuv420p','--concurrency=3','--overwrite','--log=error'],{cwd,stdio:'inherit'});
  execFileSync(resolve(cwd,'node_modules/.bin/remotion'),['still','src/index.jsx',id,resolve(output,name+'.jpg'),'--frame='+frame,'--image-format=jpeg','--overwrite','--log=error'],{cwd,stdio:'inherit'});

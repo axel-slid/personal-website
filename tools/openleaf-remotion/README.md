@@ -1,6 +1,6 @@
 # Openleaf core demos
 
-Three Remotion compositions: Papers (12 s), Python (11 s), and Slides (12 s).
+Three Remotion compositions: Papers (8 s), Python (7 s), and Slides (8 s).
 
 The application shell and controls come from the Openleaf HTML and stylesheet snapshot in `app/`; `source-manifest.json` records its origin and hashes. The frame driver populates sample manuscript, Python output, and slide content and applies the application’s UI states. No screen recordings are used in these compositions. Cursor positions follow the real control bounds.
 

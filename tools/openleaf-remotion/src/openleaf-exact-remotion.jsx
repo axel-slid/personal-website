@@ -233,7 +233,7 @@ const resetApp = (root) => {
   const workspace = id(root, "workspace");
   if (workspace) workspace.className = "workspace";
   const previewPane = q(root, ".preview-pane");
-  if (previewPane) previewPane.className = "preview-pane";
+  if (previewPane) previewPane.className = "preview-pane log-collapsed";
   setHidden(id(root, "historyPanel"), true);
   const terminalPanel = id(root, "terminalPanel");
   if (terminalPanel) terminalPanel.className = "terminal-panel";
@@ -611,8 +611,8 @@ const cursorAt = (frame, root = null) => {
     const action = actions[index];
     if (frame <= action.frame) {
       const gap = action.frame - previous.frame;
-      const settleFrames = Math.min(8, Math.max(4, Math.round(gap * .2)));
-      const p = ease(interpolate(frame, [previous.frame + settleFrames, action.frame], [0, 1], clamp));
+      const travelFrames = Math.min(5, Math.max(3, Math.round(gap * .25)));
+      const p = ease(interpolate(frame, [action.frame - travelFrames, action.frame], [0, 1], clamp));
       return {
         x: interpolate(p, [0, 1], [previous.x, action.x]),
         y: interpolate(p, [0, 1], [previous.y, action.y]),
