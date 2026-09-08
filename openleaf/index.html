@@ -37,7 +37,10 @@
     <meta name="theme-color" content="#071d15" />
     <link rel="icon" href="icon.png" type="image/png" />
     <link rel="apple-touch-icon" href="icon.png" />
-    <link rel="stylesheet" href="openleaf-product.css?v=20260908-core-demos" />
+    <link
+      rel="stylesheet"
+      href="openleaf-product.css?v=20260908-autoplay-demos"
+    />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -99,8 +102,8 @@
           >
           <h1 id="hero-title">All your research<br />In one place.</h1>
           <p class="lede">
-            Write LaTeX, preview your paper, run Python, and work with coding
-            agents. In one local workspace.
+            Write LaTeX, run Python, and use agents all locally in your research
+            repo.
           </p>
           <div class="hero-install" id="install">
             <a class="button primary" href="docs.html#install"
@@ -121,7 +124,6 @@
                 ><span class="copy-label sr-only">Copy</span>
               </button>
             </div>
-            <p class="platform-note">Free for macOS. Your files stay yours.</p>
             <p
               id="copyStatus"
               class="sr-only"
@@ -202,14 +204,14 @@
           <video
             src="demo/papers-remotion.mp4"
             poster="demo/papers-remotion.jpg"
-            controls
+            loop
+            disablepictureinpicture
+            disableremoteplayback
             playsinline
             muted
             preload="none"
             aria-label="Openleaf write papers demo"
-            aria-describedby="core-caption-papers"
           ></video>
-          <p id="core-caption-papers">LaTeX, visual editing, and live PDF.</p>
         </div>
         <div
           class="core-panel"
@@ -221,16 +223,14 @@
           <video
             src="demo/python-remotion.mp4"
             poster="demo/python-remotion.jpg"
-            controls
+            loop
+            disablepictureinpicture
+            disableremoteplayback
             playsinline
             muted
             preload="none"
             aria-label="Openleaf run python demo"
-            aria-describedby="core-caption-python"
           ></video>
-          <p id="core-caption-python">
-            Run Python cells and inspect their results.
-          </p>
         </div>
         <div
           class="core-panel"
@@ -242,16 +242,14 @@
           <video
             src="demo/slides-remotion.mp4"
             poster="demo/slides-remotion.jpg"
-            controls
+            loop
+            disablepictureinpicture
+            disableremoteplayback
             playsinline
             muted
             preload="none"
             aria-label="Openleaf make slides demo"
-            aria-describedby="core-caption-slides"
           ></video>
-          <p id="core-caption-slides">
-            Editable PowerPoint, from first slide to presentation.
-          </p>
         </div>
       </figure>
       <section class="community wrap" id="community">
@@ -287,7 +285,7 @@
       ><span>Made by <a href="/">Alex Dils</a></span
       ><a href="docs.html">Documentation <span aria-hidden="true">↗</span></a>
     </footer>
-    <script src="openleaf-demo.js?v=20260908-core-demos"></script>
-    <script src="openleaf-product.js?v=20260908-core-demos"></script>
+    <script src="openleaf-demo.js?v=20260908-autoplay-demos"></script>
+    <script src="openleaf-product.js?v=20260908-autoplay-demos"></script>
   </body>
 </html>

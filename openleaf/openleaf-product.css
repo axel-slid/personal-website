@@ -408,11 +408,7 @@ h3 {
 .install-command button[data-copied="true"] .copy-icon::before {
   display: none;
 }
-.platform-note {
-  font-size: 11px;
-  color: #b1c3a4;
-  margin: 16px 0 0;
-}
+
 .workspace-stack {
   display: flex;
   flex-wrap: wrap;
@@ -612,9 +608,7 @@ h3 {
   .install-command code {
     font-size: 10px;
   }
-  .platform-note {
-    font-size: 11px;
-  }
+
   .workspace-stack {
     gap: 18px 25px;
     font-size: 12px;
@@ -761,14 +755,7 @@ h3 {
   background: #11151d;
   box-shadow: 0 20px 65px #0005;
 }
-.core-panel p {
-  position: relative;
-  z-index: 3;
-  text-align: center;
-  margin: 16px 0 0;
-  font-size: 13px;
-  color: var(--muted);
-}
+
 .preview-frond,
 .preview-leaf {
   opacity: 0.25;
@@ -786,9 +773,7 @@ h3 {
     padding: 9px 13px;
     font-size: 12px;
   }
-  .core-panel p {
-    font-size: 11px;
-  }
+
   .preview-frond,
   .preview-leaf {
     opacity: 0.16;
