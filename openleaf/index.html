@@ -39,7 +39,7 @@
     <link rel="apple-touch-icon" href="icon.png" />
     <link
       rel="stylesheet"
-      href="openleaf-product.css?v=20260908-green-canopy"
+      href="openleaf-product.css?v=20260908-interactive-workspace"
     />
   </head>
   <body>
@@ -100,7 +100,7 @@
             ><span>Openleaf v0.2.1</span
             ><span>See what’s new <i aria-hidden="true">→</i></span></a
           >
-          <h1 id="hero-title">Your research.<br />All in one place.</h1>
+          <h1 id="hero-title">All your research<br />All in one place</h1>
           <p class="lede">
             Write LaTeX, preview your paper, run Python, and work with coding
             agents. In one local workspace.
@@ -139,64 +139,113 @@
         </div>
       </section>
       <figure class="workspace-preview wrap" id="workspace">
-        <a
-          href="interface-example.png"
-          aria-label="View the full Openleaf workspace screenshot"
-          ><img
-            src="interface-example.png"
-            width="1800"
-            height="1050"
-            fetchpriority="high"
-            alt="Openleaf with a LaTeX file tree and source editor on the left, a rendered paper on the right, and docked shell and coding-agent terminals below the editor."
-        /></a>
-        <figcaption>A real project, from source to finished paper.</figcaption>
-      </figure>
-      <section class="capabilities wrap" aria-labelledby="workspace-title">
-        <div class="section-intro">
-          <p class="eyebrow">Made for the work between ideas</p>
-          <h2 id="workspace-title">
-            The tools you use,<br />in the same place.
-          </h2>
-          <a class="text-link" href="docs.html"
-            >Explore the workspace <span aria-hidden="true">→</span></a
+        <div
+          class="foliage foreground-leaf preview-frond"
+          data-side="-1"
+          data-depth="0.18"
+          aria-hidden="true"
+        >
+          <img src="assets/jungle-fern.svg" width="440" height="640" alt="" />
+        </div>
+        <div
+          class="foliage foreground-leaf preview-leaf"
+          data-side="1"
+          data-depth="-0.16"
+          aria-hidden="true"
+        >
+          <img src="assets/jungle-leaf.svg" width="440" height="560" alt="" />
+        </div>
+        <div
+          class="workspace-tabs"
+          role="tablist"
+          aria-label="Explore the Openleaf workspace"
+          hidden
+        >
+          <button
+            type="button"
+            id="tab-overview"
+            role="tab"
+            aria-selected="true"
+            aria-controls="workspacePanel"
+            data-view="overview"
           >
+            Workspace
+          </button>
+          <button
+            type="button"
+            id="tab-source"
+            role="tab"
+            aria-selected="false"
+            aria-controls="workspacePanel"
+            tabindex="-1"
+            data-view="source"
+          >
+            LaTeX editor
+          </button>
+          <button
+            type="button"
+            id="tab-pdf"
+            role="tab"
+            aria-selected="false"
+            aria-controls="workspacePanel"
+            tabindex="-1"
+            data-view="pdf"
+          >
+            PDF preview
+          </button>
+          <button
+            type="button"
+            id="tab-agents"
+            role="tab"
+            aria-selected="false"
+            aria-controls="workspacePanel"
+            tabindex="-1"
+            data-view="agents"
+          >
+            Terminal &amp; agents
+          </button>
         </div>
-        <div class="feature-list">
-          <article>
-            <span class="feature-number" aria-hidden="true">01</span>
-            <div>
-              <h3>Write and see the result</h3>
-              <p>
-                Edit LaTeX beside your rendered PDF. Move between source and
-                visual editing, compile locally, and keep the manuscript in
-                view.
-              </p>
-            </div>
-          </article>
-          <article>
-            <span class="feature-number" aria-hidden="true">02</span>
-            <div>
-              <h3>Bring your own tools</h3>
-              <p>
-                Work with Python, shell sessions, and coding agents without
-                leaving the project. Connect to remote machines over SSH when
-                your work needs more compute.
-              </p>
-            </div>
-          </article>
-          <article>
-            <span class="feature-number" aria-hidden="true">03</span>
-            <div>
-              <h3>Keep control of your project</h3>
-              <p>
-                Work in ordinary local files, use GitHub for version control,
-                and choose the LaTeX compiler that fits your manuscript.
-              </p>
-            </div>
-          </article>
+        <div
+          id="workspacePanel"
+          class="workspace-panel"
+          role="tabpanel"
+          aria-labelledby="tab-overview"
+          tabindex="0"
+          data-view="overview"
+        >
+          <a
+            class="workspace-canvas"
+            href="interface-example.png"
+            aria-label="Open the full workspace screenshot"
+          >
+            <img
+              id="workspaceImage"
+              src="interface-example.png"
+              width="1800"
+              height="1050"
+              fetchpriority="high"
+              alt="Openleaf workspace with project files, LaTeX source, PDF preview, and a terminal dock."
+            />
+          </a>
         </div>
-      </section>
+        <figcaption class="workspace-caption">
+          <p id="workspaceCaption">
+            One project. Source, paper, and tools together.
+          </p>
+          <a href="interface-example.png"
+            >View full screenshot <span aria-hidden="true">↗</span></a
+          >
+        </figcaption>
+      </figure>
       <section class="community wrap" id="community">
+        <div
+          class="foliage foreground-leaf community-leaf"
+          data-side="1"
+          data-depth="-0.14"
+          aria-hidden="true"
+        >
+          <img src="assets/jungle-leaf.svg" width="440" height="560" alt="" />
+        </div>
         <div>
           <p class="eyebrow">Built in the open</p>
           <h2>Help shape Openleaf.</h2>
@@ -222,6 +271,6 @@
       ><span>Made by <a href="/">Alex Dils</a></span
       ><a href="docs.html">Documentation <span aria-hidden="true">↗</span></a>
     </footer>
-    <script src="openleaf-product.js?v=20260908-green-canopy"></script>
+    <script src="openleaf-product.js?v=20260908-interactive-workspace"></script>
   </body>
 </html>
