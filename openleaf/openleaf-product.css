@@ -1,6 +1,6 @@
 @font-face {
-  font-family: Inter;
-  src: url("assets/fonts/inter-var.woff2") format("woff2");
+  font-family: Fraunces;
+  src: url("assets/fonts/fraunces-var.woff2") format("woff2");
   font-weight: 100 900;
   font-display: swap;
 }
@@ -11,7 +11,7 @@
   --muted: #b5cbb8;
   --line: rgba(186, 222, 165, 0.16);
   --accent: #c8ed9c;
-  --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --site-font: Fraunces, Georgia, serif;
   --mono: "SFMono-Regular", Consolas, monospace;
 }
 * {
@@ -24,7 +24,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--sans);
+  font-family: var(--site-font);
   font-size: 15px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -67,10 +67,16 @@ img {
   transform: translateX(-50%);
   z-index: 3;
   height: 88px;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
   gap: 40px;
+}
+.site-header > .wordmark {
+  justify-self: start;
+}
+.site-header > .github-link {
+  justify-self: end;
 }
 .wordmark {
   display: inline-flex;
@@ -101,9 +107,16 @@ img {
   color: white;
 }
 .github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-size: 13px;
   color: #dae8ce;
   white-space: nowrap;
+}
+.github-link svg {
+  flex: none;
+  fill: currentColor;
 }
 main {
   position: relative;
@@ -281,10 +294,12 @@ main {
   margin-left: 13px;
 }
 h1 {
+  font-family: var(--site-font);
+  font-optical-sizing: auto;
   font-size: clamp(48px, 6vw, 80px);
-  font-weight: 790;
-  line-height: 1.04;
-  letter-spacing: -0.045em;
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
   margin: 0;
   max-width: 1000px;
   text-wrap: balance;
@@ -409,19 +424,6 @@ h3 {
   display: none;
 }
 
-.workspace-stack {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 24px 40px;
-  margin-top: auto;
-  padding-top: 57px;
-  color: #bbd0ad;
-  font-size: 15px;
-  font-weight: 550;
-  letter-spacing: -0.3px;
-}
 .workspace-preview {
   position: relative;
   margin-top: 0;
@@ -574,9 +576,9 @@ h3 {
     font-size: 12px;
   }
   .hero-content {
-    min-height: 766px;
+    min-height: 0;
     padding-top: 133px;
-    padding-bottom: 34px;
+    padding-bottom: 28px;
   }
   .release-note {
     font-size: 11px;
@@ -587,7 +589,7 @@ h3 {
   }
   h1 {
     font-size: clamp(30px, 8.6vw, 54px);
-    letter-spacing: -0.045em;
+    letter-spacing: -0.035em;
   }
   .lede {
     font-size: 17px;
@@ -607,13 +609,6 @@ h3 {
   }
   .install-command code {
     font-size: 10px;
-  }
-
-  .workspace-stack {
-    gap: 18px 25px;
-    font-size: 12px;
-    padding-top: 42px;
-    max-width: 330px;
   }
 
   .community {
@@ -732,7 +727,7 @@ h3 {
   background: transparent;
   color: #bed1b4;
   padding: 11px 24px;
-  font: 500 14px var(--sans);
+  font: 500 14px var(--site-font);
   cursor: pointer;
 }
 .core-tabs button:hover {
