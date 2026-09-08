@@ -27,60 +27,6 @@
       button.setAttribute("aria-label", "Copy the Openleaf install command");
     }, 1800);
   });
-  const workspaceTabs = [
-    ...document.querySelectorAll(".workspace-tabs [role='tab']"),
-  ];
-  const workspacePanel = document.getElementById("workspacePanel");
-  const workspaceCaption = document.getElementById("workspaceCaption");
-  const workspaceImage = document.getElementById("workspaceImage");
-  const views = {
-    overview: [
-      "One project. Source, paper, and tools together.",
-      "Openleaf workspace with project files, LaTeX source, PDF preview, and a terminal dock.",
-    ],
-    source: [
-      "A closer look at your manuscript’s LaTeX source.",
-      "Zoomed view of the LaTeX source editor and syntax highlighting in Openleaf.",
-    ],
-    pdf: [
-      "Your paper, right beside the source.",
-      "Zoomed view of the rendered paper in Openleaf’s PDF preview.",
-    ],
-    agents: [
-      "Shell, Codex, and Claude, within reach of your manuscript.",
-      "Zoomed view of Openleaf’s terminal dock with Shell, Codex, and Claude launch controls.",
-    ],
-  };
-  function selectWorkspaceTab(tab) {
-    const view = tab.dataset.view;
-    workspaceTabs.forEach((item) => {
-      item.setAttribute("aria-selected", String(item === tab));
-      item.tabIndex = item === tab ? 0 : -1;
-    });
-    workspacePanel.dataset.view = view;
-    workspacePanel.setAttribute("aria-labelledby", tab.id);
-    workspaceCaption.textContent = views[view][0];
-    workspaceImage.alt = views[view][1];
-  }
-  workspaceTabs.forEach((tab, index) => {
-    tab.addEventListener("click", () => selectWorkspaceTab(tab));
-    tab.addEventListener("keydown", (event) => {
-      let target;
-      if (event.key === "ArrowRight")
-        target = (index + 1) % workspaceTabs.length;
-      else if (event.key === "ArrowLeft")
-        target = (index - 1 + workspaceTabs.length) % workspaceTabs.length;
-      else if (event.key === "Home") target = 0;
-      else if (event.key === "End") target = workspaceTabs.length - 1;
-      else return;
-      event.preventDefault();
-      workspaceTabs[target].focus();
-      selectWorkspaceTab(workspaceTabs[target]);
-    });
-  });
-  if (workspaceTabs.length)
-    document.querySelector(".workspace-tabs").hidden = false;
-
   // Transform decorative leaves only; all page content remains in normal flow.
   const leaves = [...document.querySelectorAll(".foliage")];
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
