@@ -1,39 +1,23 @@
 (() => {
-  const film = document.getElementById("openleaf-film");
   const command = document.getElementById("installCommand");
-  const copyButton = document.getElementById("copyInstall");
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-  const syncPlayback = () => {
-    if (!film) return;
-    if (reducedMotion.matches || document.hidden) {
-      film.pause();
-      return;
-    }
-    film.play().catch(() => {});
-  };
-
-  copyButton?.addEventListener("click", async () => {
-    const value = command.textContent.trim();
+  const button = document.getElementById("copyInstall");
+  const status = document.getElementById("copyStatus");
+  button?.addEventListener("click", async () => {
     try {
-      await navigator.clipboard.writeText(value);
+      await navigator.clipboard.writeText(command.textContent.trim());
+      button.textContent = "Copied";
+      status.textContent = "Install command copied to clipboard.";
     } catch {
       const range = document.createRange();
-      const selection = window.getSelection();
       range.selectNodeContents(command);
+      const selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(range);
-      document.execCommand("copy");
-      selection.removeAllRanges();
+      status.textContent = "Command selected. Copy it with your keyboard.";
+      button.textContent = "Selected";
     }
-
-    copyButton.textContent = "Copied";
     window.setTimeout(() => {
-      copyButton.textContent = "Copy";
-    }, 1400);
+      button.textContent = "Copy";
+    }, 1800);
   });
-
-  reducedMotion.addEventListener?.("change", syncPlayback);
-  document.addEventListener("visibilitychange", syncPlayback);
-  syncPlayback();
 })();

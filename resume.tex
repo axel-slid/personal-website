@@ -1,0 +1,245 @@
+\documentclass[10pt, letterpaper]{article}
+
+
+\title{Alex Dils Resume}
+% Packages:
+\usepackage[
+    ignoreheadfoot,
+    top=1.05cm,
+    bottom=1.05cm,
+    left=1.40cm,
+    right=1.40cm,
+    footskip=0.45cm,
+]{geometry}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{primaryColor}{RGB}{0, 0, 0}
+\usepackage{enumitem}
+\usepackage{fontawesome}
+\usepackage{amsmath}
+\usepackage[
+    pdftitle={Alex Dils's CV},
+    pdfauthor={Alex Dils},
+    pdfcreator={LaTeX with RenderCV},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[pscoord]{eso-pic}
+\usepackage{calc}
+\usepackage{bookmark}
+\usepackage{lastpage}
+\usepackage{changepage}
+\usepackage{paracol}
+\usepackage{ifthen}
+\usepackage{needspace}
+\usepackage{iftex}
+\usepackage{etoolbox}
+
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+    \usepackage{charter}
+\else
+    \usepackage{fontspec}
+    \setmainfont{Charter}
+\fi
+
+% Settings
+\raggedright
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt}
+\pagestyle{empty}
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0pt}
+\setlength{\topskip}{0pt}
+\setlength{\columnsep}{0.15cm}
+\pagenumbering{gobble}
+
+\titleformat{\section}{\needspace{3\baselineskip}\bfseries\large}{}{0pt}{}[\vspace{1pt}\titlerule]
+\titlespacing{\section}{-1pt}{0.16cm}{0.08cm}
+
+\renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
+
+\newenvironment{highlights}{
+  \begin{itemize}[topsep=0.04cm, parsep=0.02cm, partopsep=0pt, itemsep=0pt, leftmargin=10pt]
+}{
+  \end{itemize}
+}
+
+\newenvironment{onecolentry}{
+  \begin{adjustwidth}{0.00001cm}{0.00001cm}
+}{
+  \end{adjustwidth}
+}
+
+\newenvironment{twocolentry}[2][]{
+  \onecolentry
+  \def\secondColumn{#2}
+  \setcolumnwidth{\fill,4.5cm}
+  \begin{paracol}{2}
+}{
+  \switchcolumn \raggedleft \secondColumn
+  \end{paracol}
+  \endonecolentry
+}
+
+\newenvironment{header}{
+  \setlength{\topsep}{0pt}\par\kern\topsep\linespread{1.25}
+}{
+  \par\kern\topsep
+}
+
+\begin{document}
+  % Header
+  \begin{header}
+    \centering
+    \fontsize{22pt}{22pt}\selectfont Alex Dils
+
+    \vspace{3pt}
+
+    \small
+    \faMapMarker\ Berkeley, CA \,|\,
+    \href{mailto:dils@berkeley.edu}{\faEnvelope\ dils@berkeley.edu} \,|\,
+    \href{https://www.alex-dils.com}{\faGlobe\ alex-dils.com} \,|\,
+    \href{https://scholar.google.com/citations?user=0Sz8VPoAAAAJ}{\faGraduationCap\ Scholar} \,|\,
+    \href{https://www.linkedin.com/in/alex-dils/}{\faLinkedin\ LinkedIn} \,|\,
+    \href{https://github.com/axel-slid}{\faGithub\ GitHub}
+  \end{header}
+
+  \vspace{-0.18cm}
+
+  \section{Education}
+  \begin{twocolentry}{Expected May 2028}
+    \textbf{University of California, Berkeley}
+  \end{twocolentry}
+  B.A.\ in \textbf{\textit{Computer Science}} | GPA: 3.7/4.0
+
+  \begin{onecolentry}
+    \small \textit{Coursework:} Data Structures \& Algorithms, Machine Structures, Discrete Mathematics \& Probability, Multivariable Calculus
+  \end{onecolentry}
+  \begin{onecolentry}
+    \small \textit{Activities:} Machine Learning at Berkeley (ML@B), Internal \& Research Committees
+  \end{onecolentry}
+
+  \section{Technical Skills}
+  \begin{onecolentry}
+    \small \textbf{Languages:} Python, TypeScript, Java, C, SQL; \textbf{ML:} PyTorch, TensorFlow, scikit-learn, Hugging Face, OpenCV, SimpleITK; \textbf{Web/Data:} FastAPI, Node.js, React, PostgreSQL, Supabase, PostGIS; \textbf{Tools:} Docker, Slurm, Git
+  \end{onecolentry}
+
+  \section{Experience}
+
+  
+
+  \begin{twocolentry}{May 2026 -- Present}
+    \textbf{Founder \& Engineer}, \href{https://infrastructs.com}{Infrastruct} --- \textit{Agentic workflow automation}
+  \end{twocolentry}
+  \begin{onecolentry}
+    \begin{highlights}
+      \item Built an approval-gated \textbf{AI workflow-automation platform} with a desktop observer and Node.js backend; implemented \textbf{49 workflow rules} across \textbf{15 app connectors}.
+      \item Shipped traceable execution, rollback and idempotency safeguards, OAuth/SSO, billing, and deployment; sustained \textbf{176 ms median p95} across \textbf{2,500} production health requests at 100-way concurrency with zero failures.
+    \end{highlights}
+  \end{onecolentry}
+
+  \begin{twocolentry}{Jun 2026 -- Present}
+    \textbf{\href{https://med.stanford.edu/canarycenter/canarycrest.html}{Stanford Canary CREST Research Scholar}}, Stanford Canary Center / Gevaert Lab
+  \end{twocolentry}
+  \begin{onecolentry}
+    \begin{highlights}
+      \item Built a \href{https://www.alex-dils.com/cnf-volume}{\textbf{cNF volume-estimation pipeline}} for NF1 cancer-risk surveillance, combining center-coordinate lesion localization, SAM v2 masks, Depth Pro surface reconstruction, and per-lesion cm$^3$ integration.
+      \item Generated synthetic RGB/depth lesions on Human Skin Repository 3D surfaces using physics-based protrusions and diffusion inpainting; fine-tuned Depth Pro, reducing depth-estimation AbsRel by \textbf{52.6\%} and reaching \textbf{$R^2=0.97$}.
+    \end{highlights}
+  \end{onecolentry}
+  
+  \begin{twocolentry}{Feb 2026 -- Jun 2026}
+    \textbf{Machine Learning Engineer},
+    Logitech
+  \end{twocolentry}
+  \begin{onecolentry}
+    \begin{highlights}
+      \item Built a \textbf{VLM evaluation harness} for meeting-room readiness and participant classification on Logitech's Rally Board 65, measuring task accuracy and inference latency across 55 models.
+      \item Ran model and prompt ablations and identified Qwen3.5 4B as the leading deployment candidate for the target hardware and task.
+    \end{highlights}
+  \end{onecolentry}
+  
+  \begin{twocolentry}{Nov 2025 -- Mar 2026}
+    \textbf{Co-Founder, ML Engineering}, Appraise AI --- \textit{AI fashion appraisal}
+  \end{twocolentry}
+  \begin{onecolentry}
+    \begin{highlights}
+      \item Led the ML roadmap and architecture for a resale-intelligence startup that raised \textbf{\$15K} pre-seed.
+      \item Built a \textbf{multimodal pricing engine} with \textbf{>95\% top-3 accuracy} and Scrapy/Playwright ingestion collecting \textbf{500K+ listings/day}.
+    \end{highlights}
+  \end{onecolentry}
+
+  \begin{twocolentry}{Jun 2022 -- Jun 2026}
+    \textbf{Research Intern (part-time)}, Stanford Center for Biomedical Informatics Research
+  \end{twocolentry}
+  \begin{onecolentry}
+    \begin{highlights}
+      \item Developed domain-robust skin-lesion segmentation methods and finite-element lung-motion augmentations that \textbf{improved SoTA tumor-segmentation Dice by >0.05}.
+      \item Drafted sections of a Digital Twin manuscript and its journal submission cover letter; the research was \textbf{featured on Stanford Medicine's homepage}.
+    \end{highlights}
+  \end{onecolentry}
+
+  % Projects
+  \section{Projects}
+
+  \begin{twocolentry}{2026}
+    \textbf{LanternTrace Explorer} \,|\, \href{https://www.alex-dils.com/lanterntrace}{alex-dils.com/lanterntrace}
+  \end{twocolentry}
+  \begin{onecolentry}
+    \begin{highlights}
+      \item Built a physics-based explorer to track and forecast spotted lanternfly spread across the U.S. East Coast.
+    \end{highlights}
+  \end{onecolentry}
+
+  \begin{twocolentry}{2026}
+    \textbf{Openleaf} \,|\, \href{https://www.alex-dils.com/openleaf}{alex-dils.com/openleaf}
+  \end{twocolentry}
+  \begin{onecolentry}
+    \begin{highlights}
+      \item Built a local macOS research workspace unifying LaTeX, PDF, Python, GitHub, SSH, and coding agents.
+    \end{highlights}
+  \end{onecolentry}
+
+  \begin{twocolentry}{2026}
+    \textbf{BsCode} \,|\, \href{https://www.alex-dils.com/bscode}{alex-dils.com/bscode}
+  \end{twocolentry}
+  \begin{onecolentry}
+    \begin{highlights}
+      \item Built a desktop for coordinating Codex, Claude, and shell agents across local and remote workspaces.
+    \end{highlights}
+  \end{onecolentry}
+
+  \begin{twocolentry}{2026}
+    \textbf{Set Player} \,|\, \href{https://www.alex-dils.com/set-player}{alex-dils.com/set-player}
+  \end{twocolentry}
+  \begin{onecolentry}
+    \begin{highlights}
+      \item Built a DJ-set memory layer linking recordings to Rekordbox history, timed tracks, lyrics, photos, and places.
+    \end{highlights}
+  \end{onecolentry}
+
+  % Publications
+  \section{\texorpdfstring{Selected Publications \& Manuscripts \hfill {\normalfont\itshape\footnotesize * indicates first authorship.}}{Selected Publications and Manuscripts}}
+
+  \begin{onecolentry}
+    \begin{highlights}
+      \item \small \textit{Enhancing Medical AI with Physiologically-Informed Data Augmentation}. Submitted to NeurIPS 2026.\\
+      Contributing author: \textbf{Alex Dils}.
+      \item \small \textit{*RGB--Depth Generation for cNF}. MICCAI MWM 2026.\\
+      Christoph Sadée, \textbf{Alex Dils}, Krish Sangani, Lillian Rubino, Alexander Ferenchick, Varun Wadhwa, et al.
+      \item \small \href{https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/\#google_vignette}{\textit{*Eye For An Eye: A Deep-Learning and Analytical Method to Spatializing Stereoscopic Images}}. National High School Journal of Science, 2025.\\
+      Jake Yoshinaka, \textbf{Alex Dils}, and Leo McDonnell.
+      \item \small \textit{*Addressing Bias and Confounders in AI-based Image Diagnosis --- A Study of 117,610 Skin Lesions}. Manuscript under revision at \textit{Cell}, 2025.\\
+      Christoph Sadée, Serena Zhang, \textbf{Alex Dils}, Jared Bitz, Stefano Testa, Zhuo Ran Cai, et al.
+      \item \small \href{https://scientificcomputing.github.io/fenics2024/integrating-mechanistic}{\textit{Integrating Mechanistic Knowledge into Deep Learning for Improved Cancer Detection}}. FEniCS Conference Proceedings, 2024.\\
+      Christoph Sadée, Katherine Hartmann, \textbf{Alex Dils}, Ianto Xi, Francisco Carrillo-Perez, et al.
+    \end{highlights}
+  \end{onecolentry}
+
+\end{document}

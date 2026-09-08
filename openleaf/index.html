@@ -1,69 +1,205 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Openleaf</title>
-  <meta name="description" content="Openleaf is your complete local research workspace for LaTeX, live PDF, PowerPoint, Python, and coding agents.">
-  <link rel="canonical" href="https://www.alex-dils.com/openleaf/">
-  <meta property="og:title" content="Openleaf">
-  <meta property="og:description" content="Your complete local research workspace.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://www.alex-dils.com/openleaf/">
-  <meta property="og:image" content="https://www.alex-dils.com/openleaf/social-preview.png">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Openleaf">
-  <meta name="twitter:description" content="Your complete local research workspace.">
-  <meta name="twitter:image" content="https://www.alex-dils.com/openleaf/social-preview.png">
-  <meta name="theme-color" content="#07111f">
-  <link rel="icon" href="icon.png" type="image/png">
-  <link rel="apple-touch-icon" href="icon.png">
-  <link rel="preload" href="motion/openleaf-product-showcase-hq-poster.png?v=20260823-professional-film-v25" as="image" fetchpriority="high">
-  <link rel="stylesheet" href="openleaf-product.css?v=20260823-bscode-layout-v26">
-</head>
-<body>
-  <figure class="preview" aria-hidden="true">
-    <video
-      id="openleaf-film"
-      autoplay
-      muted
-      loop
-      playsinline
-      preload="auto"
-      disablepictureinpicture
-      poster="motion/openleaf-product-showcase-hq-poster.png?v=20260823-professional-film-v25"
-      tabindex="-1"
-    >
-      <source src="motion/openleaf-product-showcase-hq.mp4?v=20260823-professional-film-v25" type="video/mp4">
-    </video>
-  </figure>
-
-  <main>
-    <section class="hero">
-      <h1>Openleaf</h1>
-      <a class="github" href="https://github.com/axel-slid/openleaf" target="_blank" rel="noreferrer" aria-label="Openleaf source code on GitHub">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-1.9c-3.14.68-3.8-1.34-3.8-1.34-.52-1.3-1.26-1.65-1.26-1.65-1.02-.7.08-.68.08-.68 1.13.08 1.73 1.16 1.73 1.16 1 .1 2.63.9 3.28.55.1-.73.4-1.23.72-1.51-2.5-.29-5.14-1.25-5.14-5.57 0-1.23.44-2.24 1.16-3.03-.12-.29-.5-1.44.11-2.99 0 0 .95-.3 3.1 1.16A10.8 10.8 0 0 1 12 5.91c.96 0 1.92.13 2.82.38 2.15-1.46 3.1-1.16 3.1-1.16.61 1.55.23 2.7.11 2.99.72.79 1.16 1.8 1.16 3.03 0 4.33-2.64 5.28-5.15 5.56.41.35.77 1.04.77 2.1v3.12c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"></path>
-        </svg>
-        <span>Open source on GitHub</span>
-      </a>
-      <p class="intro">Write LaTeX, compile live PDFs, and work with coding agents in one complete local research workspace.</p>
-      <div class="install" id="install">
-        <p class="install-label">Paste this into Terminal</p>
-        <div class="install-command">
-          <span class="prompt" aria-hidden="true">$</span>
-          <code id="installCommand">curl -fsSL https://alex-dils.com/openleaf/install.sh | bash</code>
-          <button id="copyInstall" type="button" aria-label="Copy the Openleaf install command">Copy</button>
+  <head>
+    <base href="/openleaf/" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Openleaf — A local workspace for research</title>
+    <meta
+      name="description"
+      content="Openleaf is your complete local research workspace for LaTeX, live PDF, PowerPoint, Python, and coding agents."
+    />
+    <link rel="canonical" href="https://www.alex-dils.com/openleaf/" />
+    <meta
+      property="og:title"
+      content="Openleaf — A local workspace for research"
+    />
+    <meta
+      property="og:description"
+      content="Your complete local research workspace."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.alex-dils.com/openleaf/" />
+    <meta
+      property="og:image"
+      content="https://www.alex-dils.com/openleaf/social-preview.png"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Openleaf" />
+    <meta
+      name="twitter:description"
+      content="Your complete local research workspace."
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.alex-dils.com/openleaf/social-preview.png"
+    />
+    <meta name="theme-color" content="#f7f8f4" />
+    <link rel="icon" href="icon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="icon.png" />
+    <link
+      rel="stylesheet"
+      href="openleaf-product.css?v=20260907-research-workspace"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header wrap">
+      <a class="wordmark" href="./" aria-label="Openleaf home"
+        ><img src="icon.png" width="32" height="32" alt="" />Openleaf</a
+      >
+      <nav aria-label="Primary navigation">
+        <a href="#workspace">Workspace</a><a href="docs.html">Documentation</a
+        ><a href="https://github.com/axel-slid/openleaf"
+          >GitHub <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero wrap">
+        <div class="hero-heading">
+          <p class="eyebrow">Free, open-source research software</p>
+          <h1>A home for<br />your research.</h1>
         </div>
-        <p class="hint">macOS · Apple Silicon · v0.2.1</p>
-      </div>
-    </section>
-
-    <footer>
-      Free and open source · <a href="https://github.com/axel-slid/openleaf" target="_blank" rel="noreferrer">View the code on GitHub</a>
+        <div class="hero-copy">
+          <p>Write the paper. Run the code. Keep it together.</p>
+          <p class="lede">
+            Openleaf brings LaTeX, live PDF preview, Python, and coding agents
+            into one local desktop workspace.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="#install"
+              >Get Openleaf <span aria-hidden="true">↓</span></a
+            ><a class="text-link" href="docs.html"
+              >Read the docs <span aria-hidden="true">→</span></a
+            >
+          </div>
+          <p class="platform-note">
+            For macOS · Your files stay on your machine
+          </p>
+        </div>
+      </section>
+      <figure class="workspace-preview wrap" id="workspace">
+        <div class="preview-heading">
+          <span>The workspace</span
+          ><span>Source, preview, and tools. Side by side.</span>
+        </div>
+        <a
+          href="interface-example.png"
+          aria-label="View the full Openleaf workspace screenshot"
+          ><img
+            src="interface-example.png"
+            width="1800"
+            height="1050"
+            fetchpriority="high"
+            alt="Openleaf with a LaTeX file tree and source editor on the left, a rendered paper on the right, and docked shell and coding-agent terminals below the editor."
+        /></a>
+        <figcaption>A real project, from source to finished paper.</figcaption>
+      </figure>
+      <section class="capabilities wrap" aria-labelledby="workspace-title">
+        <div class="section-intro">
+          <p class="eyebrow">Made for the work between ideas</p>
+          <h2 id="workspace-title">
+            The tools you use,<br />in the same place.
+          </h2>
+          <a class="text-link" href="docs.html"
+            >Explore the workspace <span aria-hidden="true">→</span></a
+          >
+        </div>
+        <div class="feature-list">
+          <article>
+            <span class="feature-number" aria-hidden="true">01</span>
+            <div>
+              <h3>Write and see the result</h3>
+              <p>
+                Edit LaTeX beside your rendered PDF. Move between source and
+                visual editing, compile locally, and keep the manuscript in
+                view.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span class="feature-number" aria-hidden="true">02</span>
+            <div>
+              <h3>Bring your own tools</h3>
+              <p>
+                Work with Python, shell sessions, and coding agents without
+                leaving the project. Connect to remote machines over SSH when
+                your work needs more compute.
+              </p>
+            </div>
+          </article>
+          <article>
+            <span class="feature-number" aria-hidden="true">03</span>
+            <div>
+              <h3>Keep control of your project</h3>
+              <p>
+                Work in ordinary local files, use GitHub for version control,
+                and choose the LaTeX compiler that fits your manuscript.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section class="install-section" id="install">
+        <div class="wrap install-inner">
+          <div>
+            <p class="eyebrow">Start with your next paper</p>
+            <h2>Make yourself at home.</h2>
+            <p>Install Openleaf on macOS from Terminal.</p>
+          </div>
+          <div class="install">
+            <div class="install-command">
+              <code id="installCommand"
+                >curl -fsSL https://alex-dils.com/openleaf/install.sh |
+                bash</code
+              ><button
+                id="copyInstall"
+                type="button"
+                aria-label="Copy the Openleaf install command"
+              >
+                Copy
+              </button>
+            </div>
+            <p class="install-note">
+              <a href="docs.html#install">Installation guide</a
+              ><a href="install.sh">Read the installer</a>
+            </p>
+            <p
+              id="copyStatus"
+              class="sr-only"
+              role="status"
+              aria-live="polite"
+            ></p>
+          </div>
+        </div>
+      </section>
+      <section class="community wrap">
+        <div>
+          <p class="eyebrow">Built in the open</p>
+          <h2>Help shape Openleaf.</h2>
+          <p>
+            Try it on your own research. Share a rough edge, improve the docs,
+            or contribute code. The project lives on GitHub.
+          </p>
+        </div>
+        <div class="community-links">
+          <a href="https://github.com/axel-slid/openleaf"
+            >Browse the source <span aria-hidden="true">↗</span></a
+          ><a href="https://github.com/axel-slid/openleaf/issues"
+            >Find an issue <span aria-hidden="true">↗</span></a
+          ><a href="https://github.com/axel-slid/openleaf/issues/new"
+            >Share feedback <span aria-hidden="true">↗</span></a
+          >
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer wrap">
+      <a class="wordmark" href="./"
+        ><img src="icon.png" width="24" height="24" alt="" />Openleaf</a
+      ><span>Made by <a href="/">Alex Dils</a></span
+      ><a href="docs.html">Documentation <span aria-hidden="true">↗</span></a>
     </footer>
-  </main>
-
-  <script src="openleaf-product.js"></script>
-</body>
+    <script src="openleaf-product.js?v=20260907-research-workspace"></script>
+  </body>
 </html>
