@@ -33,11 +33,12 @@
   const compactScreen = window.matchMedia("(max-width: 640px)");
   let frame = 0;
   let positions = [];
+  let currentScroll = window.scrollY;
+  let previousTime = 0;
 
   function measure() {
     positions = leaves.map((leaf) => {
-      if (!leaf.offsetParent) return 0;
-      // offsetTop is unaffected by the decorative scroll transform.
+      if (!leaf.offsetParent) return null;
       return (
         leaf.offsetTop +
         leaf.offsetParent.getBoundingClientRect().top +
@@ -48,21 +49,40 @@
     schedule();
   }
 
-  function render() {
+  function render(time) {
     frame = 0;
-    const viewportCenter = window.scrollY + window.innerHeight / 2;
+    // Ease for a fraction of a second after a wheel/touch input, then stop.
+    const elapsed = previousTime ? Math.min(time - previousTime, 64) : 16;
+    previousTime = time;
+    currentScroll +=
+      (window.scrollY - currentScroll) * (1 - Math.exp(-elapsed / 85));
+    const moving = Math.abs(window.scrollY - currentScroll) > 0.25;
+    if (!moving) currentScroll = window.scrollY;
+    const viewportCenter = currentScroll + window.innerHeight / 2;
+    const intensity = compactScreen.matches ? 0.5 : 1;
     leaves.forEach((leaf, index) => {
+      if (positions[index] === null) return;
       const distance = Math.max(
-        -900,
-        Math.min(900, viewportCenter - positions[index]),
+        -1000,
+        Math.min(1000, viewportCenter - positions[index]),
       );
-      const movement =
-        distance *
-        Number(leaf.dataset.depth) *
-        (compactScreen.matches ? 0.35 : 1);
+      const progress = distance / 1000;
+      const side = Number(leaf.dataset.side);
+      const depth = Number(leaf.dataset.depth);
+      const movement = distance * depth * intensity;
+      // Canopy parts sideways; each deeper layer passes at its own speed.
+      const spread = side * progress * 115 * intensity;
+      const turn = side * progress * 22 * intensity;
+      leaf.style.setProperty("--leaf-x", `${spread.toFixed(2)}px`);
       leaf.style.setProperty("--leaf-y", `${movement.toFixed(2)}px`);
-      leaf.style.setProperty("--leaf-turn", `${(movement / 35).toFixed(2)}deg`);
+      leaf.style.setProperty("--leaf-turn", `${turn.toFixed(2)}deg`);
+      leaf.style.setProperty(
+        "--leaf-scale",
+        (1 + (progress + 1) * 0.06 * intensity).toFixed(3),
+      );
     });
+    if (moving) schedule();
+    else previousTime = 0;
   }
 
   function schedule() {
@@ -73,11 +93,14 @@
   function updateMotion() {
     window.cancelAnimationFrame(frame);
     frame = 0;
+    previousTime = 0;
+    currentScroll = window.scrollY;
     window.removeEventListener("scroll", schedule);
     if (reducedMotion.matches) {
       leaves.forEach((leaf) => {
-        leaf.style.removeProperty("--leaf-y");
-        leaf.style.removeProperty("--leaf-turn");
+        ["--leaf-x", "--leaf-y", "--leaf-turn", "--leaf-scale"].forEach(
+          (property) => leaf.style.removeProperty(property),
+        );
       });
     } else {
       window.addEventListener("scroll", schedule, { passive: true });

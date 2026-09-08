@@ -6,11 +6,11 @@
 }
 :root {
   color-scheme: dark;
-  --bg: #100d23;
-  --text: #f8f7ff;
-  --muted: #b7afcf;
-  --line: rgba(216, 203, 255, 0.16);
-  --accent: #c9b5ff;
+  --bg: #071d15;
+  --text: #f5f8ed;
+  --muted: #b5cbb8;
+  --line: rgba(186, 222, 165, 0.16);
+  --accent: #c8ed9c;
   --sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --mono: "SFMono-Regular", Consolas, monospace;
 }
@@ -53,7 +53,7 @@ img {
   left: 20px;
   top: -80px;
   background: white;
-  color: #201539;
+  color: #123c29;
   padding: 10px;
   z-index: 10;
 }
@@ -86,7 +86,7 @@ img {
   display: flex;
   gap: 38px;
   font-size: 14px;
-  color: #c3bbd8;
+  color: #c0d4bf;
 }
 .site-header nav a,
 .github-link {
@@ -99,16 +99,16 @@ img {
 }
 .github-link {
   font-size: 13px;
-  color: #d6cfea;
+  color: #dae8ce;
   white-space: nowrap;
 }
 main {
   position: relative;
   isolation: isolate;
   background:
-    radial-gradient(ellipse 85% 850px at 82% 380px, #5525a2, transparent 80%),
-    radial-gradient(ellipse 80% 800px at 13% 380px, #282383, transparent 85%),
-    radial-gradient(ellipse 65% 550px at 0% 78%, #173f3a66, transparent),
+    radial-gradient(ellipse 85% 850px at 82% 380px, #246b42, transparent 80%),
+    radial-gradient(ellipse 80% 800px at 13% 380px, #124932, transparent 85%),
+    radial-gradient(ellipse 65% 550px at 0% 78%, #397d3866, transparent),
     var(--bg);
 }
 .jungle-scene {
@@ -121,10 +121,11 @@ main {
 }
 .foliage {
   position: absolute;
-  width: clamp(270px, 33vw, 570px);
-  opacity: 0.65;
-  transform: translate3d(0, var(--leaf-y, 0px), 0)
-    rotate(var(--leaf-turn, 0deg));
+  width: clamp(340px, 38vw, 660px);
+  opacity: 0.85;
+  transform-origin: center 80%;
+  transform: translate3d(var(--leaf-x, 0px), var(--leaf-y, 0px), 0)
+    rotate(var(--leaf-turn, 0deg)) scale(var(--leaf-scale, 1));
 }
 .foliage img {
   display: block;
@@ -132,20 +133,20 @@ main {
   transform: rotate(var(--angle, 0deg)) scaleX(var(--flip, 1));
 }
 .canopy-left {
-  top: -220px;
-  left: -9%;
+  top: -280px;
+  left: -8%;
   --angle: 135deg;
-  opacity: 0.35;
+  opacity: 0.7;
 }
 .canopy-right {
   top: -190px;
-  right: -10%;
+  right: -8%;
   --angle: -125deg;
-  opacity: 0.42;
+  opacity: 0.72;
 }
 .hero-left {
   top: 240px;
-  left: -13%;
+  left: -12%;
   --angle: 38deg;
 }
 .hero-right {
@@ -156,39 +157,39 @@ main {
 }
 .middle-left {
   top: 31%;
-  left: -15%;
+  left: -12%;
   --angle: 30deg;
-  opacity: 0.32;
+  opacity: 0.7;
 }
 .middle-right {
   top: 36%;
-  right: -15%;
+  right: -12%;
   --angle: -40deg;
-  opacity: 0.3;
+  opacity: 0.65;
 }
 .features-left {
   top: 60%;
-  left: -21%;
+  left: -16%;
   --angle: 45deg;
-  opacity: 0.38;
+  opacity: 0.58;
 }
 .features-right {
   top: 62%;
-  right: -20%;
+  right: -15%;
   --angle: -35deg;
-  opacity: 0.4;
+  opacity: 0.6;
 }
 .floor-left {
   bottom: -230px;
   left: -10%;
   --angle: 25deg;
-  opacity: 0.3;
+  opacity: 0.6;
 }
 .floor-right {
   bottom: -180px;
   right: -12%;
   --angle: -30deg;
-  opacity: 0.32;
+  opacity: 0.65;
 }
 .hero {
   position: relative;
@@ -200,8 +201,8 @@ main {
   pointer-events: none;
   background: radial-gradient(
     ellipse at 50% 40%,
-    #21114ae6,
-    #21114a66 36%,
+    #103923eb,
+    #10392380 36%,
     transparent 67%
   );
 }
@@ -211,8 +212,8 @@ main {
 }
 @media (max-width: 1000px) {
   .foliage {
-    opacity: 0.25;
-    width: 340px;
+    opacity: 0.48;
+    width: 380px;
   }
   .canopy-left,
   .hero-left,
@@ -231,7 +232,7 @@ main {
 }
 @media (max-width: 640px) {
   .foliage {
-    opacity: 0.22;
+    opacity: 0.42;
   }
   .canopy-left,
   .canopy-right,
@@ -254,8 +255,8 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 0;
-  background: rgba(17, 9, 45, 0.7);
-  border: 1px solid rgba(210, 186, 255, 0.12);
+  background: rgba(9, 35, 22, 0.7);
+  border: 1px solid rgba(190, 228, 162, 0.12);
   border-radius: 999px;
   text-decoration: none;
   font-size: 12px;
@@ -263,14 +264,14 @@ main {
   margin-bottom: 35px;
 }
 .release-note > span:first-child {
-  background: #6332b5;
+  background: #376b36;
   border-radius: 999px;
   padding: 8px 14px;
   color: white;
 }
 .release-note > span:last-child {
   padding: 8px 16px;
-  color: #e6dcfc;
+  color: #e4eed4;
 }
 .release-note i {
   font-style: normal;
@@ -303,7 +304,7 @@ h3 {
   max-width: 610px;
   font-size: 20px;
   line-height: 1.6;
-  color: #c2b8d9;
+  color: #c6d8bc;
   margin: 26px 0 0;
   text-wrap: pretty;
 }
@@ -326,14 +327,15 @@ h3 {
   font-weight: 600;
 }
 .primary {
-  background: white;
-  color: #703ade;
+  background: #e4f5cd;
+  border-color: #e4f5cd;
+  color: #23562d;
   width: min(330px, 100%);
   margin-inline: auto;
 }
 .primary:hover {
-  background: #ece5ff;
-  border-color: #ece5ff;
+  background: #d9f4b7;
+  border-color: #d9f4b7;
 }
 .install-command {
   display: flex;
@@ -342,14 +344,14 @@ h3 {
   padding: 10px 10px 10px 17px;
   margin-top: 12px;
   min-height: 54px;
-  border: 1px solid rgba(208, 181, 255, 0.12);
+  border: 1px solid rgba(182, 222, 152, 0.12);
   border-radius: 12px;
-  background: rgba(16, 8, 40, 0.76);
-  color: #cfc3e8;
+  background: rgba(5, 26, 17, 0.76);
+  color: #cfdfc3;
 }
 .terminal-prompt {
   font: 26px/1 var(--mono);
-  color: #ad99d6;
+  color: #a1c78c;
 }
 .install-command code {
   font: 12px/1.75 var(--mono);
@@ -367,11 +369,11 @@ h3 {
   background: transparent;
   border: 0;
   border-radius: 6px;
-  color: #cbb7f0;
+  color: #c7e4a4;
   cursor: pointer;
 }
 .install-command button:hover {
-  background: rgba(208, 181, 255, 0.12);
+  background: rgba(182, 222, 152, 0.12);
   color: white;
 }
 .copy-icon {
@@ -405,7 +407,7 @@ h3 {
 }
 .platform-note {
   font-size: 11px;
-  color: #b6a7ce;
+  color: #b1c3a4;
   margin: 16px 0 0;
 }
 .workspace-stack {
@@ -416,7 +418,7 @@ h3 {
   gap: 24px 40px;
   margin-top: auto;
   padding-top: 57px;
-  color: #c2b6d9;
+  color: #bbd0ad;
   font-size: 15px;
   font-weight: 550;
   letter-spacing: -0.3px;
@@ -487,7 +489,7 @@ h3 {
 .feature-number {
   font-family: var(--mono);
   font-size: 12px;
-  color: #a895c9;
+  color: #9abd83;
   padding-top: 4px;
 }
 .feature-list p {
@@ -690,5 +692,11 @@ h3 {
   }
   .site-footer > a:last-child {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foliage {
+    transform: none;
   }
 }
