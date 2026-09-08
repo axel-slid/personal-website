@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 640" fill="none">
+<defs>
+ <linearGradient id="leaf" x1="50" y1="20" x2="190" y2="80" gradientUnits="userSpaceOnUse"><stop stop-color="#70bda1"/><stop offset=".5" stop-color="#34776f"/><stop offset="1" stop-color="#173e4c"/></linearGradient>
+ <g id="frond"><path d="M0 0C35-61 98-65 166-51C132-10 65 25 0 0Z" fill="url(#leaf)"/><path d="M1 0Q83-28 154-48" stroke="#a0d7be" stroke-opacity=".35"/><path d="m35-11 10-23m22 14 14-25m13 18 17-23M43-13l22 13m11-22 24 8m6-18 21 4" stroke="#a0d7be" stroke-opacity=".14"/></g>
+</defs>
+<g transform="translate(220 24)">
+ <path d="M0 586C-2 438-26 204 3 9" stroke="#62a58c" stroke-width="4"/>
+ <path d="M3 73C-30 37-13-3 13-20C32 23 24 48 3 73Z" fill="#448e7f"/>
+<use href="#frond" transform="translate(-10 90) scale(-0.46 0.46) rotate(-30)"/>
+<use href="#frond" transform="translate(-10 90) scale(0.46 0.46) rotate(-30)"/>
+<use href="#frond" transform="translate(-10 140) scale(-0.65 0.65) rotate(-23)"/>
+<use href="#frond" transform="translate(-10 140) scale(0.65 0.65) rotate(-23)"/>
+<use href="#frond" transform="translate(-10 200) scale(-0.85 0.85) rotate(-18)"/>
+<use href="#frond" transform="translate(-10 200) scale(0.85 0.85) rotate(-18)"/>
+<use href="#frond" transform="translate(-10 265) scale(-1 1) rotate(-12)"/>
+<use href="#frond" transform="translate(-10 265) scale(1 1) rotate(-12)"/>
+<use href="#frond" transform="translate(-10 335) scale(-1.12 1.12) rotate(-7)"/>
+<use href="#frond" transform="translate(-10 335) scale(1.12 1.12) rotate(-7)"/>
+<use href="#frond" transform="translate(-4 409) scale(-1.13 1.13) rotate(2)"/>
+<use href="#frond" transform="translate(-4 409) scale(1.13 1.13) rotate(2)"/>
+<use href="#frond" transform="translate(-4 481) scale(-1.02 1.02) rotate(11)"/>
+<use href="#frond" transform="translate(-4 481) scale(1.02 1.02) rotate(11)"/>
+<use href="#frond" transform="translate(-4 541) scale(-0.8 0.8) rotate(18)"/>
+<use href="#frond" transform="translate(-4 541) scale(0.8 0.8) rotate(18)"/>
+</g></svg>

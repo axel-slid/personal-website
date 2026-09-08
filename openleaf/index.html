@@ -37,10 +37,7 @@
     <meta name="theme-color" content="#151032" />
     <link rel="icon" href="icon.png" type="image/png" />
     <link rel="apple-touch-icon" href="icon.png" />
-    <link
-      rel="stylesheet"
-      href="openleaf-product.css?v=20260908-astro-inspired"
-    />
+    <link rel="stylesheet" href="openleaf-product.css?v=20260908-jungle" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -60,31 +57,45 @@
       >
     </header>
     <main id="main">
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-backdrop" aria-hidden="true">
-          <div class="workspace-ghost">
-            <img
-              src="interface-example.png"
-              width="1800"
-              height="1050"
-              alt=""
-            />
-          </div>
-          <div class="paper-ghost">
-            <span class="paper-heading">From an idea to a paper</span
-            ><span class="paper-equation">∫ f(x) dx</span
-            ><span class="paper-lines"></span
-            ><span class="paper-lines short"></span
-            ><span class="paper-lines"></span
-            ><span class="paper-lines short"></span
-            ><span class="paper-equation small">α + β → ∞</span
-            ><span class="paper-lines"></span>
-          </div>
+      <div class="jungle-scene" aria-hidden="true">
+        <div class="foliage canopy-left" data-depth="0.16">
+          <img src="assets/jungle-fern.svg" width="440" height="640" alt="" />
         </div>
+        <div class="foliage canopy-right" data-depth="-0.12">
+          <img src="assets/jungle-leaf.svg" width="440" height="560" alt="" />
+        </div>
+        <div class="foliage hero-left" data-depth="0.1">
+          <img src="assets/jungle-leaf.svg" width="440" height="560" alt="" />
+        </div>
+        <div class="foliage hero-right" data-depth="0.2">
+          <img src="assets/jungle-fern.svg" width="440" height="640" alt="" />
+        </div>
+        <div class="foliage middle-left" data-depth="0.14">
+          <img src="assets/jungle-fern.svg" width="440" height="640" alt="" />
+        </div>
+        <div class="foliage middle-right" data-depth="-0.1">
+          <img src="assets/jungle-leaf.svg" width="440" height="560" alt="" />
+        </div>
+        <div class="foliage features-left" data-depth="0.18">
+          <img src="assets/jungle-leaf.svg" width="440" height="560" alt="" />
+        </div>
+        <div class="foliage features-right" data-depth="0.13">
+          <img src="assets/jungle-fern.svg" width="440" height="640" alt="" />
+        </div>
+        <div class="foliage floor-left" data-depth="0.1">
+          <img src="assets/jungle-fern.svg" width="440" height="640" alt="" />
+        </div>
+        <div class="foliage floor-right" data-depth="-0.12">
+          <img src="assets/jungle-leaf.svg" width="440" height="560" alt="" />
+        </div>
+      </div>
+      <section class="hero" aria-labelledby="hero-title">
         <div class="hero-content wrap">
-          <a class="release-note" href="https://github.com/axel-slid/openleaf"
-            ><span>Open source</span
-            ><span>Built for researchers <i aria-hidden="true">→</i></span></a
+          <a
+            class="release-note"
+            href="https://github.com/axel-slid/openleaf/releases/tag/v0.2.1"
+            ><span>Openleaf v0.2.1</span
+            ><span>See what’s new <i aria-hidden="true">→</i></span></a
           >
           <h1 id="hero-title">Your research.<br />All in one place.</h1>
           <p class="lede">
@@ -125,10 +136,6 @@
         </div>
       </section>
       <figure class="workspace-preview wrap" id="workspace">
-        <div class="preview-heading">
-          <span>The workspace</span
-          ><span>Source, preview, and tools. Side by side.</span>
-        </div>
         <a
           href="interface-example.png"
           aria-label="View the full Openleaf workspace screenshot"
@@ -212,6 +219,6 @@
       ><span>Made by <a href="/">Alex Dils</a></span
       ><a href="docs.html">Documentation <span aria-hidden="true">↗</span></a>
     </footer>
-    <script src="openleaf-product.js?v=20260908-astro-inspired"></script>
+    <script src="openleaf-product.js?v=20260908-jungle"></script>
   </body>
 </html>
