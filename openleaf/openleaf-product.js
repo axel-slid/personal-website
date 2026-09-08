@@ -4,8 +4,11 @@
   const status = document.getElementById("copyStatus");
   button?.addEventListener("click", async () => {
     try {
-      await navigator.clipboard.writeText(command.textContent.trim());
-      button.textContent = "Copied";
+      await navigator.clipboard.writeText(
+        command.textContent.replace(/\s+/g, " ").trim(),
+      );
+      button.dataset.copied = "true";
+      button.setAttribute("aria-label", "Install command copied");
       status.textContent = "Install command copied to clipboard.";
     } catch {
       const range = document.createRange();
@@ -14,10 +17,14 @@
       selection.removeAllRanges();
       selection.addRange(range);
       status.textContent = "Command selected. Copy it with your keyboard.";
-      button.textContent = "Selected";
+      button.setAttribute(
+        "aria-label",
+        "Install command selected; copy with your keyboard",
+      );
     }
     window.setTimeout(() => {
-      button.textContent = "Copy";
+      delete button.dataset.copied;
+      button.setAttribute("aria-label", "Copy the Openleaf install command");
     }, 1800);
   });
 })();
