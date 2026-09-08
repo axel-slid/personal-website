@@ -3,3 +3,6 @@ node_modules/
 .remotion/
 .vercel
 .env*
+
+# Also ignore a local dependency symlink used by the Remotion renderer.
+tools/openleaf-remotion/node_modules

@@ -1,0 +1,8 @@
+{
+  "appCommit": "ca600c8295ac69bf5fbba691aa74a72924ba6b68",
+  "snapshot": "Local Openleaf application source, including current working changes",
+  "sha256": {
+    "index.html": "29f2aad145277910f6f515881f2b0fcb7f21c0b21aa7c0257984497f82badc7d",
+    "styles.css": "6cb32cf5079d65a747282172316853c12c984f9590853e9b259e1f5563a4b26c"
+  }
+}

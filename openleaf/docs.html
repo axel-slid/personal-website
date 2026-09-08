@@ -24,7 +24,7 @@
   <meta name="twitter:description" content="Documentation for Openleaf, a local LaTeX workspace with agents, vim, ssh, GitHub Action, cool themes, and more." />
   <meta name="twitter:image" content="https://www.alex-dils.com/openleaf/social-preview.png?v=3" />
   <meta name="twitter:image:alt" content="Openleaf local LaTeX workspace preview" />
-  <meta name="theme-color" content="#138a07" />
+  <meta name="theme-color" content="#071d15" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="alternate icon" href="icon.svg" type="image/svg+xml" />
   <style>
@@ -220,7 +220,7 @@
     .foot { align-items: center; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; }
     .foot a { text-decoration: none; }
     .foot a:hover { color: var(--text); }
-    body, body * { font-weight: 400 !important; }
+
 
     @media (max-width: 820px) {
       .nav-links { display: none; }
@@ -231,23 +231,25 @@
       article { padding: 28px 24px 34px; }
     }
   </style>
+  <link rel="stylesheet" href="openleaf-docs.css?v=20260908-core-demos" />
 </head>
 <body>
+  <a class="docs-skip" href="#docs-content">Skip to docs</a>
   <header class="nav">
     <div class="wrap">
       <div class="nav-inner">
-        <a class="brand" href="index.html"><img src="icon.svg" alt="" width="24" height="24" />Openleaf</a>
+        <a class="brand" href="index.html"><img src="icon.png" alt="" width="24" height="24" />Openleaf</a>
         <nav class="nav-links" aria-label="Site">
           <a href="index.html">Home</a>
-          <a href="docs.html">Docs</a>
-          <a href="https://github.com/axel-slid/openleaf">Source</a>
+          <a href="docs.html" aria-current="page">Docs</a>
+          <a href="https://github.com/axel-slid/openleaf">GitHub</a>
         </nav>
         <a class="btn" href="index.html#install">Install</a>
       </div>
     </div>
   </header>
 
-  <main>
+  <main id="docs-content">
     <div class="wrap docs-hero">
       <h1>Openleaf Docs</h1>
       <p>Complete setup and usage reference for Openleaf, a local desktop app for writing LaTeX papers with an editor, PDF pane, project library, compile tools, and docked agent terminals.</p>
@@ -455,7 +457,7 @@ openleaf open</code></pre>
 
   <footer>
     <div class="wrap foot">
-      <a class="brand" href="index.html"><img src="icon.svg" alt="" width="24" height="24" />Openleaf</a>
+      <a class="brand" href="index.html"><img src="icon.png" alt="" width="24" height="24" />Openleaf</a>
       <span>Free and open source.</span>
     </div>
   </footer>

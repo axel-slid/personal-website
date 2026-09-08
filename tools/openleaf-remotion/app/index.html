@@ -1,0 +1,1612 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Openleaf</title>
+  <link rel="stylesheet" href="node_modules/codemirror/lib/codemirror.css">
+  <link rel="stylesheet" href="node_modules/codemirror/addon/dialog/dialog.css">
+  <link rel="stylesheet" href="node_modules/codemirror/addon/hint/show-hint.css">
+  <link rel="stylesheet" href="node_modules/@xterm/xterm/css/xterm.css">
+  <link rel="stylesheet" href="node_modules/katex/dist/katex.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <section class="project-screen" id="projectScreen">
+      <div class="project-shell">
+        <header class="project-hero">
+          <div>
+            <h1 id="projectHeroTitle">Projects</h1>
+          </div>
+          <div class="hero-actions">
+          <button id="addProjectButton" class="hero-action" type="button">New Project</button>
+          <button id="templatesButton" class="hero-action" type="button">Templates</button>
+          <button id="remoteWorkspaceButton" class="hero-action" type="button">New SSH Project</button>
+          <button class="settingsButton" type="button">Settings</button>
+          <button id="helpButton" class="hero-action icon-only-action" type="button" aria-label="Help" title="Help">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9.1 9a3 3 0 1 1 5.8 1c-.5 1.2-1.9 1.7-2.5 2.7-.2.3-.3.8-.3 1.3"></path>
+              <path d="M12 17h.01"></path>
+              <circle cx="12" cy="12" r="9"></circle>
+            </svg>
+          </button>
+          </div>
+        </header>
+
+        <div class="project-tools">
+          <input id="projectSearch" type="search" placeholder="Search projects" aria-label="Search projects">
+          <div class="project-view-toggle" aria-label="Project view">
+            <button id="projectGridButton" class="active" type="button" aria-label="Grid view" title="Grid view">
+              <svg class="view-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="4" y="4" width="6" height="6" rx="1.2"></rect>
+                <rect x="14" y="4" width="6" height="6" rx="1.2"></rect>
+                <rect x="4" y="14" width="6" height="6" rx="1.2"></rect>
+                <rect x="14" y="14" width="6" height="6" rx="1.2"></rect>
+              </svg>
+              <span class="visually-hidden">Grid view</span>
+            </button>
+            <button id="projectRowsButton" type="button" aria-label="Rows view" title="Rows view">
+              <svg class="view-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 6h14M5 12h14M5 18h14"></path>
+              </svg>
+              <span class="visually-hidden">Rows view</span>
+            </button>
+          </div>
+          <button id="refreshProjectsButton" type="button" aria-label="Refresh projects" title="Refresh projects">
+            <span class="refresh-glyph" aria-hidden="true">&#8635;</span>
+            <span class="visually-hidden">Refresh projects</span>
+          </button>
+          <div class="project-sort-menu-wrap">
+            <button id="projectSortButton" class="project-sort-button" type="button" aria-label="Sort documents" title="Sort documents" aria-haspopup="menu" aria-expanded="false">
+              <svg class="view-icon sort-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7h10"></path>
+                <path d="M4 12h7"></path>
+                <path d="M4 17h4"></path>
+                <path d="M17 5v14"></path>
+                <path d="m14 16 3 3 3-3"></path>
+              </svg>
+              <span class="visually-hidden">Sort documents</span>
+            </button>
+            <div id="projectSortMenu" class="project-sort-menu" role="menu" aria-label="Sort documents" hidden>
+              <button type="button" role="menuitemradio" data-project-sort="favorites">Favorites first</button>
+              <button type="button" role="menuitemradio" data-project-sort="recent">Recently edited</button>
+              <button type="button" role="menuitemradio" data-project-sort="name-asc">Name A-Z</button>
+              <button type="button" role="menuitemradio" data-project-sort="name-desc">Name Z-A</button>
+              <button type="button" role="menuitemradio" data-project-sort="folder">Folder</button>
+              <button type="button" role="menuitemradio" data-project-sort="tex">TeX file</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="projectGrid" class="project-grid" aria-live="polite"></div>
+        <p id="projectEmpty" class="project-empty" hidden>No projects yet. Add a LaTeX file to start.</p>
+      </div>
+    </section>
+
+    <section class="editor-screen" id="editorScreen" hidden>
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="backToProjectsButton" class="project-back-button" type="button" title="Back to projects">
+            <span aria-hidden="true">&larr;</span>
+            <span>Projects</span>
+          </button>
+          <div id="sshConnectionBadge" class="ssh-connection-badge" data-state="disconnected" hidden>
+            <svg class="ssh-connection-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+              <path d="m7 10 3 2-3 2"></path>
+              <path d="M13 15h4"></path>
+            </svg>
+            <span class="ssh-connection-status-dot" aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="top-document-title-wrap">
+          <p id="activeDocumentTitle" class="top-document-title">No document loaded</p>
+          <button id="editTitleButton" class="title-edit-button" type="button" aria-label="Edit document title" title="Edit title">
+            <svg class="topbar-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="topbar-actions">
+          <button id="topRefreshFilesButton" class="topbar-action-button" type="button" title="Refresh project">
+            <span class="refresh-glyph" aria-hidden="true">&#8635;</span>
+            <span>Refresh Project</span>
+          </button>
+          <button id="historyButton" class="topbar-action-button" type="button" title="History">
+            <svg class="topbar-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+              <path d="M3 4v5h5"></path>
+              <path d="M12 7v5l3 2"></path>
+            </svg>
+            <span>History</span>
+          </button>
+          <button id="pushGithubButton" class="topbar-action-button" type="button" title="Push active project to GitHub">
+            <svg class="topbar-icon github-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-1.9c-3.14.68-3.8-1.34-3.8-1.34-.52-1.3-1.26-1.65-1.26-1.65-1.02-.7.08-.68.08-.68 1.13.08 1.73 1.16 1.73 1.16 1 .1 2.63.9 3.28.55.1-.73.4-1.23.72-1.51-2.5-.29-5.14-1.25-5.14-5.57 0-1.23.44-2.24 1.16-3.03-.12-.29-.5-1.44.11-2.99 0 0 .95-.3 3.1 1.16A10.8 10.8 0 0 1 12 5.91c.96 0 1.92.13 2.82.38 2.15-1.46 3.1-1.16 3.1-1.16.61 1.55.23 2.7.11 2.99.72.79 1.16 1.8 1.16 3.03 0 4.33-2.64 5.28-5.15 5.56.41.35.77 1.04.77 2.1v3.12c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"></path>
+            </svg>
+            <span>Push</span>
+          </button>
+          <button id="pullGithubButton" class="topbar-action-button" type="button" title="Pull LaTeX sources from project GitHub">
+            <svg class="topbar-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="6" cy="5" r="2"></circle>
+              <circle cx="18" cy="19" r="2"></circle>
+              <path d="M6 7v8a4 4 0 0 0 4 4h6"></path>
+              <path d="M18 3v10"></path>
+              <path d="m14 9 4 4 4-4"></path>
+            </svg>
+            <span>Pull</span>
+          </button>
+          <button class="settingsButton topbar-action-button" type="button" title="Settings">
+            <svg class="topbar-icon settings-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"></path>
+              <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.08a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.08A1.7 1.7 0 0 0 4.6 8.94a1.7 1.7 0 0 0-.34-1.88L4.2 7A2 2 0 1 1 7.03 4.2l.06.06A1.7 1.7 0 0 0 8.97 4.6 1.7 1.7 0 0 0 10 3.04V3a2 2 0 1 1 4 0v.08a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06A2 2 0 1 1 19.8 7l-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.08A1.7 1.7 0 0 0 19.4 15Z"></path>
+            </svg>
+            <span>Settings</span>
+          </button>
+          <div id="topSaveStatusButton" class="save-status" aria-live="polite" data-save-status="neutral">
+            <span id="topSaveStatusLabel">Not loaded</span>
+          </div>
+        </div>
+      </header>
+      <div id="fullscreenNotchTitle" class="fullscreen-notch-title" aria-hidden="true">
+        <span id="fullscreenNotchTitleText">No document loaded</span>
+      </div>
+      <div id="fullscreenTopReveal" class="fullscreen-top-reveal" aria-label="Window controls">
+        <div class="fullscreen-traffic-lights">
+          <button id="fullscreenCloseTrafficLight" class="fullscreen-traffic-light fullscreen-traffic-light-close" type="button" aria-label="Close window" title="Close window"></button>
+          <button id="fullscreenMinimizeTrafficLight" class="fullscreen-traffic-light fullscreen-traffic-light-minimize" type="button" aria-label="Minimize window" title="Minimize window"></button>
+          <button id="fullscreenExitTrafficLight" class="fullscreen-exit-traffic-light" type="button" aria-label="Exit full screen" title="Exit full screen"></button>
+        </div>
+      </div>
+
+      <main class="workspace" id="workspace">
+        <div id="fileRail" class="file-rail" hidden>
+          <button id="fileRailButton" class="file-rail-open" type="button" aria-label="Expand files" title="Expand files">Files</button>
+          <div class="file-rail-actions">
+            <button id="railRefreshFilesButton" class="file-footer-icon" type="button" aria-label="Refresh files" title="Refresh files">
+              <span class="refresh-glyph" aria-hidden="true">&#8635;</span>
+            </button>
+            <button class="settingsButton file-footer-icon" type="button" aria-label="Open settings" title="Settings">
+              <svg class="settings-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"></path>
+                <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.56V21a2 2 0 1 1-4 0v-.08a1.7 1.7 0 0 0-1.03-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.56-1.03H3a2 2 0 1 1 0-4h.08A1.7 1.7 0 0 0 4.6 8.94a1.7 1.7 0 0 0-.34-1.88L4.2 7A2 2 0 1 1 7.03 4.2l.06.06A1.7 1.7 0 0 0 8.97 4.6 1.7 1.7 0 0 0 10 3.04V3a2 2 0 1 1 4 0v.08a1.7 1.7 0 0 0 1.03 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06A2 2 0 1 1 19.8 7l-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.56 1.03H21a2 2 0 1 1 0 4h-.08A1.7 1.7 0 0 0 19.4 15Z"></path>
+              </svg>
+            </button>
+            <button id="railHelpButton" class="file-footer-icon" type="button" aria-label="Open help" title="Help">
+              <svg class="help-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9.1 9a3 3 0 1 1 5.8 1c-.5 1.2-1.9 1.7-2.5 2.7-.2.3-.3.8-.3 1.3"></path>
+                <circle class="help-dot" cx="12" cy="17" r="0.8"></circle>
+                <circle class="help-ring" cx="12" cy="12" r="9"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <aside class="file-pane" id="filePane">
+          <div class="file-pane-header">
+            <div>
+              <h2>Files</h2>
+            </div>
+            <div class="file-header-actions">
+              <button id="fileHeaderRefreshButton" class="icon-button" type="button" aria-label="Refresh files" title="Refresh files">
+                <span class="refresh-glyph" aria-hidden="true">&#8635;</span>
+              </button>
+              <button id="newFileButton" class="icon-button" type="button" aria-label="New file" title="New file">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path>
+                  <path d="M14 2v6h6M12 11v6M9 14h6"></path>
+                </svg>
+              </button>
+              <button id="newFolderButton" class="icon-button" type="button" aria-label="New folder" title="New folder">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7l-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"></path>
+                  <path d="M12 10v6M9 13h6"></path>
+                </svg>
+              </button>
+              <button id="downloadPackageButton" class="icon-button" type="button" aria-label="Download package" title="Download package">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M21 8v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"></path>
+                  <path d="M3 8l3-4h12l3 4"></path>
+                  <path d="M12 10v6"></path>
+                  <path d="m8.5 12.5 3.5 3.5 3.5-3.5"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div id="fileTree" class="file-tree" aria-label="Project files"></div>
+          <section id="fileOutline" class="file-outline" aria-label="File outline" hidden>
+            <div id="fileOutlineResizeHandle" class="file-outline-resize-handle" role="separator" aria-label="Resize file outline" tabindex="0"></div>
+            <button id="fileOutlineToggle" class="file-outline-title" type="button">
+              <span aria-hidden="true">▾</span>
+              <span>File outline</span>
+            </button>
+            <div id="fileOutlineBody" class="file-outline-body"></div>
+          </section>
+          <div id="filePreview" class="file-preview" hidden></div>
+          <footer class="file-pane-footer">
+            <div class="file-status">
+              <p id="saveState">Not loaded</p>
+              <p id="compileState">Waiting for compile</p>
+            </div>
+          </footer>
+        </aside>
+
+        <div id="fileSplitter" class="file-splitter" role="separator" aria-label="Resize files sidebar" tabindex="0"></div>
+
+        <div id="sourceRail" class="source-rail" hidden>
+          <button id="sourceRailButton" class="source-rail-open" type="button">Code</button>
+        </div>
+
+        <section class="source-pane">
+          <div class="pane-header">
+            <div class="source-heading">
+              <div class="source-title-row">
+                <h2 id="editorTitle">main.tex</h2>
+              </div>
+              <p id="sourceStats">0 lines · 0 words</p>
+            </div>
+            <div class="source-header-actions">
+              <button id="undoButton" class="icon-button" type="button" aria-label="Undo" title="Undo">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 14 4 9l5-5"></path>
+                  <path d="M4 9h10a6 6 0 0 1 0 12h-1"></path>
+                </svg>
+              </button>
+              <button id="redoButton" class="icon-button" type="button" aria-label="Redo" title="Redo">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m15 14 5-5-5-5"></path>
+                  <path d="M20 9H10a6 6 0 0 0 0 12h1"></path>
+                </svg>
+              </button>
+              <button id="minimapToggleButton" class="icon-button minimap-toggle-button" type="button" aria-label="Hide minimap" title="Hide minimap" aria-pressed="true">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <g class="minimap-toggle-glyph" transform="translate(24 0) scale(-1 1)">
+                    <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                    <path d="M9 4v16"></path>
+                    <path d="M5.5 8h1"></path>
+                    <path d="M5.5 12h1"></path>
+                    <path d="M5.5 16h1"></path>
+                    <path class="minimap-toggle-chevron" d="m14 9 3 3-3 3"></path>
+                  </g>
+                </svg>
+              </button>
+            </div>
+            <div id="pythonRuntimeControls" class="python-runtime-controls" hidden>
+              <span id="ipynbVimModeIndicator" class="vim-mode-indicator python-runtime-vim-indicator" data-vim-state="off" hidden></span>
+              <button id="pythonKernelButton" class="python-kernel-button" type="button" aria-haspopup="listbox" aria-expanded="false" title="Select Python kernel">
+                <span id="ipynbKernelLabel">Python</span>
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"></path></svg>
+              </button>
+            </div>
+            <div class="source-mode-actions" aria-label="Editor mode">
+              <button class="mode-button active" id="sourceModeButton" type="button" title="Edit LaTeX source">Code</button>
+              <button class="mode-button" id="visualModeButton" type="button" title="Visual document editor">Visual</button>
+            </div>
+            <span id="vimModeIndicator" class="vim-mode-indicator" data-vim-state="off" hidden></span>
+            <button id="editorFullscreenButton" class="icon-button editor-fullscreen-button" type="button" aria-label="Enter editor fullscreen" title="Enter editor fullscreen" aria-pressed="false">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                <path d="M16 3h3a2 2 0 0 1 2 2v3"></path>
+                <path d="M8 21H5a2 2 0 0 1-2-2v-3"></path>
+                <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+              </svg>
+            </button>
+          </div>
+          <div id="textTabs" class="text-tabs" aria-label="Open text files"></div>
+          <div id="pythonEditorToolbar" class="python-editor-toolbar" hidden>
+            <button id="pythonRunCellButton" type="button" aria-label="Run current Python cell" title="Run current cell (Shift+Enter)">Run Cell</button>
+            <span aria-hidden="true">|</span>
+            <button id="pythonRunAboveButton" type="button" aria-label="Run Python cells above" title="Run this cell and every cell above it">Run Above</button>
+            <span aria-hidden="true">|</span>
+            <button id="pythonDebugCellButton" type="button" aria-label="Debug current Python cell" title="Run current cell with Python tracing">Debug Cell</button>
+          </div>
+          <div class="editor-stack">
+            <textarea id="latexSource" spellcheck="false" aria-label="LaTeX source"></textarea>
+            <section id="ipynbNotebookEditor" class="ipynb-notebook-editor" aria-label="Jupyter notebook" hidden>
+              <header class="ipynb-toolbar">
+                <div class="ipynb-toolbar-actions" aria-label="Notebook actions">
+                  <button id="ipynbAddCellButton" type="button" title="Add code cell">+ Code</button>
+                  <button id="ipynbAddMarkdownButton" type="button" title="Add Markdown cell">+ Markdown</button>
+                  <span class="ipynb-toolbar-divider" aria-hidden="true"></span>
+                  <button id="ipynbRunAllButton" type="button" title="Run all notebook cells">▷ Run All</button>
+                  <button id="ipynbClearOutputsButton" type="button" title="Clear all notebook outputs">Clear All Outputs</button>
+                </div>
+              </header>
+              <div id="ipynbNotebookCells" class="ipynb-notebook-cells"></div>
+            </section>
+            <div id="visualEditor" class="visual-editor" hidden></div>
+            <div id="mediaViewer" class="media-viewer" hidden></div>
+            <div id="sourceMinimap" class="source-minimap" aria-hidden="true">
+              <div class="source-minimap-lines"></div>
+              <div class="source-minimap-viewport"></div>
+            </div>
+          </div>
+          <section class="terminal-panel" id="terminalPanel">
+            <div id="terminalResizeHandle" class="terminal-resize-handle" role="separator" aria-label="Resize terminal panel" tabindex="0"></div>
+            <button id="terminalCollapsedButton" class="collapsed-panel-rail terminal-collapsed-rail" type="button" aria-label="Expand terminal" title="Expand terminal">Terminal</button>
+            <header class="terminal-header">
+              <span class="terminal-title">Terminal</span>
+              <div class="terminal-actions">
+                <button id="terminalNewButton" type="button" aria-label="New shell terminal" title="New terminal">+</button>
+                <button id="terminalRemoteButton" type="button" aria-label="New SSH terminal" title="SSH">SSH</button>
+                <button id="terminalShellButton" type="button" title="New shell terminal">Shell</button>
+                <button id="terminalCodexButton" class="danger-terminal" type="button" title="New Codex terminal">
+                  <svg class="terminal-action-brand-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M14.949 6.547a3.94 3.94 0 0 0-.348-3.273 4.11 4.11 0 0 0-4.4-1.934A4.1 4.1 0 0 0 8.423.2 4.15 4.15 0 0 0 6.305.086a4.1 4.1 0 0 0-1.891.948 4.04 4.04 0 0 0-1.158 1.753 4.1 4.1 0 0 0-1.563.679A4 4 0 0 0 .554 4.72a3.99 3.99 0 0 0 .502 4.731 3.94 3.94 0 0 0 .346 3.274 4.11 4.11 0 0 0 4.402 1.933c.382.425.852.764 1.377.995.526.231 1.095.35 1.67.346 1.78.002 3.358-1.132 3.901-2.804a4.1 4.1 0 0 0 1.563-.68 4 4 0 0 0 1.14-1.253 3.99 3.99 0 0 0-.506-4.716m-6.097 8.406a3.05 3.05 0 0 1-1.945-.694l.096-.054 3.23-1.838a.53.53 0 0 0 .265-.455v-4.49l1.366.778q.02.011.025.035v3.722c-.003 1.653-1.361 2.992-3.037 2.996m-6.53-2.75a2.95 2.95 0 0 1-.36-2.01l.095.057L5.29 12.09a.53.53 0 0 0 .527 0l3.949-2.246v1.555a.05.05 0 0 1-.022.041L6.473 13.3c-1.454.826-3.311.335-4.15-1.098m-.85-6.94A3.02 3.02 0 0 1 3.07 3.949v3.785a.51.51 0 0 0 .262.451l3.93 2.237-1.366.779a.05.05 0 0 1-.048 0L2.585 9.342a2.98 2.98 0 0 1-1.113-4.094zm11.216 2.571L8.747 5.576l1.362-.776a.05.05 0 0 1 .048 0l3.265 1.86a3 3 0 0 1 1.173 1.207 2.96 2.96 0 0 1-.27 3.2 3.05 3.05 0 0 1-1.36.997V8.279a.52.52 0 0 0-.276-.445m1.36-2.015-.097-.057-3.226-1.855a.53.53 0 0 0-.53 0L6.249 6.153V4.598a.04.04 0 0 1 .019-.04L9.533 2.7a3.07 3.07 0 0 1 3.257.139c.474.325.843.778 1.066 1.303.223.526.289 1.103.191 1.664zM5.503 8.575 4.139 7.8a.05.05 0 0 1-.026-.037V4.049c0-.57.166-1.127.476-1.607s.752-.864 1.275-1.105a3.08 3.08 0 0 1 3.234.41l-.096.054-3.23 1.838a.53.53 0 0 0-.265.455zm.742-1.577 1.758-1 1.762 1v2l-1.755 1-1.762-1z"></path>
+                  </svg>
+                  <span>Codex</span>
+                </button>
+                <button id="terminalClaudeButton" class="danger-terminal" type="button" title="New Claude terminal">
+                  <svg class="terminal-action-brand-icon" viewBox="0 0 16 16" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M9.218 2h2.402L16 12.987h-2.402zM4.379 2h2.512l4.38 10.987H8.82l-.895-2.308h-4.58l-.896 2.307H0L4.38 2.001zm2.755 6.64L5.635 4.777 4.137 8.64z"></path>
+                  </svg>
+                  <span>Claude</span>
+                </button>
+                <span class="terminal-action-divider" aria-hidden="true"></span>
+                <button id="terminalSplitButton" type="button" aria-label="Split terminal" title="Split terminal">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                    <path d="M12 4v16"></path>
+                  </svg>
+                </button>
+                <button id="terminalKillButton" type="button" aria-label="Kill terminal" title="Kill terminal">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"></path>
+                  </svg>
+                </button>
+                <button id="terminalMaximizeButton" type="button" aria-label="Maximize terminal" title="Maximize terminal">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"></path>
+                  </svg>
+                </button>
+                <button id="terminalClosePanelButton" type="button" aria-label="Close terminal panel" title="Close terminal">
+                  <svg class="icon icon-x" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M18 6 6 18M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+            </header>
+            <div class="terminal-workbench">
+              <div class="terminal-body" id="terminalBody">
+                <div class="terminal-empty" id="terminalEmpty">Start Shell, Codex, or Claude. Use + for another shell.</div>
+              </div>
+              <div id="terminalTabsResizeHandle" class="terminal-tabs-resize-handle" role="separator" aria-label="Resize terminal tabs" tabindex="0"></div>
+              <div class="terminal-tabs" id="terminalTabs" aria-label="Terminal sessions"></div>
+            </div>
+          </section>
+        </section>
+
+        <div id="splitter" class="splitter" role="separator" aria-label="Resize editor and preview panes" tabindex="0"></div>
+
+        <div id="previewRail" class="preview-rail" hidden>
+          <button id="previewRailButton" class="preview-rail-open" type="button" title="Show PDF">PDF</button>
+        </div>
+
+        <section class="preview-pane">
+          <div class="pane-header" id="previewPaneHeader">
+            <div class="pdf-title-block">
+              <h2 id="pdfTitle" title="Choose PDF or PowerPoint">main.pdf</h2>
+              <p id="pdfMeta">main.pdf</p>
+              <div id="pdfFileMenu" class="pdf-file-menu" hidden></div>
+            </div>
+            <button id="compileButton" class="compile-pill" type="button" title="Compile PDF - up to date">
+              <span class="compile-pill-label">Compile</span>
+              <svg class="compile-pill-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v12"></path>
+                <path d="m7 10 5 5 5-5"></path>
+                <path d="M5 20h14"></path>
+              </svg>
+            </button>
+            <div id="pdfSpeechControls" class="pdf-speech-controls" aria-label="Local PDF voice reader">
+              <div class="pdf-speech-pill">
+                <button id="pdfSpeechButton" class="pdf-speech-button" type="button" aria-label="Read PDF aloud" title="Read PDF aloud with a local neural voice" aria-pressed="false" disabled>
+                  <svg class="pdf-speech-play-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m8 5 11 7-11 7Z"></path>
+                  </svg>
+                  <svg class="pdf-speech-pause-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8 5v14M16 5v14"></path>
+                  </svg>
+                </button>
+                <div class="pdf-speech-progress" aria-label="PDF reading progress">
+                  <strong id="pdfSpeechProgressCurrent">0:00</strong>
+                  <span id="pdfSpeechProgressTotal">/ --:--</span>
+                </div>
+                <span class="pdf-speech-wave" aria-hidden="true"><i></i><i></i><i></i></span>
+              </div>
+              <span id="pdfSpeechStatus" class="visually-hidden" role="status" aria-live="polite">Waiting for PDF</span>
+              <span id="pdfSpeechProgressDetail" class="visually-hidden">0 of 0 words</span>
+            </div>
+            <div class="pdf-header-actions">
+              <button id="pdfSidebarButton" class="pdf-sidebar-button" type="button" aria-pressed="false" aria-label="Show PDF sidebar" title="Show PDF sidebar">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <g class="pdf-sidebar-glyph" transform="translate(24 0) scale(-1 1)">
+                    <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                    <path d="M9 4v16"></path>
+                    <path d="M5.5 8h1"></path>
+                    <path d="M5.5 12h1"></path>
+                    <path d="M5.5 16h1"></path>
+                    <path class="pdf-sidebar-chevron" d="m14 9 3 3-3 3"></path>
+                  </g>
+                </svg>
+              </button>
+              <div class="pdf-action-segment" aria-label="PDF actions">
+                <button id="openPdfButton" class="pdf-action-button" type="button" aria-label="Open PDF in system viewer" title="Open PDF in system viewer">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path>
+                    <path d="M14 2v6h6"></path>
+                    <path d="M9 15h6"></path>
+                  </svg>
+                </button>
+                <button id="downloadPdfButton" class="pdf-action-button" type="button" aria-label="Download PDF" title="Download PDF">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3v12"></path>
+                    <path d="m7 10 5 5 5-5"></path>
+                    <path d="M5 21h14"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="pdf-controls">
+                <button id="pdfZoomOutButton" type="button" aria-label="Zoom PDF out" title="Zoom PDF out">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m16 16 5 5"></path>
+                    <path d="M8 11h6"></path>
+                  </svg>
+                </button>
+                <span id="pdfZoomLabel">100%</span>
+                <button id="pdfZoomInButton" type="button" aria-label="Zoom PDF in" title="Zoom PDF in">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m16 16 5 5"></path>
+                    <path d="M11 8v6M8 11h6"></path>
+                  </svg>
+                </button>
+                <button id="pdfFitButton" type="button" aria-label="Fit page to width" title="Fit page to width">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 5v14"></path>
+                    <path d="M21 5v14"></path>
+                    <path d="M7 12h10"></path>
+                    <path d="m10 9-3 3 3 3"></path>
+                    <path d="m14 9 3 3-3 3"></path>
+                  </svg>
+                </button>
+              </div>
+              <span id="pdfPageIndicator" class="pdf-page-indicator">Page 0 / 0</span>
+              <button id="pdfReaderButton" class="pdf-reader-button" type="button" aria-label="Toggle PDF reader mode" title="PDF reader mode" aria-pressed="false">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                  <path d="M16 3h3a2 2 0 0 1 2 2v3"></path>
+                  <path d="M8 21H5a2 2 0 0 1-2-2v-3"></path>
+                  <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+                </svg>
+              </button>
+              <button id="pdfCinematicButton" class="pdf-reader-button pdf-cinematic-button" type="button" aria-label="Open Cinematic Mode" title="Cinematic Mode" hidden>
+                <svg class="yin-yang-symbol" viewBox="0 0 20 20" aria-hidden="true">
+                  <circle class="yin-yang-outline" cx="10" cy="10" r="8"></circle>
+                  <path class="yin-yang-half" d="M10 2A8 8 0 0 0 10 18a4 4 0 0 0 0-8 4 4 0 0 1 0-8Z"></path>
+                  <circle class="yin-yang-dark-dot" cx="10" cy="6" r="1.3"></circle>
+                  <circle class="yin-yang-light-dot" cx="10" cy="14" r="1.3"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="pdf-viewer-shell" id="pdfViewerShell">
+            <aside id="pdfSidebar" class="pdf-sidebar" hidden>
+              <div id="pdfThumbnailList" class="pdf-thumbnail-list" aria-label="PDF page thumbnails"></div>
+            </aside>
+            <div id="pdfViewer" class="pdf-viewer" aria-label="Compiled manuscript pages"></div>
+          </div>
+          <section id="pythonNotebookPanel" class="python-notebook-panel" aria-label="Python notebook output" hidden>
+            <header class="python-notebook-header">
+              <div class="python-notebook-heading">
+                <div>
+                  <h2 id="pythonNotebookMeta">Connecting to Python…</h2>
+                </div>
+              </div>
+              <div class="python-notebook-actions">
+                <button id="pythonStopButton" type="button" title="Stop Python">Stop</button>
+                <button id="pythonClearButton" type="button" title="Clear outputs">Clear</button>
+              </div>
+            </header>
+            <div id="pythonNotebookFeed" class="python-notebook-feed" aria-live="polite"></div>
+            <footer class="python-notebook-footer" aria-label="Python scratch cell">
+              <button id="pythonScratchRunButton" class="python-scratch-run" type="button" aria-label="Run scratch cell" title="Run scratch cell">
+                <span aria-hidden="true">▷</span>
+              </button>
+              <textarea id="pythonScratchInput" rows="1" spellcheck="false" placeholder="Press Enter to execute."></textarea>
+            </footer>
+          </section>
+          <aside id="historyPanel" class="history-panel" hidden>
+            <header>
+              <h3>History</h3>
+              <button id="closeHistoryButton" class="history-close-button" type="button" aria-label="Close history" title="Close history">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m6 6 12 12"></path>
+                  <path d="m18 6-12 12"></path>
+                </svg>
+              </button>
+            </header>
+            <div id="historyPanelBody" class="history-panel-body"></div>
+          </aside>
+          <section class="log-panel" id="compileLogPanel">
+            <div id="compileLogResizeHandle" class="log-resize-handle" role="separator" aria-label="Resize log" tabindex="0"></div>
+            <button id="compileLogCollapsedButton" class="collapsed-panel-rail log-collapsed-rail" type="button" aria-label="Expand log" title="Expand log">Log</button>
+            <pre id="compileLog">No compile run yet.</pre>
+          </section>
+        </section>
+
+        <aside id="notesPanel" class="notes-panel">
+          <div id="notesResizeHandle" class="notes-resize-handle" role="separator" aria-label="Resize notes" tabindex="0"></div>
+          <button id="notesRailButton" class="notes-rail-open" type="button" title="Open notes">Notes</button>
+          <div class="notes-body">
+            <header class="notes-header">
+              <div class="notes-mode-actions" role="group" aria-label="Notes mode">
+                <button id="notesModeTextButton" class="mode-button active" type="button" aria-label="Text notes" title="Text notes">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 6h16"></path>
+                    <path d="M4 12h16"></path>
+                    <path d="M4 18h10"></path>
+                  </svg>
+                </button>
+                <button id="notesModeDrawButton" class="mode-button" type="button" aria-label="Whiteboard" title="Whiteboard">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="notes-header-actions">
+                <button id="notesClearButton" class="icon-button" type="button" aria-label="Clear notes" title="Clear">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"></path>
+                  </svg>
+                </button>
+                <button id="notesFullscreenButton" class="icon-button" type="button" aria-label="Fullscreen notes" title="Fullscreen notes" aria-pressed="false">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                    <path d="M16 3h3a2 2 0 0 1 2 2v3"></path>
+                    <path d="M8 21H5a2 2 0 0 1-2-2v-3"></path>
+                    <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+                  </svg>
+                </button>
+              </div>
+            </header>
+            <div id="notesToolbar" class="notes-toolbar" role="toolbar" aria-label="Formatting">
+              <button type="button" data-notes-md="undo" aria-label="Undo" title="Undo">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 14 4 9l5-5"></path>
+                  <path d="M4 9h10a6 6 0 0 1 0 12h-1"></path>
+                </svg>
+              </button>
+              <button type="button" data-notes-md="redo" aria-label="Redo" title="Redo">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m15 14 5-5-5-5"></path>
+                  <path d="M20 9H10a6 6 0 0 0 0 12h1"></path>
+                </svg>
+              </button>
+              <span class="notes-toolbar-divider" aria-hidden="true"></span>
+              <button type="button" data-notes-md="bold" aria-label="Bold" title="Bold"><span class="notes-md-glyph notes-md-bold">B</span></button>
+              <button type="button" data-notes-md="italic" aria-label="Italic" title="Italic"><span class="notes-md-glyph notes-md-italic">I</span></button>
+              <button type="button" data-notes-md="heading" aria-label="Heading" title="Heading"><span class="notes-md-glyph notes-md-bold">H</span></button>
+              <button type="button" data-notes-md="strike" aria-label="Strikethrough" title="Strikethrough"><span class="notes-md-glyph notes-md-strike">S</span></button>
+              <span class="notes-toolbar-divider" aria-hidden="true"></span>
+              <button type="button" data-notes-md="bullet" aria-label="Bulleted list" title="Bulleted list">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 6h11M9 12h11M9 18h11"></path>
+                  <circle cx="4.5" cy="6" r="1.4" fill="currentColor" stroke="none"></circle>
+                  <circle cx="4.5" cy="12" r="1.4" fill="currentColor" stroke="none"></circle>
+                  <circle cx="4.5" cy="18" r="1.4" fill="currentColor" stroke="none"></circle>
+                </svg>
+              </button>
+              <button type="button" data-notes-md="numbered" aria-label="Numbered list" title="Numbered list">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10 6h10M10 12h10M10 18h10"></path>
+                  <path d="M4 5l1.5-1v5"></path>
+                  <path d="M3.6 14.5a1.6 1.6 0 0 1 2.8 1c0 1-2.8 2-2.8 3.5h3"></path>
+                </svg>
+              </button>
+              <button type="button" data-notes-md="checklist" aria-label="Checklist" title="Checklist">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="4" width="5" height="5" rx="1"></rect>
+                  <path d="m4.2 6.5 1.1 1.1 1.7-1.9"></path>
+                  <rect x="3" y="14" width="5" height="5" rx="1"></rect>
+                  <path d="M11 6.5h9M11 16.5h9"></path>
+                </svg>
+              </button>
+              <span class="notes-toolbar-divider" aria-hidden="true"></span>
+              <button type="button" data-notes-md="quote" aria-label="Quote" title="Quote"><span class="notes-md-glyph notes-md-bold">&#8221;</span></button>
+              <button type="button" data-notes-md="code" aria-label="Code" title="Code">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="m9 8-4 4 4 4"></path>
+                  <path d="m15 8 4 4-4 4"></path>
+                </svg>
+              </button>
+              <button type="button" data-notes-md="table" aria-label="Table" title="Table">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                  <path d="M3 10h18M9 4v16M15 4v16"></path>
+                </svg>
+              </button>
+              <button type="button" data-notes-md="link" aria-label="Link" title="Link">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.2 1.2"></path>
+                  <path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.2-1.2"></path>
+                </svg>
+              </button>
+              <button type="button" data-notes-md="image" aria-label="Image" title="Image">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                  <circle cx="9" cy="10" r="1.6"></circle>
+                  <path d="m5 19 5-5 3 3 3-3 3 3"></path>
+                </svg>
+              </button>
+              <span class="notes-toolbar-spacer" aria-hidden="true"></span>
+              <button type="button" id="notesPreviewButton" aria-label="Preview markdown" title="Preview" aria-pressed="false">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+            </div>
+            <textarea id="notesText" class="notes-text" spellcheck="false" placeholder="Notes, outlines, markdown - anything."></textarea>
+            <div id="notesPreview" class="notes-preview" hidden></div>
+            <div id="notesCanvasWrap" class="notes-canvas-wrap" hidden>
+              <canvas id="notesCanvas"></canvas>
+              <div class="notes-draw-tools">
+                <button type="button" data-notes-draw="undo" aria-label="Undo drawing" title="Undo">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9 14 4 9l5-5"></path>
+                    <path d="M4 9h10a6 6 0 0 1 0 12h-1"></path>
+                  </svg>
+                </button>
+                <button type="button" data-notes-draw="redo" aria-label="Redo drawing" title="Redo">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m15 14 5-5-5-5"></path>
+                    <path d="M20 9H10a6 6 0 0 0 0 12h1"></path>
+                  </svg>
+                </button>
+                <span class="notes-tools-divider" aria-hidden="true"></span>
+                <button type="button" data-notes-tool="pen" class="active" aria-label="Pen" title="Pen">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                  </svg>
+                </button>
+                <button type="button" data-notes-tool="highlighter" aria-label="Highlighter" title="Highlighter">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m9 11-6 6v3h9l3-3"></path>
+                    <path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"></path>
+                  </svg>
+                </button>
+                <button type="button" data-notes-tool="eraser" aria-label="Eraser" title="Eraser">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="m7 21 -4 -4a2 2 0 0 1 0 -2.8L13.5 3.6a2 2 0 0 1 2.8 0l4.1 4.1a2 2 0 0 1 0 2.8L12 19"></path>
+                    <path d="M7 21h14"></path>
+                    <path d="m9 8 7 7"></path>
+                  </svg>
+                </button>
+                <button type="button" data-notes-tool="line" aria-label="Line" title="Line">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 19 19 5"></path>
+                  </svg>
+                </button>
+                <button type="button" data-notes-tool="arrow" aria-label="Arrow" title="Arrow">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 19 19 5"></path>
+                    <path d="M11 5h8v8"></path>
+                  </svg>
+                </button>
+                <button type="button" data-notes-tool="rect" aria-label="Rectangle" title="Rectangle">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="4" y="6" width="16" height="12" rx="1"></rect>
+                  </svg>
+                </button>
+                <button type="button" data-notes-tool="ellipse" aria-label="Ellipse" title="Ellipse">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <ellipse cx="12" cy="12" rx="8" ry="6"></ellipse>
+                  </svg>
+                </button>
+                <span class="notes-tools-divider" aria-hidden="true"></span>
+                <button type="button" class="notes-color active" data-notes-color="ink" style="--swatch: var(--text)" aria-label="Ink" title="Ink"></button>
+                <button type="button" class="notes-color" data-notes-color="#dc2626" style="--swatch: #dc2626" aria-label="Red" title="Red"></button>
+                <button type="button" class="notes-color" data-notes-color="#2563eb" style="--swatch: #2563eb" aria-label="Blue" title="Blue"></button>
+                <button type="button" class="notes-color" data-notes-color="#16a34a" style="--swatch: #16a34a" aria-label="Green" title="Green"></button>
+                <button type="button" class="notes-color" data-notes-color="#ea580c" style="--swatch: #ea580c" aria-label="Orange" title="Orange"></button>
+                <button type="button" class="notes-color" data-notes-color="#7c3aed" style="--swatch: #7c3aed" aria-label="Purple" title="Purple"></button>
+                <span class="notes-tools-divider" aria-hidden="true"></span>
+                <button type="button" class="notes-size" data-notes-size="2" aria-label="Thin stroke" title="Thin"><span class="notes-size-dot" style="--dot: 3px"></span></button>
+                <button type="button" class="notes-size active" data-notes-size="3.5" aria-label="Medium stroke" title="Medium"><span class="notes-size-dot" style="--dot: 6px"></span></button>
+                <button type="button" class="notes-size" data-notes-size="6" aria-label="Thick stroke" title="Thick"><span class="notes-size-dot" style="--dot: 9px"></span></button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </main>
+    </section>
+
+    <section class="presentation-screen" id="presentationScreen" hidden>
+      <header class="pptx-topbar">
+        <div class="pptx-topbar-left">
+          <button id="pptxBackButton" class="project-back-button" type="button" title="Back to projects">
+            <span aria-hidden="true">&larr;</span>
+            <span>Projects</span>
+          </button>
+          <span class="pptx-file-badge">PPTX</span>
+        </div>
+        <div class="pptx-title-block">
+          <strong id="pptxProjectTitle">Presentation</strong>
+          <div class="pptx-title-status-row">
+            <span id="pptxSaveStatus">Saved</span>
+            <span id="pptxCollaborationStatus" class="pptx-collaboration-status" data-state="synced" title="Object-level shared editing is enabled">
+              <span aria-hidden="true"></span>
+              Shared editing
+            </span>
+          </div>
+        </div>
+        <div class="pptx-topbar-actions">
+          <button class="settingsButton" type="button" title="Settings" aria-label="Settings">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3A1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"></path>
+            </svg>
+          </button>
+          <button id="pptxSaveButton" class="pptx-primary-action" type="button" title="Save PowerPoint" aria-label="Save PowerPoint">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 3h12l2 2v16H5Z"></path>
+              <path d="M8 3v6h8V3"></path>
+              <path d="M8 21v-7h8v7"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+      <nav class="pptx-menubar" id="pptxMenubar" aria-label="Presentation menus">
+        <button type="button" data-pptx-menu="file">File</button>
+        <button type="button" data-pptx-menu="edit">Edit</button>
+        <button type="button" data-pptx-menu="view">View</button>
+        <button type="button" data-pptx-menu="insert">Insert</button>
+        <button type="button" data-pptx-menu="format">Format</button>
+        <button type="button" data-pptx-menu="slide">Slide</button>
+        <button type="button" data-pptx-menu="arrange">Arrange</button>
+        <button type="button" data-pptx-menu="tools">Tools</button>
+        <button type="button" data-pptx-menu="extensions">Extensions</button>
+        <button type="button" data-pptx-menu="help">Help</button>
+      </nav>
+      <div class="pptx-commandbar" role="toolbar" aria-label="PowerPoint editing tools">
+        <button id="pptxMenusToggle" class="pptx-menus-toggle" type="button" aria-pressed="false">Menus</button>
+        <div class="pptx-tool-group pptx-history-tools">
+          <button id="pptxUndoButton" type="button" title="Undo" disabled>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 7-5 5 5 5"></path><path d="M5 12h8a6 6 0 0 1 6 6"></path></svg>
+          </button>
+          <button id="pptxRedoButton" type="button" title="Redo" disabled>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5"></path><path d="M19 12h-8a6 6 0 0 0-6 6"></path></svg>
+          </button>
+          <button id="pptxPrintButton" type="button" title="Print">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3h10v6"></path><path d="M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"></path><rect x="7" y="14" width="10" height="7"></rect></svg>
+          </button>
+        </div>
+        <div class="pptx-tool-group pptx-zoom-tools">
+          <button id="pptxFitButton" class="pptx-fit-button" type="button" title="Fit slide to editor">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 4H4v4M16 4h4v4M8 20H4v-4M16 20h4v-4"></path>
+            </svg>
+            <span>Fit</span>
+          </button>
+        </div>
+        <div class="pptx-tool-group pptx-insert-tools">
+          <button id="pptxSelectButton" class="active" type="button" title="Select">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 3 12 9-6 1 3 6-2 1-3-6-4 4Z"></path></svg>
+          </button>
+          <button id="pptxAddTextButton" type="button" title="Insert text box">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14M12 5v14M8 19h8"></path></svg>
+          </button>
+          <button id="pptxAddLineButton" type="button" title="Insert line">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 18 14-12"></path><path d="m16 6h3v3"></path></svg>
+          </button>
+          <button id="pptxAddImageButton" type="button" title="Insert image (or paste with ⌘V)">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><circle cx="8" cy="9" r="2"></circle><path d="m4 18 5-5 3 3 3-4 5 6"></path></svg>
+          </button>
+          <button id="pptxAddRectangleButton" type="button" title="Insert rectangle">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="6" width="16" height="12" rx="1"></rect></svg>
+          </button>
+          <button id="pptxAddEllipseButton" type="button" title="Insert ellipse">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="8" ry="6"></ellipse></svg>
+          </button>
+          <button id="pptxAddChartButton" type="button" title="Insert editable bar chart">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10h4v10M10 20V4h4v16M16 20v-7h4v7"></path></svg>
+          </button>
+          <button id="pptxAddTableButton" type="button" title="Insert editable table">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1"></rect><path d="M3 9h18M8 4v16M14 4v16"></path></svg>
+          </button>
+          <input id="pptxImageFileInput" type="file" accept="image/png,image/jpeg,image/gif,image/webp" hidden>
+        </div>
+        <div id="pptxContextToolbar" class="pptx-context-toolbar" role="group" aria-label="Selected object formatting" hidden>
+          <span id="pptxElementType" class="pptx-selection-chip">Text</span>
+          <div id="pptxTextContextControls" class="pptx-text-context-controls">
+            <button id="pptxEditTextButton" type="button" title="Edit text (Enter)" aria-label="Edit selected text">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10L4 20Z"></path><path d="m13.5 8.5 3 3"></path></svg>
+            </button>
+            <select id="pptxFontFamilyInput" class="pptx-font-family-control" aria-label="Font family" title="Font family">
+              <option value="Aptos">Aptos</option>
+              <option value="Arial">Arial</option>
+              <option value="Helvetica Neue">Helvetica Neue</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Times New Roman">Times New Roman</option>
+            </select>
+            <input id="pptxFontSizeInput" class="pptx-font-size-control" type="number" min="6" max="200" step="1" aria-label="Font size" title="Font size">
+            <button id="pptxBoldButton" type="button" aria-pressed="false" title="Bold (⌘B)"><strong>B</strong></button>
+            <button id="pptxItalicButton" type="button" aria-pressed="false" title="Italic (⌘I)"><em>I</em></button>
+            <button id="pptxUnderlineButton" type="button" aria-pressed="false" title="Underline (⌘U)"><u>U</u></button>
+            <select id="pptxAlignSelect" aria-label="Text alignment" title="Text alignment">
+              <option value="l">Left</option>
+              <option value="ctr">Center</option>
+              <option value="r">Right</option>
+              <option value="just">Justify</option>
+            </select>
+          </div>
+          <label class="pptx-color-control" title="Text or fill color">
+            <span class="pptx-color-icon" aria-hidden="true">A</span>
+            <input id="pptxColorInput" type="color" aria-label="Text or fill color">
+          </label>
+          <div id="pptxOutlineControls" class="pptx-outline-controls" role="group" aria-label="Border formatting" hidden>
+            <span class="pptx-outline-label">Border</span>
+            <label class="pptx-line-color-control" title="Border color">
+              <span class="pptx-line-color-icon" aria-hidden="true"></span>
+              <input id="pptxLineColorInput" type="color" aria-label="Border color">
+            </label>
+            <label class="pptx-line-width-control" title="Border width in points">
+              <input id="pptxLineWidthInput" type="number" min="0" max="20" step="0.25" aria-label="Border width in points">
+              <span aria-hidden="true">pt</span>
+            </label>
+            <select id="pptxLineStyleSelect" class="pptx-line-style-control" aria-label="Border style" title="Border style">
+              <option value="solid">Solid</option>
+              <option value="dash">Dashed</option>
+              <option value="dot">Dotted</option>
+              <option value="dashDot">Dash-dot</option>
+            </select>
+          </div>
+          <div class="pptx-order-controls" role="group" aria-label="Layer order">
+            <button id="pptxSendToBackButton" type="button" title="Send to back (⌥⇧↓)" aria-label="Send to back">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="4" width="10" height="7" rx="1"></rect><rect x="5" y="13" width="14" height="7" rx="1"></rect><path d="M12 3v11m-3-3 3 3 3-3"></path></svg>
+            </button>
+            <button id="pptxSendBackwardButton" type="button" title="Send backward (⌥↓)" aria-label="Send backward">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="4" width="10" height="7" rx="1"></rect><rect x="5" y="13" width="14" height="7" rx="1"></rect><path d="m9 9 3 3 3-3"></path></svg>
+            </button>
+            <button id="pptxBringForwardButton" type="button" title="Bring forward (⌥↑)" aria-label="Bring forward">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="7" rx="1"></rect><rect x="7" y="13" width="10" height="7" rx="1"></rect><path d="m9 15 3-3 3 3"></path></svg>
+            </button>
+            <button id="pptxBringToFrontButton" type="button" title="Bring to front (⌥⇧↑)" aria-label="Bring to front">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="7" rx="1"></rect><rect x="7" y="13" width="10" height="7" rx="1"></rect><path d="M12 21V10m-3 3 3-3 3 3"></path></svg>
+            </button>
+          </div>
+          <button id="pptxDeleteElementButton" type="button" title="Delete selected object">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg>
+          </button>
+        </div>
+        <div class="pptx-tool-spacer"></div>
+        <div class="pptx-tool-group pptx-slide-style-tools">
+          <button id="pptxBackgroundButton" class="pptx-labeled-tool" type="button">Background</button>
+          <button id="pptxLayoutButton" class="pptx-labeled-tool" type="button">Layout</button>
+          <button id="pptxThemeButton" class="pptx-labeled-tool" type="button">Theme</button>
+          <button id="pptxTransitionButton" class="pptx-labeled-tool" type="button">Transition</button>
+          <input id="pptxBackgroundColorInput" type="color" value="#ffffff" hidden>
+        </div>
+      </div>
+      <main class="pptx-workspace">
+        <aside class="pptx-file-pane" aria-label="Presentation files">
+          <header class="pptx-file-pane-header">
+            <strong>Files</strong>
+            <div class="file-header-actions">
+              <button id="pptxFileRefreshButton" class="icon-button" type="button" aria-label="Refresh files" title="Refresh files">
+                <span class="refresh-glyph" aria-hidden="true">&#8635;</span>
+              </button>
+              <button id="pptxNewFileButton" class="icon-button" type="button" aria-label="New file" title="New file">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path>
+                  <path d="M14 2v6h6M12 11v6M9 14h6"></path>
+                </svg>
+              </button>
+              <button id="pptxNewFolderButton" class="icon-button" type="button" aria-label="New folder" title="New folder">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7l-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"></path>
+                  <path d="M12 10v6M9 13h6"></path>
+                </svg>
+              </button>
+              <button id="pptxDownloadPackageButton" class="icon-button" type="button" aria-label="Download package" title="Download package">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M21 8v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8"></path>
+                  <path d="M3 8l3-4h12l3 4"></path>
+                  <path d="M12 10v6"></path>
+                  <path d="m8.5 12.5 3.5 3.5 3.5-3.5"></path>
+                </svg>
+              </button>
+            </div>
+          </header>
+          <div id="pptxFileTree" class="file-tree pptx-file-tree" aria-label="Project files"></div>
+        </aside>
+        <aside class="pptx-slide-pane">
+          <header>
+            <strong>Slides</strong>
+            <span id="pptxSlideCount">0</span>
+          </header>
+          <div id="pptxSlideList" class="pptx-slide-list" aria-label="Presentation slides"></div>
+        </aside>
+        <section class="pptx-stage-pane">
+          <div class="pptx-stage-toolbar">
+            <span id="pptxStageLabel">Slide 1</span>
+            <div class="pptx-stage-toolbar-actions">
+              <label class="pptx-stage-zoom-controls">
+                <span>Zoom</span>
+                <button id="pptxZoomOutButton" class="pptx-zoom-step-button" type="button" title="Zoom out" aria-label="Zoom out">&minus;</button>
+                <input id="pptxZoomRange" type="range" min="25" max="400" value="100" step="5" aria-label="Presentation zoom">
+                <button id="pptxZoomInButton" class="pptx-zoom-step-button" type="button" title="Zoom in" aria-label="Zoom in">+</button>
+                <output id="pptxZoomOutput">100%</output>
+              </label>
+              <button id="pptxPresentButton" class="pptx-stage-present-button" type="button" title="Present full screen">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"></path>
+                </svg>
+                <span>Present</span>
+              </button>
+            </div>
+          </div>
+          <div id="pptxStageViewport" class="pptx-stage-viewport" tabindex="-1">
+            <div id="pptxSlideCanvas" class="pptx-slide-canvas">
+              <canvas id="pptxBackgroundCanvas"></canvas>
+              <div id="pptxElementLayer" class="pptx-element-layer"></div>
+              <div id="pptxVerticalGuide" class="pptx-alignment-guide pptx-alignment-guide-vertical" aria-hidden="true"></div>
+              <div id="pptxHorizontalGuide" class="pptx-alignment-guide pptx-alignment-guide-horizontal" aria-hidden="true"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+      <div class="pptx-editor-internals" hidden aria-hidden="true">
+        <span id="pptxInspectorEmpty"></span>
+        <div id="pptxInspectorFields"></div>
+        <textarea id="pptxTextInput" tabindex="-1"></textarea>
+        <input id="pptxXInput" type="number" tabindex="-1">
+        <input id="pptxYInput" type="number" tabindex="-1">
+        <input id="pptxWidthInput" type="number" tabindex="-1">
+        <input id="pptxHeightInput" type="number" tabindex="-1">
+      </div>
+      <div id="pptxTerminalSlot" class="pptx-terminal-slot" aria-label="PowerPoint terminal"></div>
+      <footer class="pptx-statusbar">
+        <span id="pptxStatusSlide">Slide 1 of 1</span>
+        <button id="pptxTerminalToggle" class="pptx-terminal-toggle" type="button" aria-expanded="false">Terminal</button>
+      </footer>
+      <div id="pptxPresentControls" class="pptx-present-controls" role="toolbar" aria-label="Presentation controls" hidden>
+        <button id="pptxPresentPreviousButton" type="button" title="Previous slide" aria-label="Previous slide">&larr;</button>
+        <output id="pptxPresentStatus" aria-live="polite">1 / 1</output>
+        <button id="pptxPresentNextButton" type="button" title="Next slide" aria-label="Next slide">&rarr;</button>
+        <button id="pptxPresentExitButton" type="button" title="Exit presentation">Exit</button>
+      </div>
+    </section>
+
+    <section id="commandPalette" class="command-palette" role="dialog" aria-modal="true" aria-labelledby="commandPaletteTitle" hidden>
+      <button id="closeCommandPaletteButton" class="command-palette-close" type="button" aria-label="Close command palette" title="Close">
+        <svg class="icon icon-x" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12"></path>
+        </svg>
+      </button>
+      <div class="command-input-wrap">
+        <span aria-hidden="true">&#8984;</span>
+        <input id="commandPaletteInput" type="text" spellcheck="false" autocomplete="off" placeholder="/open, /templates, /compile..." aria-label="Command palette">
+      </div>
+      <div class="command-palette-meta">
+        <strong id="commandPaletteTitle">Command palette</strong>
+        <span>Use slash commands or type a project name</span>
+      </div>
+      <div id="commandPaletteList" class="command-palette-list" role="listbox"></div>
+    </section>
+
+    <div id="selectionCodexPopover" class="selection-codex-popover" hidden>
+      <input id="selectionCodexPrompt" type="text" spellcheck="true" placeholder="Ask Codex about this selection">
+      <button id="selectionCodexSendButton" class="selection-codex-send" type="button" aria-label="Send to Codex" title="Send to Codex">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h14"></path>
+          <path d="m13 6 6 6-6 6"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="settings-backdrop" id="settingsBackdrop" hidden></div>
+    <section id="templatesPanel" class="new-project-panel templates-panel" role="dialog" aria-modal="true" aria-labelledby="templatesTitle" hidden>
+      <nav class="templates-sidebar" aria-label="Template sections">
+        <button id="closeTemplatesButton" class="settings-close-button" type="button" aria-label="Close templates" title="Close">
+          <svg class="icon icon-x" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12"></path>
+          </svg>
+        </button>
+        <button class="settings-nav-button active" type="button">Online</button>
+        <button class="settings-nav-button" type="button">Your templates</button>
+      </nav>
+      <div class="templates-main">
+        <header class="templates-header">
+          <h2 id="templatesTitle">Templates</h2>
+          <button id="importTemplateButton" class="settings-action-button primary template-add-button" type="button">
+            <svg class="icon icon-plus" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+            <span>Add Template</span>
+          </button>
+        </header>
+        <div class="templates-body">
+          <section class="template-section">
+            <h3>Online templates</h3>
+            <div id="onlineTemplateGrid" class="template-grid" aria-live="polite"></div>
+          </section>
+          <section class="template-section">
+            <h3>Your templates</h3>
+            <div id="customTemplateGrid" class="template-grid" aria-live="polite"></div>
+            <p id="customTemplateEmpty" class="template-empty" hidden>No saved templates yet.</p>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section id="newProjectPanel" class="new-project-panel" role="dialog" aria-modal="true" aria-labelledby="newProjectTitle" hidden>
+      <header class="new-project-header">
+        <div>
+          <h2 id="newProjectTitle">New project</h2>
+        </div>
+        <button id="closeNewProjectButton" class="settings-close-button" type="button" aria-label="Close new project" title="Close">
+          <svg class="icon icon-x" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12"></path>
+          </svg>
+        </button>
+      </header>
+      <div class="new-project-body">
+        <div class="project-import-options" aria-label="New project type">
+          <button type="button" data-project-kind="blank">
+            <span>Blank</span>
+            <small>Start with a new main.tex</small>
+          </button>
+          <button type="button" data-project-kind="tex">
+            <span>TeX File</span>
+            <small>Open an existing entry file</small>
+          </button>
+          <button type="button" data-project-kind="presentation">
+            <span>PowerPoint</span>
+            <small>Open and edit a .pptx deck</small>
+          </button>
+          <button type="button" data-project-kind="folder">
+            <span>Folder</span>
+            <small>Use a local project directory</small>
+          </button>
+          <button type="button" data-project-kind="archive">
+            <span>Archive</span>
+            <small>Import zip, tar, tar.gz, tgz</small>
+          </button>
+          <button type="button" data-project-kind="handwritten-notes">
+            <span>Handwritten Notes</span>
+            <small>Import scans or photos into a notes template</small>
+          </button>
+          <button type="button" data-project-kind="homework-workings">
+            <span>HW + Workings</span>
+            <small>Add handwritten work to a homework template</small>
+          </button>
+        </div>
+        <div id="projectDropZone" class="project-drop-zone" role="button" tabindex="0">
+          <span>Drop a project here</span>
+          <small>.tex, .pptx, folder, .zip, .tar, .tar.gz, or .tgz</small>
+        </div>
+      </div>
+    </section>
+    <section id="sshProjectPanel" class="new-project-panel ssh-project-panel" role="dialog" aria-modal="true" aria-labelledby="sshProjectTitle" hidden>
+      <header class="new-project-header">
+        <div>
+          <h2 id="sshProjectTitle">New SSH project</h2>
+        </div>
+        <button id="closeSshProjectButton" class="settings-close-button" type="button" aria-label="Close SSH project" title="Close">
+          <svg class="icon icon-x" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12"></path>
+          </svg>
+        </button>
+      </header>
+      <div class="new-project-body ssh-project-body">
+        <label class="setting-column">
+          <span>Known hosts</span>
+          <select id="sshKnownHostSelect" class="settings-text-input">
+            <option value="">New host</option>
+          </select>
+        </label>
+        <label class="setting-column">
+          <span>User</span>
+          <input id="sshProjectUserInput" class="settings-text-input" type="text" placeholder="alex">
+        </label>
+        <label class="setting-column">
+          <span>Server</span>
+          <input id="sshProjectHostInput" class="settings-text-input" type="text" placeholder="server.edu">
+        </label>
+        <label class="setting-column">
+          <span>Server path</span>
+          <input id="sshProjectPathInput" class="settings-text-input" type="text" placeholder="~/project">
+        </label>
+        <div class="settings-action-row">
+          <button id="connectSshProjectButton" class="settings-action-button primary" type="button">Connect</button>
+          <button id="cancelSshProjectButton" class="settings-action-button" type="button">Cancel</button>
+        </div>
+        <p id="sshProjectStatus" class="settings-status"></p>
+        <div id="sshAuthTerminalShell" class="ssh-auth-terminal-shell" hidden>
+          <div class="ssh-auth-terminal-header">
+            <span>Authentication</span>
+            <small>Enter SSH prompts here. Openleaf opens the project after the connection is verified.</small>
+          </div>
+          <div id="sshAuthTerminal" class="ssh-auth-terminal" aria-label="SSH authentication terminal"></div>
+        </div>
+      </div>
+    </section>
+    <aside class="settings-drawer" id="settingsDrawer" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden>
+      <nav class="settings-sidebar" aria-label="Settings sections">
+        <button id="closeSettingsButton" class="settings-close-button" type="button" aria-label="Close settings" title="Close">
+          <svg class="icon icon-x" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18M6 6l12 12"></path>
+          </svg>
+        </button>
+        <div class="settings-nav-group">
+          <span class="settings-nav-label">General</span>
+          <button class="settings-nav-button active" type="button" data-settings-section="workspace">Workspace</button>
+          <button class="settings-nav-button" type="button" data-settings-section="appearance">Appearance</button>
+          <button class="settings-nav-button" type="button" data-settings-section="voice">Voice</button>
+        </div>
+        <div class="settings-nav-group settings-nav-project-group">
+          <span class="settings-nav-label">Project</span>
+          <button class="settings-nav-button" type="button" data-settings-section="project">GitHub</button>
+          <button class="settings-nav-button" type="button" data-settings-section="agents">AGENTS.md</button>
+        </div>
+        <div class="settings-nav-spacer" aria-hidden="true"></div>
+        <div class="settings-nav-divider" aria-hidden="true"></div>
+        <div class="settings-nav-group settings-nav-reference-group">
+          <button class="settings-nav-button settings-nav-reference" type="button" data-settings-section="profile">Profile</button>
+          <button class="settings-nav-button settings-nav-reference" type="button" data-settings-section="latex">LaTeX Handbook</button>
+          <button class="settings-nav-button settings-nav-reference" type="button" data-settings-section="documentation">Documentation</button>
+        </div>
+      </nav>
+
+      <div class="settings-main">
+        <header class="settings-header">
+          <h2 id="settingsTitle">Workspace</h2>
+          <input id="settingsSearchInput" class="settings-search-input" type="search" placeholder="Search settings" aria-label="Search settings">
+        </header>
+
+        <div class="settings-content">
+          <p id="settingsSearchEmpty" class="settings-search-empty" hidden>No settings found.</p>
+          <section class="settings-section" data-settings-panel="appearance">
+            <label class="setting-row theme-preset-select-row">
+              <span>Theme preset</span>
+              <select id="settingsThemePreset">
+                <option value="custom">Custom</option>
+                <optgroup label="Light">
+                  <option value="light-plus">Light+</option>
+                  <option value="quiet-light">Quiet Light</option>
+                  <option value="solarized-light">Solarized Light</option>
+                  <option value="catppuccin-latte">Catppuccin Latte</option>
+                  <option value="min-light">Min Light</option>
+                  <option value="honey-light">Honey Light</option>
+                  <option value="marigold-paper">Marigold Paper</option>
+                  <option value="butterscotch-light">Butterscotch Light</option>
+                  <option value="saffron-paper">Saffron Paper</option>
+                </optgroup>
+                <optgroup label="Light High Contrast">
+                  <option value="github-light">GitHub Light</option>
+                  <option value="light-cyan-hc">Cyan Contrast</option>
+                  <option value="light-rose-hc">Rose Contrast Light</option>
+                  <option value="light-amber-hc">Amber Contrast</option>
+                  <option value="pastel-amber-hc">Pastel Amber Contrast</option>
+                  <option value="light-mono-hc">Mono Contrast</option>
+                  <option value="light-blue-hc">Blue Contrast Light</option>
+                  <option value="light-forest-hc">Forest Contrast</option>
+                  <option value="light-violet-hc">Violet Contrast Light</option>
+                  <option value="light-slate-hc">Slate Contrast</option>
+                  <option value="cobalt-paper-hc">Cobalt Paper</option>
+                  <option value="mint-paper-hc">Mint Paper</option>
+                  <option value="plum-paper-hc">Plum Paper</option>
+                  <option value="coral-paper-hc">Coral Paper</option>
+                  <option value="teal-paper-hc">Teal Paper</option>
+                  <option value="gold-paper-hc">Gold Paper</option>
+                </optgroup>
+                <optgroup label="Transparent">
+                  <option value="glass-light">Glass Light</option>
+                  <option value="glass-dark">Glass Dark</option>
+                  <option value="glass-mocha">Glass Mocha</option>
+                  <option value="glass-ocean">Glass Ocean</option>
+                  <option value="glass-violet">Glass Violet</option>
+                  <option value="glass-forest">Glass Forest</option>
+                  <option value="glass-amber">Glass Amber</option>
+                </optgroup>
+                <optgroup label="Gradient">
+                  <option value="prism-light">Prism Light</option>
+                  <option value="frosted-candy">Frosted Candy</option>
+                  <option value="sunset-gradient">Sunset Gradient</option>
+                  <option value="lagoon-gradient">Lagoon Gradient</option>
+                </optgroup>
+                <optgroup label="Dark">
+                  <option value="dark-plus">Dark+</option>
+                  <option value="monokai">Monokai</option>
+                  <option value="solarized-dark">Solarized Dark</option>
+                  <option value="dracula">Dracula</option>
+                  <option value="nord">Nord</option>
+                  <option value="gruvbox-dark">Gruvbox Dark</option>
+                  <option value="one-dark-pro">One Dark Pro</option>
+                  <option value="kimbie-dark">Kimbie Dark</option>
+                  <option value="github-dark">GitHub Dark</option>
+                  <option value="catppuccin-mocha">Catppuccin Mocha</option>
+                  <option value="tokyo-night">Tokyo Night</option>
+                  <option value="ayu-dark">Ayu Dark</option>
+                  <option value="palenight">Palenight</option>
+                  <option value="honey-dark">Honey Dark</option>
+                  <option value="molten-amber">Molten Amber</option>
+                  <option value="saffron-night">Saffron Night</option>
+                  <option value="amber-slate">Amber Slate</option>
+                </optgroup>
+                <optgroup label="Dark High Contrast">
+                  <option value="abyss">Abyss</option>
+                  <option value="tomorrow-night-blue">Tomorrow Night Blue</option>
+                  <option value="pastel-graphite-hc">Pastel Graphite</option>
+                  <option value="lavender-contrast-hc">Lavender Contrast</option>
+                  <option value="mint-contrast-hc">Mint Contrast</option>
+                  <option value="rose-contrast-hc">Rose Contrast</option>
+                  <option value="pastel-cobalt-hc">Pastel Cobalt</option>
+                  <option value="dusk-contrast-hc">Dusk Contrast</option>
+                  <option value="pastel-noir-hc">Pastel Noir</option>
+                  <option value="pastel-ink-hc">Pastel Ink</option>
+                  <option value="pastel-aurora-hc">Pastel Aurora</option>
+                  <option value="pastel-plum-hc">Pastel Plum</option>
+                  <option value="aurora-contrast-hc">Aurora Contrast+</option>
+                </optgroup>
+              </select>
+            </label>
+            <div id="settingsThemeCategoryBar" class="settings-theme-category-bar" role="tablist" aria-label="Theme categories"></div>
+            <div id="settingsThemeGallery" class="settings-theme-gallery" aria-label="Theme presets"></div>
+            <label class="setting-row">
+              <span>Dark mode</span>
+              <input id="settingsThemeToggle" type="checkbox">
+            </label>
+            <label class="setting-row">
+              <span>Accent color</span>
+              <input id="settingsAccentPicker" type="color" value="#f97316">
+            </label>
+            <div class="setting-column">
+              <span>Dark PDF rendering</span>
+              <div id="settingsPdfRenderMode" class="settings-choice-group pdf-render-choice" role="group" aria-label="Dark PDF rendering">
+                <button type="button" data-pdf-render-mode="adaptive">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2M12 19v2M3 12h2M19 12h2"></path><circle cx="12" cy="12" r="4"></circle><path d="m5.6 5.6 1.4 1.4M17 17l1.4 1.4"></path></svg>
+                  <span><strong>Adaptive</strong><small>Dark, keep figures</small></span>
+                </button>
+                <button type="button" data-pdf-render-mode="original">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"></path><path d="M15 3v5h4"></path></svg>
+                  <span><strong>Original</strong><small>Unchanged pages</small></span>
+                </button>
+                <button type="button" data-pdf-render-mode="invert">
+                  <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 1 0 18z"></path></svg>
+                  <span><strong>Invert</strong><small>Everything</small></span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-section profile-settings-panel" data-settings-panel="profile">
+            <div class="profile-intro">
+              <h3>Your profile</h3>
+              <p>Used to personalize writing assistance and project context.</p>
+            </div>
+            <label class="setting-column profile-field">
+              <span>Name</span>
+              <input id="profileNameInput" class="settings-text-input" type="text" autocomplete="name">
+            </label>
+            <label class="setting-column profile-field">
+              <span>Email</span>
+              <input id="profileEmailInput" class="settings-text-input" type="email" autocomplete="email">
+            </label>
+            <label class="setting-column profile-field profile-field-wide">
+              <span>Type of work</span>
+              <input id="profileWorkInput" class="settings-text-input" type="text" placeholder="Research, manuscript writing, ML engineering...">
+            </label>
+            <label class="setting-column profile-field profile-field-area">
+              <span>Bio</span>
+              <textarea id="profileBioInput" class="settings-textarea" rows="4" spellcheck="true"></textarea>
+            </label>
+            <label class="setting-column profile-field profile-field-area">
+              <span>AI context</span>
+              <textarea id="profileAiContextInput" class="settings-textarea" rows="5" spellcheck="true" placeholder="Preferences, goals, writing style, project context..."></textarea>
+            </label>
+          </section>
+
+          <section class="settings-section active" data-settings-panel="workspace">
+            <label class="setting-column">
+              <span>Default GitHub</span>
+              <input id="defaultGithubRemoteInput" class="settings-text-input" type="text" placeholder="https://github.com/user/latex-documents.git">
+            </label>
+            <label class="setting-row">
+              <span>Auto compile</span>
+              <input id="autoCompileToggle" type="checkbox">
+            </label>
+            <label class="setting-row">
+              <span>Auto save</span>
+              <input id="autoSaveToggle" type="checkbox" checked>
+            </label>
+            <label class="setting-row">
+              <span>Show file sidebar</span>
+              <input id="settingsFileSidebarToggle" type="checkbox" checked>
+            </label>
+            <label class="setting-row">
+              <span>Show minimap</span>
+              <input id="settingsMinimapToggle" type="checkbox" checked>
+            </label>
+            <label class="setting-row">
+              <span>Wrap editor text</span>
+              <input id="settingsTextWrappingToggle" type="checkbox" checked>
+            </label>
+            <label class="setting-row">
+              <span>Spell and grammar check</span>
+              <input id="settingsSpellCheckToggle" type="checkbox">
+            </label>
+            <label class="setting-row">
+              <span>Vim shortcuts</span>
+              <input id="settingsVimModeToggle" type="checkbox">
+            </label>
+            <label class="setting-row">
+              <span>Relative line numbers</span>
+              <input id="settingsRelativeLineNumbersToggle" type="checkbox">
+            </label>
+            <label class="setting-row">
+              <span>Notes panel</span>
+              <input id="settingsNotesToggle" type="checkbox">
+            </label>
+            <label class="setting-row">
+              <span class="setting-row-copy">
+                <span>Extra features</span>
+                <small>Show experimental tools such as Cinematic Mode.</small>
+              </span>
+              <input id="settingsExtraFeaturesToggle" type="checkbox">
+            </label>
+            <label class="setting-row">
+              <span>Selection edit agent</span>
+              <select id="settingsAgentChoice">
+                <option value="codex">Codex</option>
+                <option value="claude">Claude</option>
+                <option value="shell">Shell</option>
+              </select>
+            </label>
+          </section>
+
+          <section class="settings-section voice-settings-panel" data-settings-panel="voice">
+            <div class="setting-column voice-settings-intro">
+              <span>Local PDF reader</span>
+              <small>Choose the on-device voice and playback speed used by the reader pill.</small>
+            </div>
+            <label class="setting-row">
+              <span>PDF reader voice</span>
+              <select id="pdfSpeechVoice" aria-label="PDF reader voice">
+                <option value="af_bella">Bella · natural</option>
+                <option value="af_sarah">Sarah · clear</option>
+                <option value="am_michael">Michael · warm</option>
+                <option value="am_adam" selected>Adam · deep</option>
+                <option value="af_heart">Heart · bright</option>
+              </select>
+            </label>
+            <label class="setting-row pdf-reader-speed-setting" for="pdfSpeechRate">
+              <span>PDF reading speed</span>
+              <span class="settings-range-control">
+                <input id="pdfSpeechRate" type="range" min="0.5" max="2" step="0.05" value="1" aria-label="PDF reading speed">
+                <output id="pdfSpeechRateOutput" for="pdfSpeechRate">1.0×</output>
+              </span>
+            </label>
+            <label class="setting-column pronunciation-dictionary-setting" for="pdfPronunciationDictionary">
+              <span>Pronunciation dictionary</span>
+              <small>One speech-only replacement per line. Example: <code>cm = centimeter</code></small>
+              <textarea id="pdfPronunciationDictionary" class="settings-textarea" rows="5" spellcheck="false" placeholder="cm = centimeter&#10;Dr. = doctor"></textarea>
+            </label>
+          </section>
+
+          <section class="settings-section github-settings-panel" data-settings-panel="project">
+            <label class="setting-column github-field">
+              <span>Project GitHub</span>
+              <input id="projectGithubRemoteInput" class="settings-text-input" type="text" placeholder="https://github.com/user/project-latex.git">
+            </label>
+            <div class="settings-action-row github-action-row">
+              <button id="pullProjectGithubButton" class="settings-action-button" type="button">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="m7 10 5 5 5-5"></path><path d="M5 21h14"></path></svg>
+                <span>Pull</span>
+              </button>
+              <button id="saveProjectSettingsButton" class="settings-action-button primary" type="button">Save changes</button>
+            </div>
+            <p id="projectSettingsStatus" class="settings-status"></p>
+          </section>
+
+          <section class="settings-section" data-settings-panel="remote">
+            <label class="setting-column">
+              <span>SSH host</span>
+              <input id="remoteHostInput" class="settings-text-input" type="text" placeholder="user@example.com">
+            </label>
+            <label class="setting-column">
+              <span>Remote path</span>
+              <input id="remotePathInput" class="settings-text-input" type="text" placeholder="~/project">
+            </label>
+            <div class="settings-action-row">
+              <button id="saveRemoteButton" class="settings-action-button primary" type="button">Save Remote</button>
+              <button id="openRemoteTerminalButton" class="settings-action-button" type="button">Open SSH Terminal</button>
+            </div>
+            <p id="remoteStatus" class="settings-status">Use an SSH terminal to clone, edit, and sync remote workspaces.</p>
+          </section>
+
+          <section class="settings-section" data-settings-panel="latex">
+            <div class="latex-handbook" id="latexHandbook">
+              <article>
+                <h3>Figure</h3>
+                <pre class="latex-snippet-code"><code>\\begin{figure}[h]
+  \\centering
+  \\includegraphics[width=0.8\\linewidth]{figures/example.png}
+  \\caption{Caption text.}
+  \\label{fig:example}
+\\end{figure}</code></pre>
+                <button type="button" data-latex-snippet="figure">Add</button>
+              </article>
+              <article>
+                <h3>Equation</h3>
+                <pre class="latex-snippet-code"><code>\\begin{equation}
+  y = mx + b
+\\end{equation}</code></pre>
+                <button type="button" data-latex-snippet="equation">Add</button>
+              </article>
+              <article>
+                <h3>Table</h3>
+                <pre class="latex-snippet-code"><code>\\begin{table}[h]
+  \\centering
+  \\begin{tabular}{ll}
+    \\hline
+    A & B \\\\
+    \\hline
+  \\end{tabular}
+\\end{table}</code></pre>
+                <button type="button" data-latex-snippet="table">Add</button>
+              </article>
+              <article>
+                <h3>Citation</h3>
+                <pre class="latex-snippet-code"><code>Recent work~\\cite{key} shows...</code></pre>
+                <button type="button" data-latex-snippet="citation">Add</button>
+              </article>
+            </div>
+          </section>
+
+          <section class="settings-section" data-settings-panel="agents">
+            <div class="setting-column agents-editor-section">
+              <div class="agents-editor-heading">
+                <span id="agentsPathLabel" class="setting-path">AGENTS.md</span>
+                <small>Project instructions for coding agents</small>
+              </div>
+              <textarea id="agentsEditor" class="settings-code-editor" spellcheck="false" placeholder="No AGENTS.md loaded."></textarea>
+            </div>
+            <div class="settings-action-row agents-action-row">
+              <button id="reloadAgentsButton" class="settings-action-button agents-reload-button" type="button" aria-label="Reload AGENTS.md" title="Reload AGENTS.md">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M20 6v5h-5"></path>
+                  <path d="M18.2 15a7 7 0 1 1 .3-7.5L20 11"></path>
+                </svg>
+              </button>
+              <button id="saveAgentsButton" class="settings-action-button primary" type="button">Save AGENTS.md</button>
+            </div>
+            <p id="agentsStatus" class="settings-status">Open this section to load AGENTS.md.</p>
+          </section>
+
+          <section class="settings-section" data-settings-panel="documentation">
+            <div class="documentation-panel">
+              <div class="documentation-tour-callout">
+                <span><strong>New to Openleaf?</strong><small>Replay the guided tour of 10 essential features.</small></span>
+                <button id="replayWelcomeTourButton" class="settings-action-button primary" type="button">Start tutorial</button>
+              </div>
+              <h3>Run locally</h3>
+              <p>Clone the public repo, install dependencies, then launch the Electron app from the project directory.</p>
+              <pre class="documentation-code"><code>git clone https://github.com/axel-slid/openleaf.git
+cd openleaf
+npm install
+npm start</code></pre>
+              <h3>Project workflow</h3>
+              <p>Use New Project for a blank paper, TeX entry file, handwritten notes, homework with handwritten workings, folder, zip, tar, tar.gz, or tgz archive. Handwritten starters copy selected PDFs or page images into a portable project and place them in the matching LaTeX template. The file toolbar can create files, create folders, upload files or folders into the current project, and export the whole project package.</p>
+              <h3>GitHub push</h3>
+              <p>Push copies only LaTeX source files into the dedicated public documents repo at github.com/axel-slid/openleaf-latex-documents. It does not upload generated PDFs, figures, datasets, caches, or the full project folder unless those files are LaTeX source files.</p>
+              <h3>Remote workspace</h3>
+              <p>Use New SSH Project on the Projects page, choose a known host or enter a new one, then set the server path. Openleaf opens an SSH terminal at that path so you can git clone, pull, compile, or inspect the remote project like a VS Code remote workflow.</p>
+              <pre class="documentation-code"><code>ssh user@host.edu
+cd /path/to/project
+git pull
+tectonic main.tex</code></pre>
+              <h3>AGENTS.md</h3>
+              <p>The AGENTS.md settings page lets you write project instructions for AI-assisted edits. Put build commands, style rules, file ownership notes, and safety constraints there. Save it once, and Openleaf keeps it in the project root so Codex or other agents can read the same context.</p>
+              <h3>Command palette</h3>
+              <p>Press Cmd+P to open commands. Useful commands include /open, /templates, /settings, /compile, /history, /vim, /minimap, and /relative. Type a project name after /open to jump directly to it.</p>
+              <h3>Keyboard shortcuts</h3>
+              <div class="shortcut-list documentation-shortcut-list" aria-label="Openleaf keyboard shortcuts">
+                <div><span>Save</span><kbd>Cmd/Ctrl</kbd><kbd>S</kbd></div>
+                <div><span>Find</span><kbd>Cmd/Ctrl</kbd><kbd>F</kbd></div>
+                <div><span>Find next</span><kbd>Cmd/Ctrl</kbd><kbd>G</kbd></div>
+                <div><span>Compile PDF</span><kbd>Cmd/Ctrl</kbd><kbd>Enter</kbd></div>
+                <div><span>Toggle Code / Visual</span><kbd>Cmd/Ctrl</kbd><kbd>Shift</kbd><kbd>M</kbd></div>
+                <div><span>Toggle files</span><kbd>Cmd/Ctrl</kbd><kbd>Shift</kbd><kbd>F</kbd></div>
+                <div><span>Toggle terminal</span><kbd>Cmd/Ctrl</kbd><kbd>Shift</kbd><kbd>T</kbd></div>
+                <div><span>Toggle minimap</span><kbd>/minimap</kbd></div>
+                <div><span>Toggle relative line numbers</span><kbd>/relative</kbd></div>
+                <div><span>Toggle text wrapping</span><kbd>/wrap</kbd></div>
+                <div><span>Open settings</span><kbd>Cmd/Ctrl</kbd><kbd>,</kbd></div>
+                <div><span>Close panel</span><kbd>Esc</kbd></div>
+              </div>
+              <h3>Editing and review</h3>
+              <p>Use Code for source editing and Visual for structured manuscript edits. Cmd+F highlights every match in the current text. If Vim is enabled, the mode indicator appears next to Code and Visual. Use <code>:w</code> to save the active file, <code>:q</code> to return to Projects, <code>:q!</code> to return without saving, and <code>:wq</code> or <code>:x</code> to save and return. History shows session edits inside the app so you can review changes without leaving the workspace.</p>
+              <h3>PDF and packages</h3>
+              <p>Compile PDF saves the active text file and runs the project compiler. Open PDF launches the compiled output. Download PDF saves just the compiled PDF. Download project package exports the whole project as zip, tar, tar.gz, or tgz.</p>
+              <h3>Troubleshooting</h3>
+              <p>If a PDF does not render, compile once and check the Log panel. If figures do not appear, verify they are inside the project folder and referenced with the correct relative path. Refresh Project reloads files and the PDF from disk.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <section id="pdfCinematicStage" class="pdf-cinematic-stage" role="dialog" aria-modal="true" aria-labelledby="pdfCinematicTitle" hidden>
+    <img id="pdfCinematicArtwork" class="pdf-cinematic-artwork" alt="Artwork from the current PDF page">
+    <div class="pdf-cinematic-ambient" aria-hidden="true"></div>
+    <div class="pdf-cinematic-vignette" aria-hidden="true"></div>
+    <header class="pdf-cinematic-header">
+      <span class="pdf-cinematic-brand"><i></i> Openleaf Cinematic</span>
+      <div class="pdf-cinematic-toolbar" aria-label="Cinematic appearance">
+        <div class="pdf-cinematic-backgrounds" role="group" aria-label="Background artwork">
+          <button type="button" data-cinematic-artwork="0" aria-label="Use Monet artwork" title="Monet"></button>
+          <button type="button" data-cinematic-artwork="1" aria-label="Use Van Gogh artwork" title="Van Gogh"></button>
+          <button type="button" data-cinematic-artwork="2" aria-label="Use landscape artwork" title="The Heart of the Andes"></button>
+        </div>
+        <label class="pdf-cinematic-range" title="Background intensity">
+          <span>Art</span>
+          <input id="pdfCinematicBackdropIntensity" type="range" min="0.25" max="1" step="0.05" value="0.78" aria-label="Background intensity">
+        </label>
+        <label class="pdf-cinematic-range" title="Reading text size">
+          <span>Text</span>
+          <input id="pdfCinematicTextSize" type="range" min="0.8" max="1.4" step="0.05" value="1" aria-label="Reading text size">
+        </label>
+        <button id="pdfCinematicFollowButton" class="pdf-cinematic-tool-button active" type="button" aria-pressed="true" title="Keep the spoken text centered">Follow</button>
+        <button id="pdfCinematicCloseButton" class="pdf-cinematic-close" type="button" aria-label="Close Cinematic Mode" title="Close Cinematic Mode">
+          <svg class="icon icon-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+        </button>
+      </div>
+    </header>
+    <div class="pdf-cinematic-copy">
+      <h2 id="pdfCinematicTitle" class="visually-hidden">Preparing the scene…</h2>
+      <div id="pdfCinematicNarration" class="pdf-cinematic-transcript" tabindex="0">Preparing the document…</div>
+      <div class="pdf-cinematic-audio-state">
+        <button id="pdfCinematicPlaybackButton" class="pdf-cinematic-playback" type="button" aria-label="Pause cinematic reading" title="Play or pause">
+          <svg class="pdf-cinematic-pause-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M6.5 5v10M13.5 5v10"></path></svg>
+          <svg class="pdf-cinematic-play-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="m7 5 8 5-8 5Z"></path></svg>
+        </button>
+        <span class="pdf-cinematic-wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+        <span id="pdfCinematicStatus" role="status" aria-live="polite">Preparing local narration…</span>
+      </div>
+    </div>
+    <div class="pdf-cinematic-progress" aria-hidden="true"><i id="pdfCinematicProgressBar"></i></div>
+  </section>
+
+  <div id="pythonKernelMenu" class="python-kernel-menu" role="listbox" aria-label="Python kernels" hidden></div>
+
+  <script src="node_modules/codemirror/lib/codemirror.js"></script>
+  <script src="node_modules/codemirror/addon/runmode/runmode.js"></script>
+  <script src="node_modules/codemirror/mode/stex/stex.js"></script>
+  <script src="node_modules/codemirror/mode/markdown/markdown.js"></script>
+  <script src="node_modules/codemirror/mode/yaml/yaml.js"></script>
+  <script src="node_modules/codemirror/mode/python/python.js"></script>
+  <script src="node_modules/codemirror/mode/javascript/javascript.js"></script>
+  <script src="node_modules/codemirror/mode/css/css.js"></script>
+  <script src="node_modules/codemirror/mode/xml/xml.js"></script>
+  <script src="node_modules/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+  <script src="node_modules/codemirror/mode/shell/shell.js"></script>
+  <script src="node_modules/codemirror/addon/dialog/dialog.js"></script>
+  <script src="node_modules/codemirror/addon/hint/show-hint.js"></script>
+  <script src="node_modules/codemirror/addon/search/searchcursor.js"></script>
+  <script src="node_modules/codemirror/addon/search/search.js"></script>
+  <script src="node_modules/codemirror/keymap/vim.js"></script>
+  <script src="node_modules/@xterm/xterm/lib/xterm.js"></script>
+  <script src="node_modules/@xterm/addon-fit/lib/addon-fit.js"></script>
+  <script src="node_modules/katex/dist/katex.min.js"></script>
+  <script src="node_modules/plotly.js-dist-min/plotly.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

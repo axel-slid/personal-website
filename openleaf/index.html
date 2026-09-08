@@ -37,10 +37,7 @@
     <meta name="theme-color" content="#071d15" />
     <link rel="icon" href="icon.png" type="image/png" />
     <link rel="apple-touch-icon" href="icon.png" />
-    <link
-      rel="stylesheet"
-      href="openleaf-product.css?v=20260908-research-desk"
-    />
+    <link rel="stylesheet" href="openleaf-product.css?v=20260908-core-demos" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -49,7 +46,7 @@
         ><img src="icon.png" width="32" height="32" alt="" />Openleaf</a
       >
       <nav aria-label="Primary navigation">
-        <a href="docs.html">Documentation</a><a href="#workspace">Workspace</a
+        <a href="docs.html">Docs</a><a href="#workspace">Workspace</a
         ><a href="#community">Community</a>
       </nav>
       <a
@@ -100,7 +97,7 @@
             ><span>Openleaf v0.2.1</span
             ><span>See what’s new <i aria-hidden="true">→</i></span></a
           >
-          <h1 id="hero-title">All your research<br />All in one place</h1>
+          <h1 id="hero-title">All your research<br />In one place.</h1>
           <p class="lede">
             Write LaTeX, preview your paper, run Python, and work with coding
             agents. In one local workspace.
@@ -155,513 +152,107 @@
         >
           <img src="assets/jungle-leaf.svg" width="440" height="560" alt="" />
         </div>
-        <div class="demo-toolbar" hidden>
-          <div
-            class="demo-tools"
-            role="group"
-            aria-label="Open a research tool"
-          >
-            <button
-              type="button"
-              data-open="papers"
-              aria-controls="demo-papers"
-              aria-expanded="false"
-            >
-              Papers
-            </button>
-            <button
-              type="button"
-              data-open="python"
-              aria-controls="demo-python"
-              aria-expanded="false"
-            >
-              Python
-            </button>
-            <button
-              type="button"
-              data-open="slides"
-              aria-controls="demo-slides"
-              aria-expanded="false"
-            >
-              Slides
-            </button>
-            <button
-              type="button"
-              data-open="agents"
-              aria-controls="demo-agents"
-              aria-expanded="false"
-            >
-              Agents
-            </button>
-            <button
-              type="button"
-              data-open="whiteboard"
-              aria-controls="demo-whiteboard"
-              aria-expanded="false"
-            >
-              Whiteboard
-            </button>
-            <button
-              type="button"
-              data-open="history"
-              aria-controls="demo-history"
-              aria-expanded="false"
-            >
-              History
-            </button>
-            <button
-              type="button"
-              data-open="ssh"
-              aria-controls="demo-ssh"
-              aria-expanded="false"
-            >
-              SSH
-            </button>
-          </div>
+        <div
+          class="core-tabs"
+          role="tablist"
+          aria-label="Explore Openleaf"
+          hidden
+        >
           <button
             type="button"
-            class="demo-reset"
-            id="resetDemo"
-            aria-label="Reset the demo workspace"
-            title="Reset workspace"
+            role="tab"
+            id="core-tab-papers"
+            aria-controls="core-panel-papers"
+            aria-selected="true"
+            tabindex="0"
+            data-core="papers"
           >
-            ↺
+            Write papers
+          </button>
+          <button
+            type="button"
+            role="tab"
+            id="core-tab-python"
+            aria-controls="core-panel-python"
+            aria-selected="false"
+            tabindex="-1"
+            data-core="python"
+          >
+            Run Python
+          </button>
+          <button
+            type="button"
+            role="tab"
+            id="core-tab-slides"
+            aria-controls="core-panel-slides"
+            aria-selected="false"
+            tabindex="-1"
+            data-core="slides"
+          >
+            Make slides
           </button>
         </div>
-        <p class="demo-instructions" id="demoInstructions" hidden>
-          Open a tool. Drag the windows. Make room for your ideas.
-        </p>
         <div
-          class="research-desk"
-          id="researchDesk"
-          aria-label="Openleaf demo workspace"
+          class="core-panel"
+          id="core-panel-papers"
+          role="tabpanel"
+          aria-labelledby="core-tab-papers"
+          tabindex="0"
         >
-          <article
-            class="demo-window"
-            id="demo-papers"
-            data-demo="papers"
-            aria-labelledby="demo-title-papers"
-          >
-            <header class="demo-window-bar">
-              <h3 id="demo-title-papers">Papers</h3>
-              <button
-                class="demo-drag"
-                type="button"
-                aria-label="Move Papers window. Use arrow keys, or drag."
-                hidden
-              >
-                <span aria-hidden="true">⠿</span> Papers
-              </button>
-              <div class="demo-window-actions" hidden>
-                <button
-                  type="button"
-                  data-expand
-                  aria-label="Expand Papers window"
-                  title="Expand window"
-                >
-                  ⤢
-                </button>
-                <button
-                  type="button"
-                  data-close
-                  aria-label="Close Papers window"
-                  title="Close window"
-                >
-                  ×
-                </button>
-              </div>
-            </header>
-            <div class="demo-media">
-              <video
-                src="demo/papers.mp4"
-                poster="demo/papers.jpg"
-                controls
-                playsinline
-                muted
-                preload="none"
-                aria-label="Openleaf papers recording"
-                aria-describedby="demo-description-papers"
-              ></video>
-              <button
-                class="demo-play"
-                type="button"
-                aria-label="Play papers demo"
-                hidden
-              >
-                <span aria-hidden="true">▶</span><span>Watch demo</span>
-              </button>
-            </div>
-            <p class="demo-description" id="demo-description-papers">
-              LaTeX source, visual editing, and a live PDF in the same project.
-            </p>
-          </article>
-          <article
-            class="demo-window"
-            id="demo-python"
-            data-demo="python"
-            aria-labelledby="demo-title-python"
-          >
-            <header class="demo-window-bar">
-              <h3 id="demo-title-python">Python</h3>
-              <button
-                class="demo-drag"
-                type="button"
-                aria-label="Move Python window. Use arrow keys, or drag."
-                hidden
-              >
-                <span aria-hidden="true">⠿</span> Python
-              </button>
-              <div class="demo-window-actions" hidden>
-                <button
-                  type="button"
-                  data-expand
-                  aria-label="Expand Python window"
-                  title="Expand window"
-                >
-                  ⤢
-                </button>
-                <button
-                  type="button"
-                  data-close
-                  aria-label="Close Python window"
-                  title="Close window"
-                >
-                  ×
-                </button>
-              </div>
-            </header>
-            <div class="demo-media">
-              <video
-                src="demo/python.mp4"
-                poster="demo/python.jpg"
-                controls
-                playsinline
-                muted
-                preload="none"
-                aria-label="Openleaf python recording"
-                aria-describedby="demo-description-python"
-              ></video>
-              <button
-                class="demo-play"
-                type="button"
-                aria-label="Play python demo"
-                hidden
-              >
-                <span aria-hidden="true">▶</span><span>Watch demo</span>
-              </button>
-            </div>
-            <p class="demo-description" id="demo-description-python">
-              Run Python cells and inspect their output beside your research.
-            </p>
-          </article>
-          <article
-            class="demo-window"
-            id="demo-slides"
-            data-demo="slides"
-            aria-labelledby="demo-title-slides"
-          >
-            <header class="demo-window-bar">
-              <h3 id="demo-title-slides">Slides</h3>
-              <button
-                class="demo-drag"
-                type="button"
-                aria-label="Move Slides window. Use arrow keys, or drag."
-                hidden
-              >
-                <span aria-hidden="true">⠿</span> Slides
-              </button>
-              <div class="demo-window-actions" hidden>
-                <button
-                  type="button"
-                  data-expand
-                  aria-label="Expand Slides window"
-                  title="Expand window"
-                >
-                  ⤢
-                </button>
-                <button
-                  type="button"
-                  data-close
-                  aria-label="Close Slides window"
-                  title="Close window"
-                >
-                  ×
-                </button>
-              </div>
-            </header>
-            <div class="demo-media">
-              <video
-                src="demo/slides.mp4"
-                poster="demo/slides.jpg"
-                controls
-                playsinline
-                muted
-                preload="none"
-                aria-label="Openleaf slides recording"
-                aria-describedby="demo-description-slides"
-              ></video>
-              <button
-                class="demo-play"
-                type="button"
-                aria-label="Play slides demo"
-                hidden
-              >
-                <span aria-hidden="true">▶</span><span>Watch demo</span>
-              </button>
-            </div>
-            <p class="demo-description" id="demo-description-slides">
-              Edit a PowerPoint research poster and switch into presentation
-              view.
-            </p>
-          </article>
-          <article
-            class="demo-window"
-            id="demo-agents"
-            data-demo="agents"
-            aria-labelledby="demo-title-agents"
-          >
-            <header class="demo-window-bar">
-              <h3 id="demo-title-agents">Agents</h3>
-              <button
-                class="demo-drag"
-                type="button"
-                aria-label="Move Agents window. Use arrow keys, or drag."
-                hidden
-              >
-                <span aria-hidden="true">⠿</span> Agents
-              </button>
-              <div class="demo-window-actions" hidden>
-                <button
-                  type="button"
-                  data-expand
-                  aria-label="Expand Agents window"
-                  title="Expand window"
-                >
-                  ⤢
-                </button>
-                <button
-                  type="button"
-                  data-close
-                  aria-label="Close Agents window"
-                  title="Close window"
-                >
-                  ×
-                </button>
-              </div>
-            </header>
-            <div class="demo-media">
-              <video
-                src="demo/agents.mp4"
-                poster="demo/agents.jpg"
-                controls
-                playsinline
-                muted
-                preload="none"
-                aria-label="Openleaf agents recording"
-                aria-describedby="demo-description-agents"
-              ></video>
-              <button
-                class="demo-play"
-                type="button"
-                aria-label="Play agents demo"
-                hidden
-              >
-                <span aria-hidden="true">▶</span><span>Watch demo</span>
-              </button>
-            </div>
-            <p class="demo-description" id="demo-description-agents">
-              Ask Codex about the manuscript from an agent terminal in your
-              project.
-            </p>
-          </article>
-          <article
-            class="demo-window"
-            id="demo-whiteboard"
-            data-demo="whiteboard"
-            aria-labelledby="demo-title-whiteboard"
-          >
-            <header class="demo-window-bar">
-              <h3 id="demo-title-whiteboard">Whiteboard</h3>
-              <button
-                class="demo-drag"
-                type="button"
-                aria-label="Move Whiteboard window. Use arrow keys, or drag."
-                hidden
-              >
-                <span aria-hidden="true">⠿</span> Whiteboard
-              </button>
-              <div class="demo-window-actions" hidden>
-                <button
-                  type="button"
-                  data-expand
-                  aria-label="Expand Whiteboard window"
-                  title="Expand window"
-                >
-                  ⤢
-                </button>
-                <button
-                  type="button"
-                  data-close
-                  aria-label="Close Whiteboard window"
-                  title="Close window"
-                >
-                  ×
-                </button>
-              </div>
-            </header>
-            <div class="demo-media">
-              <video
-                src="demo/whiteboard.mp4"
-                poster="demo/whiteboard.jpg"
-                controls
-                playsinline
-                muted
-                preload="none"
-                aria-label="Openleaf whiteboard recording"
-                aria-describedby="demo-description-whiteboard"
-              ></video>
-              <button
-                class="demo-play"
-                type="button"
-                aria-label="Play whiteboard demo"
-                hidden
-              >
-                <span aria-hidden="true">▶</span><span>Watch demo</span>
-              </button>
-            </div>
-            <p class="demo-description" id="demo-description-whiteboard">
-              Sketch and take notes beside the paper you are reading.
-            </p>
-          </article>
-          <article
-            class="demo-window"
-            id="demo-history"
-            data-demo="history"
-            aria-labelledby="demo-title-history"
-          >
-            <header class="demo-window-bar">
-              <h3 id="demo-title-history">History</h3>
-              <button
-                class="demo-drag"
-                type="button"
-                aria-label="Move History window. Use arrow keys, or drag."
-                hidden
-              >
-                <span aria-hidden="true">⠿</span> History
-              </button>
-              <div class="demo-window-actions" hidden>
-                <button
-                  type="button"
-                  data-expand
-                  aria-label="Expand History window"
-                  title="Expand window"
-                >
-                  ⤢
-                </button>
-                <button
-                  type="button"
-                  data-close
-                  aria-label="Close History window"
-                  title="Close window"
-                >
-                  ×
-                </button>
-              </div>
-            </header>
-            <div class="demo-media">
-              <video
-                src="demo/history.mp4"
-                poster="demo/history.jpg"
-                controls
-                playsinline
-                muted
-                preload="none"
-                aria-label="Openleaf history recording"
-                aria-describedby="demo-description-history"
-              ></video>
-              <button
-                class="demo-play"
-                type="button"
-                aria-label="Play history demo"
-                hidden
-              >
-                <span aria-hidden="true">▶</span><span>Watch demo</span>
-              </button>
-            </div>
-            <p class="demo-description" id="demo-description-history">
-              Browse earlier versions of the manuscript from project history.
-            </p>
-          </article>
-          <article
-            class="demo-window"
-            id="demo-ssh"
-            data-demo="ssh"
-            aria-labelledby="demo-title-ssh"
-          >
-            <header class="demo-window-bar">
-              <h3 id="demo-title-ssh">SSH</h3>
-              <button
-                class="demo-drag"
-                type="button"
-                aria-label="Move SSH window. Use arrow keys, or drag."
-                hidden
-              >
-                <span aria-hidden="true">⠿</span> SSH
-              </button>
-              <div class="demo-window-actions" hidden>
-                <button
-                  type="button"
-                  data-expand
-                  aria-label="Expand SSH window"
-                  title="Expand window"
-                >
-                  ⤢
-                </button>
-                <button
-                  type="button"
-                  data-close
-                  aria-label="Close SSH window"
-                  title="Close window"
-                >
-                  ×
-                </button>
-              </div>
-            </header>
-            <div class="demo-media">
-              <video
-                src="demo/ssh.mp4"
-                poster="demo/ssh.jpg"
-                controls
-                playsinline
-                muted
-                preload="none"
-                aria-label="Openleaf ssh recording"
-                aria-describedby="demo-description-ssh"
-              ></video>
-              <button
-                class="demo-play"
-                type="button"
-                aria-label="Play ssh demo"
-                hidden
-              >
-                <span aria-hidden="true">▶</span><span>Watch demo</span>
-              </button>
-            </div>
-            <p class="demo-description" id="demo-description-ssh">
-              Set up a remote research workspace over SSH.
-            </p>
-          </article>
-          <p class="demo-empty" hidden>
-            Pick a tool above to add it to your desk.
+          <video
+            src="demo/papers-remotion.mp4"
+            poster="demo/papers-remotion.jpg"
+            controls
+            playsinline
+            muted
+            preload="none"
+            aria-label="Openleaf write papers demo"
+            aria-describedby="core-caption-papers"
+          ></video>
+          <p id="core-caption-papers">LaTeX, visual editing, and live PDF.</p>
+        </div>
+        <div
+          class="core-panel"
+          id="core-panel-python"
+          role="tabpanel"
+          aria-labelledby="core-tab-python"
+          tabindex="0"
+        >
+          <video
+            src="demo/python-remotion.mp4"
+            poster="demo/python-remotion.jpg"
+            controls
+            playsinline
+            muted
+            preload="none"
+            aria-label="Openleaf run python demo"
+            aria-describedby="core-caption-python"
+          ></video>
+          <p id="core-caption-python">
+            Run Python cells and inspect their results.
           </p>
         </div>
-        <figcaption class="demo-caption">
-          <span>Real recordings from Openleaf.</span>
-          <a href="docs.html"
-            >Explore the docs <span aria-hidden="true">↗</span></a
-          >
-        </figcaption>
-        <p class="sr-only" id="demoStatus" role="status" aria-live="polite"></p>
+        <div
+          class="core-panel"
+          id="core-panel-slides"
+          role="tabpanel"
+          aria-labelledby="core-tab-slides"
+          tabindex="0"
+        >
+          <video
+            src="demo/slides-remotion.mp4"
+            poster="demo/slides-remotion.jpg"
+            controls
+            playsinline
+            muted
+            preload="none"
+            aria-label="Openleaf make slides demo"
+            aria-describedby="core-caption-slides"
+          ></video>
+          <p id="core-caption-slides">
+            Editable PowerPoint, from first slide to presentation.
+          </p>
+        </div>
       </figure>
       <section class="community wrap" id="community">
         <div
@@ -696,7 +287,7 @@
       ><span>Made by <a href="/">Alex Dils</a></span
       ><a href="docs.html">Documentation <span aria-hidden="true">↗</span></a>
     </footer>
-    <script src="openleaf-demo.js?v=20260908-research-desk"></script>
-    <script src="openleaf-product.js?v=20260908-research-desk"></script>
+    <script src="openleaf-demo.js?v=20260908-core-demos"></script>
+    <script src="openleaf-product.js?v=20260908-core-demos"></script>
   </body>
 </html>

@@ -1,0 +1,15 @@
+{
+  "name": "openleaf-core-demos",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "check": "remotion compositions src/index.jsx",
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.501",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "remotion": "4.0.501"
+  }
+}
