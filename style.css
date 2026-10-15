@@ -186,6 +186,7 @@ h1, h2, h3, p, figure { margin-top: 0; }
 .timeline-item { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: .85rem; align-items: start; }
 .timeline-logo { width: 42px; height: 42px; border-radius: 6px; }
 .timeline-logo { padding: 3px; object-fit: contain; background: var(--surface); }
+.timeline-logo.company-symbol { display: grid; place-items: center; border: 1px solid var(--line); color: var(--ink); background: var(--surface-muted); font-size: 1.15rem; }
 .timeline-logo.logo-contain { padding: 8px 4px; }
 .timeline-logo.brand-icon { padding: 0; object-fit: cover; }
 .timeline-logo.mlab-icon { padding: 3px; object-fit: contain; background: var(--surface-muted); }
