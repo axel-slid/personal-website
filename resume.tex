@@ -19,6 +19,7 @@
 \usepackage{enumitem}
 \usepackage{fontawesome}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage[
     pdftitle={Alex Dils's CV},
     pdfauthor={Alex Dils},
@@ -64,8 +65,8 @@
 
 \renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$}
 
-\newenvironment{highlights}{
-  \begin{itemize}[topsep=0.04cm, parsep=0.02cm, partopsep=0pt, itemsep=0pt, leftmargin=10pt]
+\newenvironment{highlights}[1][18pt]{
+  \begin{itemize}[topsep=0.04cm, parsep=0.02cm, partopsep=0pt, itemsep=0pt, leftmargin=#1]
 }{
   \end{itemize}
 }
@@ -93,7 +94,12 @@
   \par\kern\topsep
 }
 
+\newcommand{\firstauthor}{\ensuremath{\bigstar}}
+\newcommand{\experiencecompany}[1]{{\fontsize{10.5pt}{11.5pt}\selectfont\textbf{#1}}}
+\newcommand{\experiencefocus}[1]{\begin{onecolentry}\small\textit{#1}\end{onecolentry}}
+
 \begin{document}
+  \fontsize{9.5pt}{10.5pt}\selectfont
   % Header
   \begin{header}
     \centering
@@ -109,6 +115,7 @@
     \href{https://www.linkedin.com/in/alex-dils/}{\faLinkedin\ LinkedIn} \,|\,
     \href{https://github.com/axel-slid}{\faGithub\ GitHub}
   \end{header}
+  \fontsize{9.5pt}{10.5pt}\selectfont
 
   \vspace{-0.18cm}
 
@@ -125,18 +132,36 @@
     \small \textit{Activities:} Machine Learning at Berkeley (ML@B), Internal \& Research Committees
   \end{onecolentry}
 
-  \section{Technical Skills}
-  \begin{onecolentry}
-    \small \textbf{Languages:} Python, JavaScript, TypeScript, Java, C, SQL; \textbf{ML:} PyTorch, TensorFlow, scikit-learn, Hugging Face, OpenCV, SimpleITK; \textbf{Web/Data:} FastAPI, Node.js, React, PostgreSQL, Supabase, PostGIS; \textbf{Tools:} Docker, Slurm, Git, Vercel
-  \end{onecolentry}
-
   \section{Experience}
 
-  
-
-  \begin{twocolentry}{Jun 2026 -- Aug 2026}
-    \textbf{\href{https://med.stanford.edu/canarycenter/canarycrest.html}{Stanford Canary CREST Research Scholar}}, Stanford Canary Center / Gevaert Lab
+\begin{twocolentry}{Oct 2026 -- Present}
+    \experiencecompany{Human Archive}
   \end{twocolentry}
+  \experiencefocus{Robotics Research -- Intern}
+  \begin{onecolentry}
+    \begin{highlights}
+      \item Benchmarked \textbf{SLAM and 3D hand-tracking pipelines} on 30/60 fps egocentric video across cloud GPUs, measuring throughput and cost per processed video-hour.
+      \item Tuned CPU/GPU allocation and processing concurrency; compared outputs against H100 baselines to assess reconstruction consistency and recommend cost-efficient configurations.
+      \item Evaluated models and ablated training data sources, pretraining strategies, and fine-tuning methods.
+    \end{highlights}
+  \end{onecolentry}
+
+\begin{twocolentry}{Jun 2022 -- Present}
+    \experiencecompany{Stanford Division of Computational Medicine}
+  \end{twocolentry}
+  \experiencefocus{Computer Vision Research -- Intern}
+  \begin{onecolentry}
+    \begin{highlights}
+      \item Developed domain-robust skin-lesion segmentation methods and finite-element lung-motion augmentations that \textbf{improved SoTA tumor-segmentation Dice by >0.05}.
+      \item Research featured on Stanford Medicine homepage
+      \item Built a deployment tool for a model that generates corresponding spot-compression mammograms from CC and MLO views, making it deployable to clinicians and patients.
+    \end{highlights}
+  \end{onecolentry}
+
+\begin{twocolentry}{Jun 2026 -- Aug 2026}
+    \experiencecompany{\href{https://med.stanford.edu/canarycenter/canarycrest.html}{Stanford Canary Center / Gevaert Lab}}
+  \end{twocolentry}
+  \experiencefocus{Computer Vision Research -- Canary CREST Research Scholar}
   \begin{onecolentry}
     \begin{highlights}
       \item Developed and deployed volume estimation on cNF Vision, a clinical tool deployed to 50+ clinicians and patients.
@@ -145,37 +170,22 @@
       \item Built a clinical tool for viewing and editing PET and CT scan annotations using JavaScript and Electron.
     \end{highlights}
   \end{onecolentry}
-  
-  \begin{twocolentry}{Feb 2026 -- Jun 2026}
-    \textbf{Machine Learning Engineer},
-    Logitech
+
+\begin{twocolentry}{Feb 2026 -- Jun 2026}
+    \experiencecompany{Logitech}
   \end{twocolentry}
+  \experiencefocus{Applied Machine Learning -- Machine Learning Engineer (Contract)}
   \begin{onecolentry}
     \begin{highlights}
       \item Built a \textbf{VLM evaluation harness} for meeting-room readiness and participant classification on Logitech's Rally Board 65, measuring task accuracy and inference latency across 55 models.
       \item Ran model and prompt ablations and identified Qwen3.5 4B as the leading deployment candidate for the target hardware and task.
     \end{highlights}
   \end{onecolentry}
-  
-  \begin{twocolentry}{Jun 2022 -- Jun 2026}
-    \textbf{Research Intern}, Stanford Center for Biomedical Informatics Research
-  \end{twocolentry}
-  \begin{onecolentry}
-    \begin{highlights}
-      \item Developed domain-robust skin-lesion segmentation methods and finite-element lung-motion augmentations that \textbf{improved SoTA tumor-segmentation Dice by >0.05}.
-      \item Drafted sections of a Digital Twin manuscript and its journal submission cover letter; the research was \textbf{featured on Stanford Medicine's homepage}.
-      \item Built a deployment tool for a model that generates corresponding spot-compression mammograms from CC and MLO views, making it deployable to clinicians and patients.
-    \end{highlights}
-  \end{onecolentry}
 
-  \begin{twocolentry}{May 2026 -- Present}
-    \textbf{Founder \& Engineer}, \href{https://infrastructs.com}{Infrastruct} --- \textit{Agentic workflow automation}
-  \end{twocolentry}
+  \section{Technical Skills}
   \begin{onecolentry}
-    \begin{highlights}
-      \item Built an approval-gated \textbf{AI workflow-automation platform} with a desktop observer and Node.js backend; implemented \textbf{49 workflow rules} across \textbf{15 app connectors}.
-      \item Shipped traceable execution, rollback and idempotency safeguards, OAuth/SSO, billing, and deployment; sustained \textbf{176 ms median p95} across \textbf{2,500} production health requests at 100-way concurrency with zero failures.
-    \end{highlights}
+    \small \textbf{Tools:} AI agents, orchestration, multi-agent workflows, Codex, Claude, Docker, Slurm, Git, Vercel, Electron\\
+    \textbf{Languages:} Python, C, JavaScript, TypeScript; \textbf{ML/CV:} PyTorch, TensorFlow, scikit-learn, Hugging Face, OpenCV, SimpleITK
   \end{onecolentry}
 
   % Projects
@@ -186,16 +196,7 @@
   \end{twocolentry}
   \begin{onecolentry}
     \begin{highlights}
-      \item Built a local macOS research workspace primarily in JavaScript, unifying LaTeX, PDF, Python, GitHub, SSH, and coding agents.
-    \end{highlights}
-  \end{onecolentry}
-
-  \begin{twocolentry}{2026}
-    \textbf{BsCode} \,|\, \href{https://www.alex-dils.com/bscode}{alex-dils.com/bscode}
-  \end{twocolentry}
-  \begin{onecolentry}
-    \begin{highlights}
-      \item Built a desktop primarily in JavaScript for coordinating Codex, Claude, and shell agents across local and remote workspaces.
+      \item Build and maintain an opensource macOS research workspace unifying LaTeX, PDF, Python, GitHub, SSH, and coding agents.
     \end{highlights}
   \end{onecolentry}
 
@@ -209,17 +210,19 @@
   \end{onecolentry}
 
   % Publications
-  \section{\texorpdfstring{Publications \hfill {\normalfont\itshape\footnotesize * indicates first authorship.}}{Publications}}
+  \section{\texorpdfstring{Publications \hfill {\normalfont\itshape\footnotesize \firstauthor\ indicates first authorship.}}{Publications}}
 
   \begin{onecolentry}
     \begin{highlights}
-      \item \fontsize{9.5pt}{11.4pt}\selectfont \href{https://openreview.net/forum?id=JI0ZzOPW9x}{\textbf{*Synthesizing Longitudinal Cutaneous Neurofibroma Imaging for Digital-Twin Burden Quantification}}. MICCAI MWM 2026.\\
+      \item \fontsize{9.5pt}{10.5pt}\selectfont \href{https://openreview.net/forum?id=JI0ZzOPW9x}{\textbf{\firstauthor\,Synthesizing Longitudinal Cutaneous Neurofibroma Imaging for Digital-Twin Burden Quantification}}. MICCAI MWM 2026.\\
       Christoph Sadée, \textbf{Alex Dils}, Krish Sangani, Lillian Rubino, Alexander J Ferenchick, Varun Wadhwa, et al.
-      \item \fontsize{9.5pt}{11.4pt}\selectfont \href{https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/\#google_vignette}{\textbf{*Eye For An Eye: A Deep-Learning and Analytical Method to Spatializing Stereoscopic Images}}. National High School Journal of Science, 2025.\\
+      \item \fontsize{9.5pt}{10.5pt}\selectfont \href{https://arxiv.org/abs/2410.19604}{\textbf{\firstauthor\,Microplastic Identification Using AI-Driven Image Segmentation and GAN-Generated Ecological Context}}. arXiv preprint, 2024.\\
+      \textbf{Alex Dils}, David Raymond, Jack Spottiswood, Samay Kodige, Dylan Karmin, Rikhil Kokal, Win Cowger, and Chris Sadée.
+      \item \fontsize{9.5pt}{10.5pt}\selectfont \href{https://nhsjs.com/2025/eye-for-an-eye-a-deep-learning-and-analytical-method-to-spatializing-stereoscopic-images/\#google_vignette}{\textbf{\firstauthor\,Eye For An Eye: A Deep-Learning and Analytical Method to Spatializing Stereoscopic Images}}. National High School Journal of Science, 2025.\\
       Jake Yoshinaka, \textbf{Alex Dils}, and Leo McDonnell.
-      \item \fontsize{9.5pt}{11.4pt}\selectfont \textbf{*Addressing Bias and Confounders in AI-based Image Diagnosis --- A Study of 117,610 Skin Lesions}. Manuscript under revision at \textit{Cell}, 2025.\\
+      \item \fontsize{9.5pt}{10.5pt}\selectfont \textbf{Addressing Bias and Confounders in AI-based Image Diagnosis --- A Study of 117,610 Skin Lesions}. Manuscript under revision at \textit{Cell}, 2025.\\
       Christoph Sadée, Serena Zhang, \textbf{Alex Dils}, Jared Bitz, Stefano Testa, Zhuo Ran Cai, et al.
-      \item \fontsize{9.5pt}{11.4pt}\selectfont \href{https://scientificcomputing.github.io/fenics2024/integrating-mechanistic}{\textbf{Integrating Mechanistic Knowledge into Deep Learning for Improved Cancer Detection}}. FEniCS Conference Proceedings, 2024.\\
+      \item \fontsize{9.5pt}{10.5pt}\selectfont \href{https://scientificcomputing.github.io/fenics2024/integrating-mechanistic}{\textbf{Integrating Mechanistic Knowledge into Deep Learning for Improved Cancer Detection}}. FEniCS Conference Proceedings, 2024.\\
       Christoph Sadée, Katherine Hartmann, \textbf{Alex Dils}, Ianto Xi, Francisco Carrillo-Perez, et al.
     \end{highlights}
   \end{onecolentry}
