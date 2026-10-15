@@ -161,11 +161,10 @@ h1, h2, h3, p, figure { margin-top: 0; }
 .project-tags span { display: inline-block; padding: .08rem .45rem; border-radius: 999px; background: var(--tag-one-bg); color: var(--tag-one-ink); font-size: .68rem; line-height: 1.45; }
 .project-tags span:nth-child(2n) { background: var(--tag-two-bg); color: var(--tag-two-ink); }
 .project-tags span:nth-child(3n) { background: var(--tag-three-bg); color: var(--tag-three-ink); }
-.publication-links { gap: .35rem .75rem; }
-.publication-links a { color: var(--tag-one-ink); font-size: .76rem; font-weight: 700; line-height: 1.45; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
-.publication-links a:nth-child(2n) { color: var(--tag-two-ink); }
-.publication-links a:nth-child(3n) { color: var(--tag-three-ink); }
-.publication-links a:hover { color: var(--link); text-decoration-thickness: 2px; }
+.publication-links, .project-links { gap: .35rem .75rem; }
+.publication-links a, .project-links a { color: var(--link); font-size: .76rem; font-weight: 700; line-height: 1.45; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+.publication-links a:visited, .project-links a:visited { color: var(--link); }
+.publication-links a:hover, .project-links a:hover { color: var(--link-hover); text-decoration-thickness: 2px; }
 .publication-venue { font-size: .86rem; font-style: italic; }
 .publication-authors { color: var(--muted); font-size: .86rem; }
 .publication-note { display: block; margin-top: .2rem; font-size: .78rem; font-style: italic; }
@@ -181,9 +180,6 @@ h1, h2, h3, p, figure { margin-top: 0; }
 .project-body h3 { margin: 0 0 .45rem; font-size: 1rem; line-height: 1.35; }
 .project-body h3 a { color: var(--link); }
 .project-tags { margin: .2rem 0 .45rem; }
-.project-links { gap: .35rem .7rem; }
-.project-links a { text-decoration: none; }
-.project-links a:hover { text-decoration: underline; }
 .project-body p { margin: .7rem 0 0; line-height: 1.55; font-style: italic; }
 
 .timeline-list { display: flex; flex-direction: column; gap: 1.25rem; margin: .75rem 0 1.5rem; }

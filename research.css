@@ -1,0 +1,51 @@
+:root {
+  color-scheme: light;
+  --ink: #24282e;
+  --muted: #60656d;
+  --line: #dfe2e6;
+  --link: #224b8d;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #fff; color: var(--ink); font: 1.05rem/1.7 Georgia, "Times New Roman", serif; }
+main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+a, a:visited { color: var(--link); text-underline-offset: .18em; }
+a:hover { color: #122f60; }
+a:focus-visible, summary:focus-visible { outline: 2px solid var(--link); outline-offset: 4px; }
+.skip-link { position: absolute; top: -5rem; left: 1rem; padding: .5rem 1rem; background: #fff; }
+.skip-link:focus { top: .5rem; }
+.home-link { margin-bottom: 2rem; }
+header { margin-bottom: 2.5rem; }
+h1 { margin: 0 0 1.25rem; font-size: clamp(1.65rem, 4vw, 2.25rem); line-height: 1.25; font-weight: 600; text-wrap: balance; }
+h2 { margin: 0 0 .8rem; padding-bottom: .3rem; border-bottom: 1px solid var(--line); font-size: 1.4rem; line-height: 1.35; font-weight: 600; }
+h3 { font-size: 1.1rem; }
+h1, h2, h3, summary, caption, th { text-transform: none; letter-spacing: normal; }
+section { margin: 2.5rem 0; scroll-margin-top: 1rem; }
+p { margin: 0 0 1rem; }
+.authors { color: var(--ink); font-size: .98rem; line-height: 1.7; }
+.author-block { display: inline; }
+sup { font-size: .7em; line-height: 0; }
+.affiliations { margin-top: .75rem; color: var(--muted); font-size: .9rem; }
+summary { width: fit-content; cursor: pointer; }
+.affiliations ol { margin: .75rem 0; padding-left: 1.4rem; }
+.affiliations .author-block { display: block; }
+.paper-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; margin-top: 1.2rem; font-size: .95rem; }
+figure { margin: 1.75rem 0; }
+figure img { display: block; width: 100%; height: auto; }
+figcaption { margin-top: .75rem; color: var(--muted); font-size: .9rem; line-height: 1.55; }
+.table-scroll { overflow-x: auto; margin: 1.5rem 0; }
+table { width: 100%; border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; }
+caption { text-align: left; margin-bottom: .75rem; color: var(--muted); }
+th, td { padding: .6rem .7rem; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; }
+thead th { border-top: 1px solid var(--line); }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: .95rem; }
+@media (max-width: 600px) {
+  body { font-size: 1rem; }
+  main { padding: 1.25rem 1rem 2rem; }
+  .home-link { margin-bottom: 1.5rem; }
+  section { margin: 2rem 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
