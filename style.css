@@ -162,8 +162,10 @@ h1, h2, h3, p, figure { margin-top: 0; }
 .project-tags span:nth-child(2n) { background: var(--tag-two-bg); color: var(--tag-two-ink); }
 .project-tags span:nth-child(3n) { background: var(--tag-three-bg); color: var(--tag-three-ink); }
 .publication-links, .project-links { gap: .35rem .75rem; }
-.publication-links a, .project-links a { color: var(--link); font-size: .76rem; font-weight: 700; line-height: 1.45; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
-.publication-links a:visited, .project-links a:visited { color: var(--link); }
+.publication-links a, .project-links a { --resource-color: var(--tag-one-ink); color: var(--resource-color); font-size: .76rem; font-weight: 700; line-height: 1.45; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+.publication-links a:visited, .project-links a:visited { color: var(--resource-color); }
+:is(.publication-links, .project-links) a:is([data-resource="paper"], [data-resource="abstract"], [data-resource="documentation"]) { --resource-color: var(--tag-two-ink); }
+:is(.publication-links, .project-links) a:is([data-resource="pdf"], [data-resource="code"], [data-resource="workshop"]) { --resource-color: var(--tag-three-ink); }
 .publication-links a:hover, .project-links a:hover { color: var(--link-hover); text-decoration-thickness: 2px; }
 .publication-venue { font-size: .86rem; font-style: italic; }
 .publication-authors { color: var(--muted); font-size: .86rem; }
